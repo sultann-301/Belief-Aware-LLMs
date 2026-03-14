@@ -5,14 +5,17 @@
 The system externalizes belief state into a managed graph and uses the LLM as a modular reasoning engine — not a knowledge store. The LLM never "knows" its beliefs internally; it reasons over whatever is injected into its prompt from the belief store.
 
 ```
-User Input (NL) → LLM (Fact Extractor) → Belief Store (Bipartite Inference Graph)
-                                              ↓
-                                     Contradiction Detector
-                                              ↓
-                                    Dirty Propagation (BFS)
-                                              ↓
-                              On Query: Lazy Re-derivation via LLM
+Structured Input → Belief Store (Bipartite Inference Graph)
+                        ↓
+               Contradiction Detector
+                        ↓
+              Dirty Propagation (BFS)
+                        ↓
+        On Query: Lazy Re-derivation via LLM
 ```
+
+> [!IMPORTANT]
+> All belief inputs are **structured** (not natural language). The LLM is never used for NL-to-belief extraction — its sole role is **reasoning over injected beliefs** to derive conclusions. This avoids the NL parsing reliability problem entirely.
 
 **Key architectural decisions:**
 
@@ -22,7 +25,7 @@ User Input (NL) → LLM (Fact Extractor) → Belief Store (Bipartite Inference G
 | Graph library | NetworkX | BFS built-in, JSON-serializable, lightweight |
 | Revision strategy | On-conflict lazy (dirty flags) | Cheap insertion, correct on read |
 | Contradiction detection | Hash-map attribute clash | Simple and sufficient for controlled domains |
-| LLM output validation | Pydantic schemas | Critical reliability layer |
+| LLM role | Reasoning / re-derivation only | No NL-to-belief extraction (structured inputs) |
 | Evaluation framework | Belief-R / BREU | Tractable within timeline |
 | TMS implementation | The graph IS the TMS | No separate library needed |
 
@@ -188,26 +191,11 @@ ON QUERY (subject, attribute):
 
 ## LLM Integration
 
-### Fact Extraction (NL → Structured Belief)
-
-The LLM translates natural language input into Pydantic-validated belief updates:
-
-```python
-from pydantic import BaseModel
-from typing import Literal
-
-class BeliefUpdate(BaseModel):
-    subject: str
-    attribute: str
-    value: str | int | float | bool
-    source: Literal["user_input", "llm_derivation", "system"]
-```
-
-Force the LLM to output this schema. On validation failure, retry with the error message.
+The LLM is used **only for reasoning** — specifically, re-deriving dirty beliefs when queried. All belief inputs (facts, rules) are inserted into the graph as structured data, never parsed from natural language.
 
 ### Prompt Construction (Belief Injection)
 
-When the LLM needs to reason (re-derive a dirty belief or answer a query):
+When a dirty belief is queried and needs re-derivation, the system serializes the relevant subgraph into the prompt:
 
 ```
 SYSTEM: You are a reasoning assistant. Base your conclusions
