@@ -21,17 +21,17 @@ graph LR
         LOG["revision_log"]
     end
 
-    subgraph "Reasoning"
-        LLM["LLM<br/>(reasons over clean beliefs)"]
+    subgraph "Explanation Layer"
+        LLM["LLM<br/>(reasons + explains)"]
     end
 
     USER -->|"1. add_hypothesis"| BELIEFS
+    USER -->|"also injected into prompt"| LLM
     BELIEFS -->|"2. mark dependents"| DIRTY
     QUERY -->|"3. resolve_all_dirty"| RULES
     RULES -->|"update derived beliefs"| BELIEFS
     BELIEFS -->|"4. to_prompt (clean)"| LLM
-    LLM -->|"5. BELIEF_UPDATES<br/>(new beliefs only)"| BELIEFS
-    LLM -->|"response"| USER
+    LLM -->|"5. explanation only"| USER
 
     style BELIEFS fill:#4a9eff,color:#fff
     style DEPS fill:#4a9eff,color:#fff
@@ -41,18 +41,20 @@ graph LR
     style LLM fill:#6c5ce7,color:#fff
 ```
 
+The LLM **never writes to the store**. The store is only updated from structured input + `derive_fn` rules. The LLM is the explanation layer.
+
 ---
 
 ## The Flow
 
 ```mermaid
 graph TD
-    S1["1. User provides structured beliefs"]
+    S1["1. User provides structured beliefs<br/>→ store.add_hypothesis + mark dirty"]
     S2["2. User asks a query"]
     S3["3. Store resolves ALL dirty keys<br/>via derive_fn rules (no LLM)"]
-    S4["4. Store builds prompt with<br/>clean, relevant beliefs"]
-    S5["5. LLM reasons, may propose<br/>new beliefs (no matching rule)"]
-    S6["6. New beliefs added to store"]
+    S4["4. Store builds prompt:<br/>clean beliefs + new info + query"]
+    S5["5. LLM reasons over clean state<br/>→ explains consequences"]
+    S6["6. Return explanation to user"]
 
     S1 --> S2 --> S3 --> S4 --> S5 --> S6
     S6 -->|"next interaction"| S1
@@ -68,7 +70,8 @@ graph TD
 The strict separation:
 - **`derive_fn` resolves all dirty beliefs BEFORE the LLM sees anything**
 - **The LLM only ever sees clean, fully-resolved beliefs**
-- **The LLM only proposes NEW beliefs that have no matching rule**
+- **The LLM explains and reasons but never writes to the store**
+- **The store is only updated from structured input + rules**
 
 ---
 
@@ -240,16 +243,18 @@ Output:
 
 ## Step 5: LLM Reasons Over Clean Beliefs
 
-The LLM receives a fully resolved belief state. It reasons over it and may propose **new** beliefs that don't have a matching `derive_fn`.
+The LLM receives a fully resolved belief state + the new information that triggered this turn + the user's query. It explains what happened and answers the question. **It does not write to the store.**
 
 ```
 [SYSTEM]
 You are a belief-aware reasoning assistant. Reason strictly
-based on the provided belief state. If you derive any new
-conclusions not already in the beliefs, output them in
-BELIEF_UPDATES.
+based on the provided belief state. Explain your reasoning
+step by step, referencing belief keys.
 
-[RELEVANT BELIEFS]
+[NEW INFORMATION THIS TURN]
+- applicant.income updated: 4000 → 6000
+
+[RELEVANT BELIEFS (after update)]
 [base] applicant.income = 6000
 [base] applicant.credit_score = 750
 [base] loan.min_income = 5000
@@ -264,44 +269,30 @@ What is the current loan status?
 
 [OUTPUT FORMAT]
 REASONING: <step-by-step referencing belief keys>
-BELIEF_UPDATES:
-- key = value
+ANSWER: <direct answer to the query>
 ```
 
 LLM responds:
 ```
-REASONING: applicant.income (6000) >= loan.min_income (5000),
-so loan.income_eligible = True. applicant.credit_score (750)
->= loan.min_credit (600), so loan.credit_eligible = True.
-Both checks pass, therefore loan.status = approved.
+REASONING: applicant.income was updated from 4000 to 6000.
+This now exceeds loan.min_income (5000), so loan.income_eligible
+changed from False to True. applicant.credit_score (750) still
+exceeds loan.min_credit (600), so loan.credit_eligible remains
+True. Both checks now pass, so loan.status changed from
+"rejected" to "approved".
 
-BELIEF_UPDATES:
-- loan.interest_rate_tier = preferred
+ANSWER: The loan is now approved. The income increase to 6000
+exceeded the minimum threshold of 5000, which was the previous
+reason for rejection.
 ```
 
-The LLM confirmed the existing beliefs and proposed a **new** belief (`loan.interest_rate_tier`) that has no existing rule.
+The LLM's output is returned to the user as an explanation. **Nothing is written back to the store** — the store was already updated by `add_hypothesis` + `resolve_all_dirty` in steps 1–3.
 
 ---
 
-## Step 6: New Beliefs Added to Store
+## Step 6: Return Explanation to User
 
-The parser extracts `BELIEF_UPDATES` and adds them as derived beliefs:
-
-```python
-def apply_llm_updates(self, updates, prompt_keys):
-    """Add LLM-proposed new beliefs to the store."""
-    for key, value in updates.items():
-        old = self.beliefs.get(key)
-        self.beliefs[key] = value
-        self.is_derived[key] = True
-        self.dependencies[key] = prompt_keys  # inferred from prompt context
-        self.revision_log.append({
-            "action": "derived", "key": key,
-            "old": old, "new": value,
-            "reason": "derived by LLM"
-        })
-        self._propagate_dirty(key)
-```
+The LLM's reasoning and answer are returned. The belief store is consistent and fully updated. The next interaction starts from step 1.
 
 ---
 
@@ -352,9 +343,6 @@ class BeliefStore:
     def get_relevant_beliefs(self, entity): ...
     def to_prompt(self, entities): ...
 
-    # === LLM integration ===
-    def apply_llm_updates(self, updates, prompt_keys): ...
-
     # === Audit ===
     def format_revision_log(self, since_index=0): ...
 ```
@@ -391,7 +379,7 @@ Example:
 
 **`is_derived`** — `dict[str, bool]`
 ```
-True = derived (recomputed via rules or LLM, never directly set)
+True = derived (recomputed via rules, never directly set)
 False = hypothesis (set by user input)
 ```
 
@@ -435,7 +423,7 @@ Loan domain rules:
 - **All beliefs explicit and structured.** No facts hidden in prompts.
 - **Strict flow.** Dirty beliefs resolved via rules BEFORE LLM sees anything.
 - **LLM sees only clean beliefs.** No dirty or unresolved state in prompts.
-- **LLM proposes, never resolves.** LLM adds new beliefs; rules resolve existing ones.
+- **LLM never writes to the store.** It explains and reasons; structured input + rules handle all updates.
 - **Hypothesis vs. derived.** Only hypotheses are directly revisable.
 - **Lazy revision.** Dirty flags propagate immediately; resolution happens at query time.
 - **Cascading retraction.** Deleted hypotheses cascade to unsupported derivations.
