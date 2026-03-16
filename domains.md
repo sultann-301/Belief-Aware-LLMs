@@ -1,6 +1,6 @@
 # Belief-Aware LLM — Domain Specifications
 
-This document defines the four handcrafted domains used to evaluate the belief revision system. Each domain is designed to stress-test different aspects of the bipartite inference graph: threshold rules, temporal retraction, deep revision chains, and parametric isolation.
+This document defines the four handcrafted domains used to evaluate the belief revision system. Each domain uses the KV store + dependency map representation (`entity.attribute = value`). Rules are deterministic `derive_fn` functions.
 
 ---
 
@@ -8,87 +8,108 @@ This document defines the four handcrafted domains used to evaluate the belief r
 
 ### Purpose
 
-The **baseline domain**. Simple threshold-based rules with clear pass/fail outcomes. Used to validate that the core architecture works: fact insertion, contradiction detection, dirty propagation, and lazy re-derivation.
+The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Validates core architecture: insert, conflict detection, dirty propagation, lazy resolution.
 
 ### What It Tests
 
 | Capability | How |
 |---|---|
 | Basic contradiction detection | Income changes → old value conflicts with new |
-| Single-hop revision | One fact change → one derived belief goes dirty |
-| Conjunctive rule firing | Eligibility requires ALL conditions met |
+| Multi-hop revision | Income → income_eligible → loan_status → rate_tier (3 hops) |
+| Conjunctive rules | Eligibility requires ALL conditions in one rule |
 | Belief Maintain | Changing credit score should NOT affect employment status |
 
-### Attributes
+### Attributes (KV Keys)
 
-| Attribute | Type | Example Values | How It Evolves |
+| Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `income` | numeric | 3000, 5000, 7500 | Raises, job loss, new employment |
-| `credit_score` | numeric | 520, 650, 780 | Payments, defaults, disputes resolved |
-| `debt_ratio` | float | 0.15, 0.40, 0.60 | New loans taken, debts paid off |
-| `employment_status` | categorical | employed, self_employed, unemployed | Hiring, firing, career changes |
-| `employment_duration_months` | numeric | 3, 12, 36 | Time passing |
-| `has_collateral` | boolean | true, false | Asset purchase or sale |
-| `loan_amount_requested` | numeric | 10000, 50000 | Applicant changes request |
-| `existing_loans_count` | numeric | 0, 2, 5 | New loans or payoffs |
-| `bankruptcy_history` | boolean | true, false | Legal proceedings resolved |
-| `applicant_age` | numeric | 22, 35, 60 | Static but affects some rules |
-| `co_signer_available` | boolean | true, false | Co-signer agrees or withdraws |
-| `income_source` | categorical | salary, freelance, investments, pension | Career changes |
+| `applicant.income` | numeric | 3000, 6000 | Raises, job loss |
+| `applicant.credit_score` | numeric | 520, 750 | Payments, defaults |
+| `applicant.debt_ratio` | float | 0.15, 0.60 | New loans, payoffs |
+| `applicant.employment_status` | str | employed, unemployed | Hiring, firing |
+| `applicant.employment_duration_months` | numeric | 3, 36 | Time passing |
+| `applicant.has_collateral` | bool | true, false | Asset purchase/sale |
+| `applicant.loan_amount_requested` | numeric | 10000, 50000 | Applicant changes |
+| `applicant.bankruptcy_history` | bool | true, false | Proceedings resolved |
+| `applicant.co_signer` | bool | true, false | Co-signer agrees/withdraws |
+| `loan.min_income` | numeric | 5000 | Policy |
+| `loan.min_credit` | numeric | 650 | Policy |
+| `loan.max_debt_ratio` | float | 0.4 | Policy |
 
 ### Rules
 
+All conditions are consolidated per output key — no rule priority conflicts.
+
 ```
-R1: income >= 5000 ∧ credit_score >= 650 ∧ debt_ratio < 0.4
-    → loan_eligible = true
+R1: loan.eligible
+    inputs: [applicant.income, applicant.credit_score, applicant.debt_ratio,
+             applicant.employment_status, applicant.bankruptcy_history,
+             applicant.employment_duration_months,
+             loan.min_income, loan.min_credit, loan.max_debt_ratio]
+    logic:
+      IF employment_status = "unemployed" → False
+      IF bankruptcy_history = True AND employment_duration_months < 24 → False
+      IF income >= min_income AND credit_score >= min_credit AND debt_ratio < max_debt_ratio → True
+      ELSE → False
 
-R2: employment_status = unemployed
-    → loan_eligible = false
-    (overrides R1 — even if income from investments meets threshold)
+R2: loan.credit_score_effective
+    inputs: [applicant.credit_score, applicant.co_signer]
+    logic:  credit_score + 50 if co_signer = True, else credit_score
+    NOTE: R1 should use credit_score_effective instead of raw credit_score
 
-R3: loan_eligible = true ∧ credit_score >= 750
-    → interest_rate_tier = preferred
+R3: loan.rate_tier
+    inputs: [loan.eligible, applicant.credit_score]
+    logic:
+      IF NOT eligible → None
+      IF credit_score >= 750 → "preferred"
+      ELSE → "standard"
 
-R4: loan_eligible = true ∧ credit_score < 750 ∧ credit_score >= 650
-    → interest_rate_tier = standard
+R4: loan.max_amount
+    inputs: [loan.eligible, applicant.has_collateral]
+    logic:
+      IF NOT eligible → 0
+      IF has_collateral → 100000
+      ELSE → 30000
 
-R5: loan_eligible = true ∧ has_collateral = true
-    → max_loan_amount = 100000
+R5: loan.application_status
+    inputs: [loan.eligible, applicant.loan_amount_requested, loan.max_amount]
+    logic:
+      IF NOT eligible → "denied_ineligible"
+      IF loan_amount_requested > max_amount → "denied_amount_exceeded"
+      ELSE → "approved"
 
-R6: loan_eligible = true ∧ has_collateral = false
-    → max_loan_amount = 30000
+R6: loan.high_risk_flag
+    inputs: [applicant.debt_ratio]
+    logic:  debt_ratio >= 0.3 → True, else False
+```
 
-R7: bankruptcy_history = true ∧ employment_duration_months < 24
-    → loan_eligible = false
+### Dependency Chain
 
-R8: loan_amount_requested > max_loan_amount
-    → application_status = denied_amount_exceeded
-
-R9: co_signer_available = true ∧ credit_score < 650
-    → credit_score_effective = credit_score + 50
-    (co-signer boosts effective score)
-
-R10: existing_loans_count >= 3 ∧ debt_ratio >= 0.3
-     → high_risk_flag = true
+```
+applicant.income ──→ loan.eligible ──→ loan.rate_tier
+applicant.credit_score ──→                loan.max_amount ──→ loan.application_status
+applicant.debt_ratio ──→                  loan.high_risk_flag
+applicant.employment_status ──→
+applicant.bankruptcy_history ──→
+applicant.co_signer ──→ loan.credit_score_effective ──→ (used by R1)
 ```
 
 ### Example Revision Scenario
 
 ```
-t=0: income=3000, credit_score=700, debt_ratio=0.3
-     → R1 fails (income < 5000) → loan_eligible = false
+t=0: applicant.income = 3000, applicant.credit_score = 700, applicant.debt_ratio = 0.3
+     → R1: 3000 < 5000 → loan.eligible = False
+     → R3: not eligible → loan.rate_tier = None
+     → R5: → loan.application_status = "denied_ineligible"
 
-t=1: User says "I got a new job, income is now 6000"
-     → income conflict: 3000 vs 6000 → retract old, insert new
-     → loan_eligible goes dirty
+t=1: applicant.income updated to 6000
+     → dirty: {loan.eligible, loan.rate_tier, loan.max_amount, loan.application_status}
 
-t=2: Query loan_eligible → re-derive with income=6000
-     → R1: 6000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓
-     → loan_eligible = true
-     → interest_rate_tier goes dirty (depends on loan_eligible)
-
-t=3: Query interest_rate_tier → re-derive
-     → R4: credit_score=700, 650 <= 700 < 750 → standard
+t=2: resolve_all_dirty():
+     → R1: 6000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
+     → R3: eligible, 700 < 750 → loan.rate_tier = "standard"
+     → R4: eligible, no collateral → loan.max_amount = 30000
+     → R5: eligible, 10000 <= 30000 → loan.application_status = "approved"
 ```
 
 ---
@@ -97,90 +118,101 @@ t=3: Query interest_rate_tier → re-derive
 
 ### Purpose
 
-Tests **temporal belief revision** — beliefs that become invalid due to the passage of time (expiring certifications, overdue training). Also tests multi-prerequisite role eligibility rules.
+Tests **multi-prerequisite rules** and **cascading chains** from certification/training status changes. Temporal changes (cert expiry, training overdue) are simulated by the test harness directly updating the relevant keys.
 
 ### What It Tests
 
 | Capability | How |
 |---|---|
-| Temporal retraction | Certification expires → downstream role eligibility cascades to dirty |
-| Multi-hop dependency chains | Cert expires → role ineligible → project assignment invalid |
-| Independent belief maintenance | Revoking one certification should NOT affect unrelated clearances |
-| Conjunctive rules with 3+ premises | Role eligibility requires training + cert + experience |
+| Multi-hop chains | Cert expires → can_operate = false → project suspended |
+| Independent belief maintenance | Revoking one cert should NOT affect unrelated clearances |
+| Conjunctive rules with 3+ inputs | Role eligibility requires training + cert + experience |
+| Simulated temporal changes | Test harness updates cert/training status to simulate time |
 
-### Attributes
+### Attributes (KV Keys)
 
-| Attribute | Type | Example Values | How It Evolves |
+| Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `certification(X)` | categorical | valid, expired, revoked | Certifications expire annually |
-| `cert_expiry_date(X)` | date | 2026-06-01 | Set on certification |
-| `training(X)` | categorical | completed, not_completed, overdue | Annual re-training cycles |
-| `training_completion_date(X)` | date | 2025-09-15 | On completion |
-| `clearance_level` | categorical | none, basic, confidential, secret | Background checks |
-| `years_experience` | numeric | 1, 3, 7 | Time / role changes |
-| `department` | categorical | engineering, finance, operations | Transfers |
-| `performance_rating` | categorical | exceeds, meets, below | Annual review |
-| `disciplinary_action` | boolean | true, false | Incidents |
-| `background_check_status` | categorical | passed, pending, failed | Investigation results |
-| `manager_approval(X)` | boolean | true, false | Manager grants/revokes |
-| `project_assignment(X)` | categorical | assigned, unassigned, suspended | Based on eligibility |
-| `overtime_eligible` | boolean | true, false | Employment classification |
-| `remote_work_approved` | boolean | true, false | Policy changes |
+| `employee.certification_safety` | str | valid, expired | Test harness simulates expiry |
+| `employee.certification_cpa` | str | valid, expired | Test harness simulates expiry |
+| `employee.training_hazmat` | str | completed, not_completed | Test harness simulates overdue |
+| `employee.training_ethics` | str | completed, not_completed | Annual cycle |
+| `employee.training_compliance` | str | completed, not_completed | Annual cycle |
+| `employee.clearance_level` | str | none, basic, confidential, secret | Background checks |
+| `employee.years_experience` | numeric | 1, 5 | Role changes |
+| `employee.performance_rating` | str | exceeds, meets, below | Annual review |
+| `employee.disciplinary_action` | bool | true, false | Incidents |
+| `employee.background_check` | str | passed, pending, failed | Investigation results |
+| `employee.department` | str | engineering, finance | Transfers |
+| `employee.manager_approval_remote` | bool | true, false | Manager grants/revokes |
 
 ### Rules
 
 ```
-R1: certification(safety) = valid ∧ training(hazmat) = completed
-    → can_operate(heavy_machinery) = true
+R1: employee.can_operate_heavy_machinery
+    inputs: [employee.certification_safety, employee.training_hazmat]
+    logic:  certification_safety = "valid" AND training_hazmat = "completed"
 
-R2: clearance_level >= confidential ∧ years_experience >= 3
-      ∧ background_check_status = passed
-    → eligible_for(senior_analyst) = true
+R2: employee.project_factory_floor
+    inputs: [employee.can_operate_heavy_machinery]
+    logic:  "assigned" if can_operate = True, else "suspended"
 
-R3: certification(safety) = expired
-    → can_operate(heavy_machinery) = false
-    → project_assignment(factory_floor) = suspended
+R3: employee.eligible_senior_analyst
+    inputs: [employee.clearance_level, employee.years_experience,
+             employee.background_check]
+    logic:  clearance_level in ("confidential", "secret")
+            AND years_experience >= 3 AND background_check = "passed"
 
-R4: training(ethics) = completed ∧ training(compliance) = completed
-    → compliance_status = compliant
+R4: employee.compliance_status
+    inputs: [employee.training_ethics, employee.training_compliance]
+    logic:  "compliant" if both = "completed", else "non_compliant"
 
-R5: compliance_status = compliant ∧ performance_rating != below
-    → promotion_eligible = true
+R5: employee.promotion_eligible
+    inputs: [employee.compliance_status, employee.performance_rating,
+             employee.disciplinary_action]
+    logic:  compliance_status = "compliant"
+            AND performance_rating != "below"
+            AND disciplinary_action = False
 
-R6: disciplinary_action = true
-    → promotion_eligible = false
-    → clearance_level = under_review
+R6: employee.eligible_financial_auditor
+    inputs: [employee.department, employee.certification_cpa]
+    logic:  department = "finance" AND certification_cpa = "valid"
 
-R7: training(X) = overdue (> 12 months since completion)
-    → training(X) = not_completed (auto-retraction)
+R7: employee.remote_work_approved
+    inputs: [employee.manager_approval_remote, employee.performance_rating]
+    logic:  manager_approval_remote = True AND performance_rating = "exceeds"
+```
 
-R8: manager_approval(remote_work) = true ∧ performance_rating = exceeds
-    → remote_work_approved = true
+### Dependency Chain
 
-R9: department = finance ∧ certification(cpa) = valid
-    → eligible_for(financial_auditor) = true
+```
+employee.certification_safety ──→ employee.can_operate_heavy_machinery ──→ employee.project_factory_floor
+employee.training_hazmat ──→
 
-R10: eligible_for(senior_analyst) = true ∧ manager_approval(promotion) = true
-     → promotion_status = recommended
+employee.training_ethics ──→ employee.compliance_status ──→ employee.promotion_eligible
+employee.training_compliance ──→
+employee.performance_rating ──→
+employee.disciplinary_action ──→
 ```
 
 ### Example Revision Scenario
 
 ```
-t=0: certification(safety) = valid, training(hazmat) = completed
-     → R1 fires → can_operate(heavy_machinery) = true
-     → project_assignment(factory_floor) = assigned
+t=0: certification_safety = "valid", training_hazmat = "completed"
+     → R1: can_operate = True
+     → R2: project_factory_floor = "assigned"
 
-t=1: certification(safety) expires → status changes to expired
-     → can_operate(heavy_machinery) goes dirty
-     → project_assignment(factory_floor) goes dirty
+t=1: Test harness simulates cert expiry:
+     employee.certification_safety = "expired"
+     → dirty: {can_operate_heavy_machinery, project_factory_floor}
 
-t=2: Query can_operate → re-derive → R3 fires → false
-     → project_assignment → re-derive → suspended
+t=2: resolve_all_dirty():
+     → R1: expired ≠ valid → can_operate = False
+     → R2: can_operate = False → project = "suspended"
 
-t=3: Employee renews certification → certification(safety) = valid
-     → can_operate goes dirty again → re-derive → true
-     → project_assignment → re-derive → assigned
+t=3: Employee renews cert:
+     employee.certification_safety = "valid"
+     → dirty again → resolve → can_operate = True → project = "assigned"
 ```
 
 ---
@@ -189,7 +221,7 @@ t=3: Employee renews certification → certification(safety) = valid
 
 ### Purpose
 
-Tests **deep retraction chains and abductive reasoning**. Evidence gets contradicted, alibis collapse, and suspect assessments cascade through revision. The facts of the crime are invented, so the **LLM has zero parametric knowledge** and must rely entirely on the belief store.
+Tests **deep revision chains** and **cascading retraction**. All facts are fictional — the LLM has **zero parametric knowledge** and must rely entirely on the belief store.
 
 ### What It Tests
 
@@ -197,94 +229,114 @@ Tests **deep retraction chains and abductive reasoning**. Evidence gets contradi
 |---|---|
 | Deep revision chains (3-4 hops) | Witness unreliable → alibi broken → suspect status → case theory |
 | Complete parametric isolation | Crime is fictional — LLM can't cheat |
-| Retraction of derived beliefs | Clearing a suspect retracts all accusations derived from that status |
-| Process of elimination reasoning | All-but-one suspects cleared → last one becomes prime suspect |
-| Source reliability weighting | Witness credibility affects downstream belief confidence |
+| Cascading retraction | Clearing a suspect retracts all downstream derivations |
+| Evidence overriding testimony | CCTV (hard evidence) overrides witness (soft evidence) |
 
-### Attributes
+### Attributes (KV Keys)
 
-| Attribute | Type | Example Values | How It Evolves |
+| Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `suspect_alibi(X)` | categorical | confirmed, unconfirmed, broken | Witness statements change |
-| `alibi_source(X)` | string | witness_jones, cctv_footage | Source tracking |
-| `evidence_at_scene(X)` | categorical | present, absent, contaminated | Forensics results arrive |
-| `evidence_type(X)` | categorical | fingerprint, dna, weapon, fiber | Collection over time |
-| `motive(X)` | categorical | financial, personal, revenge, none | Background investigation |
-| `time_of_death` | string | 10pm, 11pm, 9pm-10pm_window | Autopsy updates |
-| `cause_of_death` | categorical | blunt_force, poison, gunshot | Forensics refinement |
-| `suspect_location(X, time)` | string | at_scene, at_bar, at_home | Tracking / phone records |
-| `witness_credibility(X)` | categorical | reliable, unreliable, unknown | Cross-examination |
-| `witness_statement(X)` | string | "saw suspect A at bar at 10pm" | Testimonies |
-| `relationship_to_victim(X)` | categorical | spouse, colleague, stranger, rival | Background research |
-| `suspect_status(X)` | categorical | cleared, person_of_interest, prime_suspect | Ongoing investigation |
-| `physical_evidence_match(X)` | boolean | true, false | Lab results |
-| `access_to_weapon(X)` | boolean | true, false | Investigation findings |
-| `case_theory` | string | "suspect_A committed crime for financial gain" | Evolving conclusion |
-| `cctv_available` | boolean | true, false | Footage discovered/corrupted |
-| `toxicology_result` | categorical | positive(X), negative, pending | Lab processing |
+| `suspect_a.alibi` | str | confirmed, unconfirmed, broken | Witnesses change |
+| `suspect_a.alibi_source` | str | witness_jones, cctv | Source tracking |
+| `suspect_a.evidence_at_scene` | str | present, absent | Forensics arrive |
+| `suspect_a.motive` | str | financial, personal, none | Background investigation |
+| `suspect_a.access_to_weapon` | bool | true, false | Investigation findings |
+| `suspect_a.physical_evidence_match` | bool | true, false | Lab results |
+| `suspect_b.alibi` | str | confirmed, broken | Same as above |
+| `suspect_b.evidence_at_scene` | str | present, absent | |
+| `suspect_b.motive` | str | revenge, none | |
+| `case.time_of_death` | str | 10pm, 9pm | Autopsy updates |
+| `case.cause_of_death` | str | blunt_force, poison | Forensics refinement |
+| `case.cctv_available` | bool | true, false | Footage discovered |
+| `case.toxicology_result` | str | positive_X, negative, pending | Lab processing |
+| `witness_jones.credibility` | str | reliable, unreliable | Cross-examination |
 
 ### Rules
 
 ```
-R1: evidence_at_scene(fingerprints_A) = present ∧ suspect_alibi(A) = broken
-    → suspect_status(A) = prime_suspect
+R1: suspect_a.status
+    inputs: [suspect_a.evidence_at_scene, suspect_a.alibi,
+             suspect_a.motive, suspect_a.access_to_weapon]
+    logic:
+      IF alibi = "confirmed" → "cleared"
+      IF evidence_at_scene = "present" AND alibi = "broken" → "prime_suspect"
+      IF motive != "none" AND alibi = "broken" → "person_of_interest"
+      ELSE → "under_investigation"
 
-R2: suspect_alibi(A) = confirmed ∧ witness_credibility(source) = reliable
-    → suspect_status(A) = cleared
+R2: suspect_a.alibi (derived override)
+    inputs: [suspect_a.alibi_source, witness_jones.credibility]
+    logic:
+      IF alibi_source = "witness_jones" AND credibility = "unreliable"
+        → "broken"
+      IF alibi_source = "cctv" → "confirmed"  (hard evidence, always holds)
+      ELSE → keep current value
 
-R3: witness_credibility(W) = unreliable ∧ alibi_source(A) = W
-    → suspect_alibi(A) = broken
-    (alibi collapses because its source is discredited)
+R3: suspect_a.cleared_by_weapon
+    inputs: [case.cause_of_death, suspect_a.access_to_weapon]
+    logic:
+      IF cause_of_death = "poison" AND access_to_weapon = False
+        → True (suspect cleared for this reason)
+      ELSE → False
 
-R4: time_of_death = T ∧ suspect_location(A, T) = at_scene
-    → suspect_status(A) = prime_suspect
+R4: case.theory
+    inputs: [suspect_a.status, suspect_a.motive]
+    logic:
+      IF status = "prime_suspect" AND motive = "financial"
+        → "suspect_a committed crime for financial gain"
+      IF status = "prime_suspect"
+        → "suspect_a is primary suspect, motive under investigation"
+      ELSE → "no confirmed theory"
 
-R5: suspect_status(A) = cleared ∧ suspect_status(B) = cleared
-      ∧ suspect_count = 3
-    → suspect_status(C) = person_of_interest
-    (process of elimination)
+R5: case.cause_of_death (derived override)
+    inputs: [case.toxicology_result]
+    logic:
+      IF toxicology_result = "positive_X" → "poison"
+      ELSE → keep current value
 
-R6: physical_evidence_match(A) = true ∧ motive(A) != none
-    → suspect_status(A) = prime_suspect
+R6: suspect_b.status
+    inputs: [suspect_b.evidence_at_scene, suspect_b.alibi, suspect_b.motive]
+    logic:  (same pattern as R1 for suspect_b)
 
-R7: cause_of_death = poison ∧ access_to_weapon(A) = false
-    → suspect_status(A) != prime_suspect
-    (can't be prime suspect without access to the weapon type)
+R7: suspect_a.alibi (CCTV override)
+    inputs: [case.cctv_available, suspect_a.alibi_source]
+    logic:
+      IF cctv_available = True AND alibi_source = "cctv"
+        → "confirmed"
+```
 
-R8: suspect_status(A) = prime_suspect ∧ motive(A) = financial
-    → case_theory = "suspect_A committed crime for financial gain"
+### Dependency Chain (4-hop)
 
-R9: cctv_available = true ∧ suspect_location(A, T) != at_scene
-    → suspect_alibi(A) = confirmed
-    (hard evidence overrides witness testimony)
+```
+witness_jones.credibility ──→ suspect_a.alibi ──→ suspect_a.status ──→ case.theory
+suspect_a.evidence_at_scene ──→                                           │
+suspect_a.motive ──────────────────────────────────────────────────────────┘
 
-R10: toxicology_result = positive(substance_X)
-     → cause_of_death = poison (may override earlier forensic conclusion)
+case.toxicology_result ──→ case.cause_of_death ──→ suspect_a.cleared_by_weapon
 ```
 
 ### Example Revision Scenario
 
 ```
-t=0: Witness Jones says Suspect A was at the bar at 10pm
-     → alibi_source(A) = witness_jones
-     → suspect_alibi(A) = confirmed
-     → R2 fires → suspect_status(A) = cleared
+t=0: witness_jones says suspect_a was at bar at 10pm
+     → suspect_a.alibi = "confirmed", alibi_source = "witness_jones"
+     → R1: alibi confirmed → suspect_a.status = "cleared"
 
-t=1: Cross-examination: Jones has a prior relationship with A
-     → witness_credibility(jones) = unreliable
+t=1: Cross-examination reveals jones has prior relationship with suspect_a
+     → witness_jones.credibility = "unreliable"
+     → dirty: {suspect_a.alibi, suspect_a.status, case.theory}
 
-t=2: R3 fires: alibi_source(A) = jones ∧ jones = unreliable
-     → suspect_alibi(A) = broken
-     → suspect_status(A) goes dirty
+t=2: resolve_all_dirty():
+     → R2: alibi_source = jones, credibility = unreliable → alibi = "broken"
+     → R1: evidence = present, alibi = broken → status = "prime_suspect"
+     → R4: prime_suspect, motive = financial → theory updated
 
-t=3: Forensic lab returns: fingerprints_A present at scene
-     → evidence_at_scene(fingerprints_A) = present
+t=3: Forensics: suspect_a.evidence_at_scene = "present"
+     (already present — no change, no cascade)
 
-t=4: Re-derive suspect_status(A):
-     → R1: fingerprints present ∧ alibi broken → prime_suspect
-
-t=5: case_theory goes dirty → re-derive with motive(A) = financial
-     → "suspect_A committed crime for financial gain"
+t=4: Toxicology: case.toxicology_result = "positive_X"
+     → dirty: {case.cause_of_death, suspect_a.cleared_by_weapon}
+     → R5: cause_of_death = "poison"
+     → R3: poison + access_to_weapon = False → cleared_by_weapon = True
 ```
 
 ---
@@ -293,127 +345,152 @@ t=5: case_theory goes dirty → re-derive with motive(A) = financial
 
 ### Purpose
 
-Tests belief revision with **complete parametric isolation**. The Thorncrester is a fictional bird-like species — the LLM has absolutely no prior knowledge of it and MUST reason exclusively from the belief store. Also tests naturally evolving scientific knowledge (field observations update classifications over time).
+Tests belief revision with **complete parametric isolation**. The Thorncrester is fictional — the LLM has zero prior knowledge. Also tests classification revision from evolving field observations.
 
 ### What It Tests
 
 | Capability | How |
 |---|---|
 | Zero parametric leakage | Fictional species — LLM cannot rely on training data |
-| Classification revision | Diet reclassification cascades to prey, habitat strategy, conservation |
-| Seasonal / lifecycle belief changes | Plumage, behavior, and abilities change with seasons and maturity |
-| Extensibility | Easy to add subspecies, regional variants, new observations |
-| Multi-hop scientific reasoning | Trait → classification → behavior → conservation action |
+| Classification revision | Diet reclassification cascades to prey + conservation |
+| Seasonal lifecycle changes | Season change triggers behavioral and habitat updates |
+| Extensibility | Easy to add new observations over time |
 
 ### Species Background
 
-The **Thorncrester** (*Spinocristatus fictus*) is a fictional medium-sized bird native to the fictional Verath Archipelago. It has several unusual characteristics:
-- Its crest changes color seasonally
-- Juveniles cannot fly; adults can
-- Its diet shifts based on habitat
-- It has two known subspecies: the **Coastal Thorncrester** and the **Highland Thorncrester**
+The **Thorncrester** (*Spinocristatus fictus*) is a fictional bird native to the Verath Archipelago. Two subspecies: **Coastal** and **Highland**.
 
-### Attributes
+### Attributes (KV Keys)
 
-| Attribute | Type | Example Values | How It Evolves |
+| Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `diet` | categorical | carnivore, omnivore, herbivore, insectivore | Field observation reclassification |
-| `can_fly` | boolean | true, false | Life stage (juvenile → adult) |
-| `habitat` | categorical | coastal, highland, forest, wetland | Migration, habitat destruction |
-| `plumage_color` | categorical | crimson, blue, moulted, iridescent | Seasonal moult cycle |
-| `season` | categorical | mating, nesting, migration, dormant | Calendar progression |
-| `life_stage` | categorical | hatchling, juvenile, adult, elder | Maturation |
-| `threat_level` | categorical | safe, vulnerable, endangered, critical | Population surveys |
-| `population_count` | numeric | 50, 500, 2000 | Census data |
-| `nesting_behavior` | categorical | ground, tree, cliff, burrow | New research findings |
-| `subspecies` | categorical | coastal, highland | Identification |
-| `primary_prey` | categorical | fish, insects, berries, crustaceans | Derived from diet + habitat |
-| `predation_risk` | categorical | low, moderate, high | Derived from nesting + threat level |
-| `territorial_behavior` | boolean | true, false | Derived from season + plumage |
-| `conservation_action` | categorical | none, monitoring, relocation, breeding_program | Derived from threat + habitat |
-| `migration_pattern` | categorical | sedentary, short_range, long_range | Seasonal + subspecies |
-| `vocalization_type` | categorical | song, alarm_call, mating_call, silent | Season + context |
-| `clutch_size` | numeric | 1, 2, 4 | Subspecies + threat level |
-| `wing_span_cm` | numeric | 30, 60, 85 | Life stage |
-| `social_structure` | categorical | solitary, pair, flock | Season + habitat |
-| `crest_pattern` | categorical | raised, flat, display | Behavioral state |
+| `thorncrester.diet` | str | carnivore, omnivore, herbivore | Field reclassification |
+| `thorncrester.can_fly` | bool | true, false | Life stage |
+| `thorncrester.habitat` | str | coastal, highland, wetland | Migration, destruction |
+| `thorncrester.subspecies` | str | coastal, highland | Identification |
+| `thorncrester.life_stage` | str | juvenile, adult, elder | Maturation |
+| `thorncrester.season` | str | mating, nesting, migration, dormant | Calendar |
+| `thorncrester.plumage_color` | str | crimson, blue, moulted | Seasonal moult |
+| `thorncrester.threat_level` | str | safe, endangered, critical | Population surveys |
+| `thorncrester.population_count` | numeric | 50, 500 | Census |
+| `thorncrester.nesting_behavior` | str | ground, cliff, tree | Research findings |
+| `thorncrester.social_structure` | str | solitary, pair, flock | Season + context |
 
 ### Rules
 
 ```
-R1: diet = carnivore ∧ habitat = coastal
-    → primary_prey = fish
+R1: thorncrester.primary_prey
+    inputs: [thorncrester.diet, thorncrester.habitat]
+    logic:
+      IF diet = "carnivore" AND habitat = "coastal" → "fish"
+      IF diet = "carnivore" AND habitat = "highland" → "small_rodents"
+      IF diet = "herbivore" → None  (herbivores don't have prey)
+      IF diet = "omnivore" AND habitat = "coastal" → "mixed_fish_berries"
+      IF diet = "insectivore" → "beetles"
+      ELSE → "unknown"
 
-R2: diet = carnivore ∧ habitat = highland
-    → primary_prey = small_rodents
+R2: thorncrester.can_fly
+    inputs: [thorncrester.life_stage]
+    logic:
+      IF life_stage = "juvenile" → False
+      IF life_stage = "adult" OR life_stage = "elder" → True
 
-R3: diet = insectivore ∧ habitat = forest
-    → primary_prey = beetles
+R3: thorncrester.habitat (default from subspecies)
+    inputs: [thorncrester.subspecies, thorncrester.season]
+    logic:
+      IF season = "migration" AND subspecies = "coastal" → "wetland"
+      IF subspecies = "coastal" → "coastal"
+      IF subspecies = "highland" → "highland"
+    NOTE: season change away from migration automatically reverts habitat
 
-R4: can_fly = false ∧ habitat = forest
-    → locomotion = ground_foraging
+R4: thorncrester.territorial_behavior
+    inputs: [thorncrester.plumage_color, thorncrester.season]
+    logic:  plumage_color = "crimson" AND season = "mating" → True, else False
 
-R5: plumage_color = crimson ∧ season = mating
-    → territorial_behavior = true
-    → crest_pattern = display
+R5: thorncrester.threat_level
+    inputs: [thorncrester.population_count]
+    logic:
+      IF population_count < 100 → "critical"
+      IF population_count < 500 → "endangered"
+      ELSE → "safe"
 
-R6: threat_level = critical ∧ habitat = coastal
-    → conservation_action = breeding_program
+R6: thorncrester.conservation_action
+    inputs: [thorncrester.threat_level, thorncrester.habitat]
+    logic:
+      IF threat_level = "critical" AND habitat = "coastal" → "breeding_program"
+      IF threat_level = "critical" → "emergency_monitoring"
+      IF threat_level = "endangered" → "monitoring"
+      ELSE → "none"
 
-R7: threat_level = endangered ∧ nesting_behavior = ground
-    → predation_risk = high
+R7: thorncrester.predation_risk
+    inputs: [thorncrester.nesting_behavior, thorncrester.threat_level]
+    logic:
+      IF nesting_behavior = "ground" AND threat_level in ("endangered", "critical")
+        → "high"
+      ELSE → "low"
 
-R8: life_stage = juvenile → can_fly = false
-    life_stage = adult → can_fly = true
+R8: thorncrester.clutch_size
+    inputs: [thorncrester.season, thorncrester.threat_level]
+    logic:
+      IF season = "nesting" AND threat_level in ("endangered", "critical") → 4
+      IF season = "nesting" → 2
+      ELSE → 0  (not nesting season)
 
-R9: subspecies = coastal → habitat = coastal (default, can be overridden)
-    subspecies = highland → habitat = highland (default)
+R9: thorncrester.social_structure
+    inputs: [thorncrester.territorial_behavior, thorncrester.season]
+    logic:
+      IF territorial_behavior = True → "pair"
+      IF season = "migration" → "flock"
+      ELSE → "solitary"
+```
 
-R10: population_count < 100
-     → threat_level = critical
+### Dependency Chain
 
-R11: population_count >= 100 ∧ population_count < 500
-     → threat_level = endangered
+```
+thorncrester.diet ──→ thorncrester.primary_prey
+thorncrester.habitat ──→
 
-R12: season = migration ∧ subspecies = coastal
-     → migration_pattern = long_range
-     → habitat = wetland (temporary override)
+thorncrester.population_count ──→ thorncrester.threat_level ──→ thorncrester.conservation_action
+                                                              ──→ thorncrester.predation_risk
+                                                              ──→ thorncrester.clutch_size
 
-R13: season = nesting ∧ threat_level >= endangered
-     → clutch_size = clutch_size + 1 (stress response)
-
-R14: territorial_behavior = true ∧ social_structure = flock
-     → social_structure = pair (territoriality breaks flocks)
-
-R15: diet = herbivore → primary_prey = retracted
-     → foraging_target = berries
+thorncrester.season ──→ thorncrester.habitat ──→ thorncrester.primary_prey
+                     ──→ thorncrester.territorial_behavior ──→ thorncrester.social_structure
+                     ──→ thorncrester.clutch_size
 ```
 
 ### Example Revision Scenario
 
 ```
-t=0: Initial observation of Coastal Thorncrester
-     → subspecies = coastal, diet = carnivore, habitat = coastal
-     → R1 fires → primary_prey = fish
-     → R9 fires → habitat confirmed coastal
+t=0: diet = "carnivore", habitat = "coastal", population_count = 800
+     → R1: primary_prey = "fish"
+     → R5: threat_level = "safe"
+     → R6: conservation_action = "none"
 
-t=1: Field researcher observes specimens eating berries and insects
-     → diet update: carnivore → omnivore
-     → primary_prey goes dirty (was derived from diet = carnivore)
+t=1: Field observation: diet reclassified to "omnivore"
+     → dirty: {primary_prey}
+     → resolve: R1 → primary_prey = "mixed_fish_berries"
 
-t=2: Query primary_prey → re-derive with diet = omnivore ∧ habitat = coastal
-     → No exact rule match → LLM reasons: "mixed diet of fish and berries"
+t=2: Census: population_count = 80
+     → dirty: {threat_level, conservation_action, predation_risk, clutch_size}
+     → resolve:
+       R5 → threat_level = "critical"
+       R6 → critical + coastal → conservation_action = "breeding_program"
+       R7 → nesting=ground + critical → predation_risk = "high"
 
-t=3: Population census: only 80 individuals counted
-     → population_count = 80
-     → R10 fires → threat_level = critical
-     → conservation_action goes dirty
+t=3: Season changes to "migration"
+     → dirty: {habitat, territorial_behavior, social_structure, clutch_size}
+     → resolve:
+       R3 → migration + coastal → habitat = "wetland"
+       → habitat changed → primary_prey dirty → R1 re-derives
+       R4 → not mating season → territorial = False
+       R9 → migration → social_structure = "flock"
 
-t=4: Query conservation_action → R6: critical ∧ coastal → breeding_program
-
-t=5: Season changes to mating → plumage = crimson observed
-     → R5 fires → territorial_behavior = true
-     → R14 fires → social_structure changes from flock → pair
+t=4: Season changes to "dormant"
+     → dirty: {habitat, territorial_behavior, social_structure, clutch_size}
+     → resolve:
+       R3 → not migration, coastal → habitat = "coastal" (reverts automatically)
+       R9 → not territorial, not migration → social_structure = "solitary"
 ```
 
 ---
@@ -422,14 +499,9 @@ t=5: Season changes to mating → plumage = crimson observed
 
 | Property | Loan | Employee | Crime Scene | Thorncrester |
 |---|---|---|---|---|
-| **Rule complexity** | Simple thresholds | Multi-prerequisite | Abductive / elimination | Classification chains |
-| **Revision depth** | 1-2 hops | 2-3 hops | 3-4 hops | 2-4 hops |
-| **Temporal dynamics** | Moderate | Strong (expiry) | Event-driven | Seasonal cycles |
+| **Max dependency depth** | 3 hops | 2 hops | 4 hops | 3 hops |
+| **Number of rules** | 6 | 7 | 7 | 9 |
+| **Number of attributes** | ~12 | ~12 | ~14 | ~11 |
 | **Parametric isolation** | Low | Low | **Total** | **Total** |
-| **Belief Maintain test** | ✓ Unrelated attributes | ✓ Unrelated certs | ✓ Unrelated suspects | ✓ Unrelated traits |
-| **Conjunctive rules** | 3-way AND | 3-4 way AND | 2-3 way AND | 2-way AND |
-| **Process of elimination** | No | No | **Yes** | No |
-| **Real-world relatability** | Very high | High | High | Moderate (fictional) |
-| **Demo engagement** | Low (dry) | Medium | **High** | **High** (novelty) |
-| **Estimated belief nodes** | 12-15 | 15-20 | 15-25 | 20-30 |
-| **Estimated rule nodes** | 8-10 | 8-10 | 8-10 | 12-15 |
+| **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population |
+| **Key revision pattern** | Threshold change | Prerequisite expiry | Evidence cascade | Classification shift |
