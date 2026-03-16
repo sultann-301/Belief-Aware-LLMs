@@ -2,294 +2,268 @@
 
 ## Architecture Overview
 
-The system externalizes belief state into a managed graph and uses the LLM as a modular reasoning engine — not a knowledge store. The LLM never "knows" its beliefs internally; it reasons over whatever is injected into its prompt from the belief store.
+The system externalizes belief state into a structured store and uses the LLM as a reasoning engine. Responsibilities are split:
+
+- **System** — stores beliefs, detects contradictions, tracks dependencies, retrieves relevant beliefs for prompts
+- **LLM** — generates conclusions, re-derives affected beliefs, explains reasoning, proposes updates via structured prompts
 
 ```
-Structured Input → Belief Store (Bipartite Inference Graph)
-                        ↓
-               Contradiction Detector
-                        ↓
-              Dirty Propagation (BFS)
-                        ↓
-        On Query: Lazy Re-derivation via LLM
+Structured Input → System: Insert belief → System: Contradiction check
+                                                    │
+                                          ┌─────────┴──────────┐
+                                          │ Conflict            │ No conflict
+                                          ▼                     ▼
+                              System: Flag affected       Done (belief stored)
+                              beliefs via dependencies
+                                          │
+                                          ▼
+                              System: Build structured prompt
+                              (current beliefs + new info + rules)
+                                          │
+                                          ▼
+                              LLM: Reason over beliefs
+                              → Derive updated conclusions
+                              → Explain reasoning
+                                          │
+                                          ▼
+                              System: Apply LLM's updates
+                              to belief store + log revision
 ```
 
 > [!IMPORTANT]
-> All belief inputs are **structured** (not natural language). The LLM is never used for NL-to-belief extraction — its sole role is **reasoning over injected beliefs** to derive conclusions. This avoids the NL parsing reliability problem entirely.
+> All belief inputs are **structured** (not natural language). The LLM is never used for NL-to-belief extraction — it receives structured prompts and reasons over injected beliefs.
 
-**Key architectural decisions:**
+**Key decisions:**
 
 | Decision | Choice | Rationale |
 |---|---|---|
-| Belief representation | Bipartite inference graph | Handles conjunctive entailment structurally |
-| Graph library | NetworkX | BFS built-in, JSON-serializable, lightweight |
-| Revision strategy | On-conflict lazy (dirty flags) | Cheap insertion, correct on read |
-| Contradiction detection | Hash-map attribute clash | Simple and sufficient for controlled domains |
-| LLM role | Reasoning / re-derivation only | No NL-to-belief extraction (structured inputs) |
-| Evaluation framework | Belief-R / BREU | Tractable within timeline |
-| TMS implementation | The graph IS the TMS | No separate library needed |
+| Belief representation | Structured belief store with dependency metadata | Simple, queryable, serializable |
+| Contradiction detection | System-side attribute-clash check | Deterministic, cheap, no LLM call needed |
+| Dependency tracking | `derived_from` field on derived beliefs | Tells the system which beliefs are affected by a change |
+| Reasoning & re-derivation | LLM via structured prompts | LLM applies rules, handles judgment, explains changes |
+| Evaluation | Belief-R / BREU style | Tractable, measures update + maintain accuracy |
+| TMS connection | Dependency tracking IS a simplified TMS | Cite Doyle (1979), no separate library needed |
 
 ---
 
-## Bipartite Inference Graph
+## Responsibility Split
 
-Two types of nodes in a single directed graph:
+### What the System Does (Deterministic)
 
-- **Belief nodes** — propositions that can be true, false, or unknown
-- **Rule nodes** — inference rules that connect premises to conclusions
-
-Edges alternate between types: `belief → rule` (premise) and `rule → belief` (conclusion). This enforces a bipartite structure where beliefs never connect directly to beliefs.
-
-### Why Bipartite (Not KG Triples)
-
-Knowledge graph triples `(subject, predicate, object)` encode relationships between entities. Our problem requires entailment between propositions — a fundamentally different abstraction. The bipartite graph encodes entailment structurally:
-
-- **Conjunction** is a natural consequence of multiple premise edges feeding into one rule node
-- **Implication** is the rule node itself — it IS the "if...then"
-- **Entailment** is the directed edge from rule to conclusion
-
-### Belief Node Schema
-
-```python
-{
-    "id": "b001",
-    "node_type": "belief",
-    "proposition": "income(applicant_1) = 6000",
-    "belief_type": "factual",       # factual | derived
-    "status": "active",             # active | dirty | retracted
-    "timestamp": "2026-03-12T04:00:00Z",
-    "source": "user_input"          # user_input | llm_derivation | system
-}
-```
-
-| Field | Purpose |
+| Task | How |
 |---|---|
-| `belief_type` | `factual` = external input, `derived` = inferred by a rule |
-| `status` | `active` / `dirty` / `retracted` — drives lazy revision |
-| `source` | Provenance tracking for audit |
+| **Store beliefs** | Dict/DB of beliefs with ID, subject, attribute, value, status, metadata |
+| **Detect contradictions** | On insert: check if an active belief exists with same (subject, attribute) but different value |
+| **Track dependencies** | Each derived belief has `derived_from: [list of belief IDs]` |
+| **Flag affected beliefs** | When a belief changes, find all beliefs whose `derived_from` includes it → mark them for re-derivation |
+| **Build prompts** | Serialize relevant beliefs + applicable rules into structured prompt for LLM |
+| **Apply updates** | Parse LLM output → update belief store → log revision |
+| **Maintain revision log** | Record what changed, when, why, which turn |
 
-### Rule Node Schema
+### What the LLM Does (Reasoning)
+
+| Task | How |
+|---|---|
+| **Generate conclusions** | Given beliefs + rules in prompt → derive outcome |
+| **Re-derive affected beliefs** | When flagged beliefs are presented → produce updated values |
+| **Explain reasoning** | Step-by-step trace referencing belief IDs |
+| **Handle judgment calls** | When rules require interpretation (e.g., "strong evidence") |
+
+---
+
+## Belief Store Schema
 
 ```python
-{
-    "id": "r001",
-    "node_type": "rule",
-    "description": "If income >= min_income AND debt < threshold, then eligible",
-    "rule_type": "conjunction",     # conjunction | disjunction
-    "formal": "income >= min_income ∧ debt_ratio < 0.4 → eligible = true"
+beliefs = {
+    "b001": {
+        "subject": "applicant_1",
+        "attribute": "income",
+        "value": 6000,
+        "type": "factual",           # factual | derived
+        "status": "active",          # active | revised | retracted
+        "source": "structured_input",
+        "timestamp": "2026-03-16T03:00:00Z"
+    },
+    "b003": {
+        "subject": "applicant_1",
+        "attribute": "loan_status",
+        "value": "approved",
+        "type": "derived",
+        "status": "active",
+        "derived_from": ["b001", "b002"],
+        "derivation_rule": "r001",
+        "derivation_reason": "income 6000 >= min 5000",
+        "source": "llm_derivation"
+    }
 }
 ```
 
-### Premise Edge Schema
+Rules are stored separately:
 
 ```python
-graph.add_edge("b001", "r001", **{
-    "role": "premise",
-    "negated": False,               # True = premise must NOT hold
-    "operator": ">=",               # for threshold comparisons
-    "threshold_value": 5000         # if applicable
-})
+rules = {
+    "r001": {
+        "description": "If income >= min_income, loan eligible",
+        "formal": "income >= min_income → loan_eligible = true",
+        "domain": "loan"
+    }
+}
 ```
 
-### Graph Visualization
-
-```
-  (income = 6000) ───→  ┌───────────────────┐  ───→  (eligible = true)
-                         │  R1: conjunction   │
-  (debt_ratio = 0.3) →  │  income >= 5000    │
-                         │  ∧ debt < 0.4     │
-  (credit = 700) ────→  │  ∧ credit >= 650   │
-                         └───────────────────┘
-
-  Belief → Rule = "this belief is a premise of this rule"
-  Rule → Belief = "this rule produces this conclusion"
-```
-
----
-
-## Supported Logical Operations
-
-The bipartite graph encodes three logical connectives through its structure:
-
-### Conjunction (∧)
-
-Multiple belief nodes feed into the same rule node. **All** incoming premises must hold for the rule to fire.
-
-```
-  (A) ──→ [Rule: A ∧ B → C] ──→ (C)
-  (B) ──→ [                ]
-```
-
-This is the default — a rule node with multiple incoming premise edges is an AND-junction.
-
-### Disjunction (∨)
-
-Multiple **separate rule nodes** point to the **same conclusion**. If **any** rule fires, the conclusion is active.
-
-```
-  (A) ──→ [R1: A → C] ──→ (C)
-
-  (B) ──→ [R2: B → C] ──→ (C)
-```
-
-The conclusion C is active if R1 fires OR R2 fires. During dirty propagation, if A changes and R1 no longer fires, the system checks whether any other rule (R2) still sustains C before retracting it.
-
-### Negation (¬)
-
-A `negated` flag on the premise edge. When checking if a rule fires, a negated premise must be `retracted`, `false`, or absent for the rule to be satisfied.
-
-```
-  (alibi_A = confirmed) ──[negated=True]──→ [R: ¬alibi ∧ evidence → suspect]
-  (evidence_A = present) ──[negated=False]─→ [                               ] ──→ (suspect_A = true)
-```
-
-Rule fires only when `alibi_A` is NOT active AND `evidence_A` IS active.
-
-### Modus Tollens
-
-Not a separate mechanism — it falls out of the graph structure. If B was derived from A via rule R, and B is observed to be false, the system can trace back through R to identify A as questionable. This can be encoded as explicit contrapositive rule nodes when needed.
-
----
-
-## Lazy Revision Algorithm
-
-On-conflict lazy revision: flag contradictions at insertion time, resolve at query time.
-
-```
-ON NEW BELIEF (subject, attribute, value):
-  1. CONFLICT CHECK:
-     → Find active beliefs where (subject, attribute) match but value differs
-
-  2. For each conflicting belief:
-     a. Set old_belief.status = "retracted"
-     b. Insert new belief with status = "active"
-     c. DIRTY PROPAGATION (BFS):
-        → Find all rule nodes R where old_belief → R
-        → For each R, find all output beliefs C where R → C
-        → Set each C.status = "dirty"
-        → Recurse: treat each dirty C as a changed belief
-
-ON QUERY (subject, attribute):
-  1. Find matching active/dirty belief
-  2. If status == "dirty":
-     a. Find the rule node R where R → this belief
-     b. Find all premise beliefs for R
-     c. Recursively resolve any dirty premises first
-     d. Check rule firing conditions:
-        - For conjunction: ALL premises must be active (respecting negation flags)
-        - For disjunction: check all rules pointing to this conclusion
-     e. Re-prompt LLM with active premises to re-derive value
-     f. Update value, set status = "active"
-  3. Return belief
-```
-
-**Complexity:**
-- Insertion: O(d) where d = number of direct downstream dependents (BFS to flag dirty)
-- Query: O(k) where k = depth of dependency chain (only re-derive what's needed)
-
----
-
-## LLM Integration
-
-The LLM is used **only for reasoning** — specifically, re-deriving dirty beliefs when queried. All belief inputs (facts, rules) are inserted into the graph as structured data, never parsed from natural language.
-
-### Prompt Construction (Belief Injection)
-
-When a dirty belief is queried and needs re-derivation, the system serializes the relevant subgraph into the prompt:
-
-```
-SYSTEM: You are a reasoning assistant. Base your conclusions
-ONLY on the beliefs provided below. Reference belief IDs.
-
-ACTIVE BELIEFS:
-- [b001] income(applicant_1) = 6000           — factual
-- [b002] min_income(loan_policy) = 5000        — factual
-- [b003] loan_eligible(applicant_1) = ???      — derived, DIRTY
-
-APPLICABLE RULE:
-- [r001] IF income >= min_income ∧ debt_ratio < 0.4 ∧ credit_score >= 650
-         THEN loan_eligible = true
-
-RETRACTED (for context):
-- [b001_old] income(applicant_1) = 4000        — retracted
-
-TASK: Re-derive b003. Output as: {"subject": ..., "attribute": ..., "value": ...}
-```
-
-**Design principles:**
-- Label each belief with its ID for traceability
-- Show retracted beliefs so the LLM understands what changed
-- Include the applicable rule explicitly
-- Constrain output to structured schema
-- Constrain reasoning to provided beliefs only (prevent parametric hallucination)
-
----
-
-## Contradiction Detection
-
-Contradiction = two active beliefs with the same `(subject, attribute)` but different `value`. This is a hash-map lookup, not a satisfiability problem.
+Revision history:
 
 ```python
-def detect_contradiction(graph, new_belief):
-    key = (new_belief.subject, new_belief.attribute)
-    for node_id, data in graph.nodes(data=True):
-        if (data.get("node_type") == "belief"
-            and data.get("status") == "active"
-            and (data["subject"], data["attribute"]) == key
-            and data["value"] != new_belief.value):
-            return node_id  # conflicting belief found
+revision_log = [
+    {
+        "turn": 2,
+        "trigger": "income updated from 4000 to 6000",
+        "beliefs_changed": ["b001", "b003"],
+        "reason": "b001 updated → b003 depended on b001 → LLM re-derived"
+    }
+]
+```
+
+---
+
+## Contradiction Detection (System-Side)
+
+Simple attribute-clash check — no LLM needed:
+
+```python
+def detect_contradiction(beliefs, new_belief):
+    for bid, b in beliefs.items():
+        if (b["status"] == "active"
+            and b["subject"] == new_belief["subject"]
+            and b["attribute"] == new_belief["attribute"]
+            and b["value"] != new_belief["value"]):
+            return bid  # conflicting belief
     return None
 ```
 
 ---
 
-## The Graph as TMS
+## Dependency Tracking (System-Side)
 
-The bipartite inference graph with dirty-flag propagation **is** a simplified Justification-Based Truth Maintenance System (JTMS):
+When a belief changes, find all beliefs that depend on it:
 
-| TMS concept | Graph equivalent |
-|---|---|
-| Node labels (IN/OUT) | Belief status (active/dirty/retracted) |
-| Justifications | Rule nodes connecting premises to conclusions |
-| Dependency recording | Directed edges (belief → rule → belief) |
-| Label propagation | BFS dirty propagation on belief change |
-| Assumption retraction | Setting a factual belief to retracted, cascading dirty flags |
+```python
+def find_affected(beliefs, changed_id):
+    affected = []
+    for bid, b in beliefs.items():
+        if changed_id in b.get("derived_from", []):
+            affected.append(bid)
+    return affected
+```
 
-No separate TMS library is needed. Cite Doyle (1979) and De Kleer (1986) to anchor the theoretical connection in the write-up.
+This is the simplified TMS: beliefs have justifications (`derived_from`), and when a justification is invalidated, the dependent belief needs re-derivation.
+
+---
+
+## Structured Prompts
+
+### Prompt for Re-derivation
+
+When the system detects that a belief's dependency has changed:
+
+```
+SYSTEM: You are a belief-aware reasoning assistant. You maintain
+an explicit set of beliefs. A belief dependency has changed and
+you must re-derive the affected conclusion.
+
+CURRENT BELIEFS:
+- [b001] applicant_1.income = 6000  (UPDATED — was 4000)
+- [b002] policy.min_income = 5000   (unchanged)
+
+APPLICABLE RULE:
+- [r001] IF income >= min_income THEN loan_eligible = true
+         IF income < min_income THEN loan_eligible = false
+
+BELIEF TO RE-DERIVE:
+- [b003] applicant_1.loan_status = ???  (was: rejected)
+
+TASK:
+1. Evaluate the rule against current beliefs
+2. State the revised value for b003
+3. Explain your reasoning, referencing belief IDs
+
+Respond in this format:
+EVALUATION: <step-by-step check>
+RESULT: b003 = <value>
+REASON: <explanation>
+```
+
+### Prompt for Initial Derivation
+
+When new facts are inserted and the system needs the LLM to derive conclusions:
+
+```
+SYSTEM: You are a belief-aware reasoning assistant. Given the
+following facts and rules, derive any applicable conclusions.
+
+FACTS:
+- [b001] applicant_1.income = 6000
+- [b002] policy.min_income = 5000
+- [b010] applicant_1.credit_score = 700
+- [b011] policy.min_credit = 650
+
+RULES:
+- [r001] IF income >= min_income AND credit_score >= min_credit
+         THEN loan_eligible = true
+
+TASK: What conclusions can you derive? State each as a belief
+with subject, attribute, and value. Explain your reasoning.
+```
+
+### Prompt for Explanation
+
+When the system needs the LLM to explain why a belief holds:
+
+```
+SYSTEM: Explain why the following belief is held.
+
+BELIEF IN QUESTION:
+- [b003] applicant_1.loan_status = approved
+
+SUPPORTING BELIEFS:
+- [b001] applicant_1.income = 6000
+- [b002] policy.min_income = 5000
+
+RULE USED:
+- [r001] IF income >= min_income THEN loan_eligible = true
+
+TASK: Trace the reasoning chain from supporting beliefs
+through the rule to the conclusion. Reference all IDs.
+```
 
 ---
 
 ## Evaluation: Belief-R / BREU
 
-Performance is measured using a Belief-R style framework with two scenario types:
+Two scenario types across all four domains:
 
-| Scenario Type | Test | Expected Behavior |
+| Type | Test | Expected |
 |---|---|---|
-| **Belief Update (BU)** | New info contradicts prior conclusion | System must revise the conclusion |
-| **Belief Maintain (BM)** | New info is irrelevant to prior conclusion | System must retain the conclusion unchanged |
+| **Belief Update (BU)** | New info contradicts prior conclusion | System must revise |
+| **Belief Maintain (BM)** | New info is irrelevant to prior conclusion | System must NOT revise |
 
-**BREU score** = average of BU accuracy and BM accuracy.
+**BREU score** = average(BU accuracy, BM accuracy)
 
-The evaluation compares:
-1. **Belief-aware system** (with the graph store and revision engine)
-2. **Baseline** (same LLM, raw prompting with conversation history, no belief store)
-
-Metrics: BREU score, contradiction rate, revision cascade correctness, false retraction rate.
+Compare:
+1. **With belief tracking** — structured belief store + revision
+2. **Without belief tracking** — same LLM, raw prompting with conversation history
 
 ---
 
 ## Domains
 
-Four handcrafted domains, documented in detail in [domains.md](file:///Users/mws/Documents/GitHub/Belief-Aware-LLMs/domains.md):
+Four handcrafted domains documented in [domains.md](file:///Users/mws/Documents/GitHub/Belief-Aware-LLMs/domains.md):
 
-| Domain | Tests | Parametric Isolation |
+| Domain | Primary Test | Parametric Isolation |
 |---|---|---|
-| **Loan Eligibility** | Threshold rules, basic contradiction, conjunctive logic | Low |
-| **Employee Compliance** | Temporal expiry, cert revocation, multi-hop chains | Low |
-| **Crime Scene** | Deep retraction chains, process of elimination, negation | Total |
-| **Thorncrester Taxonomy** | Classification revision, seasonal changes, extensibility | Total |
-
-Crime Scene and Thorncrester are the strongest evaluation domains because the LLM has zero prior knowledge — every correct conclusion must come from the belief store.
+| Loan Eligibility | Threshold rules, basic contradiction | Low |
+| Employee Compliance | Temporal expiry, multi-hop dependencies | Low |
+| Crime Scene | Deep revision chains, process of elimination | Total |
+| Thorncrester Taxonomy | Classification revision, evolving observations | Total |
 
 ---
 
@@ -297,13 +271,11 @@ Crime Scene and Thorncrester are the strongest evaluation domains because the LL
 
 | Aspect | Decision |
 |---|---|
-| Graph structure | Bipartite inference graph (belief nodes + rule nodes) |
-| Logical operators | Conjunction (multi-premise), disjunction (multi-rule), negation (edge flag) |
-| Graph library | NetworkX (in-memory, JSON persistence, BFS built-in) |
-| Entailment encoding | Directed edges: belief → rule → belief |
-| Revision strategy | On-conflict lazy: dirty-flag at insertion, re-derive on query |
-| Contradiction detection | Attribute-clash hash-map lookup |
-| TMS | The graph itself (no separate library) |
-| LLM output validation | Pydantic schemas with retry |
+| Belief store | Dict with structured metadata + `derived_from` tracking |
+| Contradiction detection | System-side attribute-clash check (deterministic) |
+| Dependency tracking | `derived_from` field on derived beliefs |
+| Flagging affected beliefs | System traverses `derived_from` references |
+| Reasoning & derivation | LLM via structured prompts |
+| Revision strategy | System flags conflicts → LLM re-derives → system applies updates |
 | Evaluation | Belief-R / BREU (update accuracy + maintain accuracy) |
 | Domains | Loan, Employee, Crime Scene, Thorncrester |
