@@ -42,26 +42,25 @@ All conditions are consolidated per output key — no rule priority conflicts.
 
 ```
 R1: loan.eligible
-    inputs: [applicant.income, applicant.credit_score, applicant.debt_ratio,
+    inputs: [applicant.income, loan.credit_score_effective, applicant.debt_ratio,
              applicant.employment_status, applicant.bankruptcy_history,
              applicant.employment_duration_months,
              loan.min_income, loan.min_credit, loan.max_debt_ratio]
     logic:
       IF employment_status = "unemployed" → False
       IF bankruptcy_history = True AND employment_duration_months < 24 → False
-      IF income >= min_income AND credit_score >= min_credit AND debt_ratio < max_debt_ratio → True
+      IF income >= min_income AND credit_score_effective >= min_credit AND debt_ratio < max_debt_ratio → True
       ELSE → False
 
 R2: loan.credit_score_effective
     inputs: [applicant.credit_score, applicant.co_signer]
     logic:  credit_score + 50 if co_signer = True, else credit_score
-    NOTE: R1 should use credit_score_effective instead of raw credit_score
 
 R3: loan.rate_tier
-    inputs: [loan.eligible, applicant.credit_score]
+    inputs: [loan.eligible, loan.credit_score_effective]
     logic:
       IF NOT eligible → None
-      IF credit_score >= 750 → "preferred"
+      IF credit_score_effective >= 750 → "preferred"
       ELSE → "standard"
 
 R4: loan.max_amount
@@ -87,11 +86,13 @@ R6: loan.high_risk_flag
 
 ```
 applicant.income ──→ loan.eligible ──→ loan.rate_tier
-applicant.credit_score ──→                loan.max_amount ──→ loan.application_status
-applicant.debt_ratio ──→                  loan.high_risk_flag
+applicant.credit_score ──→ loan.credit_score_effective ──→ loan.eligible
+applicant.co_signer ──→                                ──→ loan.rate_tier
+applicant.debt_ratio ──→ loan.eligible
 applicant.employment_status ──→
 applicant.bankruptcy_history ──→
-applicant.co_signer ──→ loan.credit_score_effective ──→ (used by R1)
+applicant.debt_ratio ──→ loan.high_risk_flag
+                        loan.eligible ──→ loan.max_amount ──→ loan.application_status
 ```
 
 ### Example Revision Scenario
@@ -106,8 +107,8 @@ t=1: applicant.income updated to 6000
      → dirty: {loan.eligible, loan.rate_tier, loan.max_amount, loan.application_status}
 
 t=2: resolve_all_dirty():
-     → R1: 6000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
-     → R3: eligible, 700 < 750 → loan.rate_tier = "standard"
+     → R1: 6000 >= 5000 ✓, credit_score_effective=700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
+     → R3: eligible, credit_score_effective=700 < 750 → loan.rate_tier = "standard"
      → R4: eligible, no collateral → loan.max_amount = 30000
      → R5: eligible, 10000 <= 30000 → loan.application_status = "approved"
 ```
