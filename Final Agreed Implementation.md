@@ -106,11 +106,6 @@ graph TD
     style S6 fill:#4a9eff,color:#fff
 ```
 
-The strict separation:
-- **`derive_fn` resolves all dirty beliefs BEFORE the LLM sees anything**
-- **The LLM only ever sees clean, fully-resolved beliefs**
-- **The LLM explains and reasons but never writes to the store**
-- **The store is only updated from structured input + rules**
 
 ---
 
@@ -282,7 +277,7 @@ Output:
 
 ## Step 5: LLM Reasons Over Clean Beliefs
 
-The LLM receives a fully resolved belief state + the new information that triggered this turn + the user's query. It explains what happened and answers the question. **It does not write to the store.**
+The LLM receives a fully resolved belief state + the new information that triggered this turn + the user's query. It explains what happened and answers the question.
 
 ```
 [SYSTEM]
@@ -462,74 +457,8 @@ Loan domain rules:
 - **All beliefs explicit and structured.** No facts hidden in prompts.
 - **Strict flow.** Dirty beliefs resolved via rules BEFORE LLM sees anything.
 - **LLM sees only clean beliefs.** No dirty or unresolved state in prompts.
-- **LLM never writes to the store.** It explains and reasons; structured input + rules handle all updates.
 - **Hypothesis vs. derived.** Only hypotheses are directly revisable.
 - **Lazy revision.** Dirty flags propagate immediately; resolution happens at query time.
 - **Cascading retraction.** Deleted hypotheses cascade to unsupported derivations.
 - **Full audit trail.** Every add, update, derivation, and retraction is logged.
-
 ---
-
-## Full Example Walkthrough
-
-### Turn 1: Initial Beliefs
-
-```
-add_hypothesis("applicant.income", 4000)
-add_hypothesis("applicant.credit_score", 750)
-add_hypothesis("loan.min_income", 5000)
-add_hypothesis("loan.min_credit", 600)
-```
-
-Query: "What is the loan status?"
-→ `resolve_all_dirty()`:
-```
-loan.income_eligible = False  (4000 < 5000)
-loan.credit_eligible = True   (750 >= 600)
-loan.status = "rejected"
-loan.rejection_reason = "income below minimum"
-```
-
-### Turn 2: Income Updated
-
-```
-add_hypothesis("applicant.income", 6000)
-→ dirty: {loan.income_eligible, loan.status, loan.rejection_reason}
-```
-
-Query: "What is the loan status?"
-→ `resolve_all_dirty()`:
-
-```mermaid
-graph LR
-    subgraph "Before (Turn 1)"
-        A1["income = 4000"] --> R1["income_eligible = False"]
-        R1 --> S1["status = rejected"]
-    end
-
-    subgraph "After resolve (Turn 2)"
-        A2["income = 6000"] --> R2["income_eligible = True"]
-        C2["credit = 750"] --> CR2["credit_eligible = True"]
-        R2 --> S2["status = approved"]
-        CR2 --> S2
-    end
-
-    style A1 fill:#e74c3c,color:#fff
-    style R1 fill:#e74c3c,color:#fff
-    style S1 fill:#e74c3c,color:#fff
-    style A2 fill:#00b894,color:#fff
-    style R2 fill:#00b894,color:#fff
-    style CR2 fill:#00b894,color:#fff
-    style S2 fill:#00b894,color:#fff
-```
-
-→ `to_prompt(["loan", "applicant"])` → all clean beliefs serialized
-→ LLM reasons over clean state, confirms approval
-
-Revision log:
-```
-[update]  applicant.income:         4000 → 6000
-[derived] loan.income_eligible:     False → True    (rule: income_check)
-[derived] loan.status:              rejected → approved (rule: loan_decision)
-[derived] loan.rejection_reason:    "income below minimum" → None
-```
