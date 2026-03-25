@@ -45,6 +45,45 @@ The LLM **never writes to the store**. The store is only updated from structured
 
 ---
 
+## Module Interactions
+
+How `engine.py`, `store.py`, and `llm_client.py` interact during a single query turn.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant Engine as engine.py<br/>(ReasoningEngine)
+    participant Store as store.py<br/>(BeliefStore)
+    participant LLM as llm_client.py<br/>(OllamaClient)
+
+    User->>Engine: query(structured_input)
+    Note over Engine: _parse_input()<br/>extracts [ENTITY], [NEW BELIEF], [QUERY]
+
+    loop for each new belief
+        Engine->>Store: add_hypothesis(key, value)
+        Store-->>Store: _propagate_dirty(key)
+    end
+
+    Engine->>Store: resolve_dirty(entities)
+    Note over Store: runs derive_fn rules<br/>bottom-up until all dirty<br/>beliefs are clean
+
+    Engine->>Store: to_prompt(entities)
+    Store-->>Engine: beliefs_text (clean snapshot)
+
+    Engine->>LLM: generate(system_prompt, full_prompt)
+    Note over LLM: stateless call —<br/>no chat history
+    LLM-->>Engine: response text
+
+    Engine-->>User: response text
+```
+
+**Key invariants enforced by this flow:**
+- `resolve_dirty` is always called **before** `to_prompt` — the LLM never sees stale beliefs
+- `generate()` is stateless — every call is a fresh context window
+- The store is never modified by `LLM` — it only reads via `to_prompt`
+
+---
+
 ## The Flow
 
 ```mermaid

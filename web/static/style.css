@@ -526,26 +526,29 @@ html, body {
     border-top: 1px solid var(--border);
     background: var(--bg-surface);
     flex-shrink: 0;
+    align-items: flex-end;
 }
 
-.chat-input-area input {
+.chat-input-area textarea {
     flex: 1;
     padding: 10px 14px;
     font-size: 13px;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     background: var(--bg-input);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     color: var(--text-primary);
     outline: none;
     transition: border-color 0.15s;
+    resize: none;
+    line-height: 1.5;
 }
 
-.chat-input-area input:focus {
+.chat-input-area textarea:focus {
     border-color: var(--border-focus);
 }
 
-.chat-input-area input::placeholder {
+.chat-input-area textarea::placeholder {
     color: var(--text-muted);
 }
 

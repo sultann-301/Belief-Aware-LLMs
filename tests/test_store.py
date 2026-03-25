@@ -105,8 +105,9 @@ class TestAddHypothesis:
     def test_add_new_belief(self, store):
         store.add_hypothesis("applicant.income", 6000)
 
-        assert store.beliefs["applicant.income"] == 6000
-        assert store.is_derived["applicant.income"] is False
+        assert store.get_value("applicant.income") == 6000
+        _, is_derived = store.beliefs["applicant.income"]
+        assert is_derived is False
         assert len(store.revision_log) == 1
         assert store.revision_log[0]["action"] == "add"
 
@@ -114,7 +115,7 @@ class TestAddHypothesis:
         store.add_hypothesis("applicant.income", 4000)
         store.add_hypothesis("applicant.income", 6000)
 
-        assert store.beliefs["applicant.income"] == 6000
+        assert store.get_value("applicant.income") == 6000
         assert len(store.revision_log) == 2
         assert store.revision_log[1]["action"] == "update"
         assert store.revision_log[1]["old"] == 4000
@@ -183,17 +184,17 @@ class TestR2CreditScoreEffective:
     def test_no_cosigner(self, loan_store):
         _seed_base_beliefs(loan_store, co_signer=False, credit_score=700)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 700
+        assert loan_store.get_value("loan.credit_score_effective") == 700
 
     def test_with_cosigner(self, loan_store):
         _seed_base_beliefs(loan_store, co_signer=True, credit_score=700)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 750
+        assert loan_store.get_value("loan.credit_score_effective") == 750
 
     def test_cosigner_boost_is_exactly_50(self, loan_store):
         _seed_base_beliefs(loan_store, co_signer=True, credit_score=600)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 650
+        assert loan_store.get_value("loan.credit_score_effective") == 650
 
 
 # =====================================================================
@@ -207,13 +208,13 @@ class TestR1Eligible:
         """All conditions met → eligible."""
         _seed_base_beliefs(loan_store)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_unemployed_rejected(self, loan_store):
         """Unemployed always ineligible, regardless of other factors."""
         _seed_base_beliefs(loan_store, employment_status="unemployed")
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_bankruptcy_with_short_employment(self, loan_store):
         """Bankruptcy + < 24 months employment → ineligible."""
@@ -222,7 +223,7 @@ class TestR1Eligible:
             employment_duration_months=12,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_bankruptcy_with_sufficient_employment(self, loan_store):
         """Bankruptcy + >= 24 months → threshold check proceeds."""
@@ -231,45 +232,45 @@ class TestR1Eligible:
             employment_duration_months=24,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_income_below_minimum(self, loan_store):
         """Income just below threshold → ineligible."""
         _seed_base_beliefs(loan_store, income=4999)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_income_at_minimum(self, loan_store):
         """Income exactly at threshold → eligible (>=)."""
         _seed_base_beliefs(loan_store, income=5000)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_credit_below_minimum_no_cosigner(self, loan_store):
         """Effective credit below threshold → ineligible."""
         _seed_base_beliefs(loan_store, credit_score=600, co_signer=False)
         loan_store.resolve_all_dirty()
         # effective = 600, min = 650 → ineligible
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_credit_below_minimum_cosigner_saves(self, loan_store):
         """Raw score 610 + co-signer +50 = 660 >= 650 → eligible."""
         _seed_base_beliefs(loan_store, credit_score=610, co_signer=True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 660
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.credit_score_effective") == 660
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_debt_ratio_at_max(self, loan_store):
         """Debt ratio exactly at max_debt_ratio → ineligible (strict <)."""
         _seed_base_beliefs(loan_store, debt_ratio=0.4)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_debt_ratio_just_below_max(self, loan_store):
         """Debt ratio just below threshold → eligible."""
         _seed_base_beliefs(loan_store, debt_ratio=0.39)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
 
 # =====================================================================
@@ -282,26 +283,26 @@ class TestR3RateTier:
     def test_not_eligible_returns_none(self, loan_store):
         _seed_base_beliefs(loan_store, employment_status="unemployed")
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.rate_tier"] is None
+        assert loan_store.get_value("loan.rate_tier") is None
 
     def test_effective_score_750_preferred(self, loan_store):
         """Effective score exactly 750 → preferred."""
         _seed_base_beliefs(loan_store, credit_score=750, co_signer=False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.rate_tier"] == "preferred"
+        assert loan_store.get_value("loan.rate_tier") == "preferred"
 
     def test_effective_score_749_standard(self, loan_store):
         """Effective score 749 → standard."""
         _seed_base_beliefs(loan_store, credit_score=749, co_signer=False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.rate_tier"] == "standard"
+        assert loan_store.get_value("loan.rate_tier") == "standard"
 
     def test_cosigner_pushes_to_preferred(self, loan_store):
         """Raw 710 + co-signer +50 = 760 >= 750 → preferred."""
         _seed_base_beliefs(loan_store, credit_score=710, co_signer=True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 760
-        assert loan_store.beliefs["loan.rate_tier"] == "preferred"
+        assert loan_store.get_value("loan.credit_score_effective") == 760
+        assert loan_store.get_value("loan.rate_tier") == "preferred"
 
 
 # =====================================================================
@@ -314,17 +315,17 @@ class TestR4MaxAmount:
     def test_not_eligible_zero(self, loan_store):
         _seed_base_beliefs(loan_store, employment_status="unemployed")
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.max_amount"] == 0
+        assert loan_store.get_value("loan.max_amount") == 0
 
     def test_no_collateral_30k(self, loan_store):
         _seed_base_beliefs(loan_store, has_collateral=False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.max_amount"] == 30_000
+        assert loan_store.get_value("loan.max_amount") == 30_000
 
     def test_with_collateral_100k(self, loan_store):
         _seed_base_beliefs(loan_store, has_collateral=True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.max_amount"] == 100_000
+        assert loan_store.get_value("loan.max_amount") == 100_000
 
 
 # =====================================================================
@@ -337,7 +338,7 @@ class TestR5ApplicationStatus:
     def test_denied_ineligible(self, loan_store):
         _seed_base_beliefs(loan_store, employment_status="unemployed")
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.application_status"] == "denied_ineligible"
+        assert loan_store.get_value("loan.application_status") == "denied_ineligible"
 
     def test_denied_amount_exceeded(self, loan_store):
         """Eligible but requesting more than max_amount."""
@@ -346,14 +347,14 @@ class TestR5ApplicationStatus:
             loan_amount_requested=50_000,  # max without collateral = 30k
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
-        assert loan_store.beliefs["loan.max_amount"] == 30_000
-        assert loan_store.beliefs["loan.application_status"] == "denied_amount_exceeded"
+        assert loan_store.get_value("loan.eligible") is True
+        assert loan_store.get_value("loan.max_amount") == 30_000
+        assert loan_store.get_value("loan.application_status") == "denied_amount_exceeded"
 
     def test_approved(self, loan_store):
         _seed_base_beliefs(loan_store, loan_amount_requested=10_000)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.application_status"] == "approved"
+        assert loan_store.get_value("loan.application_status") == "approved"
 
     def test_amount_exactly_at_max(self, loan_store):
         """Requesting exactly max_amount → approved (not exceeded)."""
@@ -362,7 +363,7 @@ class TestR5ApplicationStatus:
             loan_amount_requested=30_000,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.application_status"] == "approved"
+        assert loan_store.get_value("loan.application_status") == "approved"
 
 
 # =====================================================================
@@ -375,18 +376,18 @@ class TestR6HighRiskFlag:
     def test_below_threshold(self, loan_store):
         _seed_base_beliefs(loan_store, debt_ratio=0.29)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.high_risk_flag"] is False
+        assert loan_store.get_value("loan.high_risk_flag") is False
 
     def test_at_threshold(self, loan_store):
         """Debt ratio exactly 0.3 → high risk (>=)."""
         _seed_base_beliefs(loan_store, debt_ratio=0.3)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.high_risk_flag"] is True
+        assert loan_store.get_value("loan.high_risk_flag") is True
 
     def test_above_threshold(self, loan_store):
         _seed_base_beliefs(loan_store, debt_ratio=0.5)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.high_risk_flag"] is True
+        assert loan_store.get_value("loan.high_risk_flag") is True
 
 
 # =====================================================================
@@ -465,7 +466,7 @@ class TestBeliefMaintain:
         # employment_status is a base belief, never derived, never dirty
         assert "applicant.employment_status" not in resolved_loan_store.dirty
         assert (
-            resolved_loan_store.beliefs["applicant.employment_status"]
+            resolved_loan_store.get_value("applicant.employment_status")
             == "employed"
         )
 
@@ -487,11 +488,11 @@ class TestBeliefMaintain:
         stays clean after re-resolution of eligible.
         """
         # debt_ratio 0.20 → 0.25: both < 0.4, so eligible stays True
-        old_rate = resolved_loan_store.beliefs["loan.rate_tier"]
+        old_rate = resolved_loan_store.get_value("loan.rate_tier")
         resolved_loan_store.add_hypothesis("applicant.debt_ratio", 0.25)
         resolved_loan_store.resolve_all_dirty()
 
-        assert resolved_loan_store.beliefs["loan.rate_tier"] == old_rate
+        assert resolved_loan_store.get_value("loan.rate_tier") == old_rate
 
 
 # =====================================================================
@@ -506,34 +507,34 @@ class TestCoSignerCascade:
         Add co-signer → 660 >= 650 → eligible."""
         _seed_base_beliefs(loan_store, credit_score=610, co_signer=False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
         loan_store.add_hypothesis("applicant.co_signer", True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 660
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.credit_score_effective") == 660
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_removing_cosigner_reverts_eligibility(self, loan_store):
         """With co-signer: 610+50=660 → eligible.
         Remove co-signer: 610 < 650 → ineligible."""
         _seed_base_beliefs(loan_store, credit_score=610, co_signer=True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
         loan_store.add_hypothesis("applicant.co_signer", False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 610
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.credit_score_effective") == 610
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_cosigner_pushes_rate_to_preferred(self, loan_store):
         """Raw 710: standard rate. Add co-signer → 760 → preferred."""
         _seed_base_beliefs(loan_store, credit_score=710, co_signer=False)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.rate_tier"] == "standard"
+        assert loan_store.get_value("loan.rate_tier") == "standard"
 
         loan_store.add_hypothesis("applicant.co_signer", True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.rate_tier"] == "preferred"
+        assert loan_store.get_value("loan.rate_tier") == "preferred"
 
 
 # =====================================================================
@@ -612,17 +613,17 @@ class TestSpecWalkthrough:
         store.resolve_all_dirty()
 
         # R2: 700 (no co-signer)
-        assert store.beliefs["loan.credit_score_effective"] == 700
+        assert store.get_value("loan.credit_score_effective") == 700
         # R1: 3000 < 5000 → False
-        assert store.beliefs["loan.eligible"] is False
+        assert store.get_value("loan.eligible") is False
         # R3: not eligible → None
-        assert store.beliefs["loan.rate_tier"] is None
+        assert store.get_value("loan.rate_tier") is None
         # R4: not eligible → 0
-        assert store.beliefs["loan.max_amount"] == 0
+        assert store.get_value("loan.max_amount") == 0
         # R5: not eligible → denied_ineligible
-        assert store.beliefs["loan.application_status"] == "denied_ineligible"
+        assert store.get_value("loan.application_status") == "denied_ineligible"
         # R6: 0.3 >= 0.3 → True
-        assert store.beliefs["loan.high_risk_flag"] is True
+        assert store.get_value("loan.high_risk_flag") is True
 
         assert len(store.dirty) == 0
 
@@ -645,15 +646,15 @@ class TestSpecWalkthrough:
         store.resolve_all_dirty()
 
         # R1: 6000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓ → True
-        assert store.beliefs["loan.eligible"] is True
+        assert store.get_value("loan.eligible") is True
         # R3: eligible, 700 < 750 → standard
-        assert store.beliefs["loan.rate_tier"] == "standard"
+        assert store.get_value("loan.rate_tier") == "standard"
         # R4: eligible, no collateral → 30000
-        assert store.beliefs["loan.max_amount"] == 30_000
+        assert store.get_value("loan.max_amount") == 30_000
         # R5: 10000 <= 30000 → approved
-        assert store.beliefs["loan.application_status"] == "approved"
+        assert store.get_value("loan.application_status") == "approved"
         # R6: unchanged (debt_ratio unchanged)
-        assert store.beliefs["loan.high_risk_flag"] is True
+        assert store.get_value("loan.high_risk_flag") is True
 
         assert len(store.dirty) == 0
 
@@ -680,7 +681,7 @@ class TestEdgeCases:
             employment_duration_months=23,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
     def test_bankruptcy_boundary_24_months(self, loan_store):
         """24 months = 24 → NOT < 24 → proceed to threshold check."""
@@ -689,7 +690,7 @@ class TestEdgeCases:
             employment_duration_months=24,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_no_bankruptcy_short_employment_ok(self, loan_store):
         """Without bankruptcy, short employment is irrelevant."""
@@ -698,13 +699,13 @@ class TestEdgeCases:
             employment_duration_months=1,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_multiple_rapid_updates(self, loan_store):
         """Several updates before resolving — only final state matters."""
         _seed_base_beliefs(loan_store, income=3000)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
+        assert loan_store.get_value("loan.eligible") is False
 
         # Rapid-fire updates
         loan_store.add_hypothesis("applicant.income", 4000)
@@ -712,8 +713,8 @@ class TestEdgeCases:
         loan_store.add_hypothesis("applicant.income", 6000)
 
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is True
-        assert loan_store.beliefs["applicant.income"] == 6000
+        assert loan_store.get_value("loan.eligible") is True
+        assert loan_store.get_value("applicant.income") == 6000
 
     def test_loan_request_exactly_one_over_max(self, loan_store):
         """Requesting max_amount + 1 → denied."""
@@ -722,14 +723,14 @@ class TestEdgeCases:
             loan_amount_requested=30_001,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.application_status"] == "denied_amount_exceeded"
+        assert loan_store.get_value("loan.application_status") == "denied_amount_exceeded"
 
     def test_cosigner_boundary_at_min_credit(self, loan_store):
         """Raw 600 + co-signer 50 = 650 = min_credit → eligible."""
         _seed_base_beliefs(loan_store, credit_score=600, co_signer=True)
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.credit_score_effective"] == 650
-        assert loan_store.beliefs["loan.eligible"] is True
+        assert loan_store.get_value("loan.credit_score_effective") == 650
+        assert loan_store.get_value("loan.eligible") is True
 
     def test_all_failing_conditions(self, loan_store):
         """Unemployed, bankrupt, broke — still gets consistent results."""
@@ -743,11 +744,11 @@ class TestEdgeCases:
             debt_ratio=0.9,
         )
         loan_store.resolve_all_dirty()
-        assert loan_store.beliefs["loan.eligible"] is False
-        assert loan_store.beliefs["loan.rate_tier"] is None
-        assert loan_store.beliefs["loan.max_amount"] == 0
-        assert loan_store.beliefs["loan.application_status"] == "denied_ineligible"
-        assert loan_store.beliefs["loan.high_risk_flag"] is True
+        assert loan_store.get_value("loan.eligible") is False
+        assert loan_store.get_value("loan.rate_tier") is None
+        assert loan_store.get_value("loan.max_amount") == 0
+        assert loan_store.get_value("loan.application_status") == "denied_ineligible"
+        assert loan_store.get_value("loan.high_risk_flag") is True
 
     def test_clean_prompt_includes_all_keys(self, resolved_loan_store):
         """A fully resolved store should produce a clean prompt

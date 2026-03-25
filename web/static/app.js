@@ -247,13 +247,15 @@ async function loadPreset() {
 
 // ── Chat ────────────────────────────────────────────────────────────
 
-async function sendChat(question) {
+async function sendChat(structuredInput) {
     // Remove welcome message
     const welcome = $chatMessages.querySelector(".chat-welcome");
     if (welcome) welcome.remove();
 
-    // Add user message
-    appendChatMsg(question, "user");
+    // Show the query part in the UI
+    const queryMatch = structuredInput.match(/\[QUERY\]\s*\n?([\s\S]*)/i);
+    const displayText = queryMatch ? queryMatch[1].trim() : structuredInput;
+    appendChatMsg(displayText, "user");
 
     // Add typing indicator
     const typingEl = document.createElement("div");
@@ -262,16 +264,12 @@ async function sendChat(question) {
     $chatMessages.appendChild(typingEl);
     scrollChat();
 
-    // Disable input
     $chatInput.disabled = true;
 
     try {
         const data = await api("/api/query", {
             method: "POST",
-            body: JSON.stringify({
-                question,
-                entities: ["applicant", "loan"],
-            }),
+            body: JSON.stringify({ input: structuredInput }),
         });
 
         typingEl.remove();
@@ -351,6 +349,14 @@ $chatForm.addEventListener("submit", e => {
     if (!q) return;
     $chatInput.value = "";
     sendChat(q);
+});
+
+// Cmd/Ctrl+Enter to submit, plain Enter for newlines
+$chatInput.addEventListener("keydown", e => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        $chatForm.dispatchEvent(new Event("submit"));
+    }
 });
 
 // ── Initial load ────────────────────────────────────────────────────
