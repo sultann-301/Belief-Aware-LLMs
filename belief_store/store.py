@@ -26,12 +26,12 @@ class BeliefStore:
 
     def add_hypothesis(self, key: str, value: Any) -> None:
         """Add or update a hypothesis belief and propagate dirty flags."""
-        old_entry = self.beliefs.get(key)
-        old = old_entry[0] if old_entry is not None else None
+        old_belief_entry = self.beliefs.get(key)
+        old_value = old_belief_entry[0] if old_belief_entry is not None else None
 
-        if old is not None:
+        if old_value is not None:
             self.revision_log.append({
-                "action": "update", "key": key, "old": old, "new": value,
+                "action": "update", "key": key, "old": old_value, "new": value,
             })
         else:
             self.revision_log.append({
@@ -43,12 +43,12 @@ class BeliefStore:
 
     def remove_hypothesis(self, key: str) -> None:
         """Retract a hypothesis and cascade to unsupported derivations."""
-        entry = self.beliefs.pop(key, None)
-        old = entry[0] if entry is not None else None
+        old_belief_entry = self.beliefs.pop(key, None)
+        old_value = old_belief_entry[0] if old_belief_entry is not None else None
         self.dirty.discard(key)
 
         self.revision_log.append({
-            "action": "retract", "key": key, "old": old, "new": None,
+            "action": "retract", "key": key, "old": old_value, "new": None,
         })
         for dep_key, dep_sources in list(self.dependencies.items()):
             if key in dep_sources:
@@ -96,18 +96,18 @@ class BeliefStore:
                     resolve(dep)
             for rule in self.derivation_rules:
                 if rule["output_key"] == key:
-                    inputs = {k: self.beliefs[k][0] for k in rule["inputs"]}
-                    old_entry = self.beliefs.get(key)
-                    old = old_entry[0] if old_entry is not None else None
-                    new = rule["derive_fn"](inputs)
-                    self.beliefs[key] = (new, True)
+                    input_values = {k: self.beliefs[k][0] for k in rule["inputs"]}
+                    old_belief_entry = self.beliefs.get(key)
+                    old_value = old_belief_entry[0] if old_belief_entry is not None else None
+                    new_value = rule["derive_fn"](input_values)
+                    self.beliefs[key] = (new_value, True)
                     self.dirty.discard(key)
                     resolved.add(key)
                     self.revision_log.append({
                         "action": "derived",
                         "key": key,
-                        "old": old,
-                        "new": new,
+                        "old": old_value,
+                        "new": new_value,
                         "reason": f"rule: {rule['name']}",
                     })
                     return
@@ -140,18 +140,18 @@ class BeliefStore:
         for entry in self.revision_log[since_index:]:
             action = entry["action"]
             key = entry["key"]
-            old = entry.get("old")
-            new = entry.get("new")
+            old_value = entry.get("old")
+            new_value = entry.get("new")
 
             if action == "add":
-                lines.append(f"[add]     {key}: {new}")
+                lines.append(f"[add]     {key}: {new_value}")
             elif action == "update":
-                lines.append(f"[update]  {key}: {old} → {new}")
+                lines.append(f"[update]  {key}: {old_value} → {new_value}")
             elif action == "derived":
                 reason = entry.get("reason", "")
-                lines.append(f"[derived] {key}: {old} → {new}    ({reason})")
+                lines.append(f"[derived] {key}: {old_value} → {new_value}    ({reason})")
             elif action == "retract":
-                lines.append(f"[retract] {key}: {old} → None")
+                lines.append(f"[retract] {key}: {old_value} → None")
 
         return "\n".join(lines)
 

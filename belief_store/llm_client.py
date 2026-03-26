@@ -13,6 +13,8 @@ class LLMClient(Protocol):
 
     def generate(self, system_prompt: str, user_prompt: str) -> str: ...
 
+    def generate_with_history(self, messages: list[dict[str, str]]) -> str: ...
+
 
 class OllamaClient:
     """Wrapper around the ``ollama`` Python library."""

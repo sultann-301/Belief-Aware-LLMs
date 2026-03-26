@@ -32,9 +32,14 @@ The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Va
 | `applicant.loan_amount_requested` | numeric | 10000, 50000 | Applicant changes |
 | `applicant.bankruptcy_history` | bool | true, false | Proceedings resolved |
 | `applicant.co_signer` | bool | true, false | Co-signer agrees/withdraws |
+| `applicant.dependents` | numeric | 0, 3 | Family changes |
 | `loan.min_income` | numeric | 5000 | Policy |
 | `loan.min_credit` | numeric | 650 | Policy |
 | `loan.max_debt_ratio` | float | 0.4 | Policy |
+| `loan.adjusted_income` | numeric | 2500, 5500 | Formula changes |
+| `loan.requires_insurance` | bool | true, false | Risk profile |
+| `loan.review_queue` | str | auto_approve, manual_review | Automation |
+| `loan.base_interest_rate` | float | 4.5, 6.5 | Rate tiers |
 
 ### Rules
 
@@ -42,14 +47,14 @@ All conditions are consolidated per output key — no rule priority conflicts.
 
 ```
 R1: loan.eligible
-    inputs: [applicant.income, loan.credit_score_effective, applicant.debt_ratio,
+    inputs: [loan.adjusted_income, loan.credit_score_effective, applicant.debt_ratio,
              applicant.employment_status, applicant.bankruptcy_history,
              applicant.employment_duration_months,
              loan.min_income, loan.min_credit, loan.max_debt_ratio]
     logic:
       IF employment_status = "unemployed" → False
       IF bankruptcy_history = True AND employment_duration_months < 24 → False
-      IF income >= min_income AND credit_score_effective >= min_credit AND debt_ratio < max_debt_ratio → True
+      IF adjusted_income >= min_income AND credit_score_effective >= min_credit AND debt_ratio < max_debt_ratio → True
       ELSE → False
 
 R2: loan.credit_score_effective
@@ -80,26 +85,51 @@ R5: loan.application_status
 R6: loan.high_risk_flag
     inputs: [applicant.debt_ratio]
     logic:  debt_ratio >= 0.3 → True, else False
+
+R7: loan.adjusted_income
+    inputs: [applicant.income, applicant.dependents]
+    logic: income - (dependents * 500)
+
+R8: loan.requires_insurance
+    inputs: [loan.high_risk_flag, loan.application_status]
+    logic: IF high_risk_flag = True AND application_status = "approved" → True, ELSE False
+
+R9: loan.review_queue
+    inputs: [loan.application_status, loan.high_risk_flag]
+    logic:
+      IF application_status = "approved" AND high_risk_flag = False → "auto_approve"
+      IF application_status = "approved" AND high_risk_flag = True → "manual_review"
+      ELSE → "rejected"
+
+R10: loan.base_interest_rate
+    inputs: [loan.rate_tier, loan.requires_insurance]
+    logic:
+      IF rate_tier is None → None
+      base = 4.5 if rate_tier = "preferred" else 6.5
+      return base + 1.0 if requires_insurance = True else base
 ```
 
 ### Dependency Chain
 
 ```
-applicant.income ──→ loan.eligible ──→ loan.rate_tier
+applicant.income ─────→ loan.adjusted_income ──→ loan.eligible ──→ loan.rate_tier ──→ loan.base_interest_rate
+applicant.dependents ─┘
 applicant.credit_score ──→ loan.credit_score_effective ──→ loan.eligible
 applicant.co_signer ──→                                ──→ loan.rate_tier
 applicant.debt_ratio ──→ loan.eligible
 applicant.employment_status ──→
 applicant.bankruptcy_history ──→
-applicant.debt_ratio ──→ loan.high_risk_flag
-                        loan.eligible ──→ loan.max_amount ──→ loan.application_status
+applicant.debt_ratio ──→ loan.high_risk_flag ──→ loan.requires_insurance ──→ loan.base_interest_rate
+                        loan.eligible ──→ loan.max_amount ──→ loan.application_status ──→ loan.review_queue
+                        loan.high_risk_flag ────────────────────────────────────────────┘
 ```
 
 ### Example Revision Scenario
 
 ```
-t=0: applicant.income = 3000, applicant.credit_score = 700, applicant.debt_ratio = 0.3
-     → R1: 3000 < 5000 → loan.eligible = False
+t=0: applicant.income = 3000, applicant.dependents = 2, applicant.credit_score = 700, applicant.debt_ratio = 0.3
+     → R7: 3000 - (2 * 500) → loan.adjusted_income = 2000
+     → R1: 2000 < 5000 → loan.eligible = False
      → R3: not eligible → loan.rate_tier = None
      → R5: → loan.application_status = "denied_ineligible"
 
@@ -107,7 +137,8 @@ t=1: applicant.income updated to 6000
      → dirty: {loan.eligible, loan.rate_tier, loan.max_amount, loan.application_status}
 
 t=2: resolve_all_dirty():
-     → R1: 6000 >= 5000 ✓, credit_score_effective=700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
+     → R7: 6000 - 1000 = 5000
+     → R1: 5000 >= 5000 ✓, credit_score_effective=700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
      → R3: eligible, credit_score_effective=700 < 750 → loan.rate_tier = "standard"
      → R4: eligible, no collateral → loan.max_amount = 30000
      → R5: eligible, 10000 <= 30000 → loan.application_status = "approved"
@@ -146,6 +177,9 @@ Tests **multi-prerequisite rules** and **cascading chains** from certification/t
 | `employee.background_check` | str | passed, pending, failed | Investigation results |
 | `employee.department` | str | engineering, finance | Transfers |
 | `employee.manager_approval_remote` | bool | true, false | Manager grants/revokes |
+| `employee.manager_approval_promotion` | bool | true, false | Manager performance review |
+| `employee.probation_status` | bool | true, false | Disciplinary board |
+| `employee.security_clearance_active` | bool | true, false | Background checks |
 
 ### Rules
 
@@ -159,10 +193,8 @@ R2: employee.project_factory_floor
     logic:  "assigned" if can_operate = True, else "suspended"
 
 R3: employee.eligible_senior_analyst
-    inputs: [employee.clearance_level, employee.years_experience,
-             employee.background_check]
-    logic:  clearance_level in ("confidential", "secret")
-            AND years_experience >= 3 AND background_check = "passed"
+    inputs: [employee.security_clearance_active, employee.years_experience]
+    logic:  security_clearance_active = True AND years_experience >= 3
 
 R4: employee.compliance_status
     inputs: [employee.training_ethics, employee.training_compliance]
@@ -182,6 +214,18 @@ R6: employee.eligible_financial_auditor
 R7: employee.remote_work_approved
     inputs: [employee.manager_approval_remote, employee.performance_rating]
     logic:  manager_approval_remote = True AND performance_rating = "exceeds"
+
+R8: employee.probation_status
+    inputs: [employee.disciplinary_action, employee.years_experience]
+    logic: IF disciplinary_action = True OR years_experience < 1 → True, ELSE False
+
+R9: employee.security_clearance_active
+    inputs: [employee.clearance_level, employee.background_check]
+    logic: IF clearance_level != "none" AND background_check = "passed" → True, ELSE False
+
+R10: employee.eligible_for_management
+    inputs: [employee.promotion_eligible, employee.probation_status, employee.years_experience, employee.manager_approval_promotion]
+    logic: IF promotion_eligible = True AND probation_status = False AND years_experience >= 5 AND manager_approval_promotion = True → True, ELSE False
 ```
 
 ### Dependency Chain
@@ -190,10 +234,16 @@ R7: employee.remote_work_approved
 employee.certification_safety ──→ employee.can_operate_heavy_machinery ──→ employee.project_factory_floor
 employee.training_hazmat ──→
 
-employee.training_ethics ──→ employee.compliance_status ──→ employee.promotion_eligible
+employee.training_ethics ──→ employee.compliance_status ──→ employee.promotion_eligible ──→ employee.eligible_for_management
 employee.training_compliance ──→
 employee.performance_rating ──→
-employee.disciplinary_action ──→
+employee.disciplinary_action ──→ employee.probation_status ──→ employee.eligible_for_management
+employee.years_experience ───→ employee.eligible_senior_analyst
+                           └─→ employee.eligible_for_management
+                           └─→ employee.probation_status
+employee.manager_approval_promotion ──→ employee.eligible_for_management
+employee.clearance_level ──→ employee.security_clearance_active ──→ employee.eligible_senior_analyst
+employee.background_check ──→ employee.security_clearance_active
 ```
 
 ### Example Revision Scenario
@@ -248,29 +298,32 @@ Tests **deep revision chains** and **cascading retraction**. All facts are ficti
 | `suspect_b.motive` | str | revenge, none | |
 | `case.time_of_death` | str | 10pm, 9pm | Autopsy updates |
 | `case.cause_of_death` | str | blunt_force, poison | Forensics refinement |
+| `case.initial_forensic_conclusion` | str | blunt_force, undetermined | Forensics initial |
 | `case.cctv_available` | bool | true, false | Footage discovered |
 | `case.toxicology_result` | str | positive_X, negative, pending | Lab processing |
 | `witness_jones.credibility` | str | reliable, unreliable | Cross-examination |
+| `suspect_a.physical_evidence_match` | bool | true, false | Forensics lab |
+| `suspect_b.physical_evidence_match` | bool | true, false | Forensics lab |
 
 ### Rules
 
 ```
 R1: suspect_a.status
     inputs: [suspect_a.evidence_at_scene, suspect_a.alibi,
-             suspect_a.motive, suspect_a.access_to_weapon]
+             suspect_a.motive, suspect_a.access_to_weapon, suspect_a.cleared_by_weapon]
     logic:
-      IF alibi = "confirmed" → "cleared"
+      IF alibi = "confirmed" OR cleared_by_weapon = True → "cleared"
       IF evidence_at_scene = "present" AND alibi = "broken" → "prime_suspect"
       IF motive != "none" AND alibi = "broken" → "person_of_interest"
       ELSE → "under_investigation"
 
 R2: suspect_a.alibi (derived override)
-    inputs: [suspect_a.alibi_source, witness_jones.credibility]
+    inputs: [suspect_a.alibi_source, witness_jones.credibility, case.cctv_available]
     logic:
-      IF alibi_source = "witness_jones" AND credibility = "unreliable"
-        → "broken"
-      IF alibi_source = "cctv" → "confirmed"  (hard evidence, always holds)
-      ELSE → keep current value
+      IF alibi_source = "cctv" AND cctv_available = True → "confirmed"
+      IF alibi_source = "witness_jones" AND credibility = "unreliable" → "broken"
+      IF alibi_source = "witness_jones" AND credibility = "reliable" → "confirmed"
+      ELSE → "unconfirmed"
 
 R3: suspect_a.cleared_by_weapon
     inputs: [case.cause_of_death, suspect_a.access_to_weapon]
@@ -289,20 +342,29 @@ R4: case.theory
       ELSE → "no confirmed theory"
 
 R5: case.cause_of_death (derived override)
-    inputs: [case.toxicology_result]
+    inputs: [case.toxicology_result, case.initial_forensic_conclusion]
     logic:
       IF toxicology_result = "positive_X" → "poison"
-      ELSE → keep current value
+      ELSE → initial_forensic_conclusion
 
 R6: suspect_b.status
     inputs: [suspect_b.evidence_at_scene, suspect_b.alibi, suspect_b.motive]
     logic:  (same pattern as R1 for suspect_b)
 
-R7: suspect_a.alibi (CCTV override)
-    inputs: [case.cctv_available, suspect_a.alibi_source]
+R8: suspect_a.forensic_match
+    inputs: [suspect_a.evidence_at_scene, suspect_a.physical_evidence_match]
+    logic: IF evidence_at_scene = "present" AND physical_evidence_match = True → True, ELSE False
+
+R9: suspect_b.forensic_match
+    inputs: [suspect_b.evidence_at_scene, suspect_b.physical_evidence_match]
+    logic: IF evidence_at_scene = "present" AND physical_evidence_match = True → True, ELSE False
+
+R10: case.primary_suspect
+    inputs: [suspect_a.status, suspect_b.status, suspect_a.forensic_match, suspect_b.forensic_match]
     logic:
-      IF cctv_available = True AND alibi_source = "cctv"
-        → "confirmed"
+      IF status = "prime_suspect" AND suspect_a.forensic_match = True → "suspect_a"
+      IF status = "prime_suspect" AND suspect_b.forensic_match = True → "suspect_b"
+      ELSE → "none"
 ```
 
 ### Dependency Chain (4-hop)
@@ -367,7 +429,7 @@ The **Thorncrester** (*Spinocristatus fictus*) is a fictional bird native to the
 |---|---|---|---|
 | `thorncrester.diet` | str | carnivore, omnivore, herbivore | Field reclassification |
 | `thorncrester.can_fly` | bool | true, false | Life stage |
-| `thorncrester.habitat` | str | coastal, highland, wetland | Migration, destruction |
+| `thorncrester.habitat` | str | coastal, highland, wetland | Derived (R3) |
 | `thorncrester.subspecies` | str | coastal, highland | Identification |
 | `thorncrester.life_stage` | str | juvenile, adult, elder | Maturation |
 | `thorncrester.season` | str | mating, nesting, migration, dormant | Calendar |
@@ -376,6 +438,8 @@ The **Thorncrester** (*Spinocristatus fictus*) is a fictional bird native to the
 | `thorncrester.population_count` | numeric | 50, 500 | Census |
 | `thorncrester.nesting_behavior` | str | ground, cliff, tree | Research findings |
 | `thorncrester.social_structure` | str | solitary, pair, flock | Season + context |
+| `thorncrester.temperature_band` | str | cold, temperate, hot | Climate |
+| `thorncrester.migration_route` | str | northern, southern, standard | Geolocator tags |
 
 ### Rules
 
@@ -443,6 +507,13 @@ R9: thorncrester.social_structure
       IF territorial_behavior = True → "pair"
       IF season = "migration" → "flock"
       ELSE → "solitary"
+
+R10: thorncrester.migration_route
+    inputs: [thorncrester.season, thorncrester.habitat, thorncrester.temperature_band]
+    logic:
+      IF season = "migration" AND habitat = "coastal" AND temperature_band = "cold" → "southern"
+      IF season = "migration" AND habitat = "highland" AND temperature_band = "hot" → "northern"
+      ELSE → "standard"
 ```
 
 ### Dependency Chain
@@ -501,8 +572,8 @@ t=4: Season changes to "dormant"
 | Property | Loan | Employee | Crime Scene | Thorncrester |
 |---|---|---|---|---|
 | **Max dependency depth** | 3 hops | 2 hops | 4 hops | 3 hops |
-| **Number of rules** | 6 | 7 | 7 | 9 |
-| **Number of attributes** | ~12 | ~12 | ~14 | ~11 |
+| **Number of rules** | 10 | 10 | 9 | 10 |
+| **Number of attributes** | 17 | 15 | 17 | 13 |
 | **Parametric isolation** | Low | Low | **Total** | **Total** |
 | **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population |
 | **Key revision pattern** | Threshold change | Prerequisite expiry | Evidence cascade | Classification shift |

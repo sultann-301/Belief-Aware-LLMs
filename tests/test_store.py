@@ -44,6 +44,8 @@ def _seed_base_beliefs(store: BeliefStore, overrides: dict | None = None) -> Non
         "applicant.employment_duration_months": 36,
         "applicant.has_collateral": False,
         "applicant.loan_amount_requested": 10_000,
+        "applicant.dependents": 0,
+        "applicant.marital_status": "single",
         "loan.min_income": 5000,
         "loan.min_credit": 650,
         "loan.max_debt_ratio": 0.4,

@@ -52,119 +52,120 @@ INITIAL_BELIEFS = {
     "applicant.employment_duration_months": 36,
     "applicant.has_collateral": False,
     "applicant.loan_amount_requested": 10_000,
+    "applicant.dependents": 2,
     "loan.min_income": 5000,
     "loan.min_credit": 650,
     "loan.max_debt_ratio": 0.4,
 }
 
 TURNS = [
-    # Turn 1: baseline — approved
+    # Turn 1: update — baseline status check
     {
-        "beliefs": {},  # no changes, just the initial state
-        "question": "What is the current application status?",
+        "beliefs": {},
+        "question": "What is the application status and review queue?",
         "options": {
-            "A": "approved",
-            "B": "denied_ineligible",
-            "C": "pending_review",
+            "A": "denied_ineligible, rejected",
+            "B": "approved, auto_approve",
+            "C": "approved, manual_review",
+        },
+        "correct": "B",
+    },
+    # Turn 2: update — debt ratio spikes to 0.35 (triggers insurance)
+    {
+        "beliefs": {"applicant.debt_ratio": 0.35},
+        "question": "Does the loan require insurance, and what is the review queue?",
+        "options": {
+            "A": "requires_insurance = True, review_queue = manual_review",
+            "B": "requires_insurance = False, review_queue = auto_approve",
+            "C": "requires_insurance = True, review_queue = auto_approve",
         },
         "correct": "A",
     },
-    # Turn 2: income drops → denied
+    # Turn 3: maintain — credit score increases, but status remains approved
     {
-        "beliefs": {"applicant.income": 3000},
-        "question": "After the income change, what is the application status?",
+        "beliefs": {"applicant.credit_score": 740},
+        "question": "Did the application status change?",
         "options": {
-            "A": "denied_ineligible",
-            "B": "approved (the previous status)",
-            "C": "referred_to_manager",
+            "A": "Yes, it changed to preferred_approved",
+            "B": "Yes, it changed to denied",
+            "C": "No, it remains approved",
         },
-        "correct": "A",
+        "correct": "C",
     },
-    # Turn 3: income recovers → approved again
-    {
-        "beliefs": {"applicant.income": 7000},
-        "question": "What is the applicant's eligibility now?",
-        "options": {
-            "A": "Eligible (True)",
-            "B": "Ineligible (it was denied last turn)",
-            "C": "Eligible only with manager approval",
-        },
-        "correct": "A",
-    },
-    # Turn 4: co-signer added → credit_score_effective goes up
+    # Turn 4: update — co-signer added → rate tier improves to preferred, rate drops
     {
         "beliefs": {"applicant.co_signer": True},
-        "question": "What is the effective credit score now?",
+        "question": "What is the new base interest rate?",
         "options": {
-            "A": "770 (720 + 50 co-signer boost)",
-            "B": "720 (same as raw credit score)",
-            "C": "650 (the minimum threshold)",
+            "A": "5.5", 
+            "B": "7.5", 
+            "C": "4.5", 
         },
         "correct": "A",
     },
-    # Turn 5: effective score 770 → preferred rate
-    {
-        "beliefs": {},  # no change, just asking about rate
-        "question": "What rate tier does the applicant qualify for?",
-        "options": {
-            "A": "preferred (effective score 770 ≥ 750)",
-            "B": "standard (effective score below 750)",
-            "C": "subprime",
-        },
-        "correct": "A",
-    },
-    # Turn 6: co-signer removed → effective drops back, rate changes
-    {
-        "beliefs": {"applicant.co_signer": False},
-        "question": "After removing the co-signer, what is the rate tier?",
-        "options": {
-            "A": "standard (effective score 720 < 750)",
-            "B": "preferred (it was preferred last turn)",
-            "C": "variable_rate",
-        },
-        "correct": "A",
-    },
-    # Turn 7: collateral added → max_amount goes up
+    # Turn 5: maintain — collateral added
     {
         "beliefs": {"applicant.has_collateral": True},
-        "question": "What is the maximum loan amount now?",
+        "question": "Did the application status or base interest rate change?",
         "options": {
-            "A": "100,000 (has collateral)",
-            "B": "30,000 (the previous max without collateral)",
-            "C": "500,000",
+            "A": "No, status is still approved, rate is still 5.5",
+            "B": "Yes, status is now pending_manager_approval, rate is 5.5",
+            "C": "Yes, status is approved, rate is 4.5",
         },
         "correct": "A",
     },
-    # Turn 8: debt ratio spikes → high risk + ineligible
+    # Turn 6: combo (update/cascade collapse) — unemployed
     {
-        "beliefs": {"applicant.debt_ratio": 0.45},
-        "question": "What is the high risk flag and eligibility status?",
+        "beliefs": {"applicant.employment_status": "unemployed"},
+        "question": "What is the application status and base interest rate?",
         "options": {
-            "A": "high_risk_flag = True, eligible = False (debt_ratio 0.45 ≥ max 0.4)",
-            "B": "high_risk_flag = True, eligible = True (it was eligible before)",
-            "C": "high_risk_flag = False, eligible = True",
+            "A": "approved, 5.5",
+            "B": "denied_ineligible, None",
+            "C": "denied_ineligible, 6.5", 
+        },
+        "correct": "B",
+    },
+    # Turn 7: reversal — employed again
+    {
+        "beliefs": {"applicant.employment_status": "employed"},
+        "question": "What is the maximum loan amount and application status?",
+        "options": {
+            "A": "100000, approved",
+            "B": "30000, approved",
+            "C": "100000, denied_amount_exceeded",
         },
         "correct": "A",
     },
-    # Turn 9: debt ratio fixed → eligible again, still has collateral
+    # Turn 8: update — dependents increase, pushes income below threshold
     {
-        "beliefs": {"applicant.debt_ratio": 0.15},
-        "question": "After fixing the debt ratio, what is the application status and max amount?",
+        "beliefs": {"applicant.dependents": 3},
+        "question": "What is the adjusted income and application status?",
         "options": {
-            "A": "approved, max_amount = 100,000",
-            "B": "denied_ineligible, max_amount = 0 (it was denied last turn)",
-            "C": "approved, max_amount = 50,000",
+            "A": "5000, approved",
+            "B": "4500, denied_ineligible",
+            "C": "3000, denied_ineligible",
         },
-        "correct": "A",
+        "correct": "B",
     },
-    # Turn 10: loan request exceeds max → denied_amount_exceeded
+    # Turn 9: maintain — loan amount requested increases, but already ineligible
     {
-        "beliefs": {"applicant.loan_amount_requested": 150_000},
-        "question": "The applicant now requests 150,000. What is the application status?",
+        "beliefs": {"applicant.loan_amount_requested": 20_000},
+        "question": "What is the application status?",
         "options": {
-            "A": "denied_amount_exceeded (150,000 > max 100,000)",
-            "B": "approved (it was approved last turn)",
-            "C": "denied_credit_score",
+            "A": "approved",
+            "B": "denied_amount_exceeded",
+            "C": "denied_ineligible",
+        },
+        "correct": "C",
+    },
+    # Turn 10: update — income increases -> eligible again
+    {
+        "beliefs": {"applicant.income": 7000},
+        "question": "What is the application status?",
+        "options": {
+            "A": "approved",
+            "B": "denied_amount_exceeded",
+            "C": "denied_ineligible",
         },
         "correct": "A",
     },
@@ -191,6 +192,12 @@ def build_mcq_query(turn: dict, entities: str = "applicant, loan") -> str:
 
     parts.append(f"[QUERY]\n{q}")
     return "\n\n".join(parts)
+
+
+def log_none_answer(condition: str, turn: int, response: str) -> None:
+    """Log the raw LLM response when answer extraction fails (returns None)."""
+    with open("failed_extractions.log", "a", encoding="utf-8") as f:
+        f.write(f"[{condition} - Turn {turn}]\n{response}\n{'-'*40}\n")
 
 
 def extract_answer(response: str) -> str | None:
@@ -223,6 +230,8 @@ def run_with_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
         query_text = build_mcq_query(turn)
         response = engine.query(query_text)
         answer = extract_answer(response)
+        if answer is None:
+            log_none_answer("WITH STORE", i + 1, response)
         correct = turn["correct"]
         results.append({
             "turn": i + 1,
@@ -284,6 +293,8 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
         messages.append({"role": "assistant", "content": response})
 
         answer = extract_answer(response)
+        if answer is None:
+            log_none_answer("WITH STORE (+History)", i + 1, response)
         correct = turn["correct"]
         results.append({
             "turn": i + 1,
@@ -333,6 +344,8 @@ def run_without_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
         messages.append({"role": "assistant", "content": response})
 
         answer = extract_answer(response)
+        if answer is None:
+            log_none_answer("NO STORE", i + 1, response)
         correct = turn["correct"]
         results.append({
             "turn": i + 1,

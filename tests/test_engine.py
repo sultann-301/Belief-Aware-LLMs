@@ -18,6 +18,10 @@ class MockLLMClient:
         self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt})
         return self.response
 
+    def generate_with_history(self, messages: list[dict[str, str]]) -> str:
+        self.calls.append({"messages": messages})
+        return self.response
+
 
 def _make_engine(mock_response="REASONING: mock\nANSWER: mock"):
     store = BeliefStore()
@@ -36,6 +40,8 @@ def _seed(store):
     store.add_hypothesis("applicant.employment_duration_months", 36)
     store.add_hypothesis("applicant.has_collateral", False)
     store.add_hypothesis("applicant.loan_amount_requested", 10_000)
+    store.add_hypothesis("applicant.dependents", 0)
+    store.add_hypothesis("applicant.marital_status", "single")
     store.add_hypothesis("loan.min_income", 5000)
     store.add_hypothesis("loan.min_credit", 650)
     store.add_hypothesis("loan.max_debt_ratio", 0.4)
@@ -210,6 +216,8 @@ class TestFullTurnCycle:
         store.add_hypothesis("applicant.employment_duration_months", 36)
         store.add_hypothesis("applicant.has_collateral", False)
         store.add_hypothesis("applicant.loan_amount_requested", 10_000)
+        store.add_hypothesis("applicant.dependents", 2)
+        store.add_hypothesis("applicant.marital_status", "single")
         store.add_hypothesis("loan.min_income", 5000)
         store.add_hypothesis("loan.min_credit", 650)
         store.add_hypothesis("loan.max_debt_ratio", 0.4)

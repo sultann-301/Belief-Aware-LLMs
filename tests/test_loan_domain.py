@@ -44,6 +44,8 @@ def _seed_base_beliefs(store: BeliefStore, overrides: dict | None = None) -> Non
         "applicant.employment_duration_months": 36,
         "applicant.has_collateral": False,
         "applicant.loan_amount_requested": 10_000,
+        "applicant.dependents": 0,
+        "applicant.marital_status": "single",
         "loan.min_income": 5000,
         "loan.min_credit": 650,
         "loan.max_debt_ratio": 0.4,
@@ -350,7 +352,9 @@ class TestSpecWalkthrough:
         store.add_hypothesis("applicant.employment_duration_months", 36)
         store.add_hypothesis("applicant.has_collateral", False)
         store.add_hypothesis("applicant.loan_amount_requested", 10_000)
-        store.add_hypothesis("loan.min_income", 5000)
+        store.add_hypothesis("applicant.dependents", 2)
+        store.add_hypothesis("applicant.marital_status", "single")
+        store.add_hypothesis("loan.min_income", 5000,)
         store.add_hypothesis("loan.min_credit", 650)
         store.add_hypothesis("loan.max_debt_ratio", 0.4)
 
@@ -358,7 +362,9 @@ class TestSpecWalkthrough:
 
         # R2: 700 (no co-signer)
         assert store.get_value("loan.credit_score_effective") == 700
-        # R1: 3000 < 5000 → False
+        # R7: 3000 - (2 * 500) = 2000
+        assert store.get_value("loan.adjusted_income") == 2000
+        # R1: 2000 < 5000 → False
         assert store.get_value("loan.eligible") is False
         # R3: not eligible → None
         assert store.get_value("loan.rate_tier") is None
@@ -368,6 +374,12 @@ class TestSpecWalkthrough:
         assert store.get_value("loan.application_status") == "denied_ineligible"
         # R6: 0.3 >= 0.3 → True
         assert store.get_value("loan.high_risk_flag") is True
+        # R8: denied -> False
+        assert store.get_value("loan.requires_insurance") is False
+        # R9: denied -> rejected
+        assert store.get_value("loan.review_queue") == "rejected"
+        # R10: rate_tier=None -> None (no interest rate for denied applicants)
+        assert store.get_value("loan.base_interest_rate") is None
 
         assert len(store.dirty) == 0
 
@@ -378,18 +390,23 @@ class TestSpecWalkthrough:
         log_before = len(store.revision_log)
         store.add_hypothesis("applicant.income", 6000)
 
-        # Dirty set should include eligible and its downstream
+        # Dirty set should include adjusted_income, eligible and its downstream
+        assert "loan.adjusted_income" in store.dirty
         assert "loan.eligible" in store.dirty
         assert "loan.rate_tier" in store.dirty
         assert "loan.max_amount" in store.dirty
         assert "loan.application_status" in store.dirty
+        assert "loan.review_queue" in store.dirty
+        assert "loan.base_interest_rate" in store.dirty
         # credit_score_effective should NOT be dirty
         assert "loan.credit_score_effective" not in store.dirty
 
         # ── t=2: Resolve ─────────────────────────────────────────────
         store.resolve_all_dirty()
 
-        # R1: 6000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓ → True
+        # R7: 6000 - 1000 = 5000
+        assert store.get_value("loan.adjusted_income") == 5000
+        # R1: 5000 >= 5000 ✓, 700 >= 650 ✓, 0.3 < 0.4 ✓ → True
         assert store.get_value("loan.eligible") is True
         # R3: eligible, 700 < 750 → standard
         assert store.get_value("loan.rate_tier") == "standard"
@@ -399,6 +416,12 @@ class TestSpecWalkthrough:
         assert store.get_value("loan.application_status") == "approved"
         # R6: unchanged (debt_ratio unchanged)
         assert store.get_value("loan.high_risk_flag") is True
+        # R8: approved + high risk -> True
+        assert store.get_value("loan.requires_insurance") is True
+        # R9: approved + high risk -> manual_review
+        assert store.get_value("loan.review_queue") == "manual_review"
+        # R10: standard (6.5) + insurance (1.0) -> 7.5
+        assert store.get_value("loan.base_interest_rate") == 7.5
 
         assert len(store.dirty) == 0
 
@@ -481,7 +504,7 @@ class TestEdgeCases:
         with all base + derived beliefs for 'applicant' and 'loan'."""
         prompt, keys = resolved_loan_store.to_prompt(["applicant", "loan"])
 
-        # 12 base beliefs + 6 derived = 18
-        assert len(keys) == 18
+        # 14 base beliefs + 10 derived = 24
+        assert len(keys) == 24
         assert "[derived] loan.eligible = True" in prompt
         assert "[base] applicant.income = 6000" in prompt

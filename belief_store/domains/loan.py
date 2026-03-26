@@ -25,7 +25,7 @@ def setup_loan_domain(store: BeliefStore) -> None:
     store.add_rule(
         name="eligible",
         inputs=[
-            "applicant.income",
+            "loan.adjusted_income",
             "loan.credit_score_effective",
             "applicant.debt_ratio",
             "applicant.employment_status",
@@ -71,6 +71,34 @@ def setup_loan_domain(store: BeliefStore) -> None:
         derive_fn=_high_risk_flag,
     )
 
+    store.add_rule(
+        name="adjusted_income",
+        inputs=["applicant.income", "applicant.dependents"],
+        output_key="loan.adjusted_income",
+        derive_fn=_adjusted_income,
+    )
+
+    store.add_rule(
+        name="requires_insurance",
+        inputs=["loan.high_risk_flag", "loan.application_status"],
+        output_key="loan.requires_insurance",
+        derive_fn=_requires_insurance,
+    )
+
+    store.add_rule(
+        name="review_queue",
+        inputs=["loan.application_status", "loan.high_risk_flag"],
+        output_key="loan.review_queue",
+        derive_fn=_review_queue,
+    )
+
+    store.add_rule(
+        name="base_interest_rate",
+        inputs=["loan.rate_tier", "loan.requires_insurance"],
+        output_key="loan.base_interest_rate",
+        derive_fn=_base_interest_rate,
+    )
+
 
 def _credit_score_effective(inputs: dict[str, Any]) -> int:
     score = inputs["applicant.credit_score"]
@@ -86,7 +114,7 @@ def _eligible(inputs: dict[str, Any]) -> bool:
     ):
         return False
     return (
-        inputs["applicant.income"] >= inputs["loan.min_income"]
+        inputs["loan.adjusted_income"] >= inputs["loan.min_income"]
         and inputs["loan.credit_score_effective"] >= inputs["loan.min_credit"]
         and inputs["applicant.debt_ratio"] < inputs["loan.max_debt_ratio"]
     )
@@ -114,3 +142,25 @@ def _application_status(inputs: dict[str, Any]) -> str:
 
 def _high_risk_flag(inputs: dict[str, Any]) -> bool:
     return inputs["applicant.debt_ratio"] >= 0.3
+
+
+def _adjusted_income(inputs: dict[str, Any]) -> float:
+    return inputs["applicant.income"] - (inputs.get("applicant.dependents", 0) * 500)
+
+
+def _requires_insurance(inputs: dict[str, Any]) -> bool:
+    return bool(inputs["loan.high_risk_flag"] and inputs["loan.application_status"] == "approved")
+
+
+def _review_queue(inputs: dict[str, Any]) -> str:
+    if inputs["loan.application_status"] == "approved":
+        return "manual_review" if inputs["loan.high_risk_flag"] else "auto_approve"
+    return "rejected"
+
+
+def _base_interest_rate(inputs: dict[str, Any]) -> float | None:
+    tier = inputs.get("loan.rate_tier")
+    if tier is None:
+        return None
+    base = 4.5 if tier == "preferred" else 6.5
+    return base + 1.0 if inputs.get("loan.requires_insurance") else base
