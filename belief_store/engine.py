@@ -7,9 +7,8 @@ from belief_store.llm_client import LLMClient
 
 SYSTEM_PROMPT = """\
 You are a belief-aware reasoning assistant. You will receive:
-1. [ENTITY] — the entities this query is about.
-2. [RELEVANT BELIEFS] — all beliefs for those entities (base and derived).
-3. [QUERY] — the user's question.
+1. [RELEVANT BELIEFS] — all beliefs for those entities (base and derived).
+2. [QUERY] — the user's question.
 
 Rules:
 - Reason ONLY from beliefs listed in [RELEVANT BELIEFS]. These are the ONLY facts you may treat as true.
@@ -36,14 +35,17 @@ class ReasoningEngine:
 
         Accepted sections:
             [ENTITY]     — required, comma-separated entity names
-            [NEW BELIEF] — optional, key = value lines to inject into the store
+            [NEW BELIEF] — optional, [ADD] key = value or [RETRACT] key
             [QUERY]      — required, the user's question
         """
         entities, new_beliefs, question = self._parse_input(structured_input)
 
-        # Inject new beliefs into the store
-        for key, value in new_beliefs:
-            self.store.add_hypothesis(key, value)
+        # Inject or retract new beliefs from the store
+        for action, key, value in new_beliefs:
+            if action == "add":
+                self.store.add_hypothesis(key, value)
+            elif action == "retract":
+                self.store.remove_hypothesis(key)
 
         # Resolve only beliefs relevant to the queried entities
         self.store.resolve_dirty(entities)
@@ -65,11 +67,11 @@ class ReasoningEngine:
         return self.llm.generate(SYSTEM_PROMPT, full_prompt)
 
     @staticmethod
-    def _parse_input(text: str) -> tuple[list[str], list[tuple[str, object]], str]:
+    def _parse_input(text: str) -> tuple[list[str], list[tuple[str, str, object]], str]:
         """Extract entities, new beliefs, and query from structured input.
 
         Returns (entities, new_beliefs, question) where new_beliefs is a
-        list of (key, parsed_value) tuples.
+        list of (action, key, parsed_value) tuples.
         """
         entity_section = ""
         belief_lines: list[str] = []
@@ -108,8 +110,21 @@ class ReasoningEngine:
         return entities, new_beliefs, question
 
 
-def _parse_belief_line(line: str) -> tuple[str, object]:
-    """Parse 'key = value' into (key, typed_value)."""
+def _parse_belief_line(line: str) -> tuple[str, str, object]:
+    """Parse '[ADD] key = value' or '[RETRACT] key' into (action, key, value)."""
+    line = line.strip()
+    
+    action = "add"
+    if line.upper().startswith("[ADD]"):
+        action = "add"
+        line = line[5:].strip()
+    elif line.upper().startswith("[RETRACT]"):
+        action = "retract"
+        line = line[9:].strip()
+        
+    if action == "retract":
+        return action, line, None
+
     if "=" not in line:
         raise ValueError(f"Invalid belief line (expected key = value): {line}")
     key, raw = line.split("=", 1)
@@ -118,20 +133,20 @@ def _parse_belief_line(line: str) -> tuple[str, object]:
 
     # Booleans
     if raw.lower() == "true":
-        return key, True
+        return action, key, True
     if raw.lower() == "false":
-        return key, False
+        return action, key, False
     if raw.lower() == "none":
-        return key, None
+        return action, key, None
 
     # Numbers
     try:
-        return key, float(raw) if "." in raw else int(raw)
+        return action, key, float(raw) if "." in raw else int(raw)
     except ValueError:
         pass
 
     # Strip quotes if present
     if len(raw) >= 2 and raw[0] == raw[-1] and raw[0] in ('"', "'"):
-        return key, raw[1:-1]
+        return action, key, raw[1:-1]
 
-    return key, raw
+    return action, key, raw

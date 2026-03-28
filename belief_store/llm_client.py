@@ -21,7 +21,7 @@ class OllamaClient:
 
     def __init__(
         self,
-        model: str = "gemma3:1b",
+        model: str = "qwen3:4b",
         host: str = "http://localhost:11434",
     ) -> None:
         self.model = model
@@ -34,6 +34,7 @@ class OllamaClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
+            think=False,
         )
         return response.message.content
 
@@ -42,6 +43,6 @@ class OllamaClient:
         response = self._client.chat(
             model=self.model,
             messages=messages,
+            think=False,
         )
         return response.message.content
-

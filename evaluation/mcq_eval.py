@@ -32,7 +32,29 @@ from belief_store.llm_client import OllamaClient
 EVAL_SYSTEM_PROMPT = SYSTEM_PROMPT.rstrip() + """
 
 IMPORTANT: For multiple-choice questions, you MUST end your response with
-exactly one letter: A, B, or C. Example: ANSWER: A
+the word ANSWER: followed by exactly one capital letter (A, B, or C).
+Do not write anything after the letter.
+"""
+
+BASELINE_SYSTEM_PROMPT = """\
+You are a reasoning assistant evaluating a loan application over a conversation. 
+You must calculate the exact application state by strictly applying these 10 rules:
+
+1. adjusted_income = income - (dependents * 500)
+2. credit_score_effective = credit_score + (50 if co_signer else 0)
+3. high_risk_flag = True if debt_ratio >= 0.3 else False
+4. eligible = True ONLY IF adjusted_income >= min_income AND credit_score_effective >= min_credit AND debt_ratio < max_debt_ratio AND employment_status != 'unemployed' AND NOT (bankruptcy_history == True AND employment_duration_months < 24)
+5. rate_tier = "preferred" if credit_score_effective >= 750 else "standard" (None if not eligible)
+6. max_amount = 100000 if has_collateral else 30000 (0 if not eligible)
+7. application_status = "approved" if eligible and loan_amount_requested <= max_amount. Otherwise "denied_amount_exceeded" or "denied_ineligible"
+8. requires_insurance = True if high_risk_flag AND application_status == "approved" else False
+9. review_queue = "manual_review" if high_risk_flag else "auto_approve" ("rejected" if denied)
+10. base_interest_rate = 4.5 if preferred else 6.5. Add +1.0 if requires_insurance. (None if not eligible)
+
+You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
+
+IMPORTANT: For multiple-choice questions, you MUST end your response with
+the word ANSWER: followed by exactly one capital letter (A, B, or C).
 Do not write anything after the letter.
 """
 
@@ -59,8 +81,8 @@ INITIAL_BELIEFS = {
 }
 
 TURNS = [
-    # Turn 1: update — baseline status check
     {
+        "entities": "loan",
         "beliefs": {},
         "question": "What is the application status and review queue?",
         "options": {
@@ -70,10 +92,10 @@ TURNS = [
         },
         "correct": "B",
     },
-    # Turn 2: update — debt ratio spikes to 0.35 (triggers insurance)
     {
+        "entities": "loan",
         "beliefs": {"applicant.debt_ratio": 0.35},
-        "question": "Does the loan require insurance, and what is the review queue?",
+        "question": "What is the required insurance status and review queue?",
         "options": {
             "A": "requires_insurance = True, review_queue = manual_review",
             "B": "requires_insurance = False, review_queue = auto_approve",
@@ -81,19 +103,19 @@ TURNS = [
         },
         "correct": "A",
     },
-    # Turn 3: maintain — credit score increases, but status remains approved
     {
+        "entities": "loan",
         "beliefs": {"applicant.credit_score": 740},
-        "question": "Did the application status change?",
+        "question": "What is the current application status?",
         "options": {
-            "A": "Yes, it changed to preferred_approved",
-            "B": "Yes, it changed to denied",
-            "C": "No, it remains approved",
+            "A": "preferred_approved",
+            "B": "denied",
+            "C": "approved",
         },
         "correct": "C",
     },
-    # Turn 4: update — co-signer added → rate tier improves to preferred, rate drops
     {
+        "entities": "loan",
         "beliefs": {"applicant.co_signer": True},
         "question": "What is the new base interest rate?",
         "options": {
@@ -103,19 +125,19 @@ TURNS = [
         },
         "correct": "A",
     },
-    # Turn 5: maintain — collateral added
     {
+        "entities": "loan",
         "beliefs": {"applicant.has_collateral": True},
-        "question": "Did the application status or base interest rate change?",
+        "question": "What are the final application status and base interest rate?",
         "options": {
-            "A": "No, status is still approved, rate is still 5.5",
-            "B": "Yes, status is now pending_manager_approval, rate is 5.5",
-            "C": "Yes, status is approved, rate is 4.5",
+            "A": "approved, 5.5",
+            "B": "pending_manager_approval, 5.5",
+            "C": "approved, 4.5",
         },
         "correct": "A",
     },
-    # Turn 6: combo (update/cascade collapse) — unemployed
     {
+        "entities": "loan",
         "beliefs": {"applicant.employment_status": "unemployed"},
         "question": "What is the application status and base interest rate?",
         "options": {
@@ -125,8 +147,8 @@ TURNS = [
         },
         "correct": "B",
     },
-    # Turn 7: reversal — employed again
     {
+        "entities": "loan",
         "beliefs": {"applicant.employment_status": "employed"},
         "question": "What is the maximum loan amount and application status?",
         "options": {
@@ -136,8 +158,8 @@ TURNS = [
         },
         "correct": "A",
     },
-    # Turn 8: update — dependents increase, pushes income below threshold
     {
+        "entities": "applicant, loan",
         "beliefs": {"applicant.dependents": 3},
         "question": "What is the adjusted income and application status?",
         "options": {
@@ -147,8 +169,8 @@ TURNS = [
         },
         "correct": "B",
     },
-    # Turn 9: maintain — loan amount requested increases, but already ineligible
     {
+        "entities": "loan",
         "beliefs": {"applicant.loan_amount_requested": 20_000},
         "question": "What is the application status?",
         "options": {
@@ -158,8 +180,8 @@ TURNS = [
         },
         "correct": "C",
     },
-    # Turn 10: update — income increases -> eligible again
     {
+        "entities": "loan",
         "beliefs": {"applicant.income": 7000},
         "question": "What is the application status?",
         "options": {
@@ -188,7 +210,7 @@ def build_mcq_query(turn: dict, entities: str = "applicant, loan") -> str:
     q = turn["question"] + "\n\nChoose exactly one:\n"
     for letter, text in turn["options"].items():
         q += f"  {letter}) {text}\n"
-    q += "\nRespond with REASONING then ANSWER: <letter>"
+    q += "\nRespond with REASONING then ANSWER: [Letter]"
 
     parts.append(f"[QUERY]\n{q}")
     return "\n\n".join(parts)
@@ -196,53 +218,113 @@ def build_mcq_query(turn: dict, entities: str = "applicant, loan") -> str:
 
 def log_none_answer(condition: str, turn: int, response: str) -> None:
     """Log the raw LLM response when answer extraction fails (returns None)."""
-    with open("failed_extractions.log", "a", encoding="utf-8") as f:
+    with open("evaluation/failed_extractions.log", "a", encoding="utf-8") as f:
         f.write(f"[{condition} - Turn {turn}]\n{response}\n{'-'*40}\n")
+
+
+def log_incorrect_answer(condition: str, turn: int, question: str, actual: str, expected: str, response: str) -> None:
+    """Log the question and full LLM reasoning when it outputs the wrong letter."""
+    with open("evaluation/incorrect_answers.log", "a", encoding="utf-8") as f:
+        f.write(f"[{condition} - Turn {turn}] LLM chose {actual}, Correct was {expected}\n")
+        f.write(f"QUESTION: {question}\n")
+        f.write(f"{response}\n{'-'*40}\n")
 
 
 def extract_answer(response: str) -> str | None:
     """Pull the letter (A/B/C) from the LLM response."""
-    m = re.search(r"ANSWER[:\s]+([A-C])", response, re.IGNORECASE)
+    # Scan for a standalone capital A, B, or C after the ANSWER: block
+    m = re.search(r"ANSWER[:\s]+.*?([A-C])\b", response, re.DOTALL)
     if m:
-        return m.group(1).upper()
-    # Fallback: last standalone letter
+        return m.group(1)
+    # Fallback: last standalone capital A, B, or C anywhere
     m = re.findall(r"\b([A-C])\b", response)
-    return m[-1].upper() if m else None
+    return m[-1] if m else None
+
+
+# ── Helpers ─────────────────────────────────────────────────────────
+
+def _get_entities(turn: dict) -> list[str]:
+    """Helper to parse the entities list from a turn."""
+    ents = turn.get("entities", "applicant, loan").split(", ")
+    return [e.strip() for e in ents]
+
+
+def _build_prompt(entities: list[str], new_beliefs_lines: list[str], beliefs_text: str | None, turn: dict) -> str:
+    """Helper to construct the structured evaluation prompt."""
+    parts = [f"[ENTITY]\n{', '.join(entities)}"]
+    
+    if new_beliefs_lines:
+        parts.append("[NEW BELIEF]\n" + "\n".join(new_beliefs_lines))
+    
+    if beliefs_text:
+        parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
+
+    q = turn["question"] + "\n\nChoose exactly one:\n"
+    for letter, text in turn["options"].items():
+        q += f"  {letter}) {text}\n"
+    q += "\nRespond with REASONING then ANSWER: [Letter]"
+    parts.append(f"[QUERY]\n{q}")
+    
+    return "\n\n".join(parts)
+
+
+def _log_and_print(condition: str, turn_idx: int, turn: dict, response: str) -> dict:
+    """Extract answer, log errors, and return result dict."""
+    answer = extract_answer(response)
+    if answer is None:
+        log_none_answer(condition, turn_idx, response)
+    
+    correct = turn["correct"]
+    hit = (answer == correct)
+    
+    if answer is not None and not hit:
+        log_incorrect_answer(condition, turn_idx, turn["question"], answer, correct, response)
+    
+    print(f"  Turn {turn_idx}: LLM={answer}  correct={correct}  {'✓' if hit else '✗'}")
+    
+    return {
+        "turn": turn_idx,
+        "answer": answer,
+        "correct": correct,
+        "hit": hit,
+        "response": response,
+    }
 
 
 def run_with_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
-    """Run all 10 turns WITH the belief store."""
-    import belief_store.engine as engine_mod
-    orig_prompt = engine_mod.SYSTEM_PROMPT
-    engine_mod.SYSTEM_PROMPT = EVAL_SYSTEM_PROMPT
-
-    store = BeliefStore()
-    setup_loan_domain(store)
-
-    # Seed initial beliefs
-    for k, v in INITIAL_BELIEFS.items():
-        store.add_hypothesis(k, v)
-
-    engine = ReasoningEngine(store, llm)
+    """Run all 10 turns WITH the belief store. Stateless (store is re-derived each turn)."""
     results = []
+    initial_lines = [f"{k} = {v}" for k, v in INITIAL_BELIEFS.items()]
 
     for i, turn in enumerate(turns):
-        query_text = build_mcq_query(turn)
-        response = engine.query(query_text)
-        answer = extract_answer(response)
-        if answer is None:
-            log_none_answer("WITH STORE", i + 1, response)
-        correct = turn["correct"]
-        results.append({
-            "turn": i + 1,
-            "answer": answer,
-            "correct": correct,
-            "hit": answer == correct,
-            "response": response,
-        })
-        print(f"  Turn {i+1}: LLM={answer}  correct={correct}  {'✓' if answer == correct else '✗'}")
+        # 1. Setup fresh store and resolve
+        store = BeliefStore()
+        setup_loan_domain(store)
+        
+        # Hydrate with initial + all cumulative beliefs up to now
+        for k, v in INITIAL_BELIEFS.items():
+            store.add_hypothesis(k, v)
+        for prev_idx in range(i + 1):
+            prev_turn = turns[prev_idx]
+            if prev_turn["beliefs"]:
+                for k, v in prev_turn["beliefs"].items():
+                    store.add_hypothesis(k, v)
 
-    engine_mod.SYSTEM_PROMPT = orig_prompt
+        entities = _get_entities(turn)
+        store.resolve_dirty(entities)
+        beliefs_text, _ = store.to_prompt(entities)
+
+        # 2. Build prompt
+        new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
+        full_prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
+        
+        # 3. Generate
+        response = llm.generate(EVAL_SYSTEM_PROMPT, full_prompt)
+
+        # 4. Result
+        res = _log_and_print("WITH STORE", i + 1, turn, response)
+        results.append(res)
+
     return results
 
 
@@ -259,8 +341,8 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
     initial_lines = [f"{k} = {v}" for k, v in INITIAL_BELIEFS.items()]
 
     for i, turn in enumerate(turns):
-        entities = ["applicant", "loan"]
-
+        entities = _get_entities(turn)
+        
         # 1. Update store
         if turn["beliefs"]:
             for key, value in turn["beliefs"].items():
@@ -269,92 +351,43 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
         store.resolve_dirty(entities)
         beliefs_text, _ = store.to_prompt(entities)
 
-        # 2. Build explicit prompt
-        parts = ["[ENTITY]\napplicant, loan"]
-
-        if i == 0:
-            parts.append("[NEW BELIEF]\n" + "\n".join(initial_lines))
-        elif turn["beliefs"]:
-            lines = [f"{k} = {v}" for k, v in turn["beliefs"].items()]
-            parts.append("[NEW BELIEF]\n" + "\n".join(lines))
-
-        parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
-
-        q = turn["question"] + "\n\nChoose exactly one:\n"
-        for letter, text in turn["options"].items():
-            q += f"  {letter}) {text}\n"
-        q += "\nRespond with REASONING then ANSWER: <letter>"
-        parts.append(f"[QUERY]\n{q}")
-
-        full_prompt = "\n\n".join(parts)
+        # 2. Build prompt
+        new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
+        full_prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
         
+        # 3. Chat
         messages.append({"role": "user", "content": full_prompt})
         response = llm.generate_with_history(messages)
         messages.append({"role": "assistant", "content": response})
 
-        answer = extract_answer(response)
-        if answer is None:
-            log_none_answer("WITH STORE (+History)", i + 1, response)
-        correct = turn["correct"]
-        results.append({
-            "turn": i + 1,
-            "answer": answer,
-            "correct": correct,
-            "hit": answer == correct,
-            "response": response,
-        })
-        print(f"  Turn {i+1}: LLM={answer}  correct={correct}  {'✓' if answer == correct else '✗'}")
+        # 4. Result
+        res = _log_and_print("WITH STORE (+History)", i + 1, turn, response)
+        results.append(res)
 
     return results
 
 
 def run_without_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
-    """Run all 10 turns WITHOUT the belief store, but WITH chat history.
-
-    The LLM sees no [RELEVANT BELIEFS] block, but the chat history is
-    preserved. It must rely entirely on its context window memory to track
-    beliefs across the 10 turns.
-    """
+    """Run all 10 turns WITHOUT the belief store, but WITH chat history."""
     results = []
-    messages = [{"role": "system", "content": EVAL_SYSTEM_PROMPT}]
-
+    messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
     initial_lines = [f"{k} = {v}" for k, v in INITIAL_BELIEFS.items()]
 
     for i, turn in enumerate(turns):
-        parts = ["[ENTITY]\napplicant, loan"]
-
-        if i == 0:
-            parts.append("[NEW BELIEF]\n" + "\n".join(initial_lines))
-        elif turn["beliefs"]:
-            lines = [f"{k} = {v}" for k, v in turn["beliefs"].items()]
-            parts.append("[NEW BELIEF]\n" + "\n".join(lines))
-
-        parts.append("[RELEVANT BELIEFS]\n(no belief store available)")
-
-        q = turn["question"] + "\n\nChoose exactly one:\n"
-        for letter, text in turn["options"].items():
-            q += f"  {letter}) {text}\n"
-        q += "\nRespond with REASONING then ANSWER: <letter>"
-        parts.append(f"[QUERY]\n{q}")
-
-        full_prompt = "\n\n".join(parts)
+        entities = ["applicant", "loan"]
         
+        # 1. Build prompt
+        new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
+        full_prompt = _build_prompt(entities, new_lines, None, turn)
+        
+        # 2. Chat
         messages.append({"role": "user", "content": full_prompt})
         response = llm.generate_with_history(messages)
         messages.append({"role": "assistant", "content": response})
 
-        answer = extract_answer(response)
-        if answer is None:
-            log_none_answer("NO STORE", i + 1, response)
-        correct = turn["correct"]
-        results.append({
-            "turn": i + 1,
-            "answer": answer,
-            "correct": correct,
-            "hit": answer == correct,
-            "response": response,
-        })
-        print(f"  Turn {i+1}: LLM={answer}  correct={correct}  {'✓' if answer == correct else '✗'}")
+        # 3. Result
+        res = _log_and_print("NO STORE", i + 1, turn, response)
+        results.append(res)
 
     return results
 
@@ -366,39 +399,24 @@ def main():
     print("Connecting to Ollama (gemma3:1b)...\n")
     llm = OllamaClient(model="gemma3:1b")
 
-    # Shuffle MCQ options so the correct answer isn't always A
-    shuffled_turns = []
-    for turn in TURNS:
-        opts = list(turn["options"].values())
-        correct_text = turn["options"][turn["correct"]]
-        random.shuffle(opts)
-        
-        new_options = {chr(65+i): opt for i, opt in enumerate(opts)}
-        new_correct = next(k for k, v in new_options.items() if v == correct_text)
-        
-        new_turn = dict(turn)
-        new_turn["options"] = new_options
-        new_turn["correct"] = new_correct
-        shuffled_turns.append(new_turn)
-
     print("=" * 60)
     print("CONDITION 1: WITH Store (Stateless)")
     print("=" * 60)
-    with_store = run_with_store(llm, shuffled_turns)
+    with_store = run_with_store(llm, TURNS)
     score_with = sum(r["hit"] for r in with_store)
 
     print()
     print("=" * 60)
     print("CONDITION 2: WITH Store (+Chat History)")
     print("=" * 60)
-    with_history = run_with_store_with_history(llm, shuffled_turns)
+    with_history = run_with_store_with_history(llm, TURNS)
     score_with_history = sum(r["hit"] for r in with_history)
 
     print()
     print("=" * 60)
     print("CONDITION 3: NO Store (+Chat History)")
     print("=" * 60)
-    no_store = run_without_store(llm, shuffled_turns)
+    no_store = run_without_store(llm, TURNS)
     score_no_store = sum(r["hit"] for r in no_store)
 
     # ── Report ───────────────────────────────────────────────────────

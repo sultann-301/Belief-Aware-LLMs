@@ -29,3 +29,9 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+# Evaluation Logs
+evaluation/*.log
+*.log
+evaluation/failed_extractions.log
+*.log

@@ -14,59 +14,45 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 import mcq_eval as ev
 from belief_store.llm_client import OllamaClient
 
-RUNS = 5
+RUNS = 10
 
-def shuffled(turns):
-    """Return a copy of TURNS with options shuffled so the correct letter varies."""
-    result = []
-    for turn in turns:
-        opts = list(turn["options"].values())
-        correct_text = turn["options"][turn["correct"]]
-        random.shuffle(opts)
-        new_options = {chr(65 + i): opt for i, opt in enumerate(opts)}
-        new_correct = next(k for k, v in new_options.items() if v == correct_text)
-        result.append({**turn, "options": new_options, "correct": new_correct})
-    return result
-
-
-def run_one(run_idx, llm):
-    """Run all 3 conditions for a single evaluation trial, conditions run in parallel."""
-    turns = shuffled(ev.TURNS)
-
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
-        f1 = pool.submit(ev.run_with_store, llm, turns)
-        f2 = pool.submit(ev.run_with_store_with_history, llm, turns)
-        f3 = pool.submit(ev.run_without_store, llm, turns)
-
-        r1 = f1.result()
-        r2 = f2.result()
-        r3 = f3.result()
-
-    s1 = sum(r["hit"] for r in r1)
-    s2 = sum(r["hit"] for r in r2)
-    s3 = sum(r["hit"] for r in r3)
-
-    print(f"✓ Run {run_idx:>2}: [1] {s1}/10 | [2] {s2}/10 | [3] {s3}/10")
-    return s1, s2, s3
 
 
 def main():
-    print(f"Connecting to Ollama (gemma3:1b)...\n")
+    print("Connecting to Ollama (gemma3:1b)...\n")
     llm = OllamaClient(model="gemma3:1b")
 
-    print(f"Launching {RUNS} runs (3 conditions per run, all conditions run concurrently)\n")
+    print(f"Launching {RUNS} runs ({RUNS * 3} total tasks in flat parallel pool of 4)\n")
     start = time.time()
 
     scores = [[], [], []]
+    turns = ev.TURNS
 
-    # Each run fires its 3 conditions in parallel internally; runs themselves also concurrent
-    with concurrent.futures.ThreadPoolExecutor(max_workers=RUNS) as pool:
-        futures = {pool.submit(run_one, i + 1, llm): i for i in range(RUNS)}
-        for future in concurrent.futures.as_completed(futures):
-            s1, s2, s3 = future.result()
-            scores[0].append(s1)
-            scores[1].append(s2)
-            scores[2].append(s3)
+    # Dispatch all (RUNS * 3) tasks into a single flat pool
+    tasks = []
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
+        future_to_task = {}
+        for i in range(RUNS):
+            idx = i + 1
+            future_to_task[pool.submit(ev.run_with_store, llm, turns)] = (idx, 0)
+            future_to_task[pool.submit(ev.run_with_store_with_history, llm, turns)] = (idx, 1)
+            future_to_task[pool.submit(ev.run_without_store, llm, turns)] = (idx, 2)
+
+        # Track completed runs (to print progress when all 3 conditions for a run are done)
+        run_results = {i+1: [None, None, None] for i in range(RUNS)}
+
+        for future in concurrent.futures.as_completed(future_to_task):
+            run_idx, condition_idx = future_to_task[future]
+            res = future.result()
+            hits = sum(r["hit"] for r in res)
+            
+            run_results[run_idx][condition_idx] = hits
+            scores[condition_idx].append(hits)
+
+            # If all 3 conditions for this run are finished, print the progress line
+            if all(v is not None for v in run_results[run_idx]):
+                s1, s2, s3 = run_results[run_idx]
+                print(f"✓ Run {run_idx:>2}: [1] {s1}/10 | [2] {s2}/10 | [3] {s3}/10")
 
     elapsed = time.time() - start
     n = len(scores[0])

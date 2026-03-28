@@ -230,3 +230,19 @@ class TestFullTurnCycle:
         engine.query(_structured(query="Now?"))
         assert store.get_value("loan.eligible") is True
         assert "approved" in mock.calls[1]["user_prompt"]
+    def test_retract_belief(self):
+        store, mock, engine = _make_engine()
+        
+        # Test 1: Add a belief
+        engine.query(_structured(beliefs="[ADD] applicant.income = 5000", query="Income?"))
+        assert store.get_value("applicant.income") == 5000
+        
+        # Test 2: Default mapping falls back to add
+        engine.query(_structured(beliefs="applicant.co_signer = True", query="Co-signer?"))
+        assert store.get_value("applicant.co_signer") is True
+        
+        # Test 3: Retract a belief natively
+        engine.query(_structured(beliefs="[RETRACT] applicant.income", query="Still have income?"))
+        assert store.get_value("applicant.income") is None
+        # It should physically pull it entirely from the store, cascading anything if hooked up
+        assert "applicant.income" not in store.beliefs
