@@ -15,9 +15,10 @@ The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Va
 | Capability | How |
 |---|---|
 | Basic contradiction detection | Income changes → old value conflicts with new |
-| Multi-hop revision | Income → income_eligible → loan_status → rate_tier (3 hops) |
+| Multi-hop revision | Income → adjusted_income → eligible → rate_tier (3 hops) |
 | Conjunctive rules | Eligibility requires ALL conditions in one rule |
 | Belief Maintain | Changing credit score should NOT affect employment status |
+| Stage-gated decisions | Distinguishing global eligibility (qualified applicant) from application-specific decisions (amount requested vs maximum allowed) |
 
 ### Attributes (KV Keys)
 
