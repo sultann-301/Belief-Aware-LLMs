@@ -111,17 +111,45 @@ R10: loan.base_interest_rate
 
 ### Dependency Chain
 
-```
-applicant.income ─────→ loan.adjusted_income ──→ loan.eligible ──→ loan.rate_tier ──→ loan.base_interest_rate
-applicant.dependents ─┘
-applicant.credit_score ──→ loan.credit_score_effective ──→ loan.eligible
-applicant.co_signer ──→                                ──→ loan.rate_tier
-applicant.debt_ratio ──→ loan.eligible
-applicant.employment_status ──→
-applicant.bankruptcy_history ──→
-applicant.debt_ratio ──→ loan.high_risk_flag ──→ loan.requires_insurance ──→ loan.base_interest_rate
-                        loan.eligible ──→ loan.max_amount ──→ loan.application_status ──→ loan.review_queue
-                        loan.high_risk_flag ────────────────────────────────────────────┘
+```mermaid
+graph LR
+    %% Base Inputs
+    income["applicant.income"] --> adj_inc["loan.adjusted_income"]
+    deps["applicant.dependents"] --> adj_inc
+    
+    cred["applicant.credit_score"] --> cred_eff["loan.credit_score_effective"]
+    cosign["applicant.co_signer"] --> cred_eff
+    
+    debt["applicant.debt_ratio"] --> high_risk["loan.high_risk_flag"]
+    debt --> elig["loan.eligible"]
+    
+    emp["applicant.employment_status"] --> elig
+    bank["applicant.bankruptcy_history"] --> elig
+    dur["applicant.employment_duration_months"] --> elig
+    min_rules["loan.min_income, loan.min_credit..."] --> elig
+    
+    %% Intermediate connections
+    adj_inc --> elig
+    cred_eff --> elig
+    cred_eff --> rate["loan.rate_tier"]
+    
+    %% Layer 2 derived
+    elig --> rate
+    elig --> max_amt["loan.max_amount"]
+    elig --> app_stat["loan.application_status"]
+    
+    collat["applicant.has_collateral"] --> max_amt
+    req_amt["applicant.loan_amount_requested"] --> app_stat
+    max_amt --> app_stat
+    
+    high_risk --> req_ins["loan.requires_insurance"]
+    high_risk --> rev_q["loan.review_queue"]
+    app_stat --> req_ins
+    app_stat --> rev_q
+    
+    %% Final Layer
+    rate --> base_rate["loan.base_interest_rate"]
+    req_ins --> base_rate
 ```
 
 ### Example Revision Scenario
