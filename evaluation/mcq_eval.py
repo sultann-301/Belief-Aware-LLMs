@@ -40,16 +40,16 @@ BASELINE_SYSTEM_PROMPT = """\
 You are a reasoning assistant evaluating a loan application over a conversation. 
 You must calculate the exact application state by strictly applying these 10 rules:
 
-1. adjusted_income = income - (dependents * 500)
-2. credit_score_effective = credit_score + (50 if co_signer else 0)
-3. high_risk_flag = True if debt_ratio >= 0.3 else False
-4. eligible = True ONLY IF adjusted_income >= min_income AND credit_score_effective >= min_credit AND debt_ratio < max_debt_ratio AND employment_status != 'unemployed' AND NOT (bankruptcy_history == True AND employment_duration_months < 24)
-5. rate_tier = "preferred" if credit_score_effective >= 750 else "standard" (None if not eligible)
-6. max_amount = 100000 if has_collateral else 30000 (0 if not eligible)
-7. application_status = "approved" if eligible and loan_amount_requested <= max_amount. Otherwise "denied_amount_exceeded" or "denied_ineligible"
-8. requires_insurance = True if high_risk_flag AND application_status == "approved" else False
-9. review_queue = "manual_review" if high_risk_flag else "auto_approve" ("rejected" if denied)
-10. base_interest_rate = 4.5 if preferred else 6.5. Add +1.0 if requires_insurance. (None if not eligible)
+1. loan.adjusted_income = applicant.income - (applicant.dependents * 500)
+2. loan.credit_score_effective = applicant.credit_score + (50 if applicant.co_signer else 0)
+3. loan.high_risk_flag = True if applicant.debt_ratio >= 0.3 else False
+4. loan.eligible = True ONLY IF loan.adjusted_income >= loan.min_income AND loan.credit_score_effective >= loan.min_credit AND applicant.debt_ratio < loan.max_debt_ratio AND applicant.employment_status != 'unemployed' AND NOT (applicant.bankruptcy_history == True AND applicant.employment_duration_months < 24)
+5. loan.rate_tier = "preferred" if loan.credit_score_effective >= 750 else "standard" (None if not loan.eligible)
+6. loan.max_amount = 100000 if applicant.has_collateral else 30000 (0 if not loan.eligible)
+7. loan.application_status = "approved" if loan.eligible and applicant.loan_amount_requested <= loan.max_amount. Otherwise "denied_amount_exceeded" or "denied_ineligible"
+8. loan.requires_insurance = True if loan.high_risk_flag AND loan.application_status == "approved" else False
+9. loan.review_queue = "manual_review" if loan.high_risk_flag else "auto_approve" ("rejected" if denied)
+10. loan.base_interest_rate = 4.5 if loan.rate_tier == "preferred" else 6.5. Add +1.0 if loan.requires_insurance. (None if not loan.eligible)
 
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
@@ -218,13 +218,15 @@ def build_mcq_query(turn: dict, entities: str = "applicant, loan") -> str:
 
 def log_none_answer(condition: str, turn: int, response: str) -> None:
     """Log the raw LLM response when answer extraction fails (returns None)."""
-    with open("evaluation/failed_extractions.log", "a", encoding="utf-8") as f:
+    log_file = os.path.join(os.path.dirname(__file__), "failed_extractions.log")
+    with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{condition} - Turn {turn}]\n{response}\n{'-'*40}\n")
 
 
 def log_incorrect_answer(condition: str, turn: int, question: str, actual: str, expected: str, response: str) -> None:
     """Log the question and full LLM reasoning when it outputs the wrong letter."""
-    with open("evaluation/incorrect_answers.log", "a", encoding="utf-8") as f:
+    log_file = os.path.join(os.path.dirname(__file__), "incorrect_answers.log")
+    with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{condition} - Turn {turn}] LLM chose {actual}, Correct was {expected}\n")
         f.write(f"QUESTION: {question}\n")
         f.write(f"{response}\n{'-'*40}\n")
