@@ -310,23 +310,35 @@ R10: clinic.billing_tier
 ```mermaid
 graph TD
     %% Atmospheric Drivers
-    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["compound.phase"]
+    Atmos_Gas["atmosphere.dominant_gas"] --> ZPhase["zyxostin.phase"]
+    Atmos_Gas --> FPhase["filinan.phase"]
+    Atmos_Gas --> SPhase["snevox.phase"]
     Atmos_Gas --> Quar["patient.quarantine_required"]
     Atmos_Press["atmosphere.ambient_pressure"] --> Integrity["patient.organ_integrity"]
 
     %% Biological Inputs
     Species["patient.organism_type"] --> Integrity
     Species --> Quar
-    Species --> Hazards["compound.hazard"]
+    Species --> ZHazard["zyxostin.hazard"]
+    Species --> FHazard["filinan.hazard"]
+    Species --> SHazard["snevox.hazard"]
 
-    %% Treatment Inputs
-    Phase --> Hazards
-    Integrity --> Hazards
+    %% Compound specific evaluations
+    ZPhase --> ZHazard
+    FPhase --> FHazard
+    SPhase --> SHazard
+    
+    Integrity --> ZHazard
+    Integrity --> FHazard
+    Integrity --> SHazard
+    
     Integrity --> Dur["treatment.duration_cycles"]
 
     %% Selection & Cascades
     Species --> Selection["treatment.active_prescription"]
-    Hazards --> Selection
+    ZHazard --> Selection
+    FHazard --> Selection
+    SHazard --> Selection
     Selection --> SideEffect["patient.sensory_status"]
     Selection --> Dur
 
