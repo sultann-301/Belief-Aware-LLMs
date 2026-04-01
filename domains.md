@@ -258,6 +258,25 @@ R5: patient.sensory_status
       IF active_prescription == tertiary_option → "telepathic"
       ELSE → "normal"
 ```
+### Dependency Chain
+```mermaid
+graph TD
+    %% Atmospheric Drivers
+    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["treatment.molecular_phase"]
+    Atmos_Press["atmosphere.ambient_pressure"] --> Integrity["patient.organ_integrity"]
+
+    %% Biological Inputs
+    Species["patient.organism_type"] --> Integrity
+    Species --> Hazards["medical.hazard_checks"]
+
+    %% Treatment Inputs
+    Options["Treatment Options (A, B, C)"] --> Hazards
+    Phase --> Hazards
+    Integrity --> Hazards
+
+    %% Selection & Side Effects
+    Hazards --> Selection["treatment.active_prescription"]
+    Selection --> SideEffect["patient.sensory_status"]
 ## Domain 3: Crime Scene Investigation
 
 ### Purpose
