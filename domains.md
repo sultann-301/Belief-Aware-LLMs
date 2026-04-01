@@ -46,7 +46,7 @@ The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Va
 
 All conditions are consolidated per output key — no rule priority conflicts.
 
-```
+```python
 R1: loan.eligible
     inputs: [loan.adjusted_income, loan.credit_score_effective, applicant.debt_ratio,
              applicant.employment_status, applicant.bankruptcy_history,
@@ -297,7 +297,7 @@ Tests **deep revision chains** and **cascading retraction**. All facts are ficti
 
 ### Rules
 
-```
+```python
 R1: suspect_a.status
     inputs: [suspect_a.evidence_at_scene, suspect_a.alibi,
              suspect_a.motive, suspect_a.access_to_weapon, suspect_a.cleared_by_weapon]
@@ -433,7 +433,7 @@ The **Thorncrester** (*Spinocristatus fictus*) is a fictional bird native to the
 
 ### Rules
 
-```
+```python
 R1: thorncrester.primary_prey
     inputs: [thorncrester.diet, thorncrester.habitat]
     logic:
