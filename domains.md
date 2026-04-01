@@ -175,7 +175,7 @@ t=2: resolve_all_dirty():
 
 ---
 
-## Domain 5: Zylosian Xenomedicine
+## Domain 2: Zylosian Xenomedicine
 
 ### Purpose
 
