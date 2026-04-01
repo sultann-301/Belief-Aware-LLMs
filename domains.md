@@ -257,6 +257,7 @@ R5: patient.sensory_status
       # Side effect of the "Last Resort" treatment
       IF active_prescription == tertiary_option → "telepathic"
       ELSE → "normal"
+```
 ## Domain 3: Crime Scene Investigation
 
 ### Purpose
