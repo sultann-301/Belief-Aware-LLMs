@@ -277,6 +277,7 @@ graph TD
     %% Selection & Side Effects
     Hazards --> Selection["treatment.active_prescription"]
     Selection --> SideEffect["patient.sensory_status"]
+```
 ## Domain 3: Crime Scene Investigation
 
 ### Purpose
