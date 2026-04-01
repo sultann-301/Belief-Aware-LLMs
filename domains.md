@@ -201,7 +201,9 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
 | `atmosphere.dominant_gas` | str | chlorine, methane, xenon | Environmental sensors |
 | `treatment.active_prescription` | str | Zyxostin-8, Filinan-12, Snevox-3, none | Derived selection (R4) |
-| `treatment.molecular_phase` | str | crystalline, vapor, plasma | Derived from gas (R2) |
+| `treatment.phase_zyxostin` | str | crystalline, plasma | Derived from gas (R2) |
+| `treatment.phase_filinan` | str | vapor, plasma | Derived from gas (R2) |
+| `treatment.phase_snevox` | str | liquid, vapor | Derived from gas (R2) |
 | `medical.hazard_zyxostin` | bool | True, False | Safety check for Zyxostin-8 |
 | `medical.hazard_filinan` | bool | True, False | Safety check for Filinan-12 |
 | `medical.hazard_snevox` | bool | True, False | Safety check for Snevox-3 |
@@ -222,16 +224,19 @@ R1: patient.organ_integrity
     IF ambient_pressure > 3.0 → "brittle"
     ELSE → "stable"
 
-R2: treatment.molecular_phase
+R2: treatment.phase_{compound} (Calculated 3x: for Zyxostin-8, Filinan-12, Snevox-3)
   inputs: [atmosphere.dominant_gas]
   logic: |
-    IF dominant_gas == "methane" → "plasma"
-    IF dominant_gas == "xenon" → "vapor"
-    IF dominant_gas == "chlorine" → "liquid"
-    ELSE → "crystalline"
+    # Evaluate for a given `compound`:
+    IF compound == "Zyxostin-8":
+      IF dominant_gas == "methane" → "plasma", ELSE → "crystalline"
+    IF compound == "Filinan-12":
+      IF dominant_gas == "xenon" → "vapor", ELSE → "plasma"
+    IF compound == "Snevox-3":
+      IF dominant_gas == "chlorine" → "liquid", ELSE → "vapor"
 
 R3: medical.hazard_{compound} (Calculated 3x: for Zyxostin-8, Filinan-12, Snevox-3)
-  inputs: [patient.organism_type, treatment.molecular_phase, patient.organ_integrity]
+  inputs: [patient.organism_type, treatment.phase_{compound}, patient.organ_integrity]
   logic: |
     # Evaluate for a given `compound`:
     # 1. EXPLODE CONSTRAINTS
@@ -240,8 +245,8 @@ R3: medical.hazard_{compound} (Calculated 3x: for Zyxostin-8, Filinan-12, Snevox
     IF organism_type == "Qwerl" AND compound == "Snevox-3" → "LETHAL"
     
     # 2. State-Based
-    IF molecular_phase == "plasma" AND compound == "Filinan-12" → "LETHAL"
-    IF molecular_phase == "vapor" AND compound == "Filinan-12" AND organism_type == "Qwerl" → "LETHAL"
+    IF treatment.phase_{compound} == "plasma" AND compound == "Filinan-12" → "LETHAL"
+    IF treatment.phase_{compound} == "vapor" AND compound == "Snevox-3" AND organism_type == "Qwerl" → "LETHAL"
     
     # 3. Condition-Based
     IF organ_integrity == "volatile" → "LETHAL"
@@ -306,7 +311,7 @@ R10: clinic.billing_tier
 ```mermaid
 graph TD
     %% Atmospheric Drivers
-    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["treatment.molecular_phase"]
+    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["treatment.phase_{compound}"]
     Atmos_Gas --> Quar["patient.quarantine_required"]
     Atmos_Press["atmosphere.ambient_pressure"] --> Integrity["patient.organ_integrity"]
 
@@ -342,10 +347,10 @@ graph TD
 ```yaml
 t=0: organism_type = "Glerps", ambient_pressure = 3.0, dominant_gas = "methane"
      → R1: 3.0 < 4.0 → organ_integrity = "brittle"
-     → R2: methane → molecular_phase = "plasma"
+     → R2: methane → phase_zyxostin = "plasma", phase_filinan = "plasma", phase_snevox = "vapor"
      → R3: (Zyxostin hazard) Glerps + Zyxostin-8 = LETHAL
-     → R3: (Filinan hazard) plasma + Filinan-12 = LETHAL
-     → R3: (Snevox hazard) safe
+     → R3: (Filinan hazard) phase=plasma + Filinan-12 = LETHAL
+     → R3: (Snevox hazard) safe (vapor is safe for Glerps)
      → R4: Glerps logic (Prefers Filinan → Zyxostin → Snevox). Top two are Lethal.
           → active_prescription = "Snevox-3"
      → R5: active_prescription is Snevox-3 → sensory_status = "telepathic"
