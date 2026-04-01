@@ -13,7 +13,7 @@ class BeliefStore:
         self.dependencies: dict[str, list[str]] = {}
         self.dirty: set[str] = set()
         self.revision_log: list[dict[str, Any]] = []
-        self.derivation_rules: list[dict[str, Any]] = []
+        self.rule_index: dict[str, dict[str, Any]] = {}  # output_key → rule
 
     def entity_of(self, key: str) -> str:
         """Extract the entity name from a belief key."""
@@ -63,12 +63,11 @@ class BeliefStore:
         derive_fn: Callable[[dict[str, Any]], Any],
     ) -> None:
         """Register a derivation rule and wire up the dependency graph."""
-        self.derivation_rules.append({
+        self.rule_index[output_key] = {
             "name": name,
             "inputs": inputs,
-            "output_key": output_key,
             "derive_fn": derive_fn,
-        })
+        }
         self.dependencies[output_key] = inputs
 
     def _propagate_dirty(self, key: str) -> None:
@@ -94,23 +93,23 @@ class BeliefStore:
             for dep in self.dependencies.get(key, []):
                 if dep in self.dirty:
                     resolve(dep)
-            for rule in self.derivation_rules:
-                if rule["output_key"] == key:
-                    input_values = {k: self.beliefs[k][0] for k in rule["inputs"]}
-                    old_belief_entry = self.beliefs.get(key)
-                    old_value = old_belief_entry[0] if old_belief_entry is not None else None
-                    new_value = rule["derive_fn"](input_values)
-                    self.beliefs[key] = (new_value, True)
-                    self.dirty.discard(key)
-                    resolved.add(key)
-                    self.revision_log.append({
-                        "action": "derived",
-                        "key": key,
-                        "old": old_value,
-                        "new": new_value,
-                        "reason": f"rule: {rule['name']}",
-                    })
-                    return
+            rule = self.rule_index.get(key)
+            if rule:
+                input_values = {k: self.beliefs[k][0] for k in rule["inputs"]}
+                old_belief_entry = self.beliefs.get(key)
+                old_value = old_belief_entry[0] if old_belief_entry is not None else None
+                new_value = rule["derive_fn"](input_values)
+                self.beliefs[key] = (new_value, True)
+                self.dirty.discard(key)
+                resolved.add(key)
+                self.revision_log.append({
+                    "action": "derived",
+                    "key": key,
+                    "old": old_value,
+                    "new": new_value,
+                    "reason": f"rule: {rule['name']}",
+                })
+                return
 
         # Only resolve dirty keys that belong to the requested entities
         for key in list(self.dirty):
@@ -158,5 +157,5 @@ class BeliefStore:
     def __repr__(self) -> str:
         return (
             f"BeliefStore(beliefs={len(self.beliefs)}, "
-            f"dirty={len(self.dirty)}, rules={len(self.derivation_rules)})"
+            f"dirty={len(self.dirty)}, rules={len(self.rule_index)})"
         )

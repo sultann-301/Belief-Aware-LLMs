@@ -262,6 +262,69 @@ class TestBeliefMaintain:
 # =====================================================================
 
 
+class TestRuleIndex:
+
+    def test_rule_index_populated_on_add_rule(self, store):
+        """rule_index maps output_key → rule dict after add_rule."""
+        store.add_rule(
+            name="test_rule",
+            inputs=["x.a", "x.b"],
+            output_key="x.out",
+            derive_fn=lambda v: v["x.a"] + v["x.b"],
+        )
+        assert "x.out" in store.rule_index
+        assert store.rule_index["x.out"]["name"] == "test_rule"
+        assert store.rule_index["x.out"]["inputs"] == ["x.a", "x.b"]
+        assert callable(store.rule_index["x.out"]["derive_fn"])
+
+    def test_rule_index_does_not_store_output_key_field(self, store):
+        """output_key is the dict key itself — not redundantly stored inside the rule."""
+        store.add_rule(
+            name="r", inputs=["a.x"], output_key="b.y", derive_fn=lambda v: v["a.x"]
+        )
+        assert "output_key" not in store.rule_index["b.y"]
+
+    def test_rule_index_overwrite_on_duplicate_registration(self, store):
+        """Re-registering a rule for the same output_key replaces the old entry."""
+        store.add_rule("v1", ["a.x"], "b.y", lambda v: 1)
+        store.add_rule("v2", ["a.x"], "b.y", lambda v: 2)
+
+        assert len(store.rule_index) == 1
+        assert store.rule_index["b.y"]["name"] == "v2"
+
+    def test_repr_reflects_rule_index_count(self, loan_store):
+        """__repr__ uses rule_index length, not a deleted derivation_rules list."""
+        expected_rules = len(loan_store.rule_index)
+        assert f"rules={expected_rules}" in repr(loan_store)
+
+    def test_loan_domain_rules_all_indexed(self, loan_store):
+        """Every loan rule has an entry in rule_index after setup_loan_domain."""
+        expected_outputs = {
+            "loan.adjusted_income",
+            "loan.credit_score_effective",
+            "loan.high_risk_flag",
+            "loan.eligible",
+            "loan.rate_tier",
+            "loan.max_amount",
+            "loan.application_status",
+        }
+        assert expected_outputs.issubset(loan_store.rule_index.keys())
+
+    def test_derivation_uses_rule_index(self, store):
+        """resolve_dirty correctly derives a value via the rule_index lookup."""
+        store.add_rule(
+            name="sum_rule",
+            inputs=["x.a", "x.b"],
+            output_key="x.out",
+            derive_fn=lambda v: v["x.a"] + v["x.b"],
+        )
+        store.add_hypothesis("x.a", 3)
+        store.add_hypothesis("x.b", 7)
+        store.resolve_all_dirty()
+
+        assert store.get_value("x.out") == 10
+
+
 class TestRetractionCascade:
 
     def test_retract_income_cascades(self, resolved_loan_store):

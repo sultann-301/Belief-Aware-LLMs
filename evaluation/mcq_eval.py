@@ -36,10 +36,19 @@ the word ANSWER: followed by exactly one capital letter (A, B, or C).
 Do not write anything after the letter.
 """
 
+# Lean system prompt for the baseline — rules are injected per-turn instead.
 BASELINE_SYSTEM_PROMPT = """\
-You are a reasoning assistant evaluating a loan application over a conversation. 
-You must calculate the exact application state by strictly applying these 10 rules:
+You are a reasoning assistant evaluating facts over a conversation.
+You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
+IMPORTANT: For multiple-choice questions, you MUST end your response with
+the word ANSWER: followed by exactly one capital letter (A, B, or C).
+Do not write anything after the letter.
+"""
+
+# The 10 deterministic loan-domain rules injected into every baseline prompt.
+LOAN_RULES = """\
+[RULES]
 1. loan.adjusted_income = applicant.income - (applicant.dependents * 500)
 2. loan.credit_score_effective = applicant.credit_score + (50 if applicant.co_signer else 0)
 3. loan.high_risk_flag = True if applicant.debt_ratio >= 0.3 else False
@@ -50,12 +59,6 @@ You must calculate the exact application state by strictly applying these 10 rul
 8. loan.requires_insurance = True if loan.high_risk_flag AND loan.application_status == "approved" else False
 9. loan.review_queue = "manual_review" if loan.high_risk_flag else "auto_approve" ("rejected" if denied)
 10. loan.base_interest_rate = 4.5 if loan.rate_tier == "preferred" else 6.5. Add +1.0 if loan.requires_insurance. (None if not loan.eligible)
-
-You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
-
-IMPORTANT: For multiple-choice questions, you MUST end your response with
-the word ANSWER: followed by exactly one capital letter (A, B, or C).
-Do not write anything after the letter.
 """
 
 
@@ -369,19 +372,41 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
     return results
 
 
+def _build_baseline_prompt(entities: list[str], new_beliefs_lines: list[str], turn: dict) -> str:
+    """Build the baseline prompt with the loan rules injected directly into each turn."""
+    parts = [LOAN_RULES]
+    parts.append(f"[ENTITY]\n{', '.join(entities)}")
+
+    if new_beliefs_lines:
+        parts.append("[NEW BELIEF]\n" + "\n".join(new_beliefs_lines))
+
+    q = turn["question"] + "\n\nChoose exactly one:\n"
+    for letter, text in turn["options"].items():
+        q += f"  {letter}) {text}\n"
+    q += "\nRespond with REASONING then ANSWER: [Letter]"
+    parts.append(f"[QUERY]\n{q}")
+
+    return "\n\n".join(parts)
+
+
 def run_without_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
-    """Run all 10 turns WITHOUT the belief store, but WITH chat history."""
+    """Run all 10 turns WITHOUT the belief store, but WITH chat history.
+    
+    The loan-domain rules are injected directly into every user-turn prompt
+    rather than being hidden in the system prompt, making this a fairer
+    in-context reasoning baseline.
+    """
     results = []
     messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
     initial_lines = [f"{k} = {v}" for k, v in INITIAL_BELIEFS.items()]
 
     for i, turn in enumerate(turns):
         entities = ["applicant", "loan"]
-        
-        # 1. Build prompt
+
+        # 1. Build prompt — rules are included in every turn via _build_baseline_prompt
         new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-        full_prompt = _build_prompt(entities, new_lines, None, turn)
-        
+        full_prompt = _build_baseline_prompt(entities, new_lines, turn)
+
         # 2. Chat
         messages.append({"role": "user", "content": full_prompt})
         response = llm.generate_with_history(messages)
