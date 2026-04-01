@@ -175,128 +175,88 @@ t=2: resolve_all_dirty():
 
 ---
 
-## Domain 2: Employee Compliance & Role Eligibility
+## Domain 5: Zylosian Xenomedicine
 
 ### Purpose
 
-Tests **multi-prerequisite rules** and **cascading chains** from certification/training status changes. Temporal changes (cert expiry, training overdue) are simulated by the test harness directly updating the relevant keys.
+The **high-stakes safety domain**. It evaluates the system's ability to handle "Hard Stop" constraints where specific combinations of attributes result in catastrophic failure (lethal reactions). It tests the navigation of a prioritized fallback list and the recognition of non-lethal side effects when "Last Resort" protocols are triggered. The setting of this domain is an intergalactic clinic, providing treatments for various alien species.
 
 ### What It Tests
 
 | Capability | How |
 |---|---|
-| Multi-hop chains | Cert expires → can_operate = false → project suspended |
-| Independent belief maintenance | Revoking one cert should NOT affect unrelated clearances |
-| Conjunctive rules with 3+ inputs | Role eligibility requires training + cert + experience |
-| Simulated temporal changes | Test harness updates cert/training status to simulate time |
+| **Zero Parametric Leakage** | Fictional species and compounds ensure no reliance on training data. |
+| **Safety-First Retraction** | Retracting a primary treatment immediately when a "Lethal" pairing is identified. |
+| **Triangulated Dependency** | Atmosphere affects both the patient (integrity) and the treatment (phase). |
+| **Hierarchical Recovery** | Navigating a preference order (Primary → Secondary → Tertiary) based on safety flags. |
+| **Side-Effect Propagation** | Updating patient state (e.g., sensory status) when forced to use fallback options. |
 
 ### Attributes (KV Keys)
 
 | Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `employee.certification_safety` | str | valid, expired | Test harness simulates expiry |
-| `employee.certification_cpa` | str | valid, expired | Test harness simulates expiry |
-| `employee.training_hazmat` | str | completed, not_completed | Test harness simulates overdue |
-| `employee.training_ethics` | str | completed, not_completed | Annual cycle |
-| `employee.training_compliance` | str | completed, not_completed | Annual cycle |
-| `employee.clearance_level` | str | none, basic, confidential, secret | Background checks |
-| `employee.years_experience` | numeric | 1, 5 | Role changes |
-| `employee.performance_rating` | str | exceeds, meets, below | Annual review |
-| `employee.disciplinary_action` | bool | true, false | Incidents |
-| `employee.background_check` | str | passed, pending, failed | Investigation results |
-| `employee.department` | str | engineering, finance | Transfers |
-| `employee.manager_approval_remote` | bool | true, false | Manager grants/revokes |
-| `employee.manager_approval_promotion` | bool | true, false | Manager performance review |
-| `employee.probation_status` | bool | true, false | Disciplinary board |
-| `employee.security_clearance_active` | bool | true, false | Background checks |
+| `patient.organism_type` | str | Sylph, Golem, Xylid | Genetic identification |
+| `patient.organ_integrity` | str | stable, brittle, volatile | Derived from pressure (R1) |
+| `patient.sensory_status` | str | normal, telepathic | Derived from side effects (R5) |
+| `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
+| `atmosphere.dominant_gas` | str | neon, methane, xenon | Environmental sensors |
+| `treatment.primary_option` | str | Aether-7 | Protocol A |
+| `treatment.secondary_option` | str | Veda-12 | Protocol B |
+| `treatment.tertiary_option` | str | Core-Solvent | Protocol C |
+| `treatment.active_prescription` | str | Aether-7, Core-Solvent | Derived selection (R4) |
+| `treatment.molecular_phase` | str | crystalline, vapor, plasma | Derived from gas (R2) |
+| `medical.hazard_primary` | str | safe, LETHAL | Safety check for Plan A |
+| `medical.hazard_secondary` | str | safe, LETHAL | Safety check for Plan B |
+| `medical.hazard_tertiary` | str | safe, LETHAL | Safety check for Plan C |
 
 ### Rules
 
-```
-R1: employee.can_operate_heavy_machinery
-    inputs: [employee.certification_safety, employee.training_hazmat]
-    logic:  certification_safety = "valid" AND training_hazmat = "completed"
+```python
+R1: patient.organ_integrity
+    inputs: [atmosphere.ambient_pressure, patient.organism_type]
+    logic:
+      IF ambient_pressure > 4.0 AND organism_type == "Sylph" → "volatile"
+      IF ambient_pressure > 3.0 → "brittle"
+      ELSE → "stable"
 
-R2: employee.project_factory_floor
-    inputs: [employee.can_operate_heavy_machinery]
-    logic:  "assigned" if can_operate = True, else "suspended"
+R2: treatment.molecular_phase
+    inputs: [atmosphere.dominant_gas, treatment.active_prescription]
+    logic:
+      IF dominant_gas == "methane" → "plasma"
+      IF dominant_gas == "xenon" AND active_prescription == "Veda-12" → "vapor"
+      ELSE → "crystalline"
 
-R3: employee.eligible_senior_analyst
-    inputs: [employee.security_clearance_active, employee.years_experience]
-    logic:  security_clearance_active = True AND years_experience >= 3
+R3: medical.hazard_check (Calculated for each option)
+    inputs: [patient.organism_type, active_compound, 
+             treatment.molecular_phase, patient.organ_integrity]
+    logic:
+      # THE "EXPLODE" CONSTRAINTS (Deterministic Invalidation)
+      IF organism_type == "Sylph" AND active_compound == "Aether-7" → "LETHAL"
+      IF organism_type == "Golem" AND active_compound == "Veda-12" → "LETHAL"
+      IF organism_type == "Xylid" AND active_compound == "Core-Solvent" → "LETHAL"
+      
+      # State-Based Hazards
+      IF molecular_phase == "plasma" AND active_compound == "Veda-12" → "LETHAL"
+      
+      # Condition-Based Hazards
+      IF organ_integrity == "volatile" AND active_compound != "none" → "LETHAL"
+      ELSE → "safe"
 
-R4: employee.compliance_status
-    inputs: [employee.training_ethics, employee.training_compliance]
-    logic:  "compliant" if both = "completed", else "non_compliant"
+R4: treatment.active_prescription
+    inputs: [medical.hazard_primary, medical.hazard_secondary, medical.hazard_tertiary,
+             treatment.primary_option, treatment.secondary_option, treatment.tertiary_option]
+    logic:
+      IF medical.hazard_primary == "safe" → primary_option
+      IF medical.hazard_secondary == "safe" → secondary_option
+      IF medical.hazard_tertiary == "safe" → tertiary_option
+      ELSE → "none"
 
-R5: employee.promotion_eligible
-    inputs: [employee.compliance_status, employee.performance_rating,
-             employee.disciplinary_action]
-    logic:  compliance_status = "compliant"
-            AND performance_rating != "below"
-            AND disciplinary_action = False
-
-R6: employee.eligible_financial_auditor
-    inputs: [employee.department, employee.certification_cpa]
-    logic:  department = "finance" AND certification_cpa = "valid"
-
-R7: employee.remote_work_approved
-    inputs: [employee.manager_approval_remote, employee.performance_rating]
-    logic:  manager_approval_remote = True AND performance_rating = "exceeds"
-
-R8: employee.probation_status
-    inputs: [employee.disciplinary_action, employee.years_experience]
-    logic: IF disciplinary_action = True OR years_experience < 1 → True, ELSE False
-
-R9: employee.security_clearance_active
-    inputs: [employee.clearance_level, employee.background_check]
-    logic: IF clearance_level != "none" AND background_check = "passed" → True, ELSE False
-
-R10: employee.eligible_for_management
-    inputs: [employee.promotion_eligible, employee.probation_status, employee.years_experience, employee.manager_approval_promotion]
-    logic: IF promotion_eligible = True AND probation_status = False AND years_experience >= 5 AND manager_approval_promotion = True → True, ELSE False
-```
-
-### Dependency Chain
-
-```
-employee.certification_safety ──→ employee.can_operate_heavy_machinery ──→ employee.project_factory_floor
-employee.training_hazmat ──→
-
-employee.training_ethics ──→ employee.compliance_status ──→ employee.promotion_eligible ──→ employee.eligible_for_management
-employee.training_compliance ──→
-employee.performance_rating ──→
-employee.disciplinary_action ──→ employee.probation_status ──→ employee.eligible_for_management
-employee.years_experience ───→ employee.eligible_senior_analyst
-                           └─→ employee.eligible_for_management
-                           └─→ employee.probation_status
-employee.manager_approval_promotion ──→ employee.eligible_for_management
-employee.clearance_level ──→ employee.security_clearance_active ──→ employee.eligible_senior_analyst
-employee.background_check ──→ employee.security_clearance_active
-```
-
-### Example Revision Scenario
-
-```
-t=0: certification_safety = "valid", training_hazmat = "completed"
-     → R1: can_operate = True
-     → R2: project_factory_floor = "assigned"
-
-t=1: Test harness simulates cert expiry:
-     employee.certification_safety = "expired"
-     → dirty: {can_operate_heavy_machinery, project_factory_floor}
-
-t=2: resolve_all_dirty():
-     → R1: expired ≠ valid → can_operate = False
-     → R2: can_operate = False → project = "suspended"
-
-t=3: Employee renews cert:
-     employee.certification_safety = "valid"
-     → dirty again → resolve → can_operate = True → project = "assigned"
-```
-
----
-
+R5: patient.sensory_status
+    inputs: [treatment.active_prescription, treatment.tertiary_option]
+    logic:
+      # Side effect of the "Last Resort" treatment
+      IF active_prescription == tertiary_option → "telepathic"
+      ELSE → "normal"
 ## Domain 3: Crime Scene Investigation
 
 ### Purpose

@@ -293,9 +293,10 @@ class TestRuleIndex:
         assert store.rule_index["b.y"]["name"] == "v2"
 
     def test_repr_reflects_rule_index_count(self, loan_store):
-        """__repr__ uses rule_index length, not a deleted derivation_rules list."""
+        """__repr__ uses rule_index length and shows removed count."""
         expected_rules = len(loan_store.rule_index)
         assert f"rules={expected_rules}" in repr(loan_store)
+        assert "removed=" in repr(loan_store)
 
     def test_loan_domain_rules_all_indexed(self, loan_store):
         """Every loan rule has an entry in rule_index after setup_loan_domain."""
@@ -328,28 +329,31 @@ class TestRuleIndex:
 class TestRetractionCascade:
 
     def test_retract_income_cascades(self, resolved_loan_store):
-        """Removing income removes eligible and downstream,
-        but keeps unrelated derived beliefs."""
+        """Removing income tombstones it immediately; derived dependents are
+        lazily removed when resolve_all_dirty() cascades the tombstone."""
         resolved_loan_store.remove_hypothesis("applicant.income")
+        resolved_loan_store.resolve_all_dirty()  # trigger lazy cascade
 
-        # Removed: income and everything downstream of eligible
-        assert "applicant.income" not in resolved_loan_store.beliefs
+        # Directly tombstoned — flushed on get_value access
+        assert resolved_loan_store.get_value("applicant.income") is None
+        # Cascade-removed during resolve_dirty — flushed from beliefs
         assert "loan.eligible" not in resolved_loan_store.beliefs
         assert "loan.rate_tier" not in resolved_loan_store.beliefs
         assert "loan.max_amount" not in resolved_loan_store.beliefs
         assert "loan.application_status" not in resolved_loan_store.beliefs
-
-        # Kept: beliefs not in income's dependency chain
+        # Unrelated derived beliefs are untouched
         assert "loan.credit_score_effective" in resolved_loan_store.beliefs
         assert "loan.high_risk_flag" in resolved_loan_store.beliefs
 
     def test_retract_credit_score_cascades_through_effective(
         self, resolved_loan_store,
     ):
-        """Removing credit_score removes credit_score_effective,
-        which removes eligible and all downstream."""
+        """Removing credit_score tombstones it; resolve_dirty lazily cascades
+        through credit_score_effective → eligible → downstream."""
         resolved_loan_store.remove_hypothesis("applicant.credit_score")
+        resolved_loan_store.resolve_all_dirty()
 
+        assert resolved_loan_store.get_value("applicant.credit_score") is None
         assert "loan.credit_score_effective" not in resolved_loan_store.beliefs
         assert "loan.eligible" not in resolved_loan_store.beliefs
         assert "loan.rate_tier" not in resolved_loan_store.beliefs
@@ -357,9 +361,12 @@ class TestRetractionCascade:
     def test_retract_debt_ratio_removes_both_eligible_and_high_risk(
         self, resolved_loan_store,
     ):
-        """debt_ratio feeds both eligible and high_risk_flag."""
+        """debt_ratio feeds both eligible and high_risk_flag; lazy cascade
+        removes both during resolve_dirty."""
         resolved_loan_store.remove_hypothesis("applicant.debt_ratio")
+        resolved_loan_store.resolve_all_dirty()
 
+        assert resolved_loan_store.get_value("applicant.debt_ratio") is None
         assert "loan.eligible" not in resolved_loan_store.beliefs
         assert "loan.high_risk_flag" not in resolved_loan_store.beliefs
 
