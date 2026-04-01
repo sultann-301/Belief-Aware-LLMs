@@ -195,19 +195,19 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 
 | Key | Type | Example | How It Evolves |
 |---|---|---|---|
-| `patient.organism_type` | str | Sylph, Golem, Xylid | Genetic identification |
+| `patient.organism_type` | str | Glerps, Yorp, Qwerl | Genetic identification |
 | `patient.organ_integrity` | str | stable, brittle, volatile | Derived from pressure (R1) |
 | `patient.sensory_status` | str | normal, telepathic | Derived from side effects (R5) |
 | `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
-| `atmosphere.dominant_gas` | str | neon, methane, xenon | Environmental sensors |
-| `treatment.primary_option` | str | Aether-7 | Protocol A |
-| `treatment.secondary_option` | str | Veda-12 | Protocol B |
-| `treatment.tertiary_option` | str | Core-Solvent | Protocol C |
-| `treatment.active_prescription` | str | Aether-7, Core-Solvent | Derived selection (R4) |
+| `atmosphere.dominant_gas` | str | chlorine, methane, xenon | Environmental sensors |
+| `treatment.primary_option` | str | Zyxostin-8 | Protocol A |
+| `treatment.secondary_option` | str | Filinan-12 | Protocol B |
+| `treatment.tertiary_option` | str | Snevox-3 | Protocol C |
+| `treatment.active_prescription` | str | Zyxostin-8, Filinan-12 | Derived selection (R4) |
 | `treatment.molecular_phase` | str | crystalline, vapor, plasma | Derived from gas (R2) |
-| `medical.hazard_primary` | str | safe, LETHAL | Safety check for Plan A |
-| `medical.hazard_secondary` | str | safe, LETHAL | Safety check for Plan B |
-| `medical.hazard_tertiary` | str | safe, LETHAL | Safety check for Plan C |
+| `medical.hazard_primary` | bool | True, False | Safety check for Plan A |
+| `medical.hazard_secondary` | bool | True, False | Safety check for Plan B |
+| `medical.hazard_tertiary` | bool | True, False | Safety check for Plan C |
 
 ### Rules
 
@@ -215,7 +215,8 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 R1: patient.organ_integrity
     inputs: [atmosphere.ambient_pressure, patient.organism_type]
     logic:
-      IF ambient_pressure > 4.0 AND organism_type == "Sylph" → "volatile"
+      IF ambient_pressure > 5.0 AND organism_type == "Yorp" -> "volatile"
+      IF ambient_pressure > 4.0 AND organism_type == "Glerps" → "volatile"
       IF ambient_pressure > 3.0 → "brittle"
       ELSE → "stable"
 
@@ -223,7 +224,9 @@ R2: treatment.molecular_phase
     inputs: [atmosphere.dominant_gas, treatment.active_prescription]
     logic:
       IF dominant_gas == "methane" → "plasma"
-      IF dominant_gas == "xenon" AND active_prescription == "Veda-12" → "vapor"
+      IF dominant_gas == "xenon" AND active_prescription == "Filinan-12" → "vapor"
+      IF dominant_gas == "chlorine"  AND active_prescription == "Snevox-3" -> "liquid"
+    
       ELSE → "crystalline"
 
 R3: medical.hazard_check (Calculated for each option)
@@ -231,12 +234,13 @@ R3: medical.hazard_check (Calculated for each option)
              treatment.molecular_phase, patient.organ_integrity]
     logic:
       # THE "EXPLODE" CONSTRAINTS (Deterministic Invalidation)
-      IF organism_type == "Sylph" AND active_compound == "Aether-7" → "LETHAL"
-      IF organism_type == "Golem" AND active_compound == "Veda-12" → "LETHAL"
-      IF organism_type == "Xylid" AND active_compound == "Core-Solvent" → "LETHAL"
+      IF organism_type == "Glerps" AND active_compound == "Zyxostin-8" → "LETHAL"
+      IF organism_type == "Yorp" AND active_compound == "Filinan-12" → "LETHAL"
+      IF organism_type == "Qwerl" AND active_compound == "Snevox-3" → "LETHAL"
       
       # State-Based Hazards
-      IF molecular_phase == "plasma" AND active_compound == "Veda-12" → "LETHAL"
+      IF molecular_phase == "plasma" AND active_compound == "Filinan-12" → "LETHAL"
+      IF molecular_phase == "vapor" AND active_compound == "Filinan-12" AND organism_type == "Qwerl" -> "LETHAL"
       
       # Condition-Based Hazards
       IF organ_integrity == "volatile" AND active_compound != "none" → "LETHAL"
