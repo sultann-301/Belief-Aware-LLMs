@@ -200,13 +200,13 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | `patient.sensory_status` | str | normal, telepathic | Derived from side effects (R5) |
 | `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
 | `atmosphere.dominant_gas` | str | chlorine, methane, xenon | Environmental sensors |
-| `treatment.active_prescription` | str | Zyxostin-8, Filinan-12, Snevox-3, none | Derived selection (R4) |
-| `treatment.phase_zyxostin` | str | crystalline, plasma | Derived from gas (R2) |
-| `treatment.phase_filinan` | str | vapor, plasma | Derived from gas (R2) |
-| `treatment.phase_snevox` | str | liquid, vapor | Derived from gas (R2) |
-| `medical.hazard_zyxostin` | bool | True, False | Safety check for Zyxostin-8 |
-| `medical.hazard_filinan` | bool | True, False | Safety check for Filinan-12 |
-| `medical.hazard_snevox` | bool | True, False | Safety check for Snevox-3 |
+| `treatment.active_prescription` | str | zyxostin, filinan, snevox, none | Derived selection (R4) |
+| `zyxostin.phase` | str | crystalline, plasma | Derived from gas (R2) |
+| `filinan.phase` | str | vapor, plasma | Derived from gas (R2) |
+| `snevox.phase` | str | liquid, vapor | Derived from gas (R2) |
+| `zyxostin.hazard` | str | safe, LETHAL | Safety check for zyxostin |
+| `filinan.hazard` | str | safe, LETHAL | Safety check for filinan |
+| `snevox.hazard` | str | safe, LETHAL | Safety check for snevox |
 | `patient.quarantine_required` | bool | True, False | Derived (R6) |
 | `treatment.duration_cycles` | numeric | 5, 12, 0 | Derived (R7) |
 | `medical.staff_requirement` | str | hazmat_team, psionic_handler | Derived (R8) |
@@ -224,44 +224,43 @@ R1: patient.organ_integrity
     IF ambient_pressure > 3.0 → "brittle"
     ELSE → "stable"
 
-R2: treatment.phase_{compound} (Calculated 3x: for Zyxostin-8, Filinan-12, Snevox-3)
+R2: {compound}.phase (Calculated 3x: for zyxostin, filinan, snevox)
   inputs: [atmosphere.dominant_gas]
   logic: |
-    # Evaluate for a given `compound`:
-    IF compound == "Zyxostin-8":
-      IF dominant_gas == "methane" → "plasma", ELSE → "crystalline"
-    IF compound == "Filinan-12":
-      IF dominant_gas == "xenon" → "vapor", ELSE → "plasma"
-    IF compound == "Snevox-3":
-      IF dominant_gas == "chlorine" → "liquid", ELSE → "vapor"
+    # Evaluate for `zyxostin.phase`:
+    IF dominant_gas == "methane" → "plasma", ELSE → "crystalline"
+    # Evaluate for `filinan.phase`:
+    IF dominant_gas == "xenon" → "vapor", ELSE → "plasma"
+    # Evaluate for `snevox.phase`:
+    IF dominant_gas == "chlorine" → "liquid", ELSE → "vapor"
 
-R3: medical.hazard_{compound} (Calculated 3x: for Zyxostin-8, Filinan-12, Snevox-3)
-  inputs: [patient.organism_type, treatment.phase_{compound}, patient.organ_integrity]
+R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
+  inputs: [patient.organism_type, {compound}.phase, patient.organ_integrity]
   logic: |
-    # Evaluate for a given `compound`:
+    # Evaluate for a given `compound` (e.g. zyxostin):
     # 1. EXPLODE CONSTRAINTS
-    IF organism_type == "Glerps" AND compound == "Zyxostin-8" → "LETHAL"
-    IF organism_type == "Yorp" AND compound == "Filinan-12" → "LETHAL"
-    IF organism_type == "Qwerl" AND compound == "Snevox-3" → "LETHAL"
+    IF organism_type == "Glerps" AND compound == "zyxostin" → "LETHAL"
+    IF organism_type == "Yorp" AND compound == "filinan" → "LETHAL"
+    IF organism_type == "Qwerl" AND compound == "snevox" → "LETHAL"
     
     # 2. State-Based
-    IF treatment.phase_{compound} == "plasma" AND compound == "Filinan-12" → "LETHAL"
-    IF treatment.phase_{compound} == "vapor" AND compound == "Snevox-3" AND organism_type == "Qwerl" → "LETHAL"
+    IF {compound}.phase == "plasma" AND compound == "filinan" → "LETHAL"
+    IF {compound}.phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "LETHAL"
     
     # 3. Condition-Based
     IF organ_integrity == "volatile" → "LETHAL"
     ELSE → "safe"
 
 R4: treatment.active_prescription
-  inputs: [patient.organism_type, medical.hazard_zyxostin, medical.hazard_filinan, medical.hazard_snevox]
+  inputs: [patient.organism_type, zyxostin.hazard, filinan.hazard, snevox.hazard]
   logic: |
     # Treatments are evaluated in priority order based on the organism:
     IF organism_type == "Glerps":
-      Priority: Filinan-12 → Zyxostin-8 → Snevox-3
+      Priority: filinan → zyxostin → snevox
     IF organism_type == "Yorp":
-      Priority: Zyxostin-8 → Snevox-3 → Filinan-12
+      Priority: zyxostin → snevox → filinan
     IF organism_type == "Qwerl":
-      Priority: Snevox-3 → Zyxostin-8 → Filinan-12
+      Priority: snevox → zyxostin → filinan
       
     # Select the highest-priority compound that evaluates to "safe". 
     # If none are safe, return "none".
@@ -269,7 +268,7 @@ R4: treatment.active_prescription
 R5: patient.sensory_status
   inputs: [treatment.active_prescription]
   logic: |
-    IF active_prescription == "Snevox-3" → "telepathic"
+    IF active_prescription == "snevox" → "telepathic"
     ELSE → "normal"
 
 R6: patient.quarantine_required
@@ -282,7 +281,7 @@ R6: patient.quarantine_required
 R7: treatment.duration_cycles
   inputs: [treatment.active_prescription, patient.organ_integrity]
   logic: |
-    IF active_prescription == "Snevox-3" AND organ_integrity == "volatile" → 12
+    IF active_prescription == "snevox" AND organ_integrity == "volatile" → 12
     IF active_prescription == "none" → 0
     ELSE → 5
 
@@ -303,7 +302,7 @@ R9: patient.recovery_prospect
 R10: clinic.billing_tier
   inputs: [treatment.active_prescription, medical.staff_requirement]
   logic: |
-    IF staff_requirement == "psionic_handler" OR active_prescription == "Snevox-3" → "class_omega"
+    IF staff_requirement == "psionic_handler" OR active_prescription == "snevox" → "class_omega"
     IF staff_requirement == "hazmat_team" → "class_delta"
     ELSE → "class_standard"
 ```
@@ -311,14 +310,14 @@ R10: clinic.billing_tier
 ```mermaid
 graph TD
     %% Atmospheric Drivers
-    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["treatment.phase_{compound}"]
+    Atmos_Gas["atmosphere.dominant_gas"] --> Phase["compound.phase"]
     Atmos_Gas --> Quar["patient.quarantine_required"]
     Atmos_Press["atmosphere.ambient_pressure"] --> Integrity["patient.organ_integrity"]
 
     %% Biological Inputs
     Species["patient.organism_type"] --> Integrity
     Species --> Quar
-    Species --> Hazards["medical.hazard_checks"]
+    Species --> Hazards["compound.hazard"]
 
     %% Treatment Inputs
     Phase --> Hazards
@@ -347,21 +346,21 @@ graph TD
 ```yaml
 t=0: organism_type = "Glerps", ambient_pressure = 3.0, dominant_gas = "methane"
      → R1: 3.0 < 4.0 → organ_integrity = "brittle"
-     → R2: methane → phase_zyxostin = "plasma", phase_filinan = "plasma", phase_snevox = "vapor"
-     → R3: (Zyxostin hazard) Glerps + Zyxostin-8 = LETHAL
-     → R3: (Filinan hazard) phase=plasma + Filinan-12 = LETHAL
-     → R3: (Snevox hazard) safe (vapor is safe for Glerps)
-     → R4: Glerps logic (Prefers Filinan → Zyxostin → Snevox). Top two are Lethal.
-          → active_prescription = "Snevox-3"
-     → R5: active_prescription is Snevox-3 → sensory_status = "telepathic"
+     → R2: methane → zyxostin.phase = "plasma", filinan.phase = "plasma", snevox.phase = "vapor"
+     → R3: (zyxostin hazard) Glerps + zyxostin = LETHAL
+     → R3: (filinan hazard) phase=plasma + filinan = LETHAL
+     → R3: (snevox hazard) safe (vapor is safe for Glerps)
+     → R4: Glerps logic (Prefers filinan → zyxostin → snevox). Top two are Lethal.
+          → active_prescription = "snevox"
+     → R5: active_prescription is snevox → sensory_status = "telepathic"
      → R8: sensory_status is telepathic → staff_requirement = "psionic_handler"
      → R10: billing_tier = "class_omega"
 
 t=1: Pressure spike! ambient_pressure = 4.5
-     → dirty: {organ_integrity, hazards..., active_prescription, staff_requirement...}
+     → dirty: {organ_integrity, zyxostin.hazard, filinan.hazard, snevox.hazard, active_prescription ...}
      → resolve_all_dirty():
        R1: > 4.0 + Glerps → organ_integrity = "volatile"
-       R3: volatile organ + any compound = LETHAL. All 3 bounds are now LETHAL.
+       R3: volatile organ + any compound = LETHAL. All 3 hazards are now LETHAL.
        R4: No safe options according to priority list → active_prescription = "none"
        R7: active_prescription is none → duration_cycles = 0
        R9: duration_cycles is 0 → recovery_prospect = "terminal"
