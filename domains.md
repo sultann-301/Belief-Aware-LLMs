@@ -356,8 +356,8 @@ graph TD
 ### Example Revision Scenario
 
 ```yaml
-t=0: organism_type = "Glerps", ambient_pressure = 3.0, dominant_gas = "methane"
-     → R1: 3.0 < 4.0 → organ_integrity = "brittle"
+t=0: organism_type = "Glerps", ambient_pressure = 3.5, dominant_gas = "methane"
+     → R1: 3.5 > 3.0 AND 3.5 <= 4.0 → organ_integrity = "brittle"
      → R2: methane → zyxostin.phase = "plasma", filinan.phase = "plasma", snevox.phase = "vapor"
      → R3: (zyxostin hazard) Glerps + zyxostin = LETHAL
      → R3: (filinan hazard) phase=plasma + filinan = LETHAL
