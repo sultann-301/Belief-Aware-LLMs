@@ -40,139 +40,137 @@ the word ANSWER: followed by exactly one capital letter (A, B, or C).
 Do not write anything after the letter.
 """
 
-# The compressed alien rules for the bare LLM
 ALIEN_RULES = """\
 [RULES]
 1. patient.organ_integrity = "volatile" if ambient_pressure > 5.0 and organism_type == "Yorp". "volatile" if ambient_pressure > 4.0 and organism_type == "Glerps". "brittle" if ambient_pressure > 3.0. Otherwise "stable".
 2. zyxostin.phase = "plasma" IF dominant_gas == "methane" ELSE "crystalline". filinan.phase = "vapor" IF dominant_gas == "xenon" ELSE "plasma". snevox.phase = "liquid" IF dominant_gas == "chlorine" ELSE "vapor".
-3. LETHAL hazards: organism/compound explode combinations (Glerps+zyxostin, Yorp+filinan, Qwerl+snevox). State-based (plasma+filinan, Snevox+vapor for Qwerl). Condition-based (organ_integrity is "volatile" makes all LETHAL). Otherwise compound hazard is "safe".
-4. treatment.active_prescription = Highest priority safe compound. Priorities: Glerps (filinan -> zyxostin -> snevox). Yorp (zyxostin -> snevox -> filinan). Qwerl (snevox -> zyxostin -> filinan). If no safe options, return "none".
+3. hazards: If organism_type + compound has explode constraint (Glerps+zyxostin, Yorp+filinan, Qwerl+snevox), then if organ_integrity is "volatile", hazard is "symbiotic" (Biological Singularity). Else hazard is "LETHAL". If phase="plasma" and filinan -> "LETHAL". If phase="vapor" and snevox and Qwerl -> "LETHAL". If organ_integrity="volatile" -> "LETHAL". Else "safe".
+4. treatment.active_prescription = MIRACLE OVERRIDE: If any hazard is "symbiotic", pick it immediately ignoring priority. SYMPTOM PRIORITIES: Glerps: if "fever" and "spasms" in symptoms (snevox -> zyxostin -> filinan), if "fever" in symptoms (zyxostin -> snevox -> filinan), else (filinan -> zyxostin -> snevox). Yorp: if "acid_sweat" in symptoms (filinan -> snevox -> zyxostin), else (zyxostin -> snevox -> filinan). Qwerl: (snevox -> zyxostin -> filinan). Select highest priority safe. Else none.
 5. patient.sensory_status = "telepathic" if active_prescription == "snevox", else "normal".
 6. patient.quarantine_required = True if (dominant_gas == "chlorine" AND organism_type == "Qwerl") or (dominant_gas == "methane" AND organism_type == "Yorp"), else False.
 7. treatment.duration_cycles = 12 if active_prescription == "snevox" and organ_integrity == "volatile". 0 if active_prescription == "none". Otherwise 5.
 8. medical.staff_requirement = "hazmat_team" if quarantine_required == True. "psionic_handler" if sensory_status == "telepathic". Else "standard_medic". (Quarantine overrides Psionic).
-9. patient.recovery_prospect = "guarded" if duration_cycles > 10 and staff_requirement == "hazmat_team". "terminal" if duration_cycles == 0. Else "excellent".
+9. patient.recovery_prospect = "miraculous" if hazard is "symbiotic". "guarded" if duration_cycles > 10 and staff_requirement == "hazmat_team". "terminal" if duration_cycles == 0. Else "excellent".
 10. clinic.billing_tier = "class_omega" if staff_requirement == "psionic_handler" or active_prescription == "snevox". "class_delta" if staff_requirement == "hazmat_team". Otherwise "class_standard".
 """
 
-# Base beliefs
 INITIAL_BELIEFS = {
     "patient.organism_type": "Glerps",
+    "patient.symptoms": [],
     "atmosphere.ambient_pressure": 3.5,
     "atmosphere.dominant_gas": "methane",
 }
 
-# The 10 Eval Turns
 TURNS = [
     {
         "entities": "treatment, clinic",
         "beliefs": {},
         "question": "What is the active prescription and billing tier?",
         "options": {
-            "A": "snevox, class_omega",        # Correct (t=0)
-            "B": "filinan, class_standard",    # Wrong fallback
-            "C": "none, class_omega",          # Nonsense
+            "A": "snevox, class_omega",        
+            "B": "filinan, class_standard",    
+            "C": "none, class_omega",          
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, clinic",
+        "beliefs": {"patient.symptoms": ["fever", "spasms"]},
+        "question": "What is the new active prescription and billing tier?",
+        "options": {
+            "A": "snevox, class_omega",               
+            "B": "zyxostin, class_standard",                
+            "C": "none, class_standard",                
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, clinic",
+        "beliefs": {"patient.symptoms": ["fever"]},
+        "question": "What is the active prescription?",
+        "options": {
+            "A": "snevox",  
+            "B": "zyxostin",        
+            "C": "filinan",    
         },
         "correct": "A",
     },
     {
         "entities": "treatment, patient",
-        "beliefs": {"atmosphere.ambient_pressure": 5.0},
-        "question": "What are the new duration cycles and recovery prospect?",
+        "beliefs": {"atmosphere.ambient_pressure": 4.5},
+        "question": "What is the active prescription and recovery prospect?",
         "options": {
-            "A": "5, excellent",               # Stale t=0
-            "B": "12, guarded",                # Volatile trap
-            "C": "0, terminal",                # Correct (t=1: volatile -> none)
+            "A": "zyxostin, miraculous",      
+            "B": "none, terminal",          
+            "C": "snevox, excellent",    
         },
-        "correct": "C",
+        "correct": "A",
     },
     {
-        "entities": "medical, clinic",
-        "beliefs": {"patient.organism_type": "Yorp"},
-        "question": "What is the required staff requirement and billing tier?",
+        "entities": "treatment, patient",
+        "beliefs": {"patient.symptoms": []},
+        "question": "What is the recovery prospect?",
         "options": {
-            "A": "standard_medic, class_standard",  # Stale t=1
-            "B": "hazmat_team, class_delta",        # Correct (t=2: yorp+methane -> quarantine -> hazmat -> delta)
-            "C": "psionic_handler, class_omega",    # Stale t=0
+            "A": "miraculous",           
+            "B": "excellent",     
+            "C": "terminal",       
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, medical",
+        "beliefs": {"patient.organism_type": "Yorp"},
+        "question": "What is the active prescription and staff requirement?",
+        "options": {
+            "A": "none, hazmat_team",
+            "B": "zyxostin, hazmat_team",                
+            "C": "zyxostin, standard_medic",                    
         },
         "correct": "B",
     },
     {
         "entities": "treatment, medical",
-        "beliefs": {"atmosphere.ambient_pressure": 2.0},
-        "question": "What is the active prescription and staff requirement?",
+        "beliefs": {"patient.symptoms": ["acid_sweat"]},
+        "question": "What is the new prescription and staff requirement?",
         "options": {
-            "A": "zyxostin, hazmat_team",      # Correct (t=3: stable. yorp likes zyxostin. methane+yorp=hazmat)
-            "B": "none, hazmat_team",          # Stale t=2
-            "C": "snevox, psionic_handler",    # Stale t=0
+            "A": "snevox, hazmat_team",           
+            "B": "snevox, psionic_handler",              
+            "C": "filinan, hazmat_team",                
         },
         "correct": "A",
     },
     {
-        "entities": "medical, clinic",
-        "beliefs": {"atmosphere.dominant_gas": "xenon"},
-        "question": "What is the staff requirement and billing tier?",
+        "entities": "treatment, patient",
+        "beliefs": {"atmosphere.ambient_pressure": 5.5},
+        "question": "What is the active prescription and recovery prospect?",
         "options": {
-            "A": "hazmat_team, class_delta",           # Stale t=3
-            "B": "standard_medic, class_standard",     # Correct (t=4: no quarantine in xenon for Yorp)
-            "C": "psionic_handler, class_omega",       # Nonsense
+            "A": "none, terminal",                     
+            "B": "filinan, miraculous",                  
+            "C": "snevox, terminal",                   
         },
         "correct": "B",
+    },
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"atmosphere.dominant_gas": "xenon"},
+        "question": "What is the active prescription and recovery prospect?",
+        "options": {
+            "A": "filinan, miraculous",                     
+            "B": "zyxostin, excellent",                    
+            "C": "snevox, guarded",                 
+        },
+        "correct": "A",
     },
     {
         "entities": "treatment, patient",
         "beliefs": {"patient.organism_type": "Qwerl"},
         "question": "What is the active prescription and recovery prospect?",
         "options": {
-            "A": "none, terminal",
-            "B": "zyxostin, excellent",                # Correct (t=5: Qwerl -> snevox lethal, falls back to zyxostin)
-            "C": "snevox, guarded",                    # Trap: Qwerl prefers snevox but it explodes
-        },
-        "correct": "B",
-    },
-    {
-        "entities": "treatment, clinic",
-        "beliefs": {"atmosphere.dominant_gas": "chlorine"},
-        "question": "What is the active prescription and billing tier?",
-        "options": {
-            "A": "zyxostin, class_standard",           # Stale t=5
-            "B": "zyxostin, class_delta",              # Correct (t=6: chlorine+Qwerl -> hazmat -> delta)
-            "C": "snevox, class_omega",                # Logic failure
-        },
-        "correct": "B",
-    },
-    {
-        "entities": "patient, treatment",
-        "beliefs": {"atmosphere.ambient_pressure": 6.0},
-        "question": "What is the organ integrity and active prescription?",
-        "options": {
-            "A": "volatile, none",                     # Trap (Qwerl has no volatile threshold)
-            "B": "brittle, zyxostin",                  # Correct (t=7: Qwerl becomes brittle, but not volatile. zyxostin safe)
-            "C": "stable, zyxostin",                   # Stale t=6
-        },
-        "correct": "B",
-    },
-    {
-        "entities": "patient, treatment",
-        "beliefs": {"patient.organism_type": "Glerps"},
-        "question": "What is the organ integrity and active prescription?",
-        "options": {
-            "A": "volatile, none",                     # Correct (t=8: Glerps > 4.0 -> volatile -> all lethal -> none)
-            "B": "brittle, snevox",                    # Stale logic
-            "C": "volatile, zyxostin",                 # Volatile logic failure
+            "A": "zyxostin, excellent",
+            "B": "filinan, miraculous",                            
+            "C": "none, terminal",                             
         },
         "correct": "A",
-    },
-    {
-        "entities": "treatment",
-        "beliefs": {"atmosphere.ambient_pressure": 3.0},
-        "question": "What is the active prescription?",
-        "options": {
-            "A": "none",
-            "B": "filinan",                            # Trap (It's preferred by Glerps, but is plasma so Lethal)
-            "C": "snevox",                             # Correct (t=9: filinan and zyxostin lethal, snevox safe)
-        },
-        "correct": "C",
     },
 ]
 
@@ -184,8 +182,6 @@ def extract_answer(response: str) -> str | None:
     m = re.findall(r"\b([A-C])\b", response)
     return m[-1] if m else None
 
-
-# ── Internal Evaluator functions identical to mcq_eval ──
 
 def log_none_answer(condition: str, turn: int, response: str) -> None:
     log_file = os.path.join(os.path.dirname(__file__), "failed_extractions.log")
@@ -305,8 +301,7 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
 
 def _build_baseline_prompt(entities: list[str], new_beliefs_lines: list[str], turn: dict) -> str:
     parts = [ALIEN_RULES]
-    parts.append(f"[ENTITY]\n{', '.join(entities)}")
-
+    
     if new_beliefs_lines:
         parts.append("[NEW BELIEF]\n" + "\n".join(new_beliefs_lines))
 
@@ -339,7 +334,7 @@ def run_without_store(llm: OllamaClient, turns: list[dict]) -> list[dict]:
 
 
 def main():
-    print("Connecting to Ollama (gemma3:1b)...\n")
+    print("Connecting to Ollama (gemma3:1b)...")
     llm = OllamaClient(model="gemma3:1b")
 
     print("=" * 60)

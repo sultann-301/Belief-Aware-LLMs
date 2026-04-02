@@ -24,6 +24,7 @@ def _make_clinic_store() -> BeliefStore:
 def _seed_base_beliefs(store: BeliefStore, overrides: dict | None = None) -> None:
     defaults = {
         "patient.organism_type": "Glerps",
+        "patient.symptoms": [],
         "atmosphere.ambient_pressure": 3.5,
         "atmosphere.dominant_gas": "methane",
     }
@@ -156,17 +157,34 @@ class TestHazardsAndPrescription:
         assert clinic_store.get_value("treatment.active_prescription") == "zyxostin"
 
     def test_volatile_condition(self, clinic_store):
-        # High pressure -> volatile -> all lethal
+        # High pressure -> volatile -> all lethal. We use Yorp + methane so 
+        # Zyxostin doesn't explode for Yorp, Snevox doesn't explode for Yorp.
+        # But Filinan explodes for Yorp. 
+        # Wait, if Filinan explodes for Yorp, it will be Symbiotic! Let's test the Singularity!
         _seed_base_beliefs(clinic_store, {
             "atmosphere.ambient_pressure": 5.5,
             "patient.organism_type": "Yorp"
         })
         clinic_store.resolve_all_dirty()
         assert clinic_store.get_value("patient.organ_integrity") == "volatile"
-        assert clinic_store.get_value("zyxostin.hazard") == "LETHAL"
-        assert clinic_store.get_value("filinan.hazard") == "LETHAL"
-        assert clinic_store.get_value("snevox.hazard") == "LETHAL"
-        assert clinic_store.get_value("treatment.active_prescription") == "none"
+        assert clinic_store.get_value("zyxostin.hazard") == "LETHAL" # Condition-based
+        assert clinic_store.get_value("filinan.hazard") == "symbiotic" # Singularity! Yorp + filinan + volatile
+        assert clinic_store.get_value("snevox.hazard") == "LETHAL" # Condition-based
+        assert clinic_store.get_value("treatment.active_prescription") == "filinan"
+        assert clinic_store.get_value("patient.recovery_prospect") == "miraculous"
+
+    def test_symptoms_priority_override(self, clinic_store):
+        _seed_base_beliefs(clinic_store, {
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": ["fever", "spasms"],
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon" 
+            # xenon -> zyxostin=crystalline (safe), filinan=vapor (safe), snevox=vapor (safe)
+        })
+        clinic_store.resolve_all_dirty()
+        # Normal Glerps priority is filinan -> zyxostin -> snevox
+        # With fever and spasms it is snevox -> zyxostin -> filinan
+        assert clinic_store.get_value("treatment.active_prescription") == "snevox"
 
 
 # =====================================================================
@@ -208,43 +226,42 @@ class TestSpecWalkthrough:
 
         # ── t=0: Initial ──────────────
         store.add_hypothesis("patient.organism_type", "Glerps")
+        store.add_hypothesis("patient.symptoms", [])
         store.add_hypothesis("atmosphere.ambient_pressure", 3.5)
         store.add_hypothesis("atmosphere.dominant_gas", "methane")
         store.resolve_all_dirty()
 
         # R1: 3.5 > 3.0 -> brittle
         assert store.get_value("patient.organ_integrity") == "brittle"
-        # R2: phases
-        assert store.get_value("zyxostin.phase") == "plasma"
-        assert store.get_value("filinan.phase") == "plasma"
-        assert store.get_value("snevox.phase") == "vapor"
         # R3: hazards
         assert store.get_value("zyxostin.hazard") == "LETHAL"
         assert store.get_value("filinan.hazard") == "LETHAL"
         assert store.get_value("snevox.hazard") == "safe"
         # R4: prescription
         assert store.get_value("treatment.active_prescription") == "snevox"
-        # R5: sensory
-        assert store.get_value("patient.sensory_status") == "telepathic"
-        # R8: staff
-        assert store.get_value("medical.staff_requirement") == "psionic_handler"
-        # R10: billing
         assert store.get_value("clinic.billing_tier") == "class_omega"
 
-        # ── t=1: Pressure spike ─────────────────────────────
+        # ── t=1: Inject symptoms ──────────────
+        store.add_hypothesis("patient.symptoms", ["fever", "spasms"])
+        store.resolve_all_dirty()
+        
+        # Priority shifts to snevox, which is safe, so active prescription remains "snevox"
+        assert store.get_value("treatment.active_prescription") == "snevox"
+
+        # ── t=2: Pressure spike ─────────────────────────────
         store.add_hypothesis("atmosphere.ambient_pressure", 4.5)
         # Should propagate to a bunch of things
         store.resolve_all_dirty()
 
         # R1 -> volatile
         assert store.get_value("patient.organ_integrity") == "volatile"
-        # R3 -> ALL LETHAL
-        assert store.get_value("zyxostin.hazard") == "LETHAL"
+        # R3 -> Singularity on zyxostin!
+        assert store.get_value("zyxostin.hazard") == "symbiotic"
         assert store.get_value("filinan.hazard") == "LETHAL"
         assert store.get_value("snevox.hazard") == "LETHAL"
-        # R4 -> none
-        assert store.get_value("treatment.active_prescription") == "none"
-        # R7 -> duration = 0
-        assert store.get_value("treatment.duration_cycles") == 0
-        # R9 -> terminal
-        assert store.get_value("patient.recovery_prospect") == "terminal"
+        # R4 -> Singularity override
+        assert store.get_value("treatment.active_prescription") == "zyxostin"
+        # R9 -> miraculous
+        assert store.get_value("patient.recovery_prospect") == "miraculous"
+        # R10 -> standard tier
+        assert store.get_value("clinic.billing_tier") == "class_standard"

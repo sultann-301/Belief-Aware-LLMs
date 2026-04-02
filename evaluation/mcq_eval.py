@@ -375,7 +375,6 @@ def run_with_store_with_history(llm: OllamaClient, turns: list[dict]) -> list[di
 def _build_baseline_prompt(entities: list[str], new_beliefs_lines: list[str], turn: dict) -> str:
     """Build the baseline prompt with the loan rules injected directly into each turn."""
     parts = [LOAN_RULES]
-    parts.append(f"[ENTITY]\n{', '.join(entities)}")
 
     if new_beliefs_lines:
         parts.append("[NEW BELIEF]\n" + "\n".join(new_beliefs_lines))

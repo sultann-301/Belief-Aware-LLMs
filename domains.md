@@ -196,6 +196,7 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | Key | Type | Example | How It Evolves |
 |---|---|---|---|
 | `patient.organism_type` | str | Glerps, Yorp, Qwerl | Genetic identification |
+| `patient.symptoms` | list[str] | ["fever", "spasms"] | Tracks active biological symptoms |
 | `patient.organ_integrity` | str | stable, brittle, volatile | Derived from pressure (R1) |
 | `patient.sensory_status` | str | normal, telepathic | Derived from side effects (R5) |
 | `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
@@ -204,13 +205,13 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | `zyxostin.phase` | str | crystalline, plasma | Derived from gas (R2) |
 | `filinan.phase` | str | vapor, plasma | Derived from gas (R2) |
 | `snevox.phase` | str | liquid, vapor | Derived from gas (R2) |
-| `zyxostin.hazard` | str | safe, LETHAL | Safety check for zyxostin |
-| `filinan.hazard` | str | safe, LETHAL | Safety check for filinan |
-| `snevox.hazard` | str | safe, LETHAL | Safety check for snevox |
+| `zyxostin.hazard` | str | safe, LETHAL, symbiotic | Safety check for zyxostin |
+| `filinan.hazard` | str | safe, LETHAL, symbiotic | Safety check for filinan |
+| `snevox.hazard` | str | safe, LETHAL, symbiotic | Safety check for snevox |
 | `patient.quarantine_required` | bool | True, False | Derived (R6) |
 | `treatment.duration_cycles` | numeric | 5, 12, 0 | Derived (R7) |
 | `medical.staff_requirement` | str | hazmat_team, psionic_handler | Derived (R8) |
-| `patient.recovery_prospect` | str | excellent, guarded, terminal | Derived (R9) |
+| `patient.recovery_prospect` | str | excellent, guarded, terminal, miraculous | Derived (R9) |
 | `clinic.billing_tier` | str | class_standard, class_omega | Derived (R10) |
 
 ### Rules
@@ -238,10 +239,14 @@ R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
   inputs: [patient.organism_type, {compound}.phase, patient.organ_integrity]
   logic: |
     # Evaluate for a given `compound` (e.g. zyxostin):
-    # 1. EXPLODE CONSTRAINTS
-    IF organism_type == "Glerps" AND compound == "zyxostin" → "LETHAL"
-    IF organism_type == "Yorp" AND compound == "filinan" → "LETHAL"
-    IF organism_type == "Qwerl" AND compound == "snevox" → "LETHAL"
+    # 1. EXPLODE CONSTRAINTS & SINGULARITY
+    # Paradox: If an organism has "volatile" organ integrity AND takes a compound that normally triggers an 
+    # explode constraint, the catastrophic biological forces cancel out resulting in a "symbiotic" singularity.
+    IF (organism_type == "Glerps" AND compound == "zyxostin") OR 
+       (organism_type == "Yorp" AND compound == "filinan") OR 
+       (organism_type == "Qwerl" AND compound == "snevox"):
+       IF organ_integrity == "volatile" → "symbiotic"
+       ELSE → "LETHAL"
     
     # 2. State-Based
     IF {compound}.phase == "plasma" AND compound == "filinan" → "LETHAL"
@@ -252,18 +257,26 @@ R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
     ELSE → "safe"
 
 R4: treatment.active_prescription
-  inputs: [patient.organism_type, zyxostin.hazard, filinan.hazard, snevox.hazard]
+  inputs: [patient.organism_type, patient.symptoms, zyxostin.hazard, filinan.hazard, snevox.hazard]
   logic: |
-    # Treatments are evaluated in priority order based on the organism:
+    # 1. MIRACLE OVERRIDE
+    # If ANY compound evaluates to "symbiotic", it completely overrides symptom priority lists and is selected.
+    IF ANY compound.hazard == "symbiotic" → return that compound (if multiple, pick first in standard priority)
+    
+    # 2. SYMPTOM PRIORITIES
+    # Treatments are evaluated in priority order based on the organism and subset of strings in `patient.symptoms`:
     IF organism_type == "Glerps":
-      Priority: filinan → zyxostin → snevox
+      IF "fever" IN symptoms AND "spasms" IN symptoms → snevox → zyxostin → filinan
+      ELSE IF "fever" IN symptoms → zyxostin → snevox → filinan
+      ELSE → Priority: filinan → zyxostin → snevox
     IF organism_type == "Yorp":
-      Priority: zyxostin → snevox → filinan
+      IF "acid_sweat" IN symptoms → filinan → snevox → zyxostin
+      ELSE → Priority: zyxostin → snevox → filinan
     IF organism_type == "Qwerl":
       Priority: snevox → zyxostin → filinan
       
     # Select the highest-priority compound that evaluates to "safe". 
-    # If none are safe, return "none".
+    # If none are safe (and none symbiotic), return "none".
 
 R5: patient.sensory_status
   inputs: [treatment.active_prescription]
@@ -293,8 +306,12 @@ R8: medical.staff_requirement
     ELSE → "standard_medic"
 
 R9: patient.recovery_prospect
-  inputs: [treatment.duration_cycles, medical.staff_requirement]
+  inputs: [treatment.active_prescription, zyxostin.hazard, filinan.hazard, snevox.hazard, treatment.duration_cycles, medical.staff_requirement]
   logic: |
+    # 1. MIRACLE CHECK: If active prescription was explicitly chosen due to a "symbiotic" hazard state
+    IF active_prescription hazard == "symbiotic" → "miraculous"
+    
+    # 2. STANDARD CHECK
     IF duration_cycles > 10 AND staff_requirement == "hazmat_team" → "guarded"
     IF duration_cycles == 0 → "terminal"
     ELSE → "excellent"
@@ -322,6 +339,8 @@ graph TD
     Species --> ZHazard["zyxostin.hazard"]
     Species --> FHazard["filinan.hazard"]
     Species --> SHazard["snevox.hazard"]
+    
+    Symptoms["patient.symptoms"] --> Selection["treatment.active_prescription"]
 
     %% Compound specific evaluations
     ZPhase --> ZHazard
@@ -335,12 +354,16 @@ graph TD
     Integrity --> Dur["treatment.duration_cycles"]
 
     %% Selection & Cascades
-    Species --> Selection["treatment.active_prescription"]
+    Species --> Selection
     ZHazard --> Selection
     FHazard --> Selection
     SHazard --> Selection
     Selection --> SideEffect["patient.sensory_status"]
     Selection --> Dur
+    Selection --> Recov
+    ZHazard --> Recov
+    FHazard --> Recov
+    SHazard --> Recov
 
     %% Late Stage derivations
     SideEffect --> Staff["medical.staff_requirement"]
@@ -356,10 +379,10 @@ graph TD
 ### Example Revision Scenario
 
 ```yaml
-t=0: organism_type = "Glerps", ambient_pressure = 3.5, dominant_gas = "methane"
+t=0: organism_type = "Glerps", symptoms = [], ambient_pressure = 3.5, dominant_gas = "methane"
      → R1: 3.5 > 3.0 AND 3.5 <= 4.0 → organ_integrity = "brittle"
      → R2: methane → zyxostin.phase = "plasma", filinan.phase = "plasma", snevox.phase = "vapor"
-     → R3: (zyxostin hazard) Glerps + zyxostin = LETHAL
+     → R3: (zyxostin hazard) Glerps + zyxostin = LETHAL (no singularity since state is brittle)
      → R3: (filinan hazard) phase=plasma + filinan = LETHAL
      → R3: (snevox hazard) safe (vapor is safe for Glerps)
      → R4: Glerps logic (Prefers filinan → zyxostin → snevox). Top two are Lethal.
@@ -368,14 +391,25 @@ t=0: organism_type = "Glerps", ambient_pressure = 3.5, dominant_gas = "methane"
      → R8: sensory_status is telepathic → staff_requirement = "psionic_handler"
      → R10: billing_tier = "class_omega"
 
-t=1: Pressure spike! ambient_pressure = 4.5
+t=1: Inject Symptoms! symptoms = ["fever", "spasms"]
+     → dirty: {active_prescription, sensory_status, staff_requirement, recovery_prospect, billing_tier, duration_cycles}
+     → resolve_all_dirty():
+       R4: Glerps w/ fever & spasms priority changes to: snevox → zyxostin → filinan. 
+           snevox is safe, so active_prescription REMAINS "snevox".
+           Most downstream states remain clean! "Invisible shift".
+
+t=2: Pressure spike! ambient_pressure = 4.5
      → dirty: {organ_integrity, zyxostin.hazard, filinan.hazard, snevox.hazard, active_prescription ...}
      → resolve_all_dirty():
        R1: > 4.0 + Glerps → organ_integrity = "volatile"
-       R3: volatile organ + any compound = LETHAL. All 3 hazards are now LETHAL.
-       R4: No safe options according to priority list → active_prescription = "none"
-       R7: active_prescription is none → duration_cycles = 0
-       R9: duration_cycles is 0 → recovery_prospect = "terminal"
+       R3: Singularity! Glerps + zyxostin + volatile = "symbiotic". 
+           Other compounds without explode constraints: filinan=LETHAL, snevox=LETHAL.
+       R4: Symbiotic override! active_prescription = "zyxostin".
+       R5: active_prescription is zyxostin → sensory_status = "normal"
+       R7: active_prescription is zyxostin → duration_cycles = 5
+       R8: sensory_status normal, no quarantine → staff_requirement = "standard_medic"
+       R9: active_prescription hazard is "symbiotic" → recovery_prospect = "miraculous"
+       R10: standard_medic → billing_tier = "class_standard"
 ```
 ## Domain 3: Crime Scene Investigation
 

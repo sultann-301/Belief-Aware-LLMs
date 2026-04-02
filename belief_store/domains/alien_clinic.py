@@ -66,6 +66,7 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         name="active_prescription",
         inputs=[
             "patient.organism_type",
+            "patient.symptoms",
             "zyxostin.hazard",
             "filinan.hazard",
             "snevox.hazard",
@@ -109,7 +110,14 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
     # R9
     store.add_rule(
         name="recovery_prospect",
-        inputs=["treatment.duration_cycles", "medical.staff_requirement"],
+        inputs=[
+            "treatment.active_prescription",
+            "zyxostin.hazard",
+            "filinan.hazard",
+            "snevox.hazard",
+            "treatment.duration_cycles",
+            "medical.staff_requirement"
+        ],
         output_key="patient.recovery_prospect",
         derive_fn=_recovery_prospect,
     )
@@ -157,12 +165,18 @@ def _evaluate_hazard(
     phase: str,
     integrity: str,
 ) -> str:
-    # 1. EXPLODE CONSTRAINTS
+    # 1. EXPLODE CONSTRAINTS & SINGULARITY
+    is_explode = False
     if organism == "Glerps" and compound == "zyxostin":
-        return "LETHAL"
-    if organism == "Yorp" and compound == "filinan":
-        return "LETHAL"
-    if organism == "Qwerl" and compound == "snevox":
+        is_explode = True
+    elif organism == "Yorp" and compound == "filinan":
+        is_explode = True
+    elif organism == "Qwerl" and compound == "snevox":
+        is_explode = True
+        
+    if is_explode:
+        if integrity == "volatile":
+            return "symbiotic"
         return "LETHAL"
     
     # 2. State-Based
@@ -208,16 +222,34 @@ def _snevox_hazard(inputs: dict[str, Any]) -> str:
 # --- R4: active_prescription ---
 def _active_prescription(inputs: dict[str, Any]) -> str:
     organism = inputs["patient.organism_type"]
+    symptoms = inputs.get("patient.symptoms", [])
     hazards = {
         "zyxostin": inputs["zyxostin.hazard"],
         "filinan": inputs["filinan.hazard"],
         "snevox": inputs["snevox.hazard"],
     }
     
+    # 1. MIRACLE OVERRIDE
+    if hazards["filinan"] == "symbiotic":
+        return "filinan"
+    if hazards["zyxostin"] == "symbiotic":
+        return "zyxostin"
+    if hazards["snevox"] == "symbiotic":
+        return "snevox"
+        
+    # 2. SYMPTOM PRIORITIES
     if organism == "Glerps":
-        priority = ["filinan", "zyxostin", "snevox"]
+        if "fever" in symptoms and "spasms" in symptoms:
+            priority = ["snevox", "zyxostin", "filinan"]
+        elif "fever" in symptoms:
+            priority = ["zyxostin", "snevox", "filinan"]
+        else:
+            priority = ["filinan", "zyxostin", "snevox"]
     elif organism == "Yorp":
-        priority = ["zyxostin", "snevox", "filinan"]
+        if "acid_sweat" in symptoms:
+            priority = ["filinan", "snevox", "zyxostin"]
+        else:
+            priority = ["zyxostin", "snevox", "filinan"]
     elif organism == "Qwerl":
         priority = ["snevox", "zyxostin", "filinan"]
     else:
@@ -272,9 +304,17 @@ def _staff_requirement(inputs: dict[str, Any]) -> str:
 
 # --- R9: recovery_prospect ---
 def _recovery_prospect(inputs: dict[str, Any]) -> str:
+    prescription = inputs["treatment.active_prescription"]
     duration = inputs["treatment.duration_cycles"]
     staff = inputs["medical.staff_requirement"]
     
+    # 1. MIRACLE CHECK
+    if prescription != "none":
+        hazard_key = f"{prescription}.hazard"
+        if inputs.get(hazard_key) == "symbiotic":
+            return "miraculous"
+            
+    # 2. STANDARD CHECK
     if duration > 10 and staff == "hazmat_team":
         return "guarded"
     if duration == 0:
