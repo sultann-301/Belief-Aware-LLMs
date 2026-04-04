@@ -12,35 +12,35 @@ The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Va
 
 ### What It Tests
 
-| Capability | How |
-|---|---|
-| Basic contradiction detection | Income changes → old value conflicts with new |
-| Multi-hop revision | Income → adjusted_income → eligible → rate_tier (3 hops) |
-| Conjunctive rules | Eligibility requires ALL conditions in one rule |
-| Belief Maintain | Changing credit score should NOT affect employment status |
-| Stage-gated decisions | Distinguishing global eligibility (qualified applicant) from application-specific decisions (amount requested vs maximum allowed) |
+| Capability                    | How                                                                                                                               |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Basic contradiction detection | Income changes → old value conflicts with new                                                                                     |
+| Multi-hop revision            | Income → adjusted_income → eligible → rate_tier (3 hops)                                                                          |
+| Conjunctive rules             | Eligibility requires ALL conditions in one rule                                                                                   |
+| Belief Maintain               | Changing credit score should NOT affect employment status                                                                         |
+| Stage-gated decisions         | Distinguishing global eligibility (qualified applicant) from application-specific decisions (amount requested vs maximum allowed) |
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | How It Evolves |
-|---|---|---|---|
-| `applicant.income` | numeric | 3000, 6000 | Raises, job loss |
-| `applicant.credit_score` | numeric | 520, 750 | Payments, defaults |
-| `applicant.debt_ratio` | float | 0.15, 0.60 | New loans, payoffs |
-| `applicant.employment_status` | str | employed, unemployed | Hiring, firing |
-| `applicant.employment_duration_months` | numeric | 3, 36 | Time passing |
-| `applicant.has_collateral` | bool | true, false | Asset purchase/sale |
-| `applicant.loan_amount_requested` | numeric | 10000, 50000 | Applicant changes |
-| `applicant.bankruptcy_history` | bool | true, false | Proceedings resolved |
-| `applicant.co_signer` | bool | true, false | Co-signer agrees/withdraws |
-| `applicant.dependents` | numeric | 0, 3 | Family changes |
-| `loan.min_income` | numeric | 5000 | Policy |
-| `loan.min_credit` | numeric | 650 | Policy |
-| `loan.max_debt_ratio` | float | 0.4 | Policy |
-| `loan.adjusted_income` | numeric | 2500, 5500 | Formula changes |
-| `loan.requires_insurance` | bool | true, false | Risk profile |
-| `loan.review_queue` | str | auto_approve, manual_review | Automation |
-| `loan.base_interest_rate` | float | 4.5, 6.5 | Rate tiers |
+| Key                                    | Type    | Example                     | How It Evolves             |
+| -------------------------------------- | ------- | --------------------------- | -------------------------- |
+| `applicant.income`                     | numeric | 3000, 6000                  | Raises, job loss           |
+| `applicant.credit_score`               | numeric | 520, 750                    | Payments, defaults         |
+| `applicant.debt_ratio`                 | float   | 0.15, 0.60                  | New loans, payoffs         |
+| `applicant.employment_status`          | str     | employed, unemployed        | Hiring, firing             |
+| `applicant.employment_duration_months` | numeric | 3, 36                       | Time passing               |
+| `applicant.has_collateral`             | bool    | true, false                 | Asset purchase/sale        |
+| `applicant.loan_amount_requested`      | numeric | 10000, 50000                | Applicant changes          |
+| `applicant.bankruptcy_history`         | bool    | true, false                 | Proceedings resolved       |
+| `applicant.co_signer`                  | bool    | true, false                 | Co-signer agrees/withdraws |
+| `applicant.dependents`                 | numeric | 0, 3                        | Family changes             |
+| `loan.min_income`                      | numeric | 5000                        | Policy                     |
+| `loan.min_credit`                      | numeric | 650                         | Policy                     |
+| `loan.max_debt_ratio`                  | float   | 0.4                         | Policy                     |
+| `loan.adjusted_income`                 | numeric | 2500, 5500                  | Formula changes            |
+| `loan.requires_insurance`              | bool    | true, false                 | Risk profile               |
+| `loan.review_queue`                    | str     | auto_approve, manual_review | Automation                 |
+| `loan.base_interest_rate`              | float   | 4.5, 6.5                    | Rate tiers                 |
 
 ### Rules
 
@@ -117,37 +117,37 @@ graph LR
     %% Base Inputs
     income["applicant.income"] --> adj_inc["loan.adjusted_income"]
     deps["applicant.dependents"] --> adj_inc
-    
+
     cred["applicant.credit_score"] --> cred_eff["loan.credit_score_effective"]
     cosign["applicant.co_signer"] --> cred_eff
-    
+
     debt["applicant.debt_ratio"] --> high_risk["loan.high_risk_flag"]
     debt --> elig["loan.eligible"]
-    
+
     emp["applicant.employment_status"] --> elig
     bank["applicant.bankruptcy_history"] --> elig
     dur["applicant.employment_duration_months"] --> elig
     min_rules["loan.min_income, loan.min_credit..."] --> elig
-    
+
     %% Intermediate connections
     adj_inc --> elig
     cred_eff --> elig
     cred_eff --> rate["loan.rate_tier"]
-    
+
     %% Layer 2 derived
     elig --> rate
     elig --> max_amt["loan.max_amount"]
     elig --> app_stat["loan.application_status"]
-    
+
     collat["applicant.has_collateral"] --> max_amt
     req_amt["applicant.loan_amount_requested"] --> app_stat
     max_amt --> app_stat
-    
+
     high_risk --> req_ins["loan.requires_insurance"]
     high_risk --> rev_q["loan.review_queue"]
     app_stat --> req_ins
     app_stat --> rev_q
-    
+
     %% Final Layer
     rate --> base_rate["loan.base_interest_rate"]
     req_ins --> base_rate
@@ -183,36 +183,36 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 
 ### What It Tests
 
-| Capability | How |
-|---|---|
-| **Zero Parametric Leakage** | Fictional species and compounds ensure no reliance on training data. |
-| **Safety-First Retraction** | Retracting a primary treatment immediately when a "Lethal" pairing is identified. |
-| **Triangulated Dependency** | Atmosphere affects both the patient (integrity) and the treatment (phase). |
-| **Hierarchical Recovery** | Navigating a preference order (Primary → Secondary → Tertiary) based on safety flags. |
-| **Side-Effect Propagation** | Updating patient state (e.g., sensory status) when forced to use fallback options. |
+| Capability                  | How                                                                                   |
+| --------------------------- | ------------------------------------------------------------------------------------- |
+| **Zero Parametric Leakage** | Fictional species and compounds ensure no reliance on training data.                  |
+| **Safety-First Retraction** | Retracting a primary treatment immediately when a "Lethal" pairing is identified.     |
+| **Triangulated Dependency** | Atmosphere affects both the patient (integrity) and the treatment (phase).            |
+| **Hierarchical Recovery**   | Navigating a preference order (Primary → Secondary → Tertiary) based on safety flags. |
+| **Side-Effect Propagation** | Updating patient state (e.g., sensory status) when forced to use fallback options.    |
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | How It Evolves |
-|---|---|---|---|
-| `patient.organism_type` | str | Glerps, Yorp, Qwerl | Genetic identification |
-| `patient.symptoms` | list[str] | ["fever", "spasms"] | Tracks active biological symptoms |
-| `patient.organ_integrity` | str | stable, brittle, volatile | Derived from pressure (R1) |
-| `patient.sensory_status` | str | normal, telepathic | Derived from side effects (R5) |
-| `atmosphere.ambient_pressure` | numeric | 0.8, 4.5 | Environmental sensors |
-| `atmosphere.dominant_gas` | str | chlorine, methane, xenon | Environmental sensors |
-| `treatment.active_prescription` | str | zyxostin, filinan, snevox, none | Derived selection (R4) |
-| `zyxostin.phase` | str | crystalline, plasma | Derived from gas (R2) |
-| `filinan.phase` | str | vapor, plasma | Derived from gas (R2) |
-| `snevox.phase` | str | liquid, vapor | Derived from gas (R2) |
-| `zyxostin.hazard` | str | safe, LETHAL, symbiotic | Safety check for zyxostin |
-| `filinan.hazard` | str | safe, LETHAL, symbiotic | Safety check for filinan |
-| `snevox.hazard` | str | safe, LETHAL, symbiotic | Safety check for snevox |
-| `patient.quarantine_required` | bool | True, False | Derived (R6) |
-| `treatment.duration_cycles` | numeric | 5, 12, 0 | Derived (R7) |
-| `medical.staff_requirement` | str | hazmat_team, psionic_handler | Derived (R8) |
-| `patient.recovery_prospect` | str | excellent, guarded, terminal, miraculous | Derived (R9) |
-| `clinic.billing_tier` | str | class_standard, class_omega | Derived (R10) |
+| Key                             | Type      | Example                                  | How It Evolves                    |
+| ------------------------------- | --------- | ---------------------------------------- | --------------------------------- |
+| `patient.organism_type`         | str       | Glerps, Yorp, Qwerl                      | Genetic identification            |
+| `patient.symptoms`              | list[str] | ["fever", "spasms"]                      | Tracks active biological symptoms |
+| `patient.organ_integrity`       | str       | stable, brittle, volatile                | Derived from pressure (R1)        |
+| `patient.sensory_status`        | str       | normal, telepathic                       | Derived from side effects (R5)    |
+| `atmosphere.ambient_pressure`   | numeric   | 0.8, 4.5                                 | Environmental sensors             |
+| `atmosphere.dominant_gas`       | str       | chlorine, methane, xenon                 | Environmental sensors             |
+| `treatment.active_prescription` | str       | zyxostin, filinan, snevox, none          | Derived selection (R4)            |
+| `zyxostin.phase`                | str       | crystalline, plasma                      | Derived from gas (R2)             |
+| `filinan.phase`                 | str       | vapor, plasma                            | Derived from gas (R2)             |
+| `snevox.phase`                  | str       | liquid, vapor                            | Derived from gas (R2)             |
+| `zyxostin.hazard`               | str       | safe, LETHAL, symbiotic                  | Safety check for zyxostin         |
+| `filinan.hazard`                | str       | safe, LETHAL, symbiotic                  | Safety check for filinan          |
+| `snevox.hazard`                 | str       | safe, LETHAL, symbiotic                  | Safety check for snevox           |
+| `patient.quarantine_required`   | bool      | True, False                              | Derived (R6)                      |
+| `treatment.duration_cycles`     | numeric   | 5, 12, 0                                 | Derived (R7)                      |
+| `medical.staff_requirement`     | str       | hazmat_team, psionic_handler             | Derived (R8)                      |
+| `patient.recovery_prospect`     | str       | excellent, guarded, terminal, miraculous | Derived (R9)                      |
+| `clinic.billing_tier`           | str       | class_standard, class_omega              | Derived (R10)                     |
 
 ### Rules
 
@@ -240,18 +240,18 @@ R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
   logic: |
     # Evaluate for a given `compound` (e.g. zyxostin):
     # 1. EXPLODE CONSTRAINTS & SINGULARITY
-    # Paradox: If an organism has "volatile" organ integrity AND takes a compound that normally triggers an 
+    # Paradox: If an organism has "volatile" organ integrity AND takes a compound that normally triggers an
     # explode constraint, the catastrophic biological forces cancel out resulting in a "symbiotic" singularity.
-    IF (organism_type == "Glerps" AND compound == "zyxostin") OR 
-       (organism_type == "Yorp" AND compound == "filinan") OR 
+    IF (organism_type == "Glerps" AND compound == "zyxostin") OR
+       (organism_type == "Yorp" AND compound == "filinan") OR
        (organism_type == "Qwerl" AND compound == "snevox"):
        IF organ_integrity == "volatile" → "symbiotic"
        ELSE → "LETHAL"
-    
+
     # 2. State-Based
     IF {compound}.phase == "plasma" AND compound == "filinan" → "LETHAL"
     IF {compound}.phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "LETHAL"
-    
+
     # 3. Condition-Based
     IF organ_integrity == "volatile" → "LETHAL"
     ELSE → "safe"
@@ -262,7 +262,7 @@ R4: treatment.active_prescription
     # 1. MIRACLE OVERRIDE
     # If ANY compound evaluates to "symbiotic", it completely overrides symptom priority lists and is selected.
     IF ANY compound.hazard == "symbiotic" → return that compound (if multiple, pick first in standard priority)
-    
+
     # 2. SYMPTOM PRIORITIES
     # Treatments are evaluated in priority order based on the organism and subset of strings in `patient.symptoms`:
     IF organism_type == "Glerps":
@@ -274,8 +274,8 @@ R4: treatment.active_prescription
       ELSE → Priority: zyxostin → snevox → filinan
     IF organism_type == "Qwerl":
       Priority: snevox → zyxostin → filinan
-      
-    # Select the highest-priority compound that evaluates to "safe". 
+
+    # Select the highest-priority compound that evaluates to "safe".
     # If none are safe (and none symbiotic), return "none".
 
 R5: patient.sensory_status
@@ -310,7 +310,7 @@ R9: patient.recovery_prospect
   logic: |
     # 1. MIRACLE CHECK: If active prescription was explicitly chosen due to a "symbiotic" hazard state
     IF active_prescription hazard == "symbiotic" → "miraculous"
-    
+
     # 2. STANDARD CHECK
     IF duration_cycles > 10 AND staff_requirement == "hazmat_team" → "guarded"
     IF duration_cycles == 0 → "terminal"
@@ -323,7 +323,9 @@ R10: clinic.billing_tier
     IF staff_requirement == "hazmat_team" → "class_delta"
     ELSE → "class_standard"
 ```
+
 ### Dependency Chain
+
 ```mermaid
 graph TD
     %% Atmospheric Drivers
@@ -339,18 +341,18 @@ graph TD
     Species --> ZHazard["zyxostin.hazard"]
     Species --> FHazard["filinan.hazard"]
     Species --> SHazard["snevox.hazard"]
-    
+
     Symptoms["patient.symptoms"] --> Selection["treatment.active_prescription"]
 
     %% Compound specific evaluations
     ZPhase --> ZHazard
     FPhase --> FHazard
     SPhase --> SHazard
-    
+
     Integrity --> ZHazard
     Integrity --> FHazard
     Integrity --> SHazard
-    
+
     Integrity --> Dur["treatment.duration_cycles"]
 
     %% Selection & Cascades
@@ -368,10 +370,10 @@ graph TD
     %% Late Stage derivations
     SideEffect --> Staff["medical.staff_requirement"]
     Quar --> Staff
-    
+
     Dur --> Recov["patient.recovery_prospect"]
     Staff --> Recov
-    
+
     Selection --> Bill["clinic.billing_tier"]
     Staff --> Bill
 ```
@@ -394,7 +396,7 @@ t=0: organism_type = "Glerps", symptoms = [], ambient_pressure = 3.5, dominant_g
 t=1: Inject Symptoms! symptoms = ["fever", "spasms"]
      → dirty: {active_prescription, sensory_status, staff_requirement, recovery_prospect, billing_tier, duration_cycles}
      → resolve_all_dirty():
-       R4: Glerps w/ fever & spasms priority changes to: snevox → zyxostin → filinan. 
+       R4: Glerps w/ fever & spasms priority changes to: snevox → zyxostin → filinan.
            snevox is safe, so active_prescription REMAINS "snevox".
            Most downstream states remain clean! "Invisible shift".
 
@@ -402,7 +404,7 @@ t=2: Pressure spike! ambient_pressure = 4.5
      → dirty: {organ_integrity, zyxostin.hazard, filinan.hazard, snevox.hazard, active_prescription ...}
      → resolve_all_dirty():
        R1: > 4.0 + Glerps → organ_integrity = "volatile"
-       R3: Singularity! Glerps + zyxostin + volatile = "symbiotic". 
+       R3: Singularity! Glerps + zyxostin + volatile = "symbiotic".
            Other compounds without explode constraints: filinan=LETHAL, snevox=LETHAL.
        R4: Symbiotic override! active_prescription = "zyxostin".
        R5: active_prescription is zyxostin → sensory_status = "normal"
@@ -411,31 +413,32 @@ t=2: Pressure spike! ambient_pressure = 4.5
        R9: active_prescription hazard is "symbiotic" → recovery_prospect = "miraculous"
        R10: standard_medic → billing_tier = "class_standard"
 ```
+
 ## Domain 3: Crime Scene Investigation (Relational & Epistemic)
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | Semantic Role |
-|---|---|---|---|
-| `officer_smith.status` | str | "active", "suspended" | The procedural integrity flag. |
-| `case.warrant_status` | bool | true, false | Legal permission for financial records. |
-| `case.cctv_status` | str | "active", "corrupted" | Digital evidence integrity. |
-| `case.cctv_subject` | str | "suspect_b", "none" | Who the camera saw. |
-| `suspect_a.home_evidence` | str | "gun", "none" | Physical reality. |
-| `suspect_a.evidence_logger` | str | "officer_smith", "none" | Custody chain link. |
-| `suspect_a.financial_records` | str | "debt", "clean" | Potential motive source. |
-| `suspect_b.relation_to_victim` | str | "enemy", "stranger" | Potential motive source. |
-| `suspect_b.alibi_partner` | str | "suspect_a", "none" | Relational link. |
-| `suspect_a.admissible_evidence` | str | "gun", "none" | **Derived:** Legally usable physical evidence. |
-| `suspect_b.testimonial_alibi` | str | "confirmed", "broken" | **Derived:** Epistemic health of human alibi. |
-| `suspect_b.digital_alibi` | str | "confirmed", "none" | **Derived:** Epistemic health of digital alibi. |
-| `suspect_b.final_alibi` | str | "confirmed", "broken" | **Derived:** Reconciled alibi state. |
-| `suspect_a.motive_verified` | bool | true, false | **Derived:** Legally admissible motive. |
-| `suspect_b.motive_verified` | bool | true, false | **Derived:** Socially established motive. |
-| `suspect_a.status` | str | "prime_suspect", "cleared" | **Derived:** A's current legal standing. |
-| `suspect_b.status` | str | "prime_suspect", "cleared" | **Derived:** B's current legal standing. |
-| `case.theory` | str | "collusion", "solo_perpetrator" | **Derived:** Abductive conclusion. |
-| `case.lead_suspect` | str | "suspect_a", "suspect_b", "none" | **Derived:** Final target based on tie-breakers. |
+| Key                             | Type | Example                          | Semantic Role                                    |
+| ------------------------------- | ---- | -------------------------------- | ------------------------------------------------ |
+| `officer_smith.status`          | str  | "active", "suspended"            | The procedural integrity flag.                   |
+| `case.warrant_status`           | bool | true, false                      | Legal permission for financial records.          |
+| `case.cctv_status`              | str  | "active", "corrupted"            | Digital evidence integrity.                      |
+| `case.cctv_subject`             | str  | "suspect_b", "none"              | Who the camera saw.                              |
+| `suspect_a.home_evidence`       | str  | "gun", "none"                    | Physical reality.                                |
+| `suspect_a.evidence_logger`     | str  | "officer_smith", "none"          | Custody chain link.                              |
+| `suspect_a.financial_records`   | str  | "debt", "clean"                  | Potential motive source.                         |
+| `suspect_b.relation_to_victim`  | str  | "enemy", "stranger"              | Potential motive source.                         |
+| `suspect_b.alibi_partner`       | str  | "suspect_a", "none"              | Relational link.                                 |
+| `suspect_a.admissible_evidence` | str  | "gun", "none"                    | **Derived:** Legally usable physical evidence.   |
+| `suspect_b.testimonial_alibi`   | str  | "confirmed", "broken"            | **Derived:** Epistemic health of human alibi.    |
+| `suspect_b.digital_alibi`       | str  | "confirmed", "none"              | **Derived:** Epistemic health of digital alibi.  |
+| `suspect_b.final_alibi`         | str  | "confirmed", "broken"            | **Derived:** Reconciled alibi state.             |
+| `suspect_a.motive_verified`     | bool | true, false                      | **Derived:** Legally admissible motive.          |
+| `suspect_b.motive_verified`     | bool | true, false                      | **Derived:** Socially established motive.        |
+| `suspect_a.status`              | str  | "prime_suspect", "cleared"       | **Derived:** A's current legal standing.         |
+| `suspect_b.status`              | str  | "prime_suspect", "cleared"       | **Derived:** B's current legal standing.         |
+| `case.theory`                   | str  | "collusion", "solo_perpetrator"  | **Derived:** Abductive conclusion.               |
+| `case.lead_suspect`             | str  | "suspect_a", "suspect_b", "none" | **Derived:** Final target based on tie-breakers. |
 
 ### Rules (Deterministic `derive_fn`)
 
@@ -529,35 +532,35 @@ graph TD
     SmithStat["officer_smith.status"] --> AdmisEvid["suspect_a.admissible_evidence"]
     Logger["suspect_a.evidence_logger"] --> AdmisEvid
     HomeEvid["suspect_a.home_evidence"] --> AdmisEvid
-    
+
     %% Entity A Logic
     AdmisEvid --> StatA["suspect_a.status"]
-    
+
     %% Epistemic Link
     StatA --> AlibiB["suspect_b.testimonial_alibi"]
     Partner["suspect_b.alibi_partner"] --> AlibiB
-    
+
     %% Digital Alibi
     CctvStat["case.cctv_status"] --> DigitalB["suspect_b.digital_alibi"]
     CctvSubj["case.cctv_subject"] --> DigitalB
-    
+
     %% Final Alibi
     AlibiB --> FinalB["suspect_b.final_alibi"]
     DigitalB --> FinalB
-    
+
     %% Entity B Logic
     FinalB --> StatB["suspect_b.status"]
-    
+
     %% Motives
     Warrant["case.warrant_status"] --> MotiveA["suspect_a.motive_verified"]
     Fin["suspect_a.financial_records"] --> MotiveA
-    
+
     Rel["suspect_b.relation_to_victim"] --> MotiveB["suspect_b.motive_verified"]
-    
+
     %% Theory
     StatA --> Theory["case.theory"]
     StatB --> Theory
-    
+
     %% High Level Conclusion
     Theory --> Lead["case.lead_suspect"]
     StatA --> Lead
@@ -565,12 +568,6 @@ graph TD
     MotiveA --> Lead
     MotiveB --> Lead
 ```
-
-### Why this 10-Rule setup is a goldmine for your evaluation:
-
-1. **The 7-Hop Cascade:** By extending the rules to `case.lead_suspect`, you now have an incredibly deep causal chain. If you update `officer_smith.status`, the AI has to trace: `officer_smith` $\rightarrow$ `admissible_evidence` $\rightarrow$ `status_a` $\rightarrow$ `testimonial_alibi` $\rightarrow$ `final_alibi` $\rightarrow$ `status_b` $\rightarrow$ `theory` $\rightarrow$ `lead_suspect`. That is a brutal test of belief revision tracking.
-2. **The Overriding Epistemology (R5):** This explicitly tests if the AI understands that not all facts are equal. If A lies, B's alibi breaks, *unless* a camera saw B. It forces the LLM to prioritize the "Hard Fact" over the "Relational Link."
-3. **Double Gatekeeping (R1 & R7):** You now have two distinct ways to logically blind the system. Retracting `warrant_status` kills the motive, while suspending the `officer` kills the physical evidence.
 
 ---
 
@@ -582,29 +579,29 @@ Tests belief revision with **complete parametric isolation** using a fictional s
 
 ### What It Tests
 
-| Capability | How |
-|---|---|
-| **Parametric Isolation** | Fictional species ensures zero reliance on the LLM's pre-trained weights. |
-| **Ontological Masking** | An environmental stressor forces the observable `expressed_diet` to deviate from the `genetic_diet`. |
+| Capability                    | How                                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Parametric Isolation**      | Fictional species ensures zero reliance on the LLM's pre-trained weights.                                     |
+| **Ontological Masking**       | An environmental stressor forces the observable `expressed_diet` to deviate from the `genetic_diet`.          |
 | **Latent Belief Maintenance** | The system must remember the underlying genetic defaults even while reasoning over the temporary adaptations. |
-| **Ecosystem Cascades** | Reverting a single weather parameter ripples through diet, mating, and conservation protocols. |
+| **Ecosystem Cascades**        | Reverting a single weather parameter ripples through diet, mating, and conservation protocols.                |
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | Semantic Role |
-|---|---|---|---|
-| `environment.weather_pattern` | str | "stable", "drought", "flood" | The external trigger. |
-| `environment.food_scarcity` | bool | true, false | Secondary environmental state. |
-| `thorncrester.genetic_diet` | str | "frugivore", "insectivore" | **Latent Truth:** Unchangeable base trait. |
-| `thorncrester.genetic_plumage`| str | "crimson", "azure" | **Latent Truth:** Unchangeable base color. |
-| `thorncrester.ecological_stress`| str | "high", "nominal" | **Derived:** The masking trigger. |
-| `thorncrester.expressed_diet` | str | "frugivore", "scavenger" | **Derived:** Observable phenotype. |
-| `thorncrester.expressed_plumage`| str | "crimson", "dull_grey" | **Derived:** Observable phenotype. |
-| `thorncrester.primary_forage` | str | "verath_berries", "carrion" | **Derived:** Target food source. |
-| `thorncrester.mating_viability` | bool | true, false | **Derived:** Reproductive capability. |
-| `thorncrester.population_trend` | str | "growing", "declining", "crashing"| **Derived:** Demographic trajectory. |
-| `thorncrester.conservation_status`| str | "safe", "vulnerable", "critical" | **Derived:** Human intervention level. |
-| `thorncrester.intervention_plan`| str | "habitat_protection", "captive_breeding", "none" | **Derived:** Actionable outcome. |
+| Key                                | Type | Example                                          | Semantic Role                              |
+| ---------------------------------- | ---- | ------------------------------------------------ | ------------------------------------------ |
+| `environment.weather_pattern`      | str  | "stable", "drought", "flood"                     | The external trigger.                      |
+| `environment.food_scarcity`        | bool | true, false                                      | Secondary environmental state.             |
+| `thorncrester.genetic_diet`        | str  | "frugivore", "insectivore"                       | **Latent Truth:** Unchangeable base trait. |
+| `thorncrester.genetic_plumage`     | str  | "crimson", "azure"                               | **Latent Truth:** Unchangeable base color. |
+| `thorncrester.ecological_stress`   | str  | "high", "nominal"                                | **Derived:** The masking trigger.          |
+| `thorncrester.expressed_diet`      | str  | "frugivore", "scavenger"                         | **Derived:** Observable phenotype.         |
+| `thorncrester.expressed_plumage`   | str  | "crimson", "dull_grey"                           | **Derived:** Observable phenotype.         |
+| `thorncrester.primary_forage`      | str  | "verath_berries", "carrion"                      | **Derived:** Target food source.           |
+| `thorncrester.mating_viability`    | bool | true, false                                      | **Derived:** Reproductive capability.      |
+| `thorncrester.population_trend`    | str  | "growing", "declining", "crashing"               | **Derived:** Demographic trajectory.       |
+| `thorncrester.conservation_status` | str  | "safe", "vulnerable", "critical"                 | **Derived:** Human intervention level.     |
+| `thorncrester.intervention_plan`   | str  | "habitat_protection", "captive_breeding", "none" | **Derived:** Actionable outcome.           |
 
 ### Rules
 
@@ -683,25 +680,25 @@ graph TD
     %% Base Inputs
     Weather["environment.weather_pattern"] --> Stress["thorncrester.ecological_stress"]
     Scarcity["environment.food_scarcity"] --> Stress
-    
+
     %% The Masking Nodes
     GenDiet["thorncrester.genetic_diet"] --> ExpDiet["thorncrester.expressed_diet"]
     Stress --> ExpDiet
-    
+
     GenPlum["thorncrester.genetic_plumage"] --> ExpPlum["thorncrester.expressed_plumage"]
     ExpDiet --> ExpPlum
-    
+
     %% Mid-level behavior
     ExpDiet --> Forage["thorncrester.primary_forage"]
     ExpPlum --> Mating["thorncrester.mating_viability"]
     Stress --> Mating
-    
+
     %% High-level outcomes
     Mating --> Trend["thorncrester.population_trend"]
     Scarcity --> Trend
-    
+
     Trend --> Status["thorncrester.conservation_status"]
-    
+
     Status --> Plan["thorncrester.intervention_plan"]
     ExpDiet --> Plan
 ```
@@ -745,11 +742,11 @@ t=2: The Unmasking Event (Rains return)
 
 ## Cross-Domain Comparison
 
-| Property | Loan | Employee | Crime Scene | Thorncrester |
-|---|---|---|---|---|
-| **Max dependency depth** | 3 hops | 2 hops | 7 hops | 3 hops |
-| **Number of rules** | 10 | 10 | 10 | 10 |
-| **Number of attributes** | 17 | 15 | 19 | 13 |
-| **Parametric isolation** | Low | Low | **Total** | **Total** |
-| **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population |
-| **Key revision pattern** | Threshold change | Prerequisite expiry | Evidence cascade | Classification shift |
+| Property                 | Loan                  | Employee            | Crime Scene             | Thorncrester         |
+| ------------------------ | --------------------- | ------------------- | ----------------------- | -------------------- |
+| **Max dependency depth** | 3 hops                | 2 hops              | 7 hops                  | 3 hops               |
+| **Number of rules**      | 10                    | 10                  | 10                      | 10                   |
+| **Number of attributes** | 17                    | 15                  | 19                      | 13                   |
+| **Parametric isolation** | Low                   | Low                 | **Total**               | **Total**            |
+| **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population  |
+| **Key revision pattern** | Threshold change      | Prerequisite expiry | Evidence cascade        | Classification shift |
