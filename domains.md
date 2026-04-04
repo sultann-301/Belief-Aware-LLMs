@@ -521,12 +521,6 @@ R10: case.lead_suspect
           ELSE → "both"
 ```
 
-### Why this 10-Rule setup is a goldmine for your evaluation:
-
-1. **The 7-Hop Cascade:** By extending the rules to `case.lead_suspect`, you now have an incredibly deep causal chain. If you update `officer_smith.status`, the AI has to trace: `officer_smith` $\rightarrow$ `admissible_evidence` $\rightarrow$ `status_a` $\rightarrow$ `testimonial_alibi` $\rightarrow$ `final_alibi` $\rightarrow$ `status_b` $\rightarrow$ `theory` $\rightarrow$ `lead_suspect`. That is a brutal test of belief revision tracking.
-2. **The Overriding Epistemology (R5):** This explicitly tests if the AI understands that not all facts are equal. If A lies, B's alibi breaks, *unless* a camera saw B. It forces the LLM to prioritize the "Hard Fact" over the "Relational Link."
-3. **Double Gatekeeping (R1 & R7):** You now have two distinct ways to logically blind the system. Retracting `warrant_status` kills the motive, while suspending the `officer` kills the physical evidence.
-
 ---
 
 ## Domain 4: Thorncrester Taxonomy (Fictional Bird Species)
