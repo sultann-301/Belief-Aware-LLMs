@@ -521,6 +521,51 @@ R10: case.lead_suspect
           ELSE → "both"
 ```
 
+### Dependency Chain
+
+```mermaid
+graph TD
+    %% Base Inputs
+    SmithStat["officer_smith.status"] --> AdmisEvid["suspect_a.admissible_evidence"]
+    Logger["suspect_a.evidence_logger"] --> AdmisEvid
+    HomeEvid["suspect_a.home_evidence"] --> AdmisEvid
+    
+    %% Entity A Logic
+    AdmisEvid --> StatA["suspect_a.status"]
+    
+    %% Epistemic Link
+    StatA --> AlibiB["suspect_b.testimonial_alibi"]
+    Partner["suspect_b.alibi_partner"] --> AlibiB
+    
+    %% Digital Alibi
+    CctvStat["case.cctv_status"] --> DigitalB["suspect_b.digital_alibi"]
+    CctvSubj["case.cctv_subject"] --> DigitalB
+    
+    %% Final Alibi
+    AlibiB --> FinalB["suspect_b.final_alibi"]
+    DigitalB --> FinalB
+    
+    %% Entity B Logic
+    FinalB --> StatB["suspect_b.status"]
+    
+    %% Motives
+    Warrant["case.warrant_status"] --> MotiveA["suspect_a.motive_verified"]
+    Fin["suspect_a.financial_records"] --> MotiveA
+    
+    Rel["suspect_b.relation_to_victim"] --> MotiveB["suspect_b.motive_verified"]
+    
+    %% Theory
+    StatA --> Theory["case.theory"]
+    StatB --> Theory
+    
+    %% High Level Conclusion
+    Theory --> Lead["case.lead_suspect"]
+    StatA --> Lead
+    StatB --> Lead
+    MotiveA --> Lead
+    MotiveB --> Lead
+```
+
 ### Why this 10-Rule setup is a goldmine for your evaluation:
 
 1. **The 7-Hop Cascade:** By extending the rules to `case.lead_suspect`, you now have an incredibly deep causal chain. If you update `officer_smith.status`, the AI has to trace: `officer_smith` $\rightarrow$ `admissible_evidence` $\rightarrow$ `status_a` $\rightarrow$ `testimonial_alibi` $\rightarrow$ `final_alibi` $\rightarrow$ `status_b` $\rightarrow$ `theory` $\rightarrow$ `lead_suspect`. That is a brutal test of belief revision tracking.
@@ -529,165 +574,171 @@ R10: case.lead_suspect
 
 ---
 
-## Domain 4: Thorncrester Taxonomy (Fictional Bird Species)
+## Domain 4: Thorncrester Taxonomy (Ecological Masking)
 
 ### Purpose
 
-Tests belief revision with **complete parametric isolation**. The Thorncrester is fictional — the LLM has zero prior knowledge. Also tests classification revision from evolving field observations.
+Tests belief revision with **complete parametric isolation** using a fictional species. Crucially, it evaluates **non-monotonic inheritance** and **latent beliefs**. It tests whether the system can distinguish between a permanent underlying trait (genotype) and a temporary environmental adaptation (phenotype), and successfully "unmask" the default trait when ecological pressures lift.
 
 ### What It Tests
 
 | Capability | How |
 |---|---|
-| Zero parametric leakage | Fictional species — LLM cannot rely on training data |
-| Classification revision | Diet reclassification cascades to prey + conservation |
-| Seasonal lifecycle changes | Season change triggers behavioral and habitat updates |
-| Extensibility | Easy to add new observations over time |
-
-### Species Background
-
-The **Thorncrester** (*Spinocristatus fictus*) is a fictional bird native to the Verath Archipelago. Two subspecies: **Coastal** and **Highland**.
+| **Parametric Isolation** | Fictional species ensures zero reliance on the LLM's pre-trained weights. |
+| **Ontological Masking** | An environmental stressor forces the observable `expressed_diet` to deviate from the `genetic_diet`. |
+| **Latent Belief Maintenance** | The system must remember the underlying genetic defaults even while reasoning over the temporary adaptations. |
+| **Ecosystem Cascades** | Reverting a single weather parameter ripples through diet, mating, and conservation protocols. |
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | How It Evolves |
+| Key | Type | Example | Semantic Role |
 |---|---|---|---|
-| `thorncrester.diet` | str | carnivore, omnivore, herbivore | Field reclassification |
-| `thorncrester.can_fly` | bool | true, false | Life stage |
-| `thorncrester.habitat` | str | coastal, highland, wetland | Derived (R3) |
-| `thorncrester.subspecies` | str | coastal, highland | Identification |
-| `thorncrester.life_stage` | str | juvenile, adult, elder | Maturation |
-| `thorncrester.season` | str | mating, nesting, migration, dormant | Calendar |
-| `thorncrester.plumage_color` | str | crimson, blue, moulted | Seasonal moult |
-| `thorncrester.threat_level` | str | safe, endangered, critical | Population surveys |
-| `thorncrester.population_count` | numeric | 50, 500 | Census |
-| `thorncrester.nesting_behavior` | str | ground, cliff, tree | Research findings |
-| `thorncrester.social_structure` | str | solitary, pair, flock | Season + context |
-| `thorncrester.temperature_band` | str | cold, temperate, hot | Climate |
-| `thorncrester.migration_route` | str | northern, southern, standard | Geolocator tags |
+| `environment.weather_pattern` | str | "stable", "drought", "flood" | The external trigger. |
+| `environment.food_scarcity` | bool | true, false | Secondary environmental state. |
+| `thorncrester.genetic_diet` | str | "frugivore", "insectivore" | **Latent Truth:** Unchangeable base trait. |
+| `thorncrester.genetic_plumage`| str | "crimson", "azure" | **Latent Truth:** Unchangeable base color. |
+| `thorncrester.ecological_stress`| str | "high", "nominal" | **Derived:** The masking trigger. |
+| `thorncrester.expressed_diet` | str | "frugivore", "scavenger" | **Derived:** Observable phenotype. |
+| `thorncrester.expressed_plumage`| str | "crimson", "dull_grey" | **Derived:** Observable phenotype. |
+| `thorncrester.primary_forage` | str | "verath_berries", "carrion" | **Derived:** Target food source. |
+| `thorncrester.mating_viability` | bool | true, false | **Derived:** Reproductive capability. |
+| `thorncrester.population_trend` | str | "growing", "declining", "crashing"| **Derived:** Demographic trajectory. |
+| `thorncrester.conservation_status`| str | "safe", "vulnerable", "critical" | **Derived:** Human intervention level. |
+| `thorncrester.intervention_plan`| str | "habitat_protection", "captive_breeding", "none" | **Derived:** Actionable outcome. |
 
 ### Rules
 
 ```python
-R1: thorncrester.primary_prey
-    inputs: [thorncrester.diet, thorncrester.habitat]
+# --- BLOCK 1: THE ENVIRONMENTAL STRESS LAYER ---
+
+R1: thorncrester.ecological_stress
+    inputs: [environment.weather_pattern, environment.food_scarcity]
     logic:
-      IF diet = "carnivore" AND habitat = "coastal" → "fish"
-      IF diet = "carnivore" AND habitat = "highland" → "small_rodents"
-      IF diet = "herbivore" → None  (herbivores don't have prey)
-      IF diet = "omnivore" AND habitat = "coastal" → "mixed_fish_berries"
-      IF diet = "insectivore" → "beetles"
+      IF weather_pattern = "drought" AND food_scarcity = True → "high"
+      IF weather_pattern = "flood" → "high"
+      ELSE → "nominal"
+
+# --- BLOCK 2: PHENOTYPIC PLASTICITY (The Masking Layer) ---
+
+R2: thorncrester.expressed_diet
+    inputs: [thorncrester.genetic_diet, thorncrester.ecological_stress]
+    logic:
+      # The latent genetic trait is masked under high stress
+      IF ecological_stress = "high" → "scavenger"
+      ELSE → genetic_diet
+
+R3: thorncrester.expressed_plumage
+    inputs: [thorncrester.genetic_plumage, thorncrester.expressed_diet]
+    logic:
+      # Diet changes strip the plumage of its genetic color
+      IF expressed_diet = "scavenger" → "dull_grey"
+      ELSE → genetic_plumage
+
+# --- BLOCK 3: BEHAVIORAL CASCADES ---
+
+R4: thorncrester.primary_forage
+    inputs: [thorncrester.expressed_diet]
+    logic:
+      IF expressed_diet = "frugivore" → "verath_berries"
+      IF expressed_diet = "insectivore" → "thorn_beetles"
+      IF expressed_diet = "scavenger" → "carrion"
       ELSE → "unknown"
 
-R2: thorncrester.can_fly
-    inputs: [thorncrester.life_stage]
+R5: thorncrester.mating_viability
+    inputs: [thorncrester.expressed_plumage, thorncrester.ecological_stress]
     logic:
-      IF life_stage = "juvenile" → False
-      IF life_stage = "adult" OR life_stage = "elder" → True
+      # Mating requires vibrant genetic colors AND low stress
+      IF expressed_plumage = "dull_grey" OR ecological_stress = "high" → False
+      ELSE → True
 
-R3: thorncrester.habitat (default from subspecies)
-    inputs: [thorncrester.subspecies, thorncrester.season]
+# --- BLOCK 4: POPULATION & CONSERVATION ---
+
+R6: thorncrester.population_trend
+    inputs: [thorncrester.mating_viability, environment.food_scarcity]
     logic:
-      IF season = "migration" AND subspecies = "coastal" → "wetland"
-      IF subspecies = "coastal" → "coastal"
-      IF subspecies = "highland" → "highland"
-    NOTE: season change away from migration automatically reverts habitat
+      IF mating_viability = False AND food_scarcity = True → "crashing"
+      IF mating_viability = False AND food_scarcity = False → "declining"
+      ELSE → "growing"
 
-R4: thorncrester.territorial_behavior
-    inputs: [thorncrester.plumage_color, thorncrester.season]
-    logic:  plumage_color = "crimson" AND season = "mating" → True, else False
-
-R5: thorncrester.threat_level
-    inputs: [thorncrester.population_count]
+R7: thorncrester.conservation_status
+    inputs: [thorncrester.population_trend]
     logic:
-      IF population_count < 100 → "critical"
-      IF population_count < 500 → "endangered"
+      IF population_trend = "crashing" → "critical"
+      IF population_trend = "declining" → "vulnerable"
       ELSE → "safe"
 
-R6: thorncrester.conservation_action
-    inputs: [thorncrester.threat_level, thorncrester.habitat]
+R8: thorncrester.intervention_plan
+    inputs: [thorncrester.conservation_status, thorncrester.expressed_diet]
     logic:
-      IF threat_level = "critical" AND habitat = "coastal" → "breeding_program"
-      IF threat_level = "critical" → "emergency_monitoring"
-      IF threat_level = "endangered" → "monitoring"
+      IF conservation_status = "critical" AND expressed_diet = "scavenger" → "supplemental_carrion_drops"
+      IF conservation_status = "critical" → "captive_breeding"
+      IF conservation_status = "vulnerable" → "habitat_protection"
       ELSE → "none"
-
-R7: thorncrester.predation_risk
-    inputs: [thorncrester.nesting_behavior, thorncrester.threat_level]
-    logic:
-      IF nesting_behavior = "ground" AND threat_level in ("endangered", "critical")
-        → "high"
-      ELSE → "low"
-
-R8: thorncrester.clutch_size
-    inputs: [thorncrester.season, thorncrester.threat_level]
-    logic:
-      IF season = "nesting" AND threat_level in ("endangered", "critical") → 4
-      IF season = "nesting" → 2
-      ELSE → 0  (not nesting season)
-
-R9: thorncrester.social_structure
-    inputs: [thorncrester.territorial_behavior, thorncrester.season]
-    logic:
-      IF territorial_behavior = True → "pair"
-      IF season = "migration" → "flock"
-      ELSE → "solitary"
-
-R10: thorncrester.migration_route
-    inputs: [thorncrester.season, thorncrester.habitat, thorncrester.temperature_band]
-    logic:
-      IF season = "migration" AND habitat = "coastal" AND temperature_band = "cold" → "southern"
-      IF season = "migration" AND habitat = "highland" AND temperature_band = "hot" → "northern"
-      ELSE → "standard"
 ```
 
 ### Dependency Chain
 
+```mermaid
+graph TD
+    %% Base Inputs
+    Weather["environment.weather_pattern"] --> Stress["thorncrester.ecological_stress"]
+    Scarcity["environment.food_scarcity"] --> Stress
+    
+    %% The Masking Nodes
+    GenDiet["thorncrester.genetic_diet"] --> ExpDiet["thorncrester.expressed_diet"]
+    Stress --> ExpDiet
+    
+    GenPlum["thorncrester.genetic_plumage"] --> ExpPlum["thorncrester.expressed_plumage"]
+    ExpDiet --> ExpPlum
+    
+    %% Mid-level behavior
+    ExpDiet --> Forage["thorncrester.primary_forage"]
+    ExpPlum --> Mating["thorncrester.mating_viability"]
+    Stress --> Mating
+    
+    %% High-level outcomes
+    Mating --> Trend["thorncrester.population_trend"]
+    Scarcity --> Trend
+    
+    Trend --> Status["thorncrester.conservation_status"]
+    
+    Status --> Plan["thorncrester.intervention_plan"]
+    ExpDiet --> Plan
 ```
-thorncrester.diet ──→ thorncrester.primary_prey
-thorncrester.habitat ──→
 
-thorncrester.population_count ──→ thorncrester.threat_level ──→ thorncrester.conservation_action
-                                                              ──→ thorncrester.predation_risk
-                                                              ──→ thorncrester.clutch_size
+### Example Revision Scenario (The Masking & Unmasking Cycle)
 
-thorncrester.season ──→ thorncrester.habitat ──→ thorncrester.primary_prey
-                     ──→ thorncrester.territorial_behavior ──→ thorncrester.social_structure
-                     ──→ thorncrester.clutch_size
-```
+```yaml
+t=0: The Baseline (Nominal State)
+     environment.weather_pattern = "stable", environment.food_scarcity = False
+     thorncrester.genetic_diet = "frugivore", thorncrester.genetic_plumage = "crimson"
+     → R1: stress = "nominal"
+     → R2: nominal stress → expressed_diet = "frugivore" (Genotype matches Phenotype)
+     → R3: frugivore diet → expressed_plumage = "crimson"
+     → R4: frugivore → primary_forage = "verath_berries"
+     → R5: crimson + nominal stress → mating_viability = True
+     → R6: mating is viable → population_trend = "growing"
+     → R7/R8: conservation_status = "safe", intervention_plan = "none"
 
-### Example Revision Scenario
+t=1: The Masking Event (Drought hits)
+     environment.weather_pattern is updated to "drought", environment.food_scarcity = True
+     → dirty: {ecological_stress, expressed_diet, expressed_plumage, primary_forage, mating_viability...}
+     → resolve_all_dirty():
+       R1: drought + scarcity → ecological_stress = "high"
+       R2: high stress → expressed_diet = "scavenger" (Genetic diet is now masked)
+       R3: scavenger diet → expressed_plumage = "dull_grey"
+       R4: scavenger → primary_forage = "carrion"
+       R5: dull_grey + high stress → mating_viability = False
+       R6: no mating + scarcity → population_trend = "crashing"
+       R8: critical + scavenger → intervention_plan = "supplemental_carrion_drops"
 
-```
-t=0: diet = "carnivore", habitat = "coastal", population_count = 800
-     → R1: primary_prey = "fish"
-     → R5: threat_level = "safe"
-     → R6: conservation_action = "none"
-
-t=1: Field observation: diet reclassified to "omnivore"
-     → dirty: {primary_prey}
-     → resolve: R1 → primary_prey = "mixed_fish_berries"
-
-t=2: Census: population_count = 80
-     → dirty: {threat_level, conservation_action, predation_risk, clutch_size}
-     → resolve:
-       R5 → threat_level = "critical"
-       R6 → critical + coastal → conservation_action = "breeding_program"
-       R7 → nesting=ground + critical → predation_risk = "high"
-
-t=3: Season changes to "migration"
-     → dirty: {habitat, territorial_behavior, social_structure, clutch_size}
-     → resolve:
-       R3 → migration + coastal → habitat = "wetland"
-       → habitat changed → primary_prey dirty → R1 re-derives
-       R4 → not mating season → territorial = False
-       R9 → migration → social_structure = "flock"
-
-t=4: Season changes to "dormant"
-     → dirty: {habitat, territorial_behavior, social_structure, clutch_size}
-     → resolve:
-       R3 → not migration, coastal → habitat = "coastal" (reverts automatically)
-       R9 → not territorial, not migration → social_structure = "solitary"
+t=2: The Unmasking Event (Rains return)
+     environment.weather_pattern is updated to "stable", environment.food_scarcity = False
+     → resolve_all_dirty():
+       R1: stable + no scarcity → ecological_stress = "nominal"
+       R2: nominal stress → expressed_diet reverts to "frugivore" (Latent trait unmasked)
+       R3: frugivore diet → expressed_plumage reverts to "crimson"
+       [... Cascade restores the population to "safe" and "growing" ...]
 ```
 
 ---

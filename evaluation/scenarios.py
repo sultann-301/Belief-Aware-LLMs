@@ -416,3 +416,146 @@ ALIEN_TURNS_CF = [
 
 ALIEN_TURNS = ALIEN_TURNS_BASIC + ALIEN_TURNS_CF
 
+
+# =====================================================================
+# CRIME SCENE DOMAIN
+# =====================================================================
+
+CRIME_RULES = """\
+[RULES]
+1. suspect_a.admissible_evidence = "none" if suspect_a.evidence_logger == "officer_smith" and officer_smith.status == "suspended" else suspect_a.home_evidence.
+2. suspect_a.status = "prime_suspect" if suspect_a.admissible_evidence != "none" else "cleared".
+3. suspect_b.testimonial_alibi = "broken" if suspect_b.alibi_partner == "suspect_a" and suspect_a.status == "prime_suspect" else "confirmed".
+4. suspect_b.digital_alibi = "confirmed" if case.cctv_status == "active" and case.cctv_subject == "suspect_b" else "none".
+5. suspect_b.final_alibi = "confirmed" if suspect_b.digital_alibi == "confirmed" else suspect_b.testimonial_alibi.
+6. suspect_b.status = "prime_suspect" if suspect_b.final_alibi == "broken" else "cleared".
+7. suspect_a.motive_verified = True if suspect_a.financial_records == "debt" and case.warrant_status == True else False.
+8. suspect_b.motive_verified = True if suspect_b.relation_to_victim == "enemy" else False.
+9. case.theory = "collusion" if suspect_a.status == "prime_suspect" and suspect_b.status == "prime_suspect" else ("solo_perpetrator" if suspect_a.status == "prime_suspect" or suspect_b.status == "prime_suspect" else "unsolved").
+10. case.lead_suspect = "none" if case.theory == "unsolved" else ("suspect_a" if case.theory == "solo_perpetrator" and suspect_a.status == "prime_suspect" else ("suspect_b" if case.theory == "solo_perpetrator" and suspect_b.status == "prime_suspect" else ("suspect_a" if suspect_a.motive_verified == True and suspect_b.motive_verified == False else ("suspect_b" if suspect_b.motive_verified == True and suspect_a.motive_verified == False else "both")))).
+"""
+
+CRIME_INITIAL_BELIEFS = {
+    "officer_smith.status": "active",
+    "suspect_a.home_evidence": "gun",
+    "suspect_a.evidence_logger": "officer_smith",
+    "suspect_a.financial_records": "clean",
+    "suspect_b.relation_to_victim": "stranger",
+    "suspect_b.alibi_partner": "suspect_a",
+    "case.warrant_status": False,
+    "case.cctv_status": "corrupted",
+    "case.cctv_subject": "none",
+}
+
+CRIME_TURNS = [
+    {
+        "entities": "case",
+        "beliefs": {},
+        "question": "What is the initial case theory and lead suspect?",
+        "options": {
+            "A": "unsolved, none",
+            "B": "collusion, both",
+            "C": "solo_perpetrator, suspect_a",
+        },
+        "correct": "B",
+    },
+    {
+        "entities": "case, suspect_a",
+        "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt"},
+        "question": "After discovering debt via a warrant, who is the lead suspect?",
+        "options": {
+            "A": "suspect_a",
+            "B": "suspect_b",
+            "C": "both",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "case, suspect_b",
+        "beliefs": {"suspect_b.relation_to_victim": "enemy"},
+        "question": "With both motives verified, who is the lead suspect?",
+        "options": {
+            "A": "suspect_a",
+            "B": "suspect_b",
+            "C": "both",
+        },
+        "correct": "C",
+    },
+    {
+        "entities": "suspect_a, suspect_b, case",
+        "beliefs": {"officer_smith.status": "suspended"},
+        "question": "Officer Smith is suspended. What is Suspect A's status, Case Theory, and Lead Suspect?",
+        "options": {
+            "A": "cleared, unsolved, none",
+            "B": "prime_suspect, collusion, both",
+            "C": "cleared, solo_perpetrator, suspect_b",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "case",
+        "beliefs": {"suspect_a.evidence_logger": "officer_jones"},
+        "question": "After logging the evidence with a new active officer, what is the case theory?",
+        "options": {
+            "A": "unsolved",
+            "B": "solo_perpetrator",
+            "C": "collusion",
+        },
+        "correct": "C",
+    },
+    {
+        "entities": "suspect_b, case",
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "Given the new CCTV evidence clearing Suspect B dynamically, what is Suspect B's status and the case theory?",
+        "options": {
+            "A": "cleared, solo_perpetrator",
+            "B": "prime_suspect, collusion",
+            "C": "cleared, unsolved",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "suspect_b, case",
+        "beliefs": {"case.cctv_status": "corrupted"},
+        "question": "If the CCTV is discovered to be corrupted, what is the final alibi for Suspect B and the lead suspect?",
+        "options": {
+            "A": "confirmed, suspect_a",
+            "B": "broken, both",
+            "C": "broken, suspect_b",
+        },
+        "correct": "B",
+    },
+    {
+        "entities": "suspect_a, case",
+        "beliefs": {"suspect_a.home_evidence": "none"},
+        "question": "Without the home evidence, what is Suspect A's status and the case theory?",
+        "options": {
+            "A": "prime_suspect, collusion",
+            "B": "cleared, solo_perpetrator",
+            "C": "cleared, unsolved",
+        },
+        "correct": "C",
+    },
+    {
+        "entities": "case",
+        "beliefs": {"suspect_a.home_evidence": "gun"},
+        "question": "If the gun is found again, what is the case theory?",
+        "options": {
+            "A": "unsolved",
+            "B": "solo_perpetrator",
+            "C": "collusion",
+        },
+        "correct": "C",
+    },
+    {
+        "entities": "case",
+        "beliefs": {"case.warrant_status": False},
+        "question": "If the warrant is thrown out, who is the lead suspect?",
+        "options": {
+            "A": "suspect_b",
+            "B": "suspect_a",
+            "C": "both",
+        },
+        "correct": "A",
+    },
+]

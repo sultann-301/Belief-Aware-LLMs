@@ -18,10 +18,12 @@ from evaluation.eval_harness import run_multi_eval, DomainConfig
 from evaluation.scenarios import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
     ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
-    ALIEN_INITIAL_BELIEFS_CF, ALIEN_TURNS_CF
+    ALIEN_INITIAL_BELIEFS_CF, ALIEN_TURNS_CF,
+    CRIME_RULES, CRIME_INITIAL_BELIEFS, CRIME_TURNS
 )
 from belief_store.domains.loan import setup_loan_domain
 from belief_store.domains.alien_clinic import setup_alien_clinic_domain
+from belief_store.domains.crime_scene import setup_crime_scene_domain
 
 DOMAIN_REGISTRY = {
     "loan": DomainConfig(
@@ -47,6 +49,14 @@ DOMAIN_REGISTRY = {
         turns=ALIEN_TURNS_CF,
         baseline_rules=ALIEN_RULES,
         default_entities="patient",
+    ),
+    "crime_scene": DomainConfig(
+        name="crime_scene",
+        setup_fn=setup_crime_scene_domain,
+        initial_beliefs=CRIME_INITIAL_BELIEFS,
+        turns=CRIME_TURNS,
+        baseline_rules=CRIME_RULES,
+        default_entities="case, suspect_a, suspect_b, officer_smith",
     ),
 }
 
