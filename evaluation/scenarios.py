@@ -180,7 +180,15 @@ ALIEN_INITIAL_BELIEFS = {
     "atmosphere.dominant_gas": "methane",
 }
 
-ALIEN_TURNS = [
+ALIEN_INITIAL_BELIEFS_CF = {
+    "patient.organism_type": "Qwerl",
+    "atmosphere.dominant_gas": "xenon",
+    "atmosphere.ambient_pressure": 5.5,
+    "patient.symptoms": ["acid_sweat"],
+}
+
+# --- Alien Clinic: Turns ---
+ALIEN_TURNS_BASIC = [
     {
         "entities": "treatment, clinic",
         "beliefs": {},
@@ -292,3 +300,119 @@ ALIEN_TURNS = [
         "correct": "A",
     },
 ]
+
+ALIEN_TURNS_CF = [
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"atmosphere.ambient_pressure": 2.0},
+        "question": "Under the latest pressure condition, what is the organ integrity?",
+        "options": {
+            "A": "stable",
+            "B": "brittle",
+            "C": "volatile",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": []},
+        "question": "Given the patient species and symptom clearance in the latest belief update, what is the active prescription at this low pressure?",
+        "options": {
+            "A": "filinan",
+            "B": "snevox",
+            "C": "zyxostin",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, patient, zyxostin",
+        "beliefs": {"atmosphere.dominant_gas": "methane"},
+        "question": "Under the specific atmospheric gas found in the latest update, what is the molecular phase of zyxostin?",
+        "options": {
+            "A": "plasma",
+            "B": "vapor",
+            "C": "crystalline",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, patient, zyxostin",
+        "beliefs": {"atmosphere.ambient_pressure": 4.1},
+        "question": "At the current pressure and gas, does the patient's primary explosive-based hazard trigger a symbiotic state?",
+        "options": {
+            "A": "Yes",
+            "B": "No, it is LETHAL",
+            "C": "No, it is safe",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, clinic",
+        "beliefs": {"patient.symptoms": ["fever", "spasms"]},
+        "question": "Given the current symptoms and resulting medication, what is the billing tier?",
+        "options": {
+            "A": "class_standard",
+            "B": "class_delta",
+            "C": "class_omega",
+        },
+        "correct": "C",
+    },
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"patient.organism_type": "Qwerl"},
+        "question": "Given the species transformation in the latest update, what is the active prescription?",
+        "options": {
+            "A": "snevox",
+            "B": "zyxostin",
+            "C": "filinan",
+        },
+        "correct": "B",
+    },
+    {
+        "entities": "treatment, medical",
+        "beliefs": {"atmosphere.dominant_gas": "chlorine"},
+        "question": "Does the current gas and species combination necessitate specialized hazmat staffing?",
+        "options": {
+            "A": "Yes",
+            "B": "No, psionic_handler only",
+            "C": "No, standard_medic only",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, clinic",
+        "beliefs": {"patient.symptoms": []},
+        "question": "After clearing all symptoms, has the billing tier returned to the standard class?",
+        "options": {
+            "A": "Yes, class_standard",
+            "B": "No, it stayed class_delta",
+            "C": "No, it is class_omega",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"atmosphere.ambient_pressure": 5.5},
+        "question": "At the highest pressure recorded so far, what is the recovery prospect for the current species?",
+        "options": {
+            "A": "excellent",
+            "B": "miraculous",
+            "C": "terminal",
+        },
+        "correct": "A",
+    },
+    {
+        "entities": "treatment, patient",
+        "beliefs": {"patient.organism_type": "Glerps"},
+        "question": "Given the substitution in the latest update, what is the recovery prospect?",
+        "options": {
+            "A": "excellent",
+            "B": "miraculous",
+            "C": "terminal",
+        },
+        "correct": "B",
+    },
+]
+
+ALIEN_TURNS = ALIEN_TURNS_BASIC + ALIEN_TURNS_CF
+

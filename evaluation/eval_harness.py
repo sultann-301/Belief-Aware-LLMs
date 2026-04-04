@@ -303,6 +303,7 @@ def run_multi_eval(
     start = time.time()
 
     scores: list[list[int]] = [[], [], []]
+    hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(3)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
@@ -317,7 +318,11 @@ def run_multi_eval(
         for future in concurrent.futures.as_completed(future_to_task):
             run_idx, condition_idx = future_to_task[future]
             res = future.result()
-            hits = sum(r["hit"] for r in res)
+            hits = 0
+            for r in res:
+                if r["hit"]:
+                    hits += 1
+                    hits_per_turn[condition_idx][r["turn"] - 1] += 1
 
             run_results[run_idx][condition_idx] = hits
             scores[condition_idx].append(hits)
@@ -340,5 +345,16 @@ def run_multi_eval(
         var = statistics.variance(sc) if n > 1 else 0.0
         sc_str = ", ".join(str(x) for x in sc)
         print(f"  {label} | Avg: {avg:.2f}/{n_turns} | Var: {var:.2f} | Scores: [{sc_str}]")
+    
+    print("\n  PER-TURN ACCURACY:")
+    print(f"    {'Turn':<4} | {'[1] WITH STORE':<20} | {'[2] STORE (+Hist)':<20} | {'[3] NO STORE':<20}")
+    print(f"    {'─'*4} | {'─'*20} | {'─'*20} | {'─'*20}")
+    for t in range(n_turns):
+        acc1, acc2, acc3 = hits_per_turn[0][t], hits_per_turn[1][t], hits_per_turn[2][t]
+        s1 = f"{acc1:>2}/{n} ({acc1 * 100 // n:>3}%)"
+        s2 = f"{acc2:>2}/{n} ({acc2 * 100 // n:>3}%)"
+        s3 = f"{acc3:>2}/{n} ({acc3 * 100 // n:>3}%)"
+        print(f"    {t+1:>4} | {s1:<20} | {s2:<20} | {s3:<20}")
+        
     print("=" * 65)
     print(f"Total wall-clock time: {elapsed:.1f}s\n")

@@ -5,6 +5,7 @@ Usage:
     python3 evaluation/run_evals.py                    # defaults to loan
     python3 evaluation/run_evals.py --domain loan
     python3 evaluation/run_evals.py --domain alien_clinic
+    python3 evaluation/run_evals.py --domain alien_clinic_cf
 """
 
 import argparse
@@ -13,14 +14,41 @@ import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from evaluation.eval_harness import run_multi_eval
-
+from evaluation.eval_harness import run_multi_eval, DomainConfig
+from evaluation.scenarios import (
+    LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
+    ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
+    ALIEN_INITIAL_BELIEFS_CF, ALIEN_TURNS_CF
+)
+from belief_store.domains.loan import setup_loan_domain
+from belief_store.domains.alien_clinic import setup_alien_clinic_domain
 
 DOMAIN_REGISTRY = {
-    "loan": "evaluation.mcq_eval",
-    "alien_clinic": "evaluation.alien_mcq_eval",
+    "loan": DomainConfig(
+        name="loan",
+        setup_fn=setup_loan_domain,
+        initial_beliefs=LOAN_INITIAL_BELIEFS,
+        turns=LOAN_TURNS,
+        baseline_rules=LOAN_RULES,
+        default_entities="applicant, loan",
+    ),
+    "alien_clinic": DomainConfig(
+        name="alien_clinic",
+        setup_fn=setup_alien_clinic_domain,
+        initial_beliefs=ALIEN_INITIAL_BELIEFS,
+        turns=ALIEN_TURNS_BASIC,
+        baseline_rules=ALIEN_RULES,
+        default_entities="patient",
+    ),
+    "alien_clinic_cf": DomainConfig(
+        name="alien_clinic_cf",
+        setup_fn=setup_alien_clinic_domain,
+        initial_beliefs=ALIEN_INITIAL_BELIEFS_CF,
+        turns=ALIEN_TURNS_CF,
+        baseline_rules=ALIEN_RULES,
+        default_entities="patient",
+    ),
 }
-
 
 def main():
     parser = argparse.ArgumentParser(description="Run MCQ evaluations for a domain.")
@@ -35,14 +63,9 @@ def main():
     parser.add_argument("--model", default="gemma3:1b", help="Ollama model (default: gemma3:1b)")
     args = parser.parse_args()
 
-    # Dynamically import the selected domain module and get its config
-    import importlib
-    module = importlib.import_module(DOMAIN_REGISTRY[args.domain])
-    config = module.get_config()
-
+    config = DOMAIN_REGISTRY[args.domain]
     print(f"Domain: {config.name} ({len(config.turns)} turns)\n")
     run_multi_eval(config, runs=args.runs, workers=args.workers, model=args.model)
-
 
 if __name__ == "__main__":
     main()
