@@ -411,139 +411,121 @@ t=2: Pressure spike! ambient_pressure = 4.5
        R9: active_prescription hazard is "symbiotic" → recovery_prospect = "miraculous"
        R10: standard_medic → billing_tier = "class_standard"
 ```
-## Domain 3: Crime Scene Investigation
-
-### Purpose
-
-Tests **deep revision chains** and **cascading retraction**. All facts are fictional — the LLM has **zero parametric knowledge** and must rely entirely on the belief store.
-
-### What It Tests
-
-| Capability | How |
-|---|---|
-| Deep revision chains (3-4 hops) | Witness unreliable → alibi broken → suspect status → case theory |
-| Complete parametric isolation | Crime is fictional — LLM can't cheat |
-| Cascading retraction | Clearing a suspect retracts all downstream derivations |
-| Evidence overriding testimony | CCTV (hard evidence) overrides witness (soft evidence) |
+## Domain 3: Crime Scene Investigation (Relational & Epistemic)
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | How It Evolves |
+| Key | Type | Example | Semantic Role |
 |---|---|---|---|
-| `suspect_a.alibi` | str | confirmed, unconfirmed, broken | Witnesses change |
-| `suspect_a.alibi_source` | str | witness_jones, cctv | Source tracking |
-| `suspect_a.evidence_at_scene` | str | present, absent | Forensics arrive |
-| `suspect_a.motive` | str | financial, personal, none | Background investigation |
-| `suspect_a.access_to_weapon` | bool | true, false | Investigation findings |
-| `suspect_a.physical_evidence_match` | bool | true, false | Lab results |
-| `suspect_b.alibi` | str | confirmed, broken | Same as above |
-| `suspect_b.evidence_at_scene` | str | present, absent | |
-| `suspect_b.motive` | str | revenge, none | |
-| `case.time_of_death` | str | 10pm, 9pm | Autopsy updates |
-| `case.cause_of_death` | str | blunt_force, poison | Forensics refinement |
-| `case.initial_forensic_conclusion` | str | blunt_force, undetermined | Forensics initial |
-| `case.cctv_available` | bool | true, false | Footage discovered |
-| `case.toxicology_result` | str | positive_X, negative, pending | Lab processing |
-| `witness_jones.credibility` | str | reliable, unreliable | Cross-examination |
-| `suspect_a.physical_evidence_match` | bool | true, false | Forensics lab |
-| `suspect_b.physical_evidence_match` | bool | true, false | Forensics lab |
+| `officer_smith.status` | str | "active", "suspended" | The procedural integrity flag. |
+| `case.warrant_status` | bool | true, false | Legal permission for financial records. |
+| `case.cctv_status` | str | "active", "corrupted" | Digital evidence integrity. |
+| `case.cctv_subject` | str | "suspect_b", "none" | Who the camera saw. |
+| `suspect_a.home_evidence` | str | "gun", "none" | Physical reality. |
+| `suspect_a.evidence_logger` | str | "officer_smith", "none" | Custody chain link. |
+| `suspect_a.financial_records` | str | "debt", "clean" | Potential motive source. |
+| `suspect_b.relation_to_victim` | str | "enemy", "stranger" | Potential motive source. |
+| `suspect_b.alibi_partner` | str | "suspect_a", "none" | Relational link. |
+| `suspect_a.admissible_evidence` | str | "gun", "none" | **Derived:** Legally usable physical evidence. |
+| `suspect_b.testimonial_alibi` | str | "confirmed", "broken" | **Derived:** Epistemic health of human alibi. |
+| `suspect_b.digital_alibi` | str | "confirmed", "none" | **Derived:** Epistemic health of digital alibi. |
+| `suspect_b.final_alibi` | str | "confirmed", "broken" | **Derived:** Reconciled alibi state. |
+| `suspect_a.motive_verified` | bool | true, false | **Derived:** Legally admissible motive. |
+| `suspect_b.motive_verified` | bool | true, false | **Derived:** Socially established motive. |
+| `suspect_a.status` | str | "prime_suspect", "cleared" | **Derived:** A's current legal standing. |
+| `suspect_b.status` | str | "prime_suspect", "cleared" | **Derived:** B's current legal standing. |
+| `case.theory` | str | "collusion", "solo_perpetrator" | **Derived:** Abductive conclusion. |
+| `case.lead_suspect` | str | "suspect_a", "suspect_b", "none" | **Derived:** Final target based on tie-breakers. |
 
-### Rules
+### Rules (Deterministic `derive_fn`)
 
 ```python
-R1: suspect_a.status
-    inputs: [suspect_a.evidence_at_scene, suspect_a.alibi,
-             suspect_a.motive, suspect_a.access_to_weapon, suspect_a.cleared_by_weapon]
-    logic:
-      IF alibi = "confirmed" OR cleared_by_weapon = True → "cleared"
-      IF evidence_at_scene = "present" AND alibi = "broken" → "prime_suspect"
-      IF motive != "none" AND alibi = "broken" → "person_of_interest"
-      ELSE → "under_investigation"
+# --- BLOCK 1: PHYSICAL EVIDENCE & BASE STATUS ---
 
-R2: suspect_a.alibi (derived override)
-    inputs: [suspect_a.alibi_source, witness_jones.credibility, case.cctv_available]
+R1: suspect_a.admissible_evidence
+    inputs: [suspect_a.home_evidence, suspect_a.evidence_logger, officer_smith.status]
     logic:
-      IF alibi_source = "cctv" AND cctv_available = True → "confirmed"
-      IF alibi_source = "witness_jones" AND credibility = "unreliable" → "broken"
-      IF alibi_source = "witness_jones" AND credibility = "reliable" → "confirmed"
-      ELSE → "unconfirmed"
+      IF evidence_logger = "officer_smith" AND officer_smith.status = "suspended" → "none"
+      ELSE → home_evidence
 
-R3: suspect_a.cleared_by_weapon
-    inputs: [case.cause_of_death, suspect_a.access_to_weapon]
+R2: suspect_a.status
+    inputs: [suspect_a.admissible_evidence]
     logic:
-      IF cause_of_death = "poison" AND access_to_weapon = False
-        → True (suspect cleared for this reason)
-      ELSE → False
+      IF admissible_evidence != "none" → "prime_suspect"
+      ELSE → "cleared"
 
-R4: case.theory
-    inputs: [suspect_a.status, suspect_a.motive]
-    logic:
-      IF status = "prime_suspect" AND motive = "financial"
-        → "suspect_a committed crime for financial gain"
-      IF status = "prime_suspect"
-        → "suspect_a is primary suspect, motive under investigation"
-      ELSE → "no confirmed theory"
 
-R5: case.cause_of_death (derived override)
-    inputs: [case.toxicology_result, case.initial_forensic_conclusion]
+# --- BLOCK 2: ALIBI HIERARCHY (Testimonial vs. Digital) ---
+
+R3: suspect_b.testimonial_alibi
+    inputs: [suspect_b.alibi_partner, suspect_a.status]
     logic:
-      IF toxicology_result = "positive_X" → "poison"
-      ELSE → initial_forensic_conclusion
+      IF alibi_partner = "suspect_a" AND suspect_a.status = "prime_suspect" → "broken"
+      ELSE → "confirmed"
+
+R4: suspect_b.digital_alibi
+    inputs: [case.cctv_status, case.cctv_subject]
+    logic:
+      IF cctv_status = "active" AND cctv_subject = "suspect_b" → "confirmed"
+      ELSE → "none"
+
+R5: suspect_b.final_alibi
+    inputs: [suspect_b.testimonial_alibi, suspect_b.digital_alibi]
+    logic:
+      # Digital evidence overrides a broken human alibi
+      IF digital_alibi = "confirmed" → "confirmed"
+      ELSE → testimonial_alibi
 
 R6: suspect_b.status
-    inputs: [suspect_b.evidence_at_scene, suspect_b.alibi, suspect_b.motive]
-    logic:  (same pattern as R1 for suspect_b)
-
-R8: suspect_a.forensic_match
-    inputs: [suspect_a.evidence_at_scene, suspect_a.physical_evidence_match]
-    logic: IF evidence_at_scene = "present" AND physical_evidence_match = True → True, ELSE False
-
-R9: suspect_b.forensic_match
-    inputs: [suspect_b.evidence_at_scene, suspect_b.physical_evidence_match]
-    logic: IF evidence_at_scene = "present" AND physical_evidence_match = True → True, ELSE False
-
-R10: case.primary_suspect
-    inputs: [suspect_a.status, suspect_b.status, suspect_a.forensic_match, suspect_b.forensic_match]
+    inputs: [suspect_b.final_alibi]
     logic:
-      IF status = "prime_suspect" AND suspect_a.forensic_match = True → "suspect_a"
-      IF status = "prime_suspect" AND suspect_b.forensic_match = True → "suspect_b"
-      ELSE → "none"
+      IF final_alibi = "broken" → "prime_suspect"
+      ELSE → "cleared"
+
+
+# --- BLOCK 3: MOTIVE & GATEKEEPING ---
+
+R7: suspect_a.motive_verified
+    inputs: [suspect_a.financial_records, case.warrant_status]
+    logic:
+      # A second procedural gate: No warrant = no financial motive
+      IF financial_records = "debt" AND warrant_status = True → True
+      ELSE → False
+
+R8: suspect_b.motive_verified
+    inputs: [suspect_b.relation_to_victim]
+    logic:
+      IF relation_to_victim = "enemy" → True
+      ELSE → False
+
+
+# --- BLOCK 4: ABDUCTIVE CONCLUSIONS ---
+
+R9: case.theory
+    inputs: [suspect_a.status, suspect_b.status]
+    logic:
+      IF suspect_a.status = "prime_suspect" AND suspect_b.status = "prime_suspect" → "collusion"
+      IF suspect_a.status = "prime_suspect" OR suspect_b.status = "prime_suspect" → "solo_perpetrator"
+      ELSE → "unsolved"
+
+R10: case.lead_suspect
+    inputs: [case.theory, suspect_a.status, suspect_b.status, suspect_a.motive_verified, suspect_b.motive_verified]
+    logic:
+      IF theory = "unsolved" → "none"
+      IF theory = "solo_perpetrator" AND suspect_a.status = "prime_suspect" → "suspect_a"
+      IF theory = "solo_perpetrator" AND suspect_b.status = "prime_suspect" → "suspect_b"
+      # Tie-breaker for collusion: The Mastermind is the one with the verified motive
+      IF theory = "collusion":
+          IF suspect_a.motive_verified = True AND suspect_b.motive_verified = False → "suspect_a"
+          IF suspect_b.motive_verified = True AND suspect_a.motive_verified = False → "suspect_b"
+          ELSE → "both"
 ```
 
-### Dependency Chain (4-hop)
+### Why this 10-Rule setup is a goldmine for your evaluation:
 
-```
-witness_jones.credibility ──→ suspect_a.alibi ──→ suspect_a.status ──→ case.theory
-suspect_a.evidence_at_scene ──→                                           │
-suspect_a.motive ──────────────────────────────────────────────────────────┘
-
-case.toxicology_result ──→ case.cause_of_death ──→ suspect_a.cleared_by_weapon
-```
-
-### Example Revision Scenario
-
-```
-t=0: witness_jones says suspect_a was at bar at 10pm
-     → suspect_a.alibi = "confirmed", alibi_source = "witness_jones"
-     → R1: alibi confirmed → suspect_a.status = "cleared"
-
-t=1: Cross-examination reveals jones has prior relationship with suspect_a
-     → witness_jones.credibility = "unreliable"
-     → dirty: {suspect_a.alibi, suspect_a.status, case.theory}
-
-t=2: resolve_all_dirty():
-     → R2: alibi_source = jones, credibility = unreliable → alibi = "broken"
-     → R1: evidence = present, alibi = broken → status = "prime_suspect"
-     → R4: prime_suspect, motive = financial → theory updated
-
-t=3: Forensics: suspect_a.evidence_at_scene = "present"
-     (already present — no change, no cascade)
-
-t=4: Toxicology: case.toxicology_result = "positive_X"
-     → dirty: {case.cause_of_death, suspect_a.cleared_by_weapon}
-     → R5: cause_of_death = "poison"
-     → R3: poison + access_to_weapon = False → cleared_by_weapon = True
-```
+1. **The 7-Hop Cascade:** By extending the rules to `case.lead_suspect`, you now have an incredibly deep causal chain. If you update `officer_smith.status`, the AI has to trace: `officer_smith` $\rightarrow$ `admissible_evidence` $\rightarrow$ `status_a` $\rightarrow$ `testimonial_alibi` $\rightarrow$ `final_alibi` $\rightarrow$ `status_b` $\rightarrow$ `theory` $\rightarrow$ `lead_suspect`. That is a brutal test of belief revision tracking.
+2. **The Overriding Epistemology (R5):** This explicitly tests if the AI understands that not all facts are equal. If A lies, B's alibi breaks, *unless* a camera saw B. It forces the LLM to prioritize the "Hard Fact" over the "Relational Link."
+3. **Double Gatekeeping (R1 & R7):** You now have two distinct ways to logically blind the system. Retracting `warrant_status` kills the motive, while suspending the `officer` kills the physical evidence.
 
 ---
 
@@ -714,9 +696,9 @@ t=4: Season changes to "dormant"
 
 | Property | Loan | Employee | Crime Scene | Thorncrester |
 |---|---|---|---|---|
-| **Max dependency depth** | 3 hops | 2 hops | 4 hops | 3 hops |
-| **Number of rules** | 10 | 10 | 9 | 10 |
-| **Number of attributes** | 17 | 15 | 17 | 13 |
+| **Max dependency depth** | 3 hops | 2 hops | 7 hops | 3 hops |
+| **Number of rules** | 10 | 10 | 10 | 10 |
+| **Number of attributes** | 17 | 15 | 19 | 13 |
 | **Parametric isolation** | Low | Low | **Total** | **Total** |
 | **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population |
 | **Key revision pattern** | Threshold change | Prerequisite expiry | Evidence cascade | Classification shift |
