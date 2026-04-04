@@ -19,11 +19,13 @@ from evaluation.scenarios import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
     ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
     ALIEN_INITIAL_BELIEFS_CF, ALIEN_TURNS_CF,
-    CRIME_RULES, CRIME_INITIAL_BELIEFS, CRIME_TURNS
+    CRIME_RULES, CRIME_INITIAL_BELIEFS, CRIME_TURNS,
+    THORNCRESTER_RULES, THORNCRESTER_INITIAL_BELIEFS, THORNCRESTER_TURNS
 )
 from belief_store.domains.loan import setup_loan_domain
 from belief_store.domains.alien_clinic import setup_alien_clinic_domain
 from belief_store.domains.crime_scene import setup_crime_scene_domain
+from belief_store.domains.thorncrester import setup_thorncrester_domain
 
 DOMAIN_REGISTRY = {
     "loan": DomainConfig(
@@ -57,6 +59,14 @@ DOMAIN_REGISTRY = {
         turns=CRIME_TURNS,
         baseline_rules=CRIME_RULES,
         default_entities="case, suspect_a, suspect_b, officer_smith",
+    ),
+    "thorncrester": DomainConfig(
+        name="thorncrester",
+        setup_fn=setup_thorncrester_domain,
+        initial_beliefs=THORNCRESTER_INITIAL_BELIEFS,
+        turns=THORNCRESTER_TURNS,
+        baseline_rules=THORNCRESTER_RULES,
+        default_entities="environment, thorncrester",
     ),
 }
 

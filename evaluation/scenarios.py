@@ -559,3 +559,98 @@ CRIME_TURNS = [
         "correct": "A",
     },
 ]
+
+# =====================================================================
+# THORNCRESTER TAXONOMY
+# =====================================================================
+
+THORNCRESTER_RULES = """[RULES]
+R1: ecological_stress -> "high" if drought+scarcity OR flood, else "nominal"
+R2: expressed_diet -> "scavenger" if stress is high, else genetic_diet
+R3: expressed_plumage -> "dull_grey" if scavenger, else genetic_plumage
+R4: primary_forage -> "verath_berries" if frugivore, "thorn_beetles" if insectivore, "carrion" if scavenger
+R5: mating_viability -> False if dull_grey OR stress is high, else True
+R6: population_trend -> "crashing" if non-viable + scarcity, "declining" if non-viable + no scarcity, else "growing"
+R7: conservation_status -> "critical" if crashing, "vulnerable" if declining, else "safe"
+R8: intervention_plan -> "supplemental_carrion_drops" if critical+scavenger, "captive_breeding" if critical, "habitat_protection" if vulnerable, else "none"
+"""
+
+THORNCRESTER_INITIAL_BELIEFS = {
+    "environment.weather_pattern": "stable",
+    "environment.food_scarcity": False,
+    "thorncrester.genetic_diet": "frugivore",
+    "thorncrester.genetic_plumage": "crimson",
+}
+
+THORNCRESTER_TURNS = [
+    {
+        "entities": "thorncrester",
+        "beliefs": {},
+        "question": "Given the base state, what is the expressed plumage?",
+        "options": {"A": "azure", "B": "crimson", "C": "dull_grey"},
+        "correct": "B",
+    },
+    {
+        "entities": "environment, thorncrester",
+        "beliefs": {"environment.weather_pattern": "drought"},
+        "question": "A drought has started. What is the ecological stress level?",
+        "options": {"A": "nominal", "B": "high", "C": "critical"},
+        "correct": "A",
+    },
+    {
+        "entities": "environment, thorncrester",
+        "beliefs": {"environment.food_scarcity": True},
+        "question": "Food scarcity hits. What is the expressed diet now?",
+        "options": {"A": "scavenger", "B": "insectivore", "C": "frugivore"},
+        "correct": "A",
+    },
+    {
+        "entities": "thorncrester, environment",
+        "beliefs": {},
+        "question": "With the new diet affecting the plumage, what is the mating viability?",
+        "options": {"A": "True", "B": "False", "C": "Unknown"},
+        "correct": "B",
+    },
+    {
+        "entities": "thorncrester, environment",
+        "beliefs": {},
+        "question": "With the crashing population, what is the intervention plan?",
+        "options": {"A": "habitat_protection", "B": "captive_breeding", "C": "supplemental_carrion_drops"},
+        "correct": "C",
+    },
+    {
+        "entities": "thorncrester",
+        "beliefs": {},
+        "question": "Despite being a scavenger right now, what is the underlying genetic diet?",
+        "options": {"A": "insectivore", "B": "scavenger", "C": "frugivore"},
+        "correct": "C",
+    },
+    {
+        "entities": "environment, thorncrester",
+        "beliefs": {"environment.weather_pattern": "stable"},
+        "question": "The rains return, lifting the drought. What is the expressed plumage now?",
+        "options": {"A": "dull_grey", "B": "crimson", "C": "azure"},
+        "correct": "B",
+    },
+    {
+        "entities": "environment, thorncrester",
+        "beliefs": {"environment.food_scarcity": False},
+        "question": "Food scarcity has also ended. What is the conservation status?",
+        "options": {"A": "safe", "B": "vulnerable", "C": "critical"},
+        "correct": "A",
+    },
+    {
+        "entities": "thorncrester",
+        "beliefs": {"thorncrester.genetic_diet": "insectivore"},
+        "question": "A mutation is discovered: this flock's genetic diet is insectivore. What is their primary forage?",
+        "options": {"A": "verath_berries", "B": "thorn_beetles", "C": "carrion"},
+        "correct": "B",
+    },
+    {
+        "entities": "environment, thorncrester",
+        "beliefs": {"environment.weather_pattern": "flood"},
+        "question": "A massive flood suddenly strikes. What is the new intervention plan?",
+        "options": {"A": "supplemental_carrion_drops", "B": "captive_breeding", "C": "habitat_protection"},
+        "correct": "C",
+    },
+]
