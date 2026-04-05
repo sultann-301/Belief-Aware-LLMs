@@ -355,7 +355,7 @@ ALIEN_TURNS_CF = [
             "B": "class_delta",
             "C": "class_omega",
         },
-        "correct": "C",
+        "correct": "A",
     },
     {
         "entities": "treatment, patient",
@@ -388,7 +388,7 @@ ALIEN_TURNS_CF = [
             "B": "No, it stayed class_delta",
             "C": "No, it is class_omega",
         },
-        "correct": "A",
+        "correct": "C",
     },
     {
         "entities": "treatment, patient",
@@ -471,7 +471,7 @@ CRIME_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "case, suspect_b",
+        "entities": "case",
         "beliefs": {"suspect_b.relation_to_victim": "enemy"},
         "question": "With both motives verified, who is the lead suspect?",
         "options": {
