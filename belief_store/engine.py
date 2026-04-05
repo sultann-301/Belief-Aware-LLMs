@@ -4,39 +4,7 @@ from __future__ import annotations
 
 from belief_store.store import BeliefStore
 from belief_store.llm_client import LLMClient
-
-SYSTEM_PROMPT = """\
-You are a belief-aware reasoning assistant.
-
-## Your ONLY Source of Truth
-
-You will receive:
-1. [RELEVANT BELIEFS] — a set of key=value pairs. These are **absolute ground truth**.
-   Every value is a verified fact. You MUST treat them as unconditionally correct,
-   even if they seem implausible or contradict your general knowledge.
-2. [QUERY] — the user's question.
-
-## Strict Rules
-
-1. NEVER use your own world knowledge. Only reason from [RELEVANT BELIEFS].
-2. If the [QUERY] introduces claims not present in [RELEVANT BELIEFS],
-   flag them as "not in the belief store" and ignore them.
-3. Do NOT invent, assume, or interpolate any facts.
-4. Reference belief keys in your reasoning.
-5. Never override or contradict a belief value, even if it seems implausible.
-
-## Cross-Check (MANDATORY)
-
-Before writing your final answer, verify:
-- Does your answer contradict ANY belief value? If so, FIX your answer.
-- If a belief says X = Y, your answer MUST be consistent with X = Y.
-
-## Output Format
-
-REASONING: <step-by-step explanation referencing belief keys and their values>
-ANSWER: <direct answer that is consistent with all beliefs>
-"""
-
+from belief_store.prompts import SYSTEM_PROMPT, SYSTEM_PROMPTS
 
 class ReasoningEngine:
     """Orchestrates parse → inject beliefs → resolve → prompt → LLM."""
@@ -45,13 +13,16 @@ class ReasoningEngine:
         self.store = store
         self.llm = llm
 
-    def query(self, structured_input: str, model: str | None = None) -> str:
-        """Parse structured input, inject new beliefs, resolve, call LLM.
+    def build_prompt(
+        self, structured_input: str, prompt_version: str = "v1",
+    ) -> tuple[str, str]:
+        """Parse structured input, inject beliefs, resolve, return prompts.
 
-        Accepted sections:
-            [ENTITY]     — required, comma-separated entity names
-            [NEW BELIEF] — optional, [ADD] key = value or [RETRACT] key
-            [QUERY]      — required, the user's question
+        Returns (system_prompt, user_prompt) without calling the LLM.
+
+        Args:
+            structured_input: The user's structured input text.
+            prompt_version: "v1" (original) or "v2" (closed-world + few-shot).
         """
         entities, new_beliefs, question = self._parse_input(structured_input)
 
@@ -68,7 +39,7 @@ class ReasoningEngine:
         # Build final prompt for the LLM
         beliefs_text, _ = self.store.to_prompt(entities)
 
-        full_prompt = "\n".join([
+        user_prompt = "\n".join([
             "[ENTITY]",
             ", ".join(entities),
             "",
@@ -79,7 +50,16 @@ class ReasoningEngine:
             question,
         ])
 
-        return self.llm.generate(SYSTEM_PROMPT, full_prompt, model=model)
+        sys_prompt = SYSTEM_PROMPTS.get(prompt_version, SYSTEM_PROMPT)
+        return sys_prompt, user_prompt
+
+    def query(
+        self, structured_input: str, model: str | None = None,
+        prompt_version: str = "v1",
+    ) -> str:
+        """One-shot: build prompt + call LLM (no history)."""
+        sys_prompt, user_prompt = self.build_prompt(structured_input, prompt_version)
+        return self.llm.generate(sys_prompt, user_prompt, model=model)
 
     @staticmethod
     def _parse_input(text: str) -> tuple[list[str], list[tuple[str, str, object]], str]:

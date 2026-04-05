@@ -14,11 +14,11 @@ class MockLLMClient:
         self.response = response
         self.calls: list[dict[str, str]] = []
 
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, model: str | None = None) -> str:
         self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt})
         return self.response
 
-    def generate_with_history(self, messages: list[dict[str, str]]) -> str:
+    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None) -> str:
         self.calls.append({"messages": messages})
         return self.response
 
@@ -116,7 +116,7 @@ class TestNewBelief:
         store, mock, engine = _make_engine()
         _seed(store)
         engine.query(_structured(new_beliefs="applicant.income = 2000"))
-        assert store.get_value("loan.eligible") is False
+        assert store.get_value("loan.applicant_prequalified") is False
 
     def test_optional_section(self):
         store, mock, engine = _make_engine()
@@ -134,7 +134,7 @@ class TestDirtyResolution:
 
         engine.query(_structured())
         assert len(store.dirty) == 0
-        assert store.get_value("loan.eligible") is True
+        assert store.get_value("loan.applicant_prequalified") is True
 
 
 class TestPromptStructure:
@@ -157,7 +157,7 @@ class TestPromptStructure:
 
         prompt = mock.calls[0]["user_prompt"]
         assert "applicant.income = 6000" in prompt
-        assert "loan.eligible = True" in prompt
+        assert "loan.applicant_prequalified = True" in prompt
 
     def test_system_prompt_is_correct(self):
         store, mock, engine = _make_engine()
@@ -199,7 +199,7 @@ class TestStoreIntegrity:
 
         assert len(store.dirty) == 0
         assert store.get_value("applicant.income") == 8000
-        assert store.get_value("loan.eligible") is True
+        assert store.get_value("loan.applicant_prequalified") is True
 
 
 class TestFullTurnCycle:
@@ -223,26 +223,26 @@ class TestFullTurnCycle:
         store.add_hypothesis("loan.max_debt_ratio", 0.4)
 
         engine.query(_structured(query="Status?"))
-        assert store.get_value("loan.eligible") is False
+        assert store.get_value("loan.applicant_prequalified") is False
         assert "denied_ineligible" in mock.calls[0]["user_prompt"]
 
         store.add_hypothesis("applicant.income", 6000)
         engine.query(_structured(query="Now?"))
-        assert store.get_value("loan.eligible") is True
+        assert store.get_value("loan.applicant_prequalified") is True
         assert "approved" in mock.calls[1]["user_prompt"]
     def test_retract_belief(self):
         store, mock, engine = _make_engine()
         
         # Test 1: Add a belief
-        engine.query(_structured(beliefs="[ADD] applicant.income = 5000", query="Income?"))
+        engine.query(_structured(new_beliefs="[ADD] applicant.income = 5000", query="Income?"))
         assert store.get_value("applicant.income") == 5000
         
         # Test 2: Default mapping falls back to add
-        engine.query(_structured(beliefs="applicant.co_signer = True", query="Co-signer?"))
+        engine.query(_structured(new_beliefs="applicant.co_signer = True", query="Co-signer?"))
         assert store.get_value("applicant.co_signer") is True
         
         # Test 3: Retract a belief natively
-        engine.query(_structured(beliefs="[RETRACT] applicant.income", query="Still have income?"))
+        engine.query(_structured(new_beliefs="[RETRACT] applicant.income", query="Still have income?"))
         assert store.get_value("applicant.income") is None
         # It should physically pull it entirely from the store, cascading anything if hooked up
         assert "applicant.income" not in store.beliefs

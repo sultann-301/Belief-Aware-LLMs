@@ -278,6 +278,7 @@ def query():
     structured_input = data.get("input", "").strip()
     condition = data.get("condition", "store")  # store, store_history, baseline
     model = data.get("model")  # optional override
+    prompt_version = data.get("prompt_version", "v1")  # v1 or v2
     if not structured_input:
         return jsonify({"error": "input is required"}), 400
     if llm is None:
@@ -295,30 +296,17 @@ def query():
 
         elif condition == "store_history":
             # Store + History: belief-aware + conversation memory
-            from belief_store.engine import SYSTEM_PROMPT as STORE_SYS
-            entities, new_beliefs, question = engine._parse_input(structured_input)
-            for action, key, value in new_beliefs:
-                if action == "add":
-                    store.add_hypothesis(key, value)
-                elif action == "retract":
-                    store.remove_hypothesis(key)
-            store.resolve_dirty(entities)
-            beliefs_text, _ = store.to_prompt(entities)
-            full_prompt = "\n".join([
-                "[ENTITY]", ", ".join(entities), "",
-                "[RELEVANT BELIEFS]", beliefs_text, "",
-                "[QUERY]", question,
-            ])
+            sys_prompt, user_prompt = engine.build_prompt(structured_input, prompt_version)
             if not chat_messages:
-                chat_messages = [{"role": "system", "content": STORE_SYS}]
-            chat_messages.append({"role": "user", "content": full_prompt})
+                chat_messages = [{"role": "system", "content": sys_prompt}]
+            chat_messages.append({"role": "user", "content": user_prompt})
             response = llm.generate_with_history(chat_messages, model=model)
             chat_messages.append({"role": "assistant", "content": response})
 
         else:
             # Store (stateless): normal belief-aware query, no history
             chat_messages = []  # reset history when switching to stateless
-            response = engine.query(structured_input, model=model)
+            response = engine.query(structured_input, model=model, prompt_version=prompt_version)
 
         return jsonify({"response": response})
     except (ValueError, Exception) as exc:

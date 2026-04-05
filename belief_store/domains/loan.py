@@ -23,7 +23,7 @@ def setup_loan_domain(store: BeliefStore) -> None:
     )
 
     store.add_rule(
-        name="eligible",
+        name="applicant_prequalified",
         inputs=[
             "loan.adjusted_income",
             "loan.credit_score_effective",
@@ -35,20 +35,20 @@ def setup_loan_domain(store: BeliefStore) -> None:
             "loan.min_credit",
             "loan.max_debt_ratio",
         ],
-        output_key="loan.eligible",
-        derive_fn=_eligible,
+        output_key="loan.applicant_prequalified",
+        derive_fn=_applicant_prequalified,
     )
 
     store.add_rule(
         name="rate_tier",
-        inputs=["loan.eligible", "loan.credit_score_effective"],
+        inputs=["loan.applicant_prequalified", "loan.credit_score_effective"],
         output_key="loan.rate_tier",
         derive_fn=_rate_tier,
     )
 
     store.add_rule(
         name="max_amount",
-        inputs=["loan.eligible", "applicant.has_collateral"],
+        inputs=["loan.applicant_prequalified", "applicant.has_collateral"],
         output_key="loan.max_amount",
         derive_fn=_max_amount,
     )
@@ -56,7 +56,7 @@ def setup_loan_domain(store: BeliefStore) -> None:
     store.add_rule(
         name="application_status",
         inputs=[
-            "loan.eligible",
+            "loan.applicant_prequalified",
             "applicant.loan_amount_requested",
             "loan.max_amount",
         ],
@@ -105,7 +105,7 @@ def _credit_score_effective(inputs: dict[str, Any]) -> int:
     return score + 50 if inputs["applicant.co_signer"] else score
 
 
-def _eligible(inputs: dict[str, Any]) -> bool:
+def _applicant_prequalified(inputs: dict[str, Any]) -> bool:
     if inputs["applicant.employment_status"] == "unemployed":
         return False
     if (
@@ -121,19 +121,19 @@ def _eligible(inputs: dict[str, Any]) -> bool:
 
 
 def _rate_tier(inputs: dict[str, Any]) -> str | None:
-    if not inputs["loan.eligible"]:
+    if not inputs["loan.applicant_prequalified"]:
         return None
     return "preferred" if inputs["loan.credit_score_effective"] >= 750 else "standard"
 
 
 def _max_amount(inputs: dict[str, Any]) -> int:
-    if not inputs["loan.eligible"]:
+    if not inputs["loan.applicant_prequalified"]:
         return 0
     return 100_000 if inputs["applicant.has_collateral"] else 30_000
 
 
 def _application_status(inputs: dict[str, Any]) -> str:
-    if not inputs["loan.eligible"]:
+    if not inputs["loan.applicant_prequalified"]:
         return "denied_ineligible"
     if inputs["applicant.loan_amount_requested"] > inputs["loan.max_amount"]:
         return "denied_amount_exceeded"

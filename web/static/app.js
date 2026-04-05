@@ -594,12 +594,14 @@ async function sendChat() {
     $btnSend.disabled = true;
 
     try {
+        const promptVersion = document.getElementById("prompt-version").value;
         const data = await api("/api/query", {
             method: "POST",
             body: JSON.stringify({
                 input: structured,
                 condition,
-                model: selectedModel
+                model: selectedModel,
+                prompt_version: promptVersion
             }),
         });
         typingEl.remove();

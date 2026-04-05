@@ -169,7 +169,7 @@ class TestDirtyPropagation:
         """Changing income dirties eligible → rate_tier, max_amount, application_status."""
         resolved_loan_store.add_hypothesis("applicant.income", 3000)
 
-        assert "loan.eligible" in resolved_loan_store.dirty
+        assert "loan.applicant_prequalified" in resolved_loan_store.dirty
         assert "loan.rate_tier" in resolved_loan_store.dirty
         assert "loan.max_amount" in resolved_loan_store.dirty
         assert "loan.application_status" in resolved_loan_store.dirty
@@ -184,7 +184,7 @@ class TestDirtyPropagation:
         resolved_loan_store.add_hypothesis("applicant.credit_score", 500)
 
         assert "loan.credit_score_effective" in resolved_loan_store.dirty
-        assert "loan.eligible" in resolved_loan_store.dirty
+        assert "loan.applicant_prequalified" in resolved_loan_store.dirty
         assert "loan.rate_tier" in resolved_loan_store.dirty
 
     def test_cosigner_change_dirties_effective_and_chain(
@@ -194,7 +194,7 @@ class TestDirtyPropagation:
         resolved_loan_store.add_hypothesis("applicant.co_signer", True)
 
         assert "loan.credit_score_effective" in resolved_loan_store.dirty
-        assert "loan.eligible" in resolved_loan_store.dirty
+        assert "loan.applicant_prequalified" in resolved_loan_store.dirty
         assert "loan.rate_tier" in resolved_loan_store.dirty
 
     def test_debt_ratio_dirties_eligible_and_high_risk(
@@ -203,7 +203,7 @@ class TestDirtyPropagation:
         """debt_ratio feeds both eligible and high_risk_flag."""
         resolved_loan_store.add_hypothesis("applicant.debt_ratio", 0.5)
 
-        assert "loan.eligible" in resolved_loan_store.dirty
+        assert "loan.applicant_prequalified" in resolved_loan_store.dirty
         assert "loan.high_risk_flag" in resolved_loan_store.dirty
 
     def test_collateral_only_dirties_max_amount(self, resolved_loan_store):
@@ -212,7 +212,7 @@ class TestDirtyPropagation:
 
         assert "loan.max_amount" in resolved_loan_store.dirty
         # eligible should NOT be dirty
-        assert "loan.eligible" not in resolved_loan_store.dirty
+        assert "loan.applicant_prequalified" not in resolved_loan_store.dirty
 
 
 # =====================================================================
@@ -304,7 +304,7 @@ class TestRuleIndex:
             "loan.adjusted_income",
             "loan.credit_score_effective",
             "loan.high_risk_flag",
-            "loan.eligible",
+            "loan.applicant_prequalified",
             "loan.rate_tier",
             "loan.max_amount",
             "loan.application_status",
@@ -337,7 +337,7 @@ class TestRetractionCascade:
         # Directly tombstoned — flushed on get_value access
         assert resolved_loan_store.get_value("applicant.income") is None
         # Cascade-removed during resolve_dirty — flushed from beliefs
-        assert "loan.eligible" not in resolved_loan_store.beliefs
+        assert "loan.applicant_prequalified" not in resolved_loan_store.beliefs
         assert "loan.rate_tier" not in resolved_loan_store.beliefs
         assert "loan.max_amount" not in resolved_loan_store.beliefs
         assert "loan.application_status" not in resolved_loan_store.beliefs
@@ -355,7 +355,7 @@ class TestRetractionCascade:
 
         assert resolved_loan_store.get_value("applicant.credit_score") is None
         assert "loan.credit_score_effective" not in resolved_loan_store.beliefs
-        assert "loan.eligible" not in resolved_loan_store.beliefs
+        assert "loan.applicant_prequalified" not in resolved_loan_store.beliefs
         assert "loan.rate_tier" not in resolved_loan_store.beliefs
 
     def test_retract_debt_ratio_removes_both_eligible_and_high_risk(
@@ -367,7 +367,7 @@ class TestRetractionCascade:
         resolved_loan_store.resolve_all_dirty()
 
         assert resolved_loan_store.get_value("applicant.debt_ratio") is None
-        assert "loan.eligible" not in resolved_loan_store.beliefs
+        assert "loan.applicant_prequalified" not in resolved_loan_store.beliefs
         assert "loan.high_risk_flag" not in resolved_loan_store.beliefs
 
 

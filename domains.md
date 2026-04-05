@@ -47,7 +47,7 @@ The **baseline domain**. Threshold-based rules with clear pass/fail outcomes. Va
 All conditions are consolidated per output key — no rule priority conflicts.
 
 ```python
-R1: loan.eligible
+R1: loan.applicant_prequalified
     inputs: [loan.adjusted_income, loan.credit_score_effective, applicant.debt_ratio,
              applicant.employment_status, applicant.bankruptcy_history,
              applicant.employment_duration_months,
@@ -63,21 +63,21 @@ R2: loan.credit_score_effective
     logic:  credit_score + 50 if co_signer = True, else credit_score
 
 R3: loan.rate_tier
-    inputs: [loan.eligible, loan.credit_score_effective]
+    inputs: [loan.applicant_prequalified, loan.credit_score_effective]
     logic:
       IF NOT eligible → None
       IF credit_score_effective >= 750 → "preferred"
       ELSE → "standard"
 
 R4: loan.max_amount
-    inputs: [loan.eligible, applicant.has_collateral]
+    inputs: [loan.applicant_prequalified, applicant.has_collateral]
     logic:
       IF NOT eligible → 0
       IF has_collateral → 100000
       ELSE → 30000
 
 R5: loan.application_status
-    inputs: [loan.eligible, applicant.loan_amount_requested, loan.max_amount]
+    inputs: [loan.applicant_prequalified, applicant.loan_amount_requested, loan.max_amount]
     logic:
       IF NOT eligible → "denied_ineligible"
       IF loan_amount_requested > max_amount → "denied_amount_exceeded"
@@ -122,7 +122,7 @@ graph LR
     cosign["applicant.co_signer"] --> cred_eff
 
     debt["applicant.debt_ratio"] --> high_risk["loan.high_risk_flag"]
-    debt --> elig["loan.eligible"]
+    debt --> elig["loan.applicant_prequalified"]
 
     emp["applicant.employment_status"] --> elig
     bank["applicant.bankruptcy_history"] --> elig
@@ -158,16 +158,16 @@ graph LR
 ```
 t=0: applicant.income = 3000, applicant.dependents = 2, applicant.credit_score = 700, applicant.debt_ratio = 0.3
      → R7: 3000 - (2 * 500) → loan.adjusted_income = 2000
-     → R1: 2000 < 5000 → loan.eligible = False
+     → R1: 2000 < 5000 → loan.applicant_prequalified = False
      → R3: not eligible → loan.rate_tier = None
      → R5: → loan.application_status = "denied_ineligible"
 
 t=1: applicant.income updated to 6000
-     → dirty: {loan.eligible, loan.rate_tier, loan.max_amount, loan.application_status}
+     → dirty: {loan.applicant_prequalified, loan.rate_tier, loan.max_amount, loan.application_status}
 
 t=2: resolve_all_dirty():
      → R7: 6000 - 1000 = 5000
-     → R1: 5000 >= 5000 ✓, credit_score_effective=700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.eligible = True
+     → R1: 5000 >= 5000 ✓, credit_score_effective=700 >= 650 ✓, 0.3 < 0.4 ✓ → loan.applicant_prequalified = True
      → R3: eligible, credit_score_effective=700 < 750 → loan.rate_tier = "standard"
      → R4: eligible, no collateral → loan.max_amount = 30000
      → R5: eligible, 10000 <= 30000 → loan.application_status = "approved"

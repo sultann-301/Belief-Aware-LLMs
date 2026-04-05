@@ -16,13 +16,13 @@ LOAN_RULES = """\
 1. loan.adjusted_income = applicant.income - (applicant.dependents * 500)
 2. loan.credit_score_effective = applicant.credit_score + (50 if applicant.co_signer else 0)
 3. loan.high_risk_flag = True if applicant.debt_ratio >= 0.3 else False
-4. loan.eligible = True ONLY IF loan.adjusted_income >= loan.min_income AND loan.credit_score_effective >= loan.min_credit AND applicant.debt_ratio < loan.max_debt_ratio AND applicant.employment_status != 'unemployed' AND NOT (applicant.bankruptcy_history == True AND applicant.employment_duration_months < 24)
-5. loan.rate_tier = "preferred" if loan.credit_score_effective >= 750 else "standard" (None if not loan.eligible)
-6. loan.max_amount = 100000 if applicant.has_collateral else 30000 (0 if not loan.eligible)
-7. loan.application_status = "approved" if loan.eligible and applicant.loan_amount_requested <= loan.max_amount. Otherwise "denied_amount_exceeded" or "denied_ineligible"
+4. loan.applicant_prequalified = True ONLY IF loan.adjusted_income >= loan.min_income AND loan.credit_score_effective >= loan.min_credit AND applicant.debt_ratio < loan.max_debt_ratio AND applicant.employment_status != 'unemployed' AND NOT (applicant.bankruptcy_history == True AND applicant.employment_duration_months < 24)
+5. loan.rate_tier = "preferred" if loan.credit_score_effective >= 750 else "standard" (None if not loan.applicant_prequalified)
+6. loan.max_amount = 100000 if applicant.has_collateral else 30000 (0 if not loan.applicant_prequalified)
+7. loan.application_status = "approved" if loan.applicant_prequalified and applicant.loan_amount_requested <= loan.max_amount. Otherwise "denied_amount_exceeded" or "denied_ineligible"
 8. loan.requires_insurance = True if loan.high_risk_flag AND loan.application_status == "approved" else False
 9. loan.review_queue = "manual_review" if loan.high_risk_flag else "auto_approve" ("rejected" if denied)
-10. loan.base_interest_rate = 4.5 if loan.rate_tier == "preferred" else 6.5. Add +1.0 if loan.requires_insurance. (None if not loan.eligible)
+10. loan.base_interest_rate = 4.5 if loan.rate_tier == "preferred" else 6.5. Add +1.0 if loan.requires_insurance. (None if not loan.applicant_prequalified)
 """
 
 LOAN_INITIAL_BELIEFS = {
