@@ -62,24 +62,24 @@ R2: loan.credit_score_effective
     inputs: [applicant.credit_score, applicant.co_signer]
     logic:  credit_score + 50 if co_signer = True, else credit_score
 
-R3: loan.rate_tier
+#### R3: loan.rate_tier
     inputs: [loan.applicant_prequalified, loan.credit_score_effective]
     logic:
-      IF NOT eligible → None
+      IF NOT applicant_prequalified → None
       IF credit_score_effective >= 750 → "preferred"
       ELSE → "standard"
 
-R4: loan.max_amount
+#### R4: loan.max_amount
     inputs: [loan.applicant_prequalified, applicant.has_collateral]
     logic:
-      IF NOT eligible → 0
+      IF NOT applicant_prequalified → 0
       IF has_collateral → 100000
       ELSE → 30000
 
-R5: loan.application_status
+#### R5: loan.application_status
     inputs: [loan.applicant_prequalified, applicant.loan_amount_requested, loan.max_amount]
     logic:
-      IF NOT eligible → "denied_ineligible"
+      IF NOT applicant_prequalified → "denied_ineligible"
       IF loan_amount_requested > max_amount → "denied_amount_exceeded"
       ELSE → "approved"
 
@@ -175,7 +175,7 @@ t=2: resolve_all_dirty():
 
 ---
 
-## Domain 2: Zylosian Xenomedicine
+## Domain 2: Alien Clinic
 
 ### Purpose
 
@@ -609,7 +609,6 @@ Tests belief revision with **complete parametric isolation** using a fictional s
 ### Rules
 
 ```python
-```python
 # --- BLOCK 1: THE ADULT MASKING LAYER ---
 
 R1: adult_thorncrester.ecological_stress
@@ -690,37 +689,41 @@ R10: adult_thorncrester.mortality_risk
       IF parasitic_load = "lethal" OR territory_behavior = "hyper_aggressive" → "critical"
       ELSE → "low"
 ```
-```
 
 ### Dependency Chain
 
 ```mermaid
 graph TD
-    %% Base Inputs
-    Weather["environment.weather_pattern"] --> Stress["adult_thorncrester.ecological_stress"]
-    Weather --> MiteBloom["feather_mite.bloom_status"]
-    Scarcity["environment.food_scarcity"] --> Stress
-    Scarcity --> Territory["thorncrester_flock.territory_behavior"]
+    %% Base Inputs (Level 0)
+    Weather["environment.weather_pattern"]
+    Scarcity["environment.food_scarcity"]
+    GenDiet["adult_thorncrester.genetic_diet"]
+    GenStruct["thorncrester_flock.genetic_structure"]
+    GenEnzyme["juvenile_thorncrester.digestive_enzyme"]
+
+    %% Derived Layer 1
+    Weather --> Stress["adult_thorncrester.ecological_stress"]
+    Scarcity --> Stress
     
-    %% Adult Layers
-    GenDiet["adult_thorncrester.genetic_diet"] --> ExpDiet["adult_thorncrester.expressed_diet"]
-    Stress --> ExpDiet
+    %% Derived Layer 2 (Ecological Masking)
+    Stress --> ExpDiet["adult_thorncrester.expressed_diet"]
+    GenDiet --> ExpDiet
+    Stress --> ExpStruct["thorncrester_flock.expressed_structure"]
+    GenStruct --> ExpStruct
+
+    %% Derived Layer 3 (Phenotype & Behavior)
     ExpDiet --> Plumage["adult_thorncrester.plumage_color"]
-    
-    %% Social Layers
-    GenStruct["thorncrester_flock.genetic_structure"] --> ExpStruct["thorncrester_flock.expressed_structure"]
-    Stress --> ExpStruct
-    ExpStruct --> Territory
-    
-    %% Juvenile Trap
-    GenEnzyme["juvenile_thorncrester.digestive_enzyme"] --> Metabolism["juvenile_thorncrester.metabolic_state"]
-    ExpDiet --> Metabolism
+    ExpDiet --> Metabolism["juvenile_thorncrester.metabolic_state"]
+    GenEnzyme --> Metabolism
+    ExpStruct --> Territory["thorncrester_flock.territory_behavior"]
+    Scarcity --> Territory
+
+    %% Derived Layer 4 (Ecosystem Cascades)
+    Plumage --> MiteBloom["feather_mite.bloom_status"]
+    Weather --> MiteBloom
     Metabolism --> Development["juvenile_thorncrester.development"]
-    
-    %% Parasitic Layer
-    Plumage --> MiteBloom
     MiteBloom --> MiteLoad["feather_mite.parasitic_load"]
-    
+
     %% Final Outcome
     MiteLoad --> Mortality["adult_thorncrester.mortality_risk"]
     Territory --> Mortality
@@ -736,8 +739,8 @@ graph TD
 | Property                 | Loan                  | Alien Clinic        | Crime Scene             | Thorncrester         |
 | ------------------------ | --------------------- | ------------------- | ----------------------- | -------------------- |
 | **Max dependency depth** | 3 hops                | 3 hops              | 7 hops                  | 5 hops               |
-| **Number of rules**      | 10                    | 8                   | 10                      | 10                   |
-| **Number of attributes** | 17                    | 16                  | 19                      | 15                   |
+| **Number of rules**      | 10                    | 10                  | 10                      | 10                   |
+| **Number of attributes** | 17                    | 18                  | 19                      | 15                   |
 | **Parametric isolation** | Low                   | Medium              | **Complete**            | **Complete**         |
-| **Belief Maintain test** | ✓ credit ↛ employment | ✓ vitals ↛ tracking | ✓ suspect_a ↛ suspect_b | ✓ expressed ↛ latent |
+| **Belief Maintain test** | ✓ credit ↛ employment | ✓ organ ↛ pressure  | ✓ suspect_a ↛ suspect_b | ✓ expressed ↛ latent |
 | **Key revision pattern** | Algorithmic Status    | Counterfactual      | Epistemic Gatekeeping   | Ecosystem Trap       |
