@@ -14,6 +14,49 @@ let currentDomain = "loan";
 let selectedEntities = new Set();
 let currentMode = "chat";  // "chat" or "simulation"
 
+// ── Domain attribute schemas (type-aware inputs) ────────────────────
+const DOMAIN_SCHEMA = {
+    loan: {
+        "applicant.income": "int",
+        "applicant.credit_score": "int",
+        "applicant.debt_ratio": "float",
+        "applicant.employment_status": "str",
+        "applicant.employment_duration_months": "int",
+        "applicant.has_collateral": "bool",
+        "applicant.loan_amount_requested": "int",
+        "applicant.bankruptcy_history": "bool",
+        "applicant.co_signer": "bool",
+        "applicant.dependents": "int",
+        "loan.min_income": "int",
+        "loan.min_credit": "int",
+        "loan.max_debt_ratio": "float",
+    },
+    alien_clinic: {
+        "patient.organism_type": "str",
+        "patient.symptoms": "list",
+        "atmosphere.ambient_pressure": "float",
+        "atmosphere.dominant_gas": "str",
+    },
+    crime_scene: {
+        "officer_smith.status": "str",
+        "case.warrant_status": "bool",
+        "case.cctv_status": "str",
+        "case.cctv_subject": "str",
+        "suspect_a.home_evidence": "str",
+        "suspect_a.evidence_logger": "str",
+        "suspect_a.financial_records": "str",
+        "suspect_b.relation_to_victim": "str",
+        "suspect_b.alibi_partner": "str",
+    },
+    thorncrester: {
+        "environment.weather_pattern": "str",
+        "environment.food_scarcity": "bool",
+        "adult_thorncrester.genetic_diet": "str",
+        "thorncrester_flock.genetic_structure": "str",
+        "juvenile_thorncrester.digestive_enzyme": "str",
+    }
+};
+
 // Simulation state
 let simRunning = false;
 let simTotalTurns = 0;
@@ -26,7 +69,7 @@ const $graphCanvas    = document.getElementById("graph-canvas");
 const $graphTooltip   = document.getElementById("graph-tooltip");
 const $graphContainer = document.getElementById("graph-container");
 const $inputKey       = document.getElementById("input-key");
-const $inputValue     = document.getElementById("input-value");
+const $inputValueCont = document.getElementById("input-value-container");
 const $btnAdd         = document.getElementById("btn-add");
 const $btnResolve     = document.getElementById("btn-resolve");
 const $btnReset       = document.getElementById("btn-reset");
@@ -104,6 +147,7 @@ async function loadDomains() {
     currentDomain = data.current;
     $domainSelector.value = currentDomain;
     updateEntityChips();
+    updateAttributeDropdowns();
 }
 
 function updateDirtyIndicator() {
@@ -471,15 +515,78 @@ function updateEntityChips() {
     });
 }
 
+// ── Attribute dropdown helpers ───────────────────────────────────────
+
+function updateAttributeDropdowns() {
+    const attrs = Object.keys(DOMAIN_SCHEMA[currentDomain] || {});
+    const html = `<option value="">-- attribute --</option>` +
+                 attrs.map(a => `<option value="${a}">${a}</option>`).join("");
+
+    // Sidebar select
+    $inputKey.innerHTML = html;
+    $inputValueCont.innerHTML = `<input type="text" id="input-value" placeholder="value" spellcheck="false">`;
+
+    // React to selection changes
+    $inputKey.onchange = () => {
+        const type = DOMAIN_SCHEMA[currentDomain][$inputKey.value];
+        $inputValueCont.innerHTML = renderValueInput(type, "input-value", "");
+    };
+}
+
+function renderValueInput(type, id, className) {
+    const idAttr = id ? `id="${id}"` : "";
+    if (type === "bool") {
+        return `<select ${idAttr} class="${className} br-value">
+            <option value="true">true</option>
+            <option value="false">false</option>
+        </select>`;
+    } else if (type === "int" || type === "float" || type === "numeric") {
+        const step = type === "int" ? "1" : "any";
+        return `<input type="number" ${idAttr} class="${className} br-value" placeholder="0" step="${step}">`;
+    } else if (type === "list") {
+        return `<input type="text" ${idAttr} class="${className} br-value" placeholder="item1, item2" title="Comma-separated list">`;
+    } else {
+        return `<input type="text" ${idAttr} class="${className} br-value" placeholder="value" spellcheck="false">`;
+    }
+}
+
+function castValue(key, rawValue) {
+    const type = DOMAIN_SCHEMA[currentDomain][key];
+    if (!type) return rawValue;
+    if (type === "int") return parseInt(rawValue, 10);
+    if (type === "float" || type === "numeric") return parseFloat(rawValue);
+    if (type === "bool") return rawValue === "true" || rawValue === true;
+    if (type === "list") {
+        return rawValue.split(",").map(s => s.trim()).filter(s => s.length > 0);
+    }
+    return rawValue;
+}
+
+// ── Belief Row (Chat Prompt Builder) ────────────────────────────────
+
 function addBeliefRow() {
+    const attrs = Object.keys(DOMAIN_SCHEMA[currentDomain] || {});
+    const opts = `<option value="">-- attribute --</option>` +
+                 attrs.map(a => `<option value="${a}">${a}</option>`).join("");
+
     const row = document.createElement("div");
     row.className = "belief-row";
     row.innerHTML = `
-        <input type="text" placeholder="key" spellcheck="false" class="br-key">
+        <select class="br-key">${opts}</select>
         <span style="color:var(--text-muted);font-size:11px">=</span>
-        <input type="text" placeholder="value" spellcheck="false" class="br-value">
+        <div class="br-value-container">
+            <input type="text" class="br-value" placeholder="value" spellcheck="false">
+        </div>
         <button class="btn-remove-row" title="Remove">✕</button>
     `;
+
+    const select = row.querySelector(".br-key");
+    const container = row.querySelector(".br-value-container");
+    select.onchange = () => {
+        const type = DOMAIN_SCHEMA[currentDomain][select.value];
+        container.innerHTML = renderValueInput(type, "", "");
+    };
+
     row.querySelector(".btn-remove-row").addEventListener("click", () => row.remove());
     $beliefRows.appendChild(row);
 }
@@ -497,9 +604,13 @@ function buildStructuredInput() {
     const rows = $beliefRows.querySelectorAll(".belief-row");
     const beliefLines = [];
     rows.forEach(row => {
-        const key = row.querySelector(".br-key").value.trim();
-        const val = row.querySelector(".br-value").value.trim();
-        if (key && val) beliefLines.push(`${key} = ${val}`);
+        const key = row.querySelector(".br-key").value;
+        const valEl = row.querySelector(".br-value");
+        if (key && valEl && valEl.value) {
+            const casted = castValue(key, valEl.value);
+            const display = Array.isArray(casted) ? JSON.stringify(casted) : casted;
+            beliefLines.push(`${key} = ${display}`);
+        }
     });
     if (beliefLines.length > 0) {
         parts.push(`[NEW BELIEF]\n${beliefLines.join("\n")}`);
@@ -512,17 +623,19 @@ function buildStructuredInput() {
 // ── Actions ─────────────────────────────────────────────────────────
 
 async function addBelief() {
-    const key = $inputKey.value.trim();
-    const value = $inputValue.value.trim();
-    if (!key) return;
+    const key = $inputKey.value;
+    const valEl = document.getElementById("input-value");
+    if (!key || !valEl) return;
+
+    const value = castValue(key, valEl.value);
 
     await api("/api/beliefs", {
         method: "POST",
-        body: JSON.stringify({ key, value: value || null }),
+        body: JSON.stringify({ key, value }),
     });
 
     $inputKey.value = "";
-    $inputValue.value = "";
+    updateAttributeDropdowns();
     $inputKey.focus();
     await refresh();
 }
@@ -555,6 +668,7 @@ async function switchDomain(domainKey) {
         body: JSON.stringify({ domain: domainKey }),
     });
     updateEntityChips();
+    updateAttributeDropdowns();
     // Clear chat
     $chatMessages.innerHTML = `
         <div class="chat-welcome">
@@ -878,8 +992,16 @@ function stopSimulation() {
 // ── Event listeners ─────────────────────────────────────────────────
 
 $btnAdd.addEventListener("click", addBelief);
-$inputKey.addEventListener("keydown", e => { if (e.key === "Enter") $inputValue.focus(); });
-$inputValue.addEventListener("keydown", e => { if (e.key === "Enter") addBelief(); });
+$inputKey.addEventListener("keydown", e => {
+    if (e.key === "Enter") {
+        const valEl = document.getElementById("input-value");
+        if (valEl) valEl.focus();
+    }
+});
+// Delegate Enter-key on the value input (it's dynamically swapped)
+document.getElementById("input-value-container").addEventListener("keydown", e => {
+    if (e.key === "Enter") addBelief();
+});
 
 $btnResolve.addEventListener("click", resolveAll);
 $btnReset.addEventListener("click", resetStore);

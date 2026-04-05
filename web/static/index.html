@@ -65,8 +65,12 @@
             </div>
             <div class="panel-footer graph-footer">
                 <div class="add-belief-form">
-                    <input type="text" id="input-key" placeholder="entity.attribute" spellcheck="false">
-                    <input type="text" id="input-value" placeholder="value" spellcheck="false">
+                    <select id="input-key" class="attr-select">
+                        <option value="">-- attribute --</option>
+                    </select>
+                    <div id="input-value-container">
+                        <input type="text" id="input-value" placeholder="value" spellcheck="false">
+                    </div>
                     <button id="btn-add" class="btn btn-primary btn-sm" title="Add hypothesis">+</button>
                 </div>
             </div>
