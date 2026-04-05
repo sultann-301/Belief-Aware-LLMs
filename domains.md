@@ -729,9 +729,6 @@ graph TD
     Territory --> Mortality
 ```
 
-> [!NOTE]
-> Example walkthrough for this domain is currently being updated to reflect the new 10-rule hierarchy.
-
 ---
 
 ## Cross-Domain Comparison
