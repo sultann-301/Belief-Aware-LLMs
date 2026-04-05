@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Belief-Aware LLM</title>
-    <meta name="description" content="Interactive dashboard for the Belief-Aware LLM system — manage beliefs, query the AI, and inspect revision logs.">
+    <meta name="description" content="Interactive dashboard for the Belief-Aware LLM system — dependency graphs, simulations, and belief-aware chat.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -18,7 +18,21 @@
                 <span class="logo-icon">◈</span>
                 <h1>Belief-Aware LLM</h1>
             </div>
-            <span class="domain-badge">Loan Domain</span>
+            <select id="domain-selector" class="domain-select" title="Select domain">
+                <option value="loan">Loan Eligibility</option>
+                <option value="alien_clinic">Alien Clinic</option>
+                <option value="crime_scene">Crime Scene</option>
+                <option value="thorncrester">Thorncrester</option>
+            </select>
+            <select id="model-selector" class="model-select" title="Select LLM model">
+                <option value="">Loading models...</option>
+            </select>
+        </div>
+        <div class="topbar-center">
+            <div class="mode-tabs">
+                <button class="mode-tab active" data-mode="chat" id="tab-chat">Chat</button>
+                <button class="mode-tab" data-mode="simulation" id="tab-simulation">Simulation</button>
+            </div>
         </div>
         <div class="topbar-actions">
             <button id="btn-resolve" class="btn btn-secondary" title="Resolve dirty beliefs">
@@ -33,34 +47,47 @@
     <!-- ─── Main Layout ──────────────────────────────────────── -->
     <main class="layout">
 
-        <!-- LEFT: Beliefs Panel -->
-        <section class="panel panel-beliefs" id="panel-beliefs">
+        <!-- LEFT: Dependency Graph -->
+        <section class="panel panel-graph" id="panel-graph">
             <div class="panel-header">
-                <h2>Belief Store</h2>
-                <span class="belief-count" id="belief-count">0</span>
+                <div class="panel-header-left">
+                    <button class="btn-collapse" id="btn-graph-toggle" title="Collapse graph">◂</button>
+                    <h2>Dependency Graph</h2>
+                </div>
+                <div class="graph-legend" id="graph-legend">
+                    <span class="legend-item legend-base">● base</span>
+                    <span class="legend-item legend-derived">◆ derived</span>
+                    <span class="legend-item legend-dirty">◉ dirty</span>
+                </div>
             </div>
-
-            <div class="add-belief-form">
-                <input type="text" id="input-key" placeholder="entity.attribute" spellcheck="false">
-                <input type="text" id="input-value" placeholder="value" spellcheck="false">
-                <button id="btn-add" class="btn btn-primary btn-sm" title="Add hypothesis">+</button>
+            <div class="graph-container" id="graph-container">
+                <canvas id="graph-canvas"></canvas>
             </div>
-
-            <div class="beliefs-list" id="beliefs-list">
-                <div class="empty-state">No beliefs yet. Add one above or use the presets.</div>
-            </div>
-
-            <div class="panel-footer">
-                <button id="btn-load-preset" class="btn btn-ghost btn-sm">Load Loan Preset</button>
+            <div class="panel-footer graph-footer">
+                <div class="add-belief-form">
+                    <input type="text" id="input-key" placeholder="entity.attribute" spellcheck="false">
+                    <input type="text" id="input-value" placeholder="value" spellcheck="false">
+                    <button id="btn-add" class="btn btn-primary btn-sm" title="Add hypothesis">+</button>
+                </div>
             </div>
         </section>
 
-        <!-- CENTER: Chat Panel -->
+        <!-- Resize Handle -->
+        <div class="resize-handle" id="resize-handle" title="Drag to resize"></div>
+
+        <!-- CENTER: Chat Panel (default mode) -->
         <section class="panel panel-chat" id="panel-chat">
             <div class="panel-header">
                 <h2>Chat</h2>
-                <div class="dirty-indicator" id="dirty-indicator" style="display:none">
-                    <span class="dirty-dot"></span> Dirty beliefs pending
+                <div class="chat-header-controls">
+                    <select id="chat-condition" class="condition-select" title="LLM condition">
+                        <option value="store">🟢 Store Inject</option>
+                        <option value="store_history">🟡 Store + History</option>
+                        <option value="baseline">🔴 Baseline</option>
+                    </select>
+                    <div class="dirty-indicator" id="dirty-indicator" style="display:none">
+                        <span class="dirty-dot"></span> Dirty
+                    </div>
                 </div>
             </div>
 
@@ -72,12 +99,70 @@
                 </div>
             </div>
 
-            <form class="chat-input-area" id="chat-form">
-                <textarea id="chat-input" placeholder="[ENTITY]&#10;applicant, loan&#10;&#10;[NEW BELIEF]&#10;applicant.income = 8000&#10;&#10;[QUERY]&#10;Is this applicant eligible?" rows="5" spellcheck="false"></textarea>
-                <button type="submit" class="btn btn-primary" id="btn-send">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
-                </button>
-            </form>
+            <!-- Structured Prompt Builder -->
+            <div class="prompt-builder" id="prompt-builder">
+                <div class="prompt-section">
+                    <label class="prompt-label">[ENTITY]</label>
+                    <div class="entity-chips" id="entity-chips"></div>
+                </div>
+                <div class="prompt-section">
+                    <label class="prompt-label">[NEW BELIEF]</label>
+                    <div class="belief-rows" id="belief-rows">
+                        <!-- dynamic rows added here -->
+                    </div>
+                    <button class="btn btn-ghost btn-xs" id="btn-add-belief-row">+ Add belief</button>
+                </div>
+                <div class="prompt-section prompt-query-section">
+                    <label class="prompt-label">[QUERY]</label>
+                    <div class="query-row">
+                        <textarea id="chat-input" placeholder="What is the applicant's eligibility?" rows="2" spellcheck="false"></textarea>
+                        <button type="button" class="btn btn-primary" id="btn-send">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CENTER: Simulation Panel (hidden by default) -->
+        <section class="panel panel-simulation" id="panel-simulation" style="display:none">
+            <div class="panel-header">
+                <h2>Simulation</h2>
+                <div class="sim-header-controls">
+                    <select id="sim-condition" class="condition-select" title="LLM condition">
+                        <option value="store">🟢 Store (Stateless)</option>
+                        <option value="store_history">🟡 Store + History</option>
+                        <option value="baseline">🔴 Baseline</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sim-body" id="sim-body">
+                <!-- Pre-start state -->
+                <div class="sim-welcome" id="sim-welcome">
+                    <div class="sim-welcome-icon">▶</div>
+                    <p>Run a 10-turn evaluation step-by-step.</p>
+                    <p class="sim-welcome-sub">Select a domain and condition, then click Start.</p>
+                    <button class="btn btn-primary" id="btn-sim-start">Start Simulation</button>
+                </div>
+
+                <!-- Running state -->
+                <div class="sim-turns" id="sim-turns" style="display:none"></div>
+            </div>
+
+            <div class="sim-footer" id="sim-footer" style="display:none">
+                <div class="sim-progress">
+                    <span class="sim-turn-label" id="sim-turn-label">Turn 0 / 10</span>
+                    <div class="sim-progress-bar">
+                        <div class="sim-progress-fill" id="sim-progress-fill"></div>
+                    </div>
+                    <span class="sim-score" id="sim-score">0 / 0</span>
+                </div>
+                <div class="sim-footer-buttons">
+                    <button class="btn btn-danger btn-sm" id="btn-sim-stop" title="Stop simulation">■ Stop</button>
+                    <button class="btn btn-primary" id="btn-sim-step">Next Turn →</button>
+                </div>
+            </div>
         </section>
 
         <!-- RIGHT: Revision Log Panel -->
@@ -92,6 +177,9 @@
         </section>
 
     </main>
+
+    <!-- Tooltip at body level so it's never clipped -->
+    <div class="graph-tooltip" id="graph-tooltip"></div>
 
     <script src="/static/app.js"></script>
 </body>

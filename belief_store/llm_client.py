@@ -11,9 +11,9 @@ import ollama as _ollama
 class LLMClient(Protocol):
     """Minimal interface every LLM backend must satisfy."""
 
-    def generate(self, system_prompt: str, user_prompt: str) -> str: ...
+    def generate(self, system_prompt: str, user_prompt: str, model: str | None = None) -> str: ...
 
-    def generate_with_history(self, messages: list[dict[str, str]]) -> str: ...
+    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None) -> str: ...
 
 
 class OllamaClient:
@@ -27,9 +27,9 @@ class OllamaClient:
         self.model = model
         self._client = _ollama.Client(host=host)
 
-    def generate(self, system_prompt: str, user_prompt: str) -> str:
+    def generate(self, system_prompt: str, user_prompt: str, model: str | None = None) -> str:
         response = self._client.chat(
-            model=self.model,
+            model=model or self.model,
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
@@ -38,10 +38,10 @@ class OllamaClient:
         )
         return response.message.content
 
-    def generate_with_history(self, messages: list[dict[str, str]]) -> str:
+    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None) -> str:
         """Call LLM with an explicit list of conversation messages."""
         response = self._client.chat(
-            model=self.model,
+            model=model or self.model,
             messages=messages,
             think=False,
         )

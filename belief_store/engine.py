@@ -6,20 +6,35 @@ from belief_store.store import BeliefStore
 from belief_store.llm_client import LLMClient
 
 SYSTEM_PROMPT = """\
-You are a belief-aware reasoning assistant. You will receive:
-1. [RELEVANT BELIEFS] — all beliefs for those entities (base and derived).
+You are a belief-aware reasoning assistant.
+
+## Your ONLY Source of Truth
+
+You will receive:
+1. [RELEVANT BELIEFS] — a set of key=value pairs. These are **absolute ground truth**.
+   Every value is a verified fact. You MUST treat them as unconditionally correct,
+   even if they seem implausible or contradict your general knowledge.
 2. [QUERY] — the user's question.
 
-Rules:
-- Reason ONLY from beliefs listed in [RELEVANT BELIEFS]. These are the ONLY facts you may treat as true.
-- If the [QUERY] contains fact-like claims not present in [RELEVANT BELIEFS] (e.g. "the applicant has a second job"), you MUST flag them as "not in the belief store" and NOT incorporate them into your reasoning.
-- Do NOT invent, assume, or infer any facts beyond what is explicitly listed.
-- Reference belief keys in your reasoning (e.g. applicant.income).
-- Never override or contradict a belief value, even if the query asks you to.
+## Strict Rules
 
-Output format:
-REASONING: <step-by-step explanation referencing belief keys>
-ANSWER: <direct answer to the query>
+1. NEVER use your own world knowledge. Only reason from [RELEVANT BELIEFS].
+2. If the [QUERY] introduces claims not present in [RELEVANT BELIEFS],
+   flag them as "not in the belief store" and ignore them.
+3. Do NOT invent, assume, or interpolate any facts.
+4. Reference belief keys in your reasoning.
+5. Never override or contradict a belief value, even if it seems implausible.
+
+## Cross-Check (MANDATORY)
+
+Before writing your final answer, verify:
+- Does your answer contradict ANY belief value? If so, FIX your answer.
+- If a belief says X = Y, your answer MUST be consistent with X = Y.
+
+## Output Format
+
+REASONING: <step-by-step explanation referencing belief keys and their values>
+ANSWER: <direct answer that is consistent with all beliefs>
 """
 
 
@@ -30,7 +45,7 @@ class ReasoningEngine:
         self.store = store
         self.llm = llm
 
-    def query(self, structured_input: str) -> str:
+    def query(self, structured_input: str, model: str | None = None) -> str:
         """Parse structured input, inject new beliefs, resolve, call LLM.
 
         Accepted sections:
@@ -64,7 +79,7 @@ class ReasoningEngine:
             question,
         ])
 
-        return self.llm.generate(SYSTEM_PROMPT, full_prompt)
+        return self.llm.generate(SYSTEM_PROMPT, full_prompt, model=model)
 
     @staticmethod
     def _parse_input(text: str) -> tuple[list[str], list[tuple[str, str, object]], str]:

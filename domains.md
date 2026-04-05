@@ -588,89 +588,108 @@ Tests belief revision with **complete parametric isolation** using a fictional s
 
 ### Attributes (KV Keys)
 
-| Key                                | Type | Example                                          | Semantic Role                              |
-| ---------------------------------- | ---- | ------------------------------------------------ | ------------------------------------------ |
-| `environment.weather_pattern`      | str  | "stable", "drought", "flood"                     | The external trigger.                      |
-| `environment.food_scarcity`        | bool | true, false                                      | Secondary environmental state.             |
-| `thorncrester.genetic_diet`        | str  | "frugivore", "insectivore"                       | **Latent Truth:** Unchangeable base trait. |
-| `thorncrester.genetic_plumage`     | str  | "crimson", "azure"                               | **Latent Truth:** Unchangeable base color. |
-| `thorncrester.ecological_stress`   | str  | "high", "nominal"                                | **Derived:** The masking trigger.          |
-| `thorncrester.expressed_diet`      | str  | "frugivore", "scavenger"                         | **Derived:** Observable phenotype.         |
-| `thorncrester.expressed_plumage`   | str  | "crimson", "dull_grey"                           | **Derived:** Observable phenotype.         |
-| `thorncrester.primary_forage`      | str  | "verath_berries", "carrion"                      | **Derived:** Target food source.           |
-| `thorncrester.mating_viability`    | bool | true, false                                      | **Derived:** Reproductive capability.      |
-| `thorncrester.population_trend`    | str  | "growing", "declining", "crashing"               | **Derived:** Demographic trajectory.       |
-| `thorncrester.conservation_status` | str  | "safe", "vulnerable", "critical"                 | **Derived:** Human intervention level.     |
-| `thorncrester.intervention_plan`   | str  | "habitat_protection", "captive_breeding", "none" | **Derived:** Actionable outcome.           |
+| Key | Type | Example | Semantic Role |
+| -------------------------------------- | ---- | ---------------------- | ------------------------------------------ |
+| `environment.weather_pattern`          | str  | "stable", "drought"    | The external trigger.                      |
+| `environment.food_scarcity`            | bool | true, false            | Secondary environmental state.             |
+| `adult_thorncrester.genetic_diet`      | str  | "frugivore"            | Latent: Unchangeable base adult trait.     |
+| `thorncrester_flock.genetic_structure` | str  | "matriarchal_pairs"    | Latent: Unchangeable base social trait.    |
+| `juvenile_thorncrester.digestive_enzyme`| str  | "fructose_processor"   | Latent: Unchangeable base offspring trait. |
+| `adult_thorncrester.ecological_stress` | str  | "high", "nominal"      | Derived: The masking trigger.              |
+| `adult_thorncrester.expressed_diet`    | str  | "frugivore", "scavenger"| Derived: Observable phenotype.             |
+| `adult_thorncrester.plumage_color`     | str  | "crimson", "dull_grey" | Derived: Physical state.                   |
+| `thorncrester_flock.expressed_structure`| str  | "matriarchal_pairs", "survival_swarm"| Derived: Masked social phenotype.          |
+| `thorncrester_flock.territory_behavior`| str  | "peaceful", "hyper_aggressive"| Derived: Flock action.                     |
+| `juvenile_thorncrester.metabolic_state`| str  | "thriving", "starving" | Derived: Biological match/mismatch.        |
+| `juvenile_thorncrester.development`    | str  | "maturing", "arrested" | Derived: Growth status.                    |
+| `feather_mite.bloom_status`            | str  | "dormant", "active_bloom"| Derived: Parasite activation.              |
+| `feather_mite.parasitic_load`          | str  | "harmless", "lethal"   | Derived: Parasite danger level.            |
+| `adult_thorncrester.mortality_risk`    | str  | "low", "critical"      | Derived: Final biological outcome.         |
 
 ### Rules
 
 ```python
-# --- BLOCK 1: THE ENVIRONMENTAL STRESS LAYER ---
+```python
+# --- BLOCK 1: THE ADULT MASKING LAYER ---
 
-R1: thorncrester.ecological_stress
+R1: adult_thorncrester.ecological_stress
     inputs: [environment.weather_pattern, environment.food_scarcity]
     logic:
       IF weather_pattern = "drought" AND food_scarcity = True → "high"
-      IF weather_pattern = "flood" → "high"
       ELSE → "nominal"
 
-# --- BLOCK 2: PHENOTYPIC PLASTICITY (The Masking Layer) ---
-
-R2: thorncrester.expressed_diet
-    inputs: [thorncrester.genetic_diet, thorncrester.ecological_stress]
+R2: adult_thorncrester.expressed_diet
+    inputs: [adult_thorncrester.genetic_diet, adult_thorncrester.ecological_stress]
     logic:
-      # The latent genetic trait is masked under high stress
+      # Masking: High stress overrides the genetic diet
       IF ecological_stress = "high" → "scavenger"
       ELSE → genetic_diet
 
-R3: thorncrester.expressed_plumage
-    inputs: [thorncrester.genetic_plumage, thorncrester.expressed_diet]
+R3: adult_thorncrester.plumage_color
+    inputs: [adult_thorncrester.expressed_diet]
     logic:
-      # Diet changes strip the plumage of its genetic color
       IF expressed_diet = "scavenger" → "dull_grey"
-      ELSE → genetic_plumage
+      ELSE → "crimson"
 
-# --- BLOCK 3: BEHAVIORAL CASCADES ---
 
-R4: thorncrester.primary_forage
-    inputs: [thorncrester.expressed_diet]
+# --- BLOCK 2: THE MACRO-SOCIAL MASKING LAYER ---
+
+R4: thorncrester_flock.expressed_structure
+    inputs: [thorncrester_flock.genetic_structure, adult_thorncrester.ecological_stress]
     logic:
-      IF expressed_diet = "frugivore" → "verath_berries"
-      IF expressed_diet = "insectivore" → "thorn_beetles"
-      IF expressed_diet = "scavenger" → "carrion"
-      ELSE → "unknown"
+      # Masking: High stress overrides natural matriarchal pairing
+      IF ecological_stress = "high" → "survival_swarm"
+      ELSE → genetic_structure
 
-R5: thorncrester.mating_viability
-    inputs: [thorncrester.expressed_plumage, thorncrester.ecological_stress]
+R5: thorncrester_flock.territory_behavior
+    inputs: [thorncrester_flock.expressed_structure, environment.food_scarcity]
     logic:
-      # Mating requires vibrant genetic colors AND low stress
-      IF expressed_plumage = "dull_grey" OR ecological_stress = "high" → False
-      ELSE → True
+      IF expressed_structure = "survival_swarm" AND food_scarcity = True → "hyper_aggressive"
+      ELSE → "peaceful"
 
-# --- BLOCK 4: POPULATION & CONSERVATION ---
 
-R6: thorncrester.population_trend
-    inputs: [thorncrester.mating_viability, environment.food_scarcity]
+# --- BLOCK 3: THE JUVENILE DEPENDENCY TRAP ---
+
+R6: juvenile_thorncrester.metabolic_state
+    inputs: [juvenile_thorncrester.digestive_enzyme, adult_thorncrester.expressed_diet]
     logic:
-      IF mating_viability = False AND food_scarcity = True → "crashing"
-      IF mating_viability = False AND food_scarcity = False → "declining"
-      ELSE → "growing"
+      # The biological mismatch trap: Adults feed the young what they eat. 
+      # If adult eats meat, but young only digest fruit, the young starve.
+      IF digestive_enzyme = "fructose_processor" AND expressed_diet != "frugivore" → "starving"
+      ELSE → "thriving"
 
-R7: thorncrester.conservation_status
-    inputs: [thorncrester.population_trend]
+R7: juvenile_thorncrester.development
+    inputs: [juvenile_thorncrester.metabolic_state]
     logic:
-      IF population_trend = "crashing" → "critical"
-      IF population_trend = "declining" → "vulnerable"
-      ELSE → "safe"
+      IF metabolic_state = "starving" → "arrested"
+      ELSE → "maturing"
 
-R8: thorncrester.intervention_plan
-    inputs: [thorncrester.conservation_status, thorncrester.expressed_diet]
+
+# --- BLOCK 4: THE PARASITIC LAYER ---
+
+R8: feather_mite.bloom_status
+    inputs: [adult_thorncrester.plumage_color, environment.weather_pattern]
     logic:
-      IF conservation_status = "critical" AND expressed_diet = "scavenger" → "supplemental_carrion_drops"
-      IF conservation_status = "critical" → "captive_breeding"
-      IF conservation_status = "vulnerable" → "habitat_protection"
-      ELSE → "none"
+      # Mites specifically thrive in the dull_grey stress plumage during droughts
+      IF plumage_color = "dull_grey" AND weather_pattern = "drought" → "active_bloom"
+      ELSE → "dormant"
+
+R9: feather_mite.parasitic_load
+    inputs: [feather_mite.bloom_status]
+    logic:
+      IF bloom_status = "active_bloom" → "lethal"
+      ELSE → "harmless"
+
+
+# --- BLOCK 5: THE FINAL OUTCOME ---
+
+R10: adult_thorncrester.mortality_risk
+    inputs: [feather_mite.parasitic_load, thorncrester_flock.territory_behavior]
+    logic:
+      # Death occurs if parasites are lethal OR if the flock is tearing itself apart
+      IF parasitic_load = "lethal" OR territory_behavior = "hyper_aggressive" → "critical"
+      ELSE → "low"
+```
 ```
 
 ### Dependency Chain
@@ -678,75 +697,47 @@ R8: thorncrester.intervention_plan
 ```mermaid
 graph TD
     %% Base Inputs
-    Weather["environment.weather_pattern"] --> Stress["thorncrester.ecological_stress"]
+    Weather["environment.weather_pattern"] --> Stress["adult_thorncrester.ecological_stress"]
+    Weather --> MiteBloom["feather_mite.bloom_status"]
     Scarcity["environment.food_scarcity"] --> Stress
-
-    %% The Masking Nodes
-    GenDiet["thorncrester.genetic_diet"] --> ExpDiet["thorncrester.expressed_diet"]
+    Scarcity --> Territory["thorncrester_flock.territory_behavior"]
+    
+    %% Adult Layers
+    GenDiet["adult_thorncrester.genetic_diet"] --> ExpDiet["adult_thorncrester.expressed_diet"]
     Stress --> ExpDiet
-
-    GenPlum["thorncrester.genetic_plumage"] --> ExpPlum["thorncrester.expressed_plumage"]
-    ExpDiet --> ExpPlum
-
-    %% Mid-level behavior
-    ExpDiet --> Forage["thorncrester.primary_forage"]
-    ExpPlum --> Mating["thorncrester.mating_viability"]
-    Stress --> Mating
-
-    %% High-level outcomes
-    Mating --> Trend["thorncrester.population_trend"]
-    Scarcity --> Trend
-
-    Trend --> Status["thorncrester.conservation_status"]
-
-    Status --> Plan["thorncrester.intervention_plan"]
-    ExpDiet --> Plan
+    ExpDiet --> Plumage["adult_thorncrester.plumage_color"]
+    
+    %% Social Layers
+    GenStruct["thorncrester_flock.genetic_structure"] --> ExpStruct["thorncrester_flock.expressed_structure"]
+    Stress --> ExpStruct
+    ExpStruct --> Territory
+    
+    %% Juvenile Trap
+    GenEnzyme["juvenile_thorncrester.digestive_enzyme"] --> Metabolism["juvenile_thorncrester.metabolic_state"]
+    ExpDiet --> Metabolism
+    Metabolism --> Development["juvenile_thorncrester.development"]
+    
+    %% Parasitic Layer
+    Plumage --> MiteBloom
+    MiteBloom --> MiteLoad["feather_mite.parasitic_load"]
+    
+    %% Final Outcome
+    MiteLoad --> Mortality["adult_thorncrester.mortality_risk"]
+    Territory --> Mortality
 ```
 
-### Example Revision Scenario (The Masking & Unmasking Cycle)
-
-```yaml
-t=0: The Baseline (Nominal State)
-     environment.weather_pattern = "stable", environment.food_scarcity = False
-     thorncrester.genetic_diet = "frugivore", thorncrester.genetic_plumage = "crimson"
-     → R1: stress = "nominal"
-     → R2: nominal stress → expressed_diet = "frugivore" (Genotype matches Phenotype)
-     → R3: frugivore diet → expressed_plumage = "crimson"
-     → R4: frugivore → primary_forage = "verath_berries"
-     → R5: crimson + nominal stress → mating_viability = True
-     → R6: mating is viable → population_trend = "growing"
-     → R7/R8: conservation_status = "safe", intervention_plan = "none"
-
-t=1: The Masking Event (Drought hits)
-     environment.weather_pattern is updated to "drought", environment.food_scarcity = True
-     → dirty: {ecological_stress, expressed_diet, expressed_plumage, primary_forage, mating_viability...}
-     → resolve_all_dirty():
-       R1: drought + scarcity → ecological_stress = "high"
-       R2: high stress → expressed_diet = "scavenger" (Genetic diet is now masked)
-       R3: scavenger diet → expressed_plumage = "dull_grey"
-       R4: scavenger → primary_forage = "carrion"
-       R5: dull_grey + high stress → mating_viability = False
-       R6: no mating + scarcity → population_trend = "crashing"
-       R8: critical + scavenger → intervention_plan = "supplemental_carrion_drops"
-
-t=2: The Unmasking Event (Rains return)
-     environment.weather_pattern is updated to "stable", environment.food_scarcity = False
-     → resolve_all_dirty():
-       R1: stable + no scarcity → ecological_stress = "nominal"
-       R2: nominal stress → expressed_diet reverts to "frugivore" (Latent trait unmasked)
-       R3: frugivore diet → expressed_plumage reverts to "crimson"
-       [... Cascade restores the population to "safe" and "growing" ...]
-```
+> [!NOTE]
+> Example walkthrough for this domain is currently being updated to reflect the new 10-rule hierarchy.
 
 ---
 
 ## Cross-Domain Comparison
 
-| Property                 | Loan                  | Employee            | Crime Scene             | Thorncrester         |
+| Property                 | Loan                  | Alien Clinic        | Crime Scene             | Thorncrester         |
 | ------------------------ | --------------------- | ------------------- | ----------------------- | -------------------- |
-| **Max dependency depth** | 3 hops                | 2 hops              | 7 hops                  | 3 hops               |
-| **Number of rules**      | 10                    | 10                  | 10                      | 10                   |
-| **Number of attributes** | 17                    | 15                  | 19                      | 13                   |
-| **Parametric isolation** | Low                   | Low                 | **Total**               | **Total**            |
-| **Belief Maintain test** | ✓ credit ↛ employment | ✓ cert_safety ↛ cpa | ✓ suspect_a ↛ suspect_b | ✓ diet ↛ population  |
-| **Key revision pattern** | Threshold change      | Prerequisite expiry | Evidence cascade        | Classification shift |
+| **Max dependency depth** | 3 hops                | 3 hops              | 7 hops                  | 5 hops               |
+| **Number of rules**      | 10                    | 8                   | 10                      | 10                   |
+| **Number of attributes** | 17                    | 16                  | 19                      | 15                   |
+| **Parametric isolation** | Low                   | Medium              | **Complete**            | **Complete**         |
+| **Belief Maintain test** | ✓ credit ↛ employment | ✓ vitals ↛ tracking | ✓ suspect_a ↛ suspect_b | ✓ expressed ↛ latent |
+| **Key revision pattern** | Algorithmic Status    | Counterfactual      | Epistemic Gatekeeping   | Ecosystem Trap       |

@@ -66,7 +66,7 @@ DOMAIN_REGISTRY = {
         initial_beliefs=THORNCRESTER_INITIAL_BELIEFS,
         turns=THORNCRESTER_TURNS,
         baseline_rules=THORNCRESTER_RULES,
-        default_entities="environment, thorncrester",
+        default_entities="environment, adult_thorncrester, thorncrester_flock, juvenile_thorncrester, feather_mite",
     ),
 }
 

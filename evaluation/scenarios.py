@@ -565,92 +565,95 @@ CRIME_TURNS = [
 # =====================================================================
 
 THORNCRESTER_RULES = """[RULES]
-R1: ecological_stress -> "high" if drought+scarcity OR flood, else "nominal"
+R1: ecological_stress -> "high" if drought+scarcity, else "nominal"
 R2: expressed_diet -> "scavenger" if stress is high, else genetic_diet
-R3: expressed_plumage -> "dull_grey" if scavenger, else genetic_plumage
-R4: primary_forage -> "verath_berries" if frugivore, "thorn_beetles" if insectivore, "carrion" if scavenger
-R5: mating_viability -> False if dull_grey OR stress is high, else True
-R6: population_trend -> "crashing" if non-viable + scarcity, "declining" if non-viable + no scarcity, else "growing"
-R7: conservation_status -> "critical" if crashing, "vulnerable" if declining, else "safe"
-R8: intervention_plan -> "supplemental_carrion_drops" if critical+scavenger, "captive_breeding" if critical, "habitat_protection" if vulnerable, else "none"
+R3: plumage_color -> "dull_grey" if scavenger, else "crimson"
+R4: expressed_structure -> "survival_swarm" if stress is high, else genetic_structure
+R5: territory_behavior -> "hyper_aggressive" if survival_swarm + scarcity, else "peaceful"
+R6: metabolic_state -> "starving" if fructose_processor + adult_diet != frugivore, else "thriving"
+R7: development -> "arrested" if starving, else "maturing"
+R8: bloom_status -> "active_bloom" if dull_grey + drought, else "dormant"
+R9: parasitic_load -> "lethal" if active_bloom, else "harmless"
+R10: mortality_risk -> "critical" if lethal OR hyper_aggressive, else "low"
 """
 
 THORNCRESTER_INITIAL_BELIEFS = {
     "environment.weather_pattern": "stable",
     "environment.food_scarcity": False,
-    "thorncrester.genetic_diet": "frugivore",
-    "thorncrester.genetic_plumage": "crimson",
+    "adult_thorncrester.genetic_diet": "frugivore",
+    "thorncrester_flock.genetic_structure": "matriarchal_pairs",
+    "juvenile_thorncrester.digestive_enzyme": "fructose_processor",
 }
 
 THORNCRESTER_TURNS = [
     {
-        "entities": "thorncrester",
+        "entities": "adult_thorncrester",
         "beliefs": {},
-        "question": "Given the base state, what is the expressed plumage?",
-        "options": {"A": "azure", "B": "crimson", "C": "dull_grey"},
-        "correct": "B",
-    },
-    {
-        "entities": "environment, thorncrester",
-        "beliefs": {"environment.weather_pattern": "drought"},
-        "question": "A drought has started. What is the ecological stress level?",
-        "options": {"A": "nominal", "B": "high", "C": "critical"},
-        "correct": "A",
-    },
-    {
-        "entities": "environment, thorncrester",
-        "beliefs": {"environment.food_scarcity": True},
-        "question": "Food scarcity hits. What is the expressed diet now?",
-        "options": {"A": "scavenger", "B": "insectivore", "C": "frugivore"},
-        "correct": "A",
-    },
-    {
-        "entities": "thorncrester, environment",
-        "beliefs": {},
-        "question": "With the new diet affecting the plumage, what is the mating viability?",
-        "options": {"A": "True", "B": "False", "C": "Unknown"},
-        "correct": "B",
-    },
-    {
-        "entities": "thorncrester, environment",
-        "beliefs": {},
-        "question": "With the crashing population, what is the intervention plan?",
-        "options": {"A": "habitat_protection", "B": "captive_breeding", "C": "supplemental_carrion_drops"},
-        "correct": "C",
-    },
-    {
-        "entities": "thorncrester",
-        "beliefs": {},
-        "question": "Despite being a scavenger right now, what is the underlying genetic diet?",
-        "options": {"A": "insectivore", "B": "scavenger", "C": "frugivore"},
-        "correct": "C",
-    },
-    {
-        "entities": "environment, thorncrester",
-        "beliefs": {"environment.weather_pattern": "stable"},
-        "question": "The rains return, lifting the drought. What is the expressed plumage now?",
+        "question": "Given the stable environment, what is the current plumage color of the adult Thorncrester?",
         "options": {"A": "dull_grey", "B": "crimson", "C": "azure"},
         "correct": "B",
     },
     {
-        "entities": "environment, thorncrester",
-        "beliefs": {"environment.food_scarcity": False},
-        "question": "Food scarcity has also ended. What is the conservation status?",
-        "options": {"A": "safe", "B": "vulnerable", "C": "critical"},
+        "entities": "environment, adult_thorncrester",
+        "beliefs": {"environment.weather_pattern": "drought"},
+        "question": "A drought has begun. If food is still plentiful (no scarcity), what is the ecological stress level?",
+        "options": {"A": "nominal", "B": "high", "C": "critical"},
         "correct": "A",
     },
     {
-        "entities": "thorncrester",
-        "beliefs": {"thorncrester.genetic_diet": "insectivore"},
-        "question": "A mutation is discovered: this flock's genetic diet is insectivore. What is their primary forage?",
-        "options": {"A": "verath_berries", "B": "thorn_beetles", "C": "carrion"},
+        "entities": "environment, adult_thorncrester",
+        "beliefs": {"environment.food_scarcity": True},
+        "question": "Food scarcity has hit during the drought. What is the adult's expressed diet now?",
+        "options": {"A": "frugivore", "B": "scavenger", "C": "insectivore"},
         "correct": "B",
     },
     {
-        "entities": "environment, thorncrester",
-        "beliefs": {"environment.weather_pattern": "flood"},
-        "question": "A massive flood suddenly strikes. What is the new intervention plan?",
-        "options": {"A": "supplemental_carrion_drops", "B": "captive_breeding", "C": "habitat_protection"},
+        "entities": "adult_thorncrester, juvenile_thorncrester",
+        "beliefs": {},
+        "question": "The adults have shifted to scavenging. What is the metabolic state of the juvenile (fructose processor) offspring?",
+        "options": {"A": "thriving", "B": "starving", "C": "dormant"},
+        "correct": "B",
+    },
+    {
+        "entities": "adult_thorncrester, feather_mite, environment",
+        "beliefs": {},
+        "question": "With the plumage turned dull_grey during a drought, what is the status of the feather mite bloom?",
+        "options": {"A": "dormant", "B": "active_bloom", "C": "lethal"},
+        "correct": "B",
+    },
+    {
+        "entities": "feather_mite, thorncrester_flock, adult_thorncrester",
+        "beliefs": {},
+        "question": "Between the lethal parasitic load and the social aggression, what is the mortality risk?",
+        "options": {"A": "low", "B": "moderate", "C": "critical"},
+        "correct": "C",
+    },
+    {
+        "entities": "environment, adult_thorncrester",
+        "beliefs": {"environment.weather_pattern": "stable"},
+        "question": "The rains have returned (stable). What has happened to the adult's plumage color?",
+        "options": {"A": "remains dull_grey", "B": "reverts to crimson", "C": "turns azure"},
+        "correct": "B",
+    },
+    {
+        "entities": "environment, adult_thorncrester",
+        "beliefs": {"environment.food_scarcity": False},
+        "question": "Food is now abundant again. What is the current mortality risk for the adults?",
+        "options": {"A": "low", "B": "critical", "C": "moderate"},
+        "correct": "A",
+    },
+    {
+        "entities": "juvenile_thorncrester, adult_thorncrester",
+        "beliefs": {"juvenile_thorncrester.digestive_enzyme": "general_processor"},
+        "question": "A subspecies with a 'general_processor' enzyme is found. If the adults were scavenging, what would this juvenile's development status be?",
+        "options": {"A": "arrested", "B": "maturing", "C": "unknown"},
+        "correct": "B",
+    },
+    {
+        "entities": "environment, thorncrester_flock, adult_thorncrester",
+        "beliefs": {"environment.weather_pattern": "drought", "environment.food_scarcity": True},
+        "question": "Stress is high again. What is the currently expressed social structure of the flock?",
+        "options": {"A": "matriarchal_pairs", "B": "solitary", "C": "survival_swarm"},
         "correct": "C",
     },
 ]
