@@ -69,8 +69,8 @@ LOAN_TURNS = [
         "beliefs": {"applicant.credit_score": 740},
         "question": "What is the current application status?",
         "options": {
-            "A": "preferred_approved",
-            "B": "denied",
+            "A": "denied_ineligible",
+            "B": "denied_amount_exceeded",
             "C": "approved",
         },
         "correct": "C",
