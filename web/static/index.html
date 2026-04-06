@@ -131,6 +131,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Full Prompt Viewer -->
+            <div class="full-prompt" id="full-prompt">
+                <div class="full-prompt-header">
+                    <span class="full-prompt-title">Full Prompt Sent</span>
+                    <button class="btn btn-ghost btn-xs" id="btn-toggle-prompt">Show</button>
+                </div>
+                <div class="full-prompt-body" id="full-prompt-body" style="display:none">
+                    <div class="full-prompt-section">
+                        <label class="prompt-label">System Prompt</label>
+                        <pre id="system-prompt-view"></pre>
+                    </div>
+                    <div class="full-prompt-section">
+                        <label class="prompt-label">User Prompt</label>
+                        <pre id="user-prompt-view"></pre>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- CENTER: Simulation Panel (hidden by default) -->

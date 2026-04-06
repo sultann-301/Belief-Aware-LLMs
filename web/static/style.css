@@ -643,6 +643,64 @@ html, body {
     animation: fadeSlideIn 0.25s ease;
 }
 
+    .chat-msg-prompt {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px dashed var(--border);
+        font-family: var(--font-mono);
+    }
+
+    .prompt-msg-title {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+    }
+
+    .prompt-msg-section {
+        margin-bottom: 10px;
+    }
+
+    .prompt-msg-label {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+    }
+
+    .prompt-collapse {
+        width: 100%;
+        text-align: left;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        padding: 6px 8px;
+        border-radius: var(--radius-sm);
+        font-size: 11px;
+        cursor: pointer;
+    }
+
+    .prompt-collapse:hover {
+        border-color: var(--border-focus);
+        color: var(--text-primary);
+    }
+
+    .chat-msg-prompt pre {
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 8px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 260px;
+        overflow: auto;
+    }
+
+    .prompt-msg-inline {
+        margin-top: 10px;
+        border-top: 1px dashed var(--border);
+        padding-top: 10px;
+    }
+
 @keyframes fadeSlideIn {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -723,6 +781,52 @@ html, body {
     flex-direction: column;
     gap: 10px;
     flex-shrink: 0;
+
+    /* ── Full Prompt Viewer ─────────────────────────────────────────── */
+
+    .full-prompt {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px;
+        margin-top: 12px;
+    }
+
+    .full-prompt-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .full-prompt-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .full-prompt-body {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .full-prompt-section pre {
+        margin-top: 6px;
+        padding: 10px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 220px;
+        overflow: auto;
+    }
 }
 
 .prompt-section {

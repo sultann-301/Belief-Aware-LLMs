@@ -86,6 +86,11 @@ const $modelSelector  = document.getElementById("model-selector");
 const $entityChips    = document.getElementById("entity-chips");
 const $beliefRows     = document.getElementById("belief-rows");
 const $btnAddRow      = document.getElementById("btn-add-belief-row");
+const $fullPrompt     = document.getElementById("full-prompt");
+const $fullPromptBody = document.getElementById("full-prompt-body");
+const $systemPrompt   = document.getElementById("system-prompt-view");
+const $userPrompt     = document.getElementById("user-prompt-view");
+const $btnTogglePrompt= document.getElementById("btn-toggle-prompt");
 
 let selectedModel = "";
 
@@ -755,6 +760,10 @@ async function switchDomain(domainKey) {
         </div>`;
     // Clear belief rows
     $beliefRows.innerHTML = "";
+    if ($systemPrompt) $systemPrompt.textContent = "";
+    if ($userPrompt) $userPrompt.textContent = "";
+    if ($fullPromptBody) $fullPromptBody.style.display = "none";
+    if ($btnTogglePrompt) $btnTogglePrompt.textContent = "Show";
     await refresh();
 }
 
@@ -772,7 +781,7 @@ async function sendChat() {
     // Show query
     const queryMatch = structured.match(/\[QUERY\]\s*\n?([\s\S]*)/i);
     const displayText = queryMatch ? queryMatch[1].trim() : structured;
-    appendChatMsg(displayText, "user");
+    const userMsgEl = appendChatMsg(displayText, "user");
 
     // Typing indicator
     const typingEl = document.createElement("div");
@@ -799,6 +808,18 @@ async function sendChat() {
         if (data.error) {
             appendChatMsg(data.error, "error");
         } else {
+            if (data.prompt) {
+                if (userMsgEl) {
+                    const promptBlock = document.createElement("div");
+                    promptBlock.className = "prompt-msg-inline";
+                    promptBlock.innerHTML = formatPromptBlock(data.prompt);
+                    userMsgEl.appendChild(promptBlock);
+                }
+                if ($systemPrompt && $userPrompt) {
+                    $systemPrompt.textContent = data.prompt.system || "";
+                    $userPrompt.textContent = data.prompt.user || "";
+                }
+            }
             appendChatMsg(data.response, "ai");
         }
     } catch (err) {
@@ -823,12 +844,16 @@ function appendChatMsg(text, type) {
     } else if (type === "ai") {
         el.className = "chat-msg chat-msg-ai";
         el.innerHTML = formatAIResponse(text);
+    } else if (type === "prompt") {
+        el.className = "chat-msg chat-msg-prompt";
+        el.innerHTML = formatPromptBlock(text);
     } else {
         el.className = "chat-msg chat-msg-error";
         el.textContent = text;
     }
     $chatMessages.appendChild(el);
     scrollChat();
+    return el;
 }
 
 function formatAIResponse(text) {
@@ -836,6 +861,22 @@ function formatAIResponse(text) {
     html = html.replace(/^(REASONING:)/m, '<span class="reasoning-label">Reasoning</span>');
     html = html.replace(/^(ANSWER:)/m, '<span class="answer-label">Answer</span>');
     return html;
+}
+
+function formatPromptBlock(prompt) {
+    const system = escapeHtml(prompt.system || "");
+    const user = escapeHtml(prompt.user || "");
+    return `
+        <div class="prompt-msg-title">Full Prompt Sent</div>
+        <div class="prompt-msg-section">
+            <button class="prompt-collapse" type="button">System Prompt</button>
+            <pre class="prompt-collapsible" style="display:none">${system}</pre>
+        </div>
+        <div class="prompt-msg-section">
+            <div class="prompt-msg-label">User Prompt</div>
+            <pre>${user}</pre>
+        </div>
+    `;
 }
 
 function escapeHtml(str) {
@@ -849,6 +890,18 @@ function scrollChat() {
         $chatMessages.scrollTop = $chatMessages.scrollHeight;
     });
 }
+
+// Toggle system prompt visibility inside user bubbles
+$chatMessages.addEventListener("click", (evt) => {
+    const btn = evt.target.closest(".prompt-collapse");
+    if (!btn) return;
+    const section = btn.closest(".prompt-msg-section");
+    if (!section) return;
+    const pre = section.querySelector(".prompt-collapsible");
+    if (!pre) return;
+    const isHidden = pre.style.display === "none";
+    pre.style.display = isHidden ? "block" : "none";
+});
 
 // ══════════════════════════════════════════════════════════════════
 // SIMULATION MODE
@@ -1090,6 +1143,12 @@ $btnResolve.addEventListener("click", resolveAll);
 $btnReset.addEventListener("click", resetStore);
 
 $btnSend.addEventListener("click", sendChat);
+$btnTogglePrompt?.addEventListener("click", () => {
+    if (!$fullPromptBody || !$btnTogglePrompt) return;
+    const isHidden = $fullPromptBody.style.display === "none";
+    $fullPromptBody.style.display = isHidden ? "block" : "none";
+    $btnTogglePrompt.textContent = isHidden ? "Hide" : "Show";
+});
 $chatInput.addEventListener("keydown", e => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();

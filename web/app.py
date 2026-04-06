@@ -293,6 +293,13 @@ def query():
             chat_messages.append({"role": "user", "content": prompt})
             response = llm.generate_with_history(chat_messages, model=model)
             chat_messages.append({"role": "assistant", "content": response})
+            return jsonify({
+                "response": response,
+                "prompt": {
+                    "system": BASELINE_CHAT_SYSTEM_PROMPT,
+                    "user": prompt,
+                },
+            })
 
         elif condition == "store_history":
             # Store + History: belief-aware + conversation memory
@@ -302,13 +309,26 @@ def query():
             chat_messages.append({"role": "user", "content": user_prompt})
             response = llm.generate_with_history(chat_messages, model=model)
             chat_messages.append({"role": "assistant", "content": response})
+            return jsonify({
+                "response": response,
+                "prompt": {
+                    "system": sys_prompt,
+                    "user": user_prompt,
+                },
+            })
 
         else:
             # Store (stateless): normal belief-aware query, no history
             chat_messages = []  # reset history when switching to stateless
-            response = engine.query(structured_input, model=model, prompt_version=prompt_version)
-
-        return jsonify({"response": response})
+            sys_prompt, user_prompt = engine.build_prompt(structured_input, prompt_version)
+            response = llm.generate(sys_prompt, user_prompt, model=model)
+            return jsonify({
+                "response": response,
+                "prompt": {
+                    "system": sys_prompt,
+                    "user": user_prompt,
+                },
+            })
     except (ValueError, Exception) as exc:
         return jsonify({"error": str(exc)}), 500
 
