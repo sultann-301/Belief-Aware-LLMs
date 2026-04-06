@@ -202,12 +202,12 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | `atmosphere.ambient_pressure`   | numeric   | 0.8, 4.5                                 | Environmental sensors             |
 | `atmosphere.dominant_gas`       | str       | chlorine, methane, xenon                 | Environmental sensors             |
 | `treatment.active_prescription` | str       | zyxostin, filinan, snevox, none          | Derived selection (R4)            |
-| `zyxostin.phase`                | str       | crystalline, plasma                      | Derived from gas (R2)             |
-| `filinan.phase`                 | str       | vapor, plasma                            | Derived from gas (R2)             |
-| `snevox.phase`                  | str       | liquid, vapor                            | Derived from gas (R2)             |
-| `zyxostin.hazard`               | str       | safe, LETHAL, symbiotic                  | Safety check for zyxostin         |
-| `filinan.hazard`                | str       | safe, LETHAL, symbiotic                  | Safety check for filinan          |
-| `snevox.hazard`                 | str       | safe, LETHAL, symbiotic                  | Safety check for snevox           |
+| `treatment.zyxostin_phase`      | str       | crystalline, plasma                      | Derived from gas (R2)             |
+| `treatment.filinan_phase`       | str       | vapor, plasma                            | Derived from gas (R2)             |
+| `treatment.snevox_phase`        | str       | liquid, vapor                            | Derived from gas (R2)             |
+| `treatment.zyxostin_hazard`     | str       | safe, LETHAL, symbiotic                  | Safety check for zyxostin         |
+| `treatment.filinan_hazard`      | str       | safe, LETHAL, symbiotic                  | Safety check for filinan          |
+| `treatment.snevox_hazard`       | str       | safe, LETHAL, symbiotic                  | Safety check for snevox           |
 | `patient.quarantine_required`   | bool      | True, False                              | Derived (R6)                      |
 | `treatment.duration_cycles`     | numeric   | 5, 12, 0                                 | Derived (R7)                      |
 | `medical.staff_requirement`     | str       | hazmat_team, psionic_handler             | Derived (R8)                      |
@@ -225,18 +225,18 @@ R1: patient.organ_integrity
     IF ambient_pressure > 3.0 → "brittle"
     ELSE → "stable"
 
-R2: {compound}.phase (Calculated 3x: for zyxostin, filinan, snevox)
+R2: treatment.{compound}_phase (Calculated 3x: for zyxostin, filinan, snevox)
   inputs: [atmosphere.dominant_gas]
   logic: |
-    # Evaluate for `zyxostin.phase`:
+    # Evaluate for `treatment.zyxostin_phase`:
     IF dominant_gas == "methane" → "plasma", ELSE → "crystalline"
-    # Evaluate for `filinan.phase`:
+    # Evaluate for `treatment.filinan_phase`:
     IF dominant_gas == "xenon" → "vapor", ELSE → "plasma"
-    # Evaluate for `snevox.phase`:
+    # Evaluate for `treatment.snevox_phase`:
     IF dominant_gas == "chlorine" → "liquid", ELSE → "vapor"
 
-R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
-  inputs: [patient.organism_type, {compound}.phase, patient.organ_integrity]
+R3: treatment.{compound}_hazard (Calculated 3x: for zyxostin, filinan, snevox)
+  inputs: [patient.organism_type, treatment.{compound}_phase, patient.organ_integrity]
   logic: |
     # Evaluate for a given `compound` (e.g. zyxostin):
     # 1. EXPLODE CONSTRAINTS & SINGULARITY
@@ -249,15 +249,15 @@ R3: {compound}.hazard (Calculated 3x: for zyxostin, filinan, snevox)
        ELSE → "LETHAL"
 
     # 2. State-Based
-    IF {compound}.phase == "plasma" AND compound == "filinan" → "LETHAL"
-    IF {compound}.phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "LETHAL"
+    IF treatment.{compound}_phase == "plasma" AND compound == "filinan" → "LETHAL"
+    IF treatment.{compound}_phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "LETHAL"
 
     # 3. Condition-Based
     IF organ_integrity == "volatile" → "LETHAL"
     ELSE → "safe"
 
 R4: treatment.active_prescription
-  inputs: [patient.organism_type, patient.symptoms, zyxostin.hazard, filinan.hazard, snevox.hazard]
+  inputs: [patient.organism_type, patient.symptoms, treatment.zyxostin_hazard, treatment.filinan_hazard, treatment.snevox_hazard]
   logic: |
     # 1. MIRACLE OVERRIDE
     # If ANY compound evaluates to "symbiotic", it completely overrides symptom priority lists and is selected.
@@ -306,7 +306,7 @@ R8: medical.staff_requirement
     ELSE → "standard_medic"
 
 R9: patient.recovery_prospect
-  inputs: [treatment.active_prescription, zyxostin.hazard, filinan.hazard, snevox.hazard, treatment.duration_cycles, medical.staff_requirement]
+  inputs: [treatment.active_prescription, treatment.zyxostin_hazard, treatment.filinan_hazard, treatment.snevox_hazard, treatment.duration_cycles, medical.staff_requirement]
   logic: |
     # 1. MIRACLE CHECK: If active prescription was explicitly chosen due to a "symbiotic" hazard state
     IF active_prescription hazard == "symbiotic" → "miraculous"
@@ -329,18 +329,18 @@ R10: clinic.billing_tier
 ```mermaid
 graph TD
     %% Atmospheric Drivers
-    Atmos_Gas["atmosphere.dominant_gas"] --> ZPhase["zyxostin.phase"]
-    Atmos_Gas --> FPhase["filinan.phase"]
-    Atmos_Gas --> SPhase["snevox.phase"]
+    Atmos_Gas["atmosphere.dominant_gas"] --> ZPhase["treatment.zyxostin_phase"]
+    Atmos_Gas --> FPhase["treatment.filinan_phase"]
+    Atmos_Gas --> SPhase["treatment.snevox_phase"]
     Atmos_Gas --> Quar["patient.quarantine_required"]
     Atmos_Press["atmosphere.ambient_pressure"] --> Integrity["patient.organ_integrity"]
 
     %% Biological Inputs
     Species["patient.organism_type"] --> Integrity
     Species --> Quar
-    Species --> ZHazard["zyxostin.hazard"]
-    Species --> FHazard["filinan.hazard"]
-    Species --> SHazard["snevox.hazard"]
+    Species --> ZHazard["treatment.zyxostin_hazard"]
+    Species --> FHazard["treatment.filinan_hazard"]
+    Species --> SHazard["treatment.snevox_hazard"]
 
     Symptoms["patient.symptoms"] --> Selection["treatment.active_prescription"]
 
@@ -383,10 +383,10 @@ graph TD
 ```yaml
 t=0: organism_type = "Glerps", symptoms = [], ambient_pressure = 3.5, dominant_gas = "methane"
      → R1: 3.5 > 3.0 AND 3.5 <= 4.0 → organ_integrity = "brittle"
-     → R2: methane → zyxostin.phase = "plasma", filinan.phase = "plasma", snevox.phase = "vapor"
-     → R3: (zyxostin hazard) Glerps + zyxostin = LETHAL (no singularity since state is brittle)
-     → R3: (filinan hazard) phase=plasma + filinan = LETHAL
-     → R3: (snevox hazard) safe (vapor is safe for Glerps)
+  → R2: methane → treatment.zyxostin_phase = "plasma", treatment.filinan_phase = "plasma", treatment.snevox_phase = "vapor"
+  → R3: (treatment.zyxostin_hazard) Glerps + zyxostin = LETHAL (no singularity since state is brittle)
+  → R3: (treatment.filinan_hazard) phase=plasma + filinan = LETHAL
+    → R3: (treatment.snevox_hazard) safe (vapor is safe for Glerps)
      → R4: Glerps logic (Prefers filinan → zyxostin → snevox). Top two are Lethal.
           → active_prescription = "snevox"
      → R5: active_prescription is snevox → sensory_status = "telepathic"
@@ -401,7 +401,7 @@ t=1: Inject Symptoms! symptoms = ["fever", "spasms"]
            Most downstream states remain clean! "Invisible shift".
 
 t=2: Pressure spike! ambient_pressure = 4.5
-     → dirty: {organ_integrity, zyxostin.hazard, filinan.hazard, snevox.hazard, active_prescription ...}
+  → dirty: {organ_integrity, treatment.zyxostin_hazard, treatment.filinan_hazard, treatment.snevox_hazard, active_prescription ...}
      → resolve_all_dirty():
        R1: > 4.0 + Glerps → organ_integrity = "volatile"
        R3: Singularity! Glerps + zyxostin + volatile = "symbiotic".
@@ -410,7 +410,7 @@ t=2: Pressure spike! ambient_pressure = 4.5
        R5: active_prescription is zyxostin → sensory_status = "normal"
        R7: active_prescription is zyxostin → duration_cycles = 5
        R8: sensory_status normal, no quarantine → staff_requirement = "standard_medic"
-       R9: active_prescription hazard is "symbiotic" → recovery_prospect = "miraculous"
+      R9: treatment.zyxostin_hazard is "symbiotic" → recovery_prospect = "miraculous"
        R10: standard_medic → billing_tier = "class_standard"
 ```
 
@@ -588,23 +588,23 @@ Tests belief revision with **complete parametric isolation** using a fictional s
 
 ### Attributes (KV Keys)
 
-| Key | Type | Example | Semantic Role |
-| -------------------------------------- | ---- | ---------------------- | ------------------------------------------ |
-| `environment.weather_pattern`          | str  | "stable", "drought"    | The external trigger.                      |
-| `environment.food_scarcity`            | bool | true, false            | Secondary environmental state.             |
-| `adult_thorncrester.genetic_diet`      | str  | "frugivore"            | Latent: Unchangeable base adult trait.     |
-| `thorncrester_flock.genetic_structure` | str  | "matriarchal_pairs"    | Latent: Unchangeable base social trait.    |
-| `juvenile_thorncrester.digestive_enzyme`| str  | "fructose_processor"   | Latent: Unchangeable base offspring trait. |
-| `adult_thorncrester.ecological_stress` | str  | "high", "nominal"      | Derived: The masking trigger.              |
-| `adult_thorncrester.expressed_diet`    | str  | "frugivore", "scavenger"| Derived: Observable phenotype.             |
-| `adult_thorncrester.plumage_color`     | str  | "crimson", "dull_grey" | Derived: Physical state.                   |
-| `thorncrester_flock.expressed_structure`| str  | "matriarchal_pairs", "survival_swarm"| Derived: Masked social phenotype.          |
-| `thorncrester_flock.territory_behavior`| str  | "peaceful", "hyper_aggressive"| Derived: Flock action.                     |
-| `juvenile_thorncrester.metabolic_state`| str  | "thriving", "starving" | Derived: Biological match/mismatch.        |
-| `juvenile_thorncrester.development`    | str  | "maturing", "arrested" | Derived: Growth status.                    |
-| `feather_mite.bloom_status`            | str  | "dormant", "active_bloom"| Derived: Parasite activation.              |
-| `feather_mite.parasitic_load`          | str  | "harmless", "lethal"   | Derived: Parasite danger level.            |
-| `adult_thorncrester.mortality_risk`    | str  | "low", "critical"      | Derived: Final biological outcome.         |
+| Key                                      | Type | Example                               | Semantic Role                              |
+| ---------------------------------------- | ---- | ------------------------------------- | ------------------------------------------ |
+| `environment.weather_pattern`            | str  | "stable", "drought"                   | The external trigger.                      |
+| `environment.food_scarcity`              | bool | true, false                           | Secondary environmental state.             |
+| `adult_thorncrester.genetic_diet`        | str  | "frugivore"                           | Latent: Unchangeable base adult trait.     |
+| `thorncrester_flock.genetic_structure`   | str  | "matriarchal_pairs"                   | Latent: Unchangeable base social trait.    |
+| `juvenile_thorncrester.digestive_enzyme` | str  | "fructose_processor"                  | Latent: Unchangeable base offspring trait. |
+| `adult_thorncrester.ecological_stress`   | str  | "high", "nominal"                     | Derived: The masking trigger.              |
+| `adult_thorncrester.expressed_diet`      | str  | "frugivore", "scavenger"              | Derived: Observable phenotype.             |
+| `adult_thorncrester.plumage_color`       | str  | "crimson", "dull_grey"                | Derived: Physical state.                   |
+| `thorncrester_flock.expressed_structure` | str  | "matriarchal_pairs", "survival_swarm" | Derived: Masked social phenotype.          |
+| `thorncrester_flock.territory_behavior`  | str  | "peaceful", "hyper_aggressive"        | Derived: Flock action.                     |
+| `juvenile_thorncrester.metabolic_state`  | str  | "thriving", "starving"                | Derived: Biological match/mismatch.        |
+| `juvenile_thorncrester.development`      | str  | "maturing", "arrested"                | Derived: Growth status.                    |
+| `feather_mite.bloom_status`              | str  | "dormant", "active_bloom"             | Derived: Parasite activation.              |
+| `feather_mite.parasitic_load`            | str  | "harmless", "lethal"                  | Derived: Parasite danger level.            |
+| `adult_thorncrester.mortality_risk`      | str  | "low", "critical"                     | Derived: Final biological outcome.         |
 
 ### Rules
 
@@ -652,7 +652,7 @@ R5: thorncrester_flock.territory_behavior
 R6: juvenile_thorncrester.metabolic_state
     inputs: [juvenile_thorncrester.digestive_enzyme, adult_thorncrester.expressed_diet]
     logic:
-      # The biological mismatch trap: Adults feed the young what they eat. 
+      # The biological mismatch trap: Adults feed the young what they eat.
       # If adult eats meat, but young only digest fruit, the young starve.
       IF digestive_enzyme = "fructose_processor" AND expressed_diet != "frugivore" → "starving"
       ELSE → "thriving"
@@ -704,7 +704,7 @@ graph TD
     %% Derived Layer 1
     Weather --> Stress["adult_thorncrester.ecological_stress"]
     Scarcity --> Stress
-    
+
     %% Derived Layer 2 (Ecological Masking)
     Stress --> ExpDiet["adult_thorncrester.expressed_diet"]
     GenDiet --> ExpDiet
@@ -733,11 +733,11 @@ graph TD
 
 ## Cross-Domain Comparison
 
-| Property                 | Loan                  | Alien Clinic        | Crime Scene             | Thorncrester         |
-| ------------------------ | --------------------- | ------------------- | ----------------------- | -------------------- |
-| **Max dependency depth** | 3 hops                | 3 hops              | 7 hops                  | 5 hops               |
-| **Number of rules**      | 10                    | 10                  | 10                      | 10                   |
-| **Number of attributes** | 17                    | 18                  | 19                      | 15                   |
-| **Parametric isolation** | Low                   | Medium              | **Complete**            | **Complete**         |
-| **Belief Maintain test** | ✓ credit ↛ employment | ✓ organ ↛ pressure  | ✓ suspect_a ↛ suspect_b | ✓ expressed ↛ latent |
-| **Key revision pattern** | Algorithmic Status    | Counterfactual      | Epistemic Gatekeeping   | Ecosystem Trap       |
+| Property                 | Loan                  | Alien Clinic       | Crime Scene             | Thorncrester         |
+| ------------------------ | --------------------- | ------------------ | ----------------------- | -------------------- |
+| **Max dependency depth** | 3 hops                | 3 hops             | 7 hops                  | 5 hops               |
+| **Number of rules**      | 10                    | 10                 | 10                      | 10                   |
+| **Number of attributes** | 17                    | 18                 | 19                      | 15                   |
+| **Parametric isolation** | Low                   | Medium             | **Complete**            | **Complete**         |
+| **Belief Maintain test** | ✓ credit ↛ employment | ✓ organ ↛ pressure | ✓ suspect_a ↛ suspect_b | ✓ expressed ↛ latent |
+| **Key revision pattern** | Algorithmic Status    | Counterfactual     | Epistemic Gatekeeping   | Ecosystem Trap       |

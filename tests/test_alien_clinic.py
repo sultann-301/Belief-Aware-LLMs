@@ -89,23 +89,23 @@ class TestMolecularPhases:
     def test_methane(self, clinic_store):
         _seed_base_beliefs(clinic_store, {"atmosphere.dominant_gas": "methane"})
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("zyxostin.phase") == "plasma"
-        assert clinic_store.get_value("filinan.phase") == "plasma"
-        assert clinic_store.get_value("snevox.phase") == "vapor"
+        assert clinic_store.get_value("treatment.zyxostin_phase") == "plasma"
+        assert clinic_store.get_value("treatment.filinan_phase") == "plasma"
+        assert clinic_store.get_value("treatment.snevox_phase") == "vapor"
 
     def test_xenon(self, clinic_store):
         _seed_base_beliefs(clinic_store, {"atmosphere.dominant_gas": "xenon"})
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("zyxostin.phase") == "crystalline"
-        assert clinic_store.get_value("filinan.phase") == "vapor"
-        assert clinic_store.get_value("snevox.phase") == "vapor"
+        assert clinic_store.get_value("treatment.zyxostin_phase") == "crystalline"
+        assert clinic_store.get_value("treatment.filinan_phase") == "vapor"
+        assert clinic_store.get_value("treatment.snevox_phase") == "vapor"
 
     def test_chlorine(self, clinic_store):
         _seed_base_beliefs(clinic_store, {"atmosphere.dominant_gas": "chlorine"})
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("zyxostin.phase") == "crystalline"
-        assert clinic_store.get_value("filinan.phase") == "plasma"
-        assert clinic_store.get_value("snevox.phase") == "liquid"
+        assert clinic_store.get_value("treatment.zyxostin_phase") == "crystalline"
+        assert clinic_store.get_value("treatment.filinan_phase") == "plasma"
+        assert clinic_store.get_value("treatment.snevox_phase") == "liquid"
 
 
 # =====================================================================
@@ -122,9 +122,9 @@ class TestHazardsAndPrescription:
             "atmosphere.ambient_pressure": 3.5  # brittle (safe)
         })
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("zyxostin.hazard") == "LETHAL" # Glerps + Zyxostin
-        assert clinic_store.get_value("filinan.hazard") == "LETHAL" # Plasma + Filinan
-        assert clinic_store.get_value("snevox.hazard") == "safe"
+        assert clinic_store.get_value("treatment.zyxostin_hazard") == "LETHAL" # Glerps + Zyxostin
+        assert clinic_store.get_value("treatment.filinan_hazard") == "LETHAL" # Plasma + Filinan
+        assert clinic_store.get_value("treatment.snevox_hazard") == "safe"
         assert clinic_store.get_value("treatment.active_prescription") == "snevox"
 
     def test_yorp_explode_constraint(self, clinic_store):
@@ -136,8 +136,8 @@ class TestHazardsAndPrescription:
             "atmosphere.ambient_pressure": 2.0
         })
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("filinan.hazard") == "LETHAL" # Yorp + Filinan
-        assert clinic_store.get_value("zyxostin.hazard") == "safe"
+        assert clinic_store.get_value("treatment.filinan_hazard") == "LETHAL" # Yorp + Filinan
+        assert clinic_store.get_value("treatment.zyxostin_hazard") == "safe"
         assert clinic_store.get_value("treatment.active_prescription") == "zyxostin"
 
     def test_qwerl_vapor_constraint(self, clinic_store):
@@ -151,9 +151,9 @@ class TestHazardsAndPrescription:
             "atmosphere.ambient_pressure": 2.0
         })
         clinic_store.resolve_all_dirty()
-        assert clinic_store.get_value("snevox.hazard") == "LETHAL"
-        assert clinic_store.get_value("filinan.hazard") == "LETHAL" 
-        assert clinic_store.get_value("zyxostin.hazard") == "safe"
+        assert clinic_store.get_value("treatment.snevox_hazard") == "LETHAL"
+        assert clinic_store.get_value("treatment.filinan_hazard") == "LETHAL" 
+        assert clinic_store.get_value("treatment.zyxostin_hazard") == "safe"
         assert clinic_store.get_value("treatment.active_prescription") == "zyxostin"
 
     def test_volatile_condition(self, clinic_store):
@@ -167,9 +167,9 @@ class TestHazardsAndPrescription:
         })
         clinic_store.resolve_all_dirty()
         assert clinic_store.get_value("patient.organ_integrity") == "volatile"
-        assert clinic_store.get_value("zyxostin.hazard") == "LETHAL" # Condition-based
-        assert clinic_store.get_value("filinan.hazard") == "symbiotic" # Singularity! Yorp + filinan + volatile
-        assert clinic_store.get_value("snevox.hazard") == "LETHAL" # Condition-based
+        assert clinic_store.get_value("treatment.zyxostin_hazard") == "LETHAL" # Condition-based
+        assert clinic_store.get_value("treatment.filinan_hazard") == "symbiotic" # Singularity! Yorp + filinan + volatile
+        assert clinic_store.get_value("treatment.snevox_hazard") == "LETHAL" # Condition-based
         assert clinic_store.get_value("treatment.active_prescription") == "filinan"
         assert clinic_store.get_value("patient.recovery_prospect") == "miraculous"
 
@@ -234,9 +234,9 @@ class TestSpecWalkthrough:
         # R1: 3.5 > 3.0 -> brittle
         assert store.get_value("patient.organ_integrity") == "brittle"
         # R3: hazards
-        assert store.get_value("zyxostin.hazard") == "LETHAL"
-        assert store.get_value("filinan.hazard") == "LETHAL"
-        assert store.get_value("snevox.hazard") == "safe"
+        assert store.get_value("treatment.zyxostin_hazard") == "LETHAL"
+        assert store.get_value("treatment.filinan_hazard") == "LETHAL"
+        assert store.get_value("treatment.snevox_hazard") == "safe"
         # R4: prescription
         assert store.get_value("treatment.active_prescription") == "snevox"
         assert store.get_value("clinic.billing_tier") == "class_omega"
@@ -256,9 +256,9 @@ class TestSpecWalkthrough:
         # R1 -> volatile
         assert store.get_value("patient.organ_integrity") == "volatile"
         # R3 -> Singularity on zyxostin!
-        assert store.get_value("zyxostin.hazard") == "symbiotic"
-        assert store.get_value("filinan.hazard") == "LETHAL"
-        assert store.get_value("snevox.hazard") == "LETHAL"
+        assert store.get_value("treatment.zyxostin_hazard") == "symbiotic"
+        assert store.get_value("treatment.filinan_hazard") == "LETHAL"
+        assert store.get_value("treatment.snevox_hazard") == "LETHAL"
         # R4 -> Singularity override
         assert store.get_value("treatment.active_prescription") == "zyxostin"
         # R9 -> miraculous

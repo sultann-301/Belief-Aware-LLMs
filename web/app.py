@@ -66,7 +66,7 @@ DOMAIN_REGISTRY = {
         "initial_beliefs": ALIEN_INITIAL_BELIEFS,
         "turns": ALIEN_TURNS_BASIC,
         "baseline_rules": ALIEN_RULES,
-        "default_entities": "patient, atmosphere, zyxostin, filinan, snevox, treatment, medical, clinic",
+        "default_entities": "patient, atmosphere, treatment, medical, clinic",
     },
     "crime_scene": {
         "label": "Crime Scene",

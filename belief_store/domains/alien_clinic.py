@@ -21,43 +21,43 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         derive_fn=_organ_integrity,
     )
 
-    # R2: molecular phases per compound
+    # R2: molecular phases per compound (under treatment entity)
     store.add_rule(
         name="zyxostin_phase",
         inputs=["atmosphere.dominant_gas"],
-        output_key="zyxostin.phase",
+        output_key="treatment.zyxostin_phase",
         derive_fn=_zyxostin_phase,
     )
     store.add_rule(
         name="filinan_phase",
         inputs=["atmosphere.dominant_gas"],
-        output_key="filinan.phase",
+        output_key="treatment.filinan_phase",
         derive_fn=_filinan_phase,
     )
     store.add_rule(
         name="snevox_phase",
         inputs=["atmosphere.dominant_gas"],
-        output_key="snevox.phase",
+        output_key="treatment.snevox_phase",
         derive_fn=_snevox_phase,
     )
 
     # R3: hazards per compound
     store.add_rule(
         name="zyxostin_hazard",
-        inputs=["patient.organism_type", "zyxostin.phase", "patient.organ_integrity"],
-        output_key="zyxostin.hazard",
+        inputs=["patient.organism_type", "treatment.zyxostin_phase", "patient.organ_integrity"],
+        output_key="treatment.zyxostin_hazard",
         derive_fn=_zyxostin_hazard,
     )
     store.add_rule(
         name="filinan_hazard",
-        inputs=["patient.organism_type", "filinan.phase", "patient.organ_integrity"],
-        output_key="filinan.hazard",
+        inputs=["patient.organism_type", "treatment.filinan_phase", "patient.organ_integrity"],
+        output_key="treatment.filinan_hazard",
         derive_fn=_filinan_hazard,
     )
     store.add_rule(
         name="snevox_hazard",
-        inputs=["patient.organism_type", "snevox.phase", "patient.organ_integrity"],
-        output_key="snevox.hazard",
+        inputs=["patient.organism_type", "treatment.snevox_phase", "patient.organ_integrity"],
+        output_key="treatment.snevox_hazard",
         derive_fn=_snevox_hazard,
     )
 
@@ -67,9 +67,9 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         inputs=[
             "patient.organism_type",
             "patient.symptoms",
-            "zyxostin.hazard",
-            "filinan.hazard",
-            "snevox.hazard",
+            "treatment.zyxostin_hazard",
+            "treatment.filinan_hazard",
+            "treatment.snevox_hazard",
         ],
         output_key="treatment.active_prescription",
         derive_fn=_active_prescription,
@@ -112,9 +112,9 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         name="recovery_prospect",
         inputs=[
             "treatment.active_prescription",
-            "zyxostin.hazard",
-            "filinan.hazard",
-            "snevox.hazard",
+            "treatment.zyxostin_hazard",
+            "treatment.filinan_hazard",
+            "treatment.snevox_hazard",
             "treatment.duration_cycles",
             "medical.staff_requirement"
         ],
@@ -196,7 +196,7 @@ def _zyxostin_hazard(inputs: dict[str, Any]) -> str:
     return _evaluate_hazard(
         "zyxostin",
         inputs["patient.organism_type"],
-        inputs["zyxostin.phase"],
+        inputs["treatment.zyxostin_phase"],
         inputs["patient.organ_integrity"],
     )
 
@@ -205,7 +205,7 @@ def _filinan_hazard(inputs: dict[str, Any]) -> str:
     return _evaluate_hazard(
         "filinan",
         inputs["patient.organism_type"],
-        inputs["filinan.phase"],
+        inputs["treatment.filinan_phase"],
         inputs["patient.organ_integrity"],
     )
 
@@ -214,7 +214,7 @@ def _snevox_hazard(inputs: dict[str, Any]) -> str:
     return _evaluate_hazard(
         "snevox",
         inputs["patient.organism_type"],
-        inputs["snevox.phase"],
+        inputs["treatment.snevox_phase"],
         inputs["patient.organ_integrity"],
     )
 
@@ -224,9 +224,9 @@ def _active_prescription(inputs: dict[str, Any]) -> str:
     organism = inputs["patient.organism_type"]
     symptoms = inputs.get("patient.symptoms", [])
     hazards = {
-        "zyxostin": inputs["zyxostin.hazard"],
-        "filinan": inputs["filinan.hazard"],
-        "snevox": inputs["snevox.hazard"],
+        "zyxostin": inputs["treatment.zyxostin_hazard"],
+        "filinan": inputs["treatment.filinan_hazard"],
+        "snevox": inputs["treatment.snevox_hazard"],
     }
     
     # 1. MIRACLE OVERRIDE
@@ -310,7 +310,7 @@ def _recovery_prospect(inputs: dict[str, Any]) -> str:
     
     # 1. MIRACLE CHECK
     if prescription != "none":
-        hazard_key = f"{prescription}.hazard"
+        hazard_key = f"treatment.{prescription}_hazard"
         if inputs.get(hazard_key) == "symbiotic":
             return "miraculous"
             

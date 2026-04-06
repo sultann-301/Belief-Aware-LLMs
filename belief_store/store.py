@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any, Callable
+from .belief_lookup import BELIEF_DESCRIPTIONS
 
 
 class BeliefStore:
@@ -134,7 +135,12 @@ class BeliefStore:
                         "old": old_value, "new": None,
                     })
                     return
-                input_values = {k: self.beliefs[k][0] for k in rule["inputs"]}
+                # Build input_values dict only for inputs that exist in beliefs.
+                # This allows derive_fn to use dict.get(default) for missing keys.
+                input_values: dict[str, Any] = {}
+                for k in rule["inputs"]:
+                    if k in self.beliefs:
+                        input_values[k] = self.beliefs[k][0]
                 old_belief_entry = self.beliefs.get(key)
                 old_value = old_belief_entry[0] if old_belief_entry is not None else None
                 new_value = rule["derive_fn"](input_values)
@@ -170,7 +176,13 @@ class BeliefStore:
                     f"Relevant belief {key} is still dirty"
                 )
                 tag = "derived" if is_derived else "base"
-                lines.append(f"[{tag}] {key} = {value}")
+                # Append an inline description when available so the LLM
+                # understands the role or relationship of this attribute.
+                desc = BELIEF_DESCRIPTIONS.get(key)
+                line = f"[{tag}] {key} = {value}"
+                if desc:
+                    line = f"{line}  # {desc}"
+                lines.append(line)
                 prompt_keys.append(key)
 
         return "\n".join(lines), prompt_keys
