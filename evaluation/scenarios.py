@@ -388,7 +388,7 @@ ALIEN_TURNS_CF = [
             "B": "No, it stayed class_delta",
             "C": "No, it is class_omega",
         },
-        "correct": "C",
+        "correct": "B",
     },
     {
         "entities": "treatment, patient",

@@ -13,6 +13,7 @@ let domainInfo = {};
 let currentDomain = "loan";
 let selectedEntities = new Set();
 let currentMode = "chat";  // "chat" or "simulation"
+let updatedKeys = new Set();
 
 // ── Domain attribute schemas (type-aware inputs) ────────────────────
 const DOMAIN_SCHEMA = {
@@ -130,8 +131,9 @@ async function refresh() {
     await Promise.all([refreshGraph(), refreshLog()]);
 }
 
-async function refreshGraph() {
+async function refreshGraph(highlightKeys = []) {
     graphData = await api("/api/graph");
+    updatedKeys = new Set(highlightKeys);
     renderGraph();
     updateDirtyIndicator();
 }
@@ -235,16 +237,66 @@ function renderGraph() {
             y: existing ? existing.y : H * 0.2 + Math.random() * H * 0.6,
             vx: 0,
             vy: 0,
-            radius: n.is_derived ? 7 : 9,
+            radius: n.is_derived ? 12 : 15,
+            targetX: 0,
+            targetY: 0
         };
         nodeMap[n.id] = node;
         return node;
     });
+    const existingNodes = gNodes; // keep reference for position persistence
 
     const edges = graphData.edges.map(e => ({
         source: nodeMap[e.source],
         target: nodeMap[e.target],
     })).filter(e => e.source && e.target);
+
+    // ── DAG Layout Algorithm (Layered) ──────────────────────────────
+    const revAdj = {};
+    graphData.edges.forEach(e => {
+        if (!revAdj[e.target]) revAdj[e.target] = [];
+        revAdj[e.target].push(e.source);
+    });
+
+    const levelMap = {};
+    function getLevel(id) {
+        if (levelMap[id] !== undefined) return levelMap[id];
+        const parents = revAdj[id] || [];
+        if (parents.length === 0) return levelMap[id] = 0;
+        let maxL = 0;
+        parents.forEach(p => { maxL = Math.max(maxL, getLevel(p)); });
+        return levelMap[id] = maxL + 1;
+    }
+
+    nodes.forEach(n => getLevel(n.id));
+
+    const nodesByLevel = {};
+    let maxLevel = 0;
+    nodes.forEach(n => {
+        const l = levelMap[n.id];
+        if (!nodesByLevel[l]) nodesByLevel[l] = [];
+        nodesByLevel[l].push(n);
+        maxLevel = Math.max(maxLevel, l);
+    });
+
+    const padding = 60;
+    const colWidth = (W - 2 * padding) / (maxLevel || 1);
+
+    Object.keys(nodesByLevel).forEach(l => {
+        const layerNodes = nodesByLevel[l];
+        const rowHeight = (H - 2 * padding) / layerNodes.length;
+        layerNodes.forEach((n, i) => {
+            n.radius = n.is_derived ? 12 : 15; // Increased size
+            n.targetX = padding + l * colWidth;
+            n.targetY = padding + i * rowHeight + rowHeight / 2;
+            
+            // If the node is new or lacks stable coords, start near target
+            if (!existingNodes.find(en => en.id === n.id)) {
+                n.x = n.targetX - 50;
+                n.y = n.targetY;
+            }
+        });
+    });
 
     gNodes = nodes;
     gEdges = edges;
@@ -282,21 +334,21 @@ function renderGraph() {
             e.target.vx -= fx; e.target.vy -= fy;
         }
 
-        // Center gravity
+        // DAG Alignment (pull nodes to their target layered slots)
         for (const n of nodes) {
-            n.vx += (W / 2 - n.x) * 0.001 * alpha;
-            n.vy += (H / 2 - n.y) * 0.001 * alpha;
+            n.vx += (n.targetX - n.x) * 0.2 * alpha;
+            n.vy += (n.targetY - n.y) * 0.2 * alpha;
         }
 
         // Apply velocity with damping
         for (const n of nodes) {
-            n.vx *= 0.85;
-            n.vy *= 0.85;
+            n.vx *= 0.7; // stronger damping for stability
+            n.vy *= 0.7;
             n.x += n.vx;
             n.y += n.vy;
             // Bounds
-            n.x = Math.max(20, Math.min(W - 20, n.x));
-            n.y = Math.max(20, Math.min(H - 20, n.y));
+            n.x = Math.max(n.radius, Math.min(W - n.radius, n.x));
+            n.y = Math.max(n.radius, Math.min(H - n.radius, n.y));
         }
 
         draw(ctx, W, H);
@@ -319,12 +371,15 @@ function draw(ctx, W, H) {
         const dx = e.target.x - e.source.x;
         const dy = e.target.y - e.source.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const r = e.target.radius + 3;
+        const r = e.target.radius + 6; // offset for arrowhead
+        const startR = e.source.radius + 2;
+        const startX = e.source.x + (dx / dist) * startR;
+        const startY = e.source.y + (dy / dist) * startR;
         const endX = e.target.x - (dx / dist) * r;
         const endY = e.target.y - (dy / dist) * r;
 
         ctx.beginPath();
-        ctx.moveTo(e.source.x, e.source.y);
+        ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = "rgba(110, 118, 129, 0.35)";
         ctx.lineWidth = 1;
@@ -355,6 +410,24 @@ function draw(ctx, W, H) {
             grad.addColorStop(1, "rgba(243, 156, 18, 0)");
             ctx.fillStyle = grad;
             ctx.fill();
+        }
+
+        // Updated glow (newly added/derived this turn)
+        if (updatedKeys.has(n.id)) {
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius + 10, 0, Math.PI * 2);
+            const grad = ctx.createRadialGradient(n.x, n.y, n.radius, n.x, n.y, n.radius + 10);
+            grad.addColorStop(0, "rgba(52, 152, 219, 0.5)"); // Sleek blue glow
+            grad.addColorStop(1, "rgba(52, 152, 219, 0)");
+            ctx.fillStyle = grad;
+            ctx.fill();
+            
+            // Add a subtle pulse or ring for updated nodes
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, n.radius + 4, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(52, 152, 219, 0.8)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
         }
 
         // Node shape
@@ -404,7 +477,11 @@ $graphCanvas.addEventListener("mousemove", (e) => {
     hoveredNode = found;
     if (found) {
         $graphTooltip.style.display = "block";
-        const val = found.value !== null && found.value !== undefined ? found.value : "—";
+        let val = found.value !== null && found.value !== undefined ? found.value : "—";
+        if (Array.isArray(val)) {
+            val = `<ul style="margin:4px 0 0 12px;padding:0;font-size:11px;">` + 
+                  val.map(v => `<li>${v}</li>`).join("") + `</ul>`;
+        }
         const tag = found.is_dirty ? "dirty" : (found.is_derived ? "derived" : "base");
         $graphTooltip.innerHTML = `<strong>${found.id}</strong><br>${found.entity} · <span style="color:${found.is_dirty ? '#f39c12' : (found.is_derived ? '#6c5ce7' : '#4a9eff')}">${tag}</span><br>Value: ${val}`;
 
@@ -794,6 +871,9 @@ async function startSimulation() {
         return;
     }
 
+    // Clear any previous highlights and refresh graph for initial state
+    await refreshGraph([]);
+
     simRunning = true;
     simTotalTurns = data.total_turns;
     simCurrentTurn = 0;
@@ -871,6 +951,9 @@ async function stepSimulation() {
 
         $simTurns.appendChild(card);
         card.scrollIntoView({ behavior: "smooth", block: "end" });
+
+        // Refresh graph to show updates
+        await refreshGraph(data.updated_keys || []);
 
         updateSimProgress();
 

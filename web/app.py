@@ -66,7 +66,7 @@ DOMAIN_REGISTRY = {
         "initial_beliefs": ALIEN_INITIAL_BELIEFS,
         "turns": ALIEN_TURNS_BASIC,
         "baseline_rules": ALIEN_RULES,
-        "default_entities": "patient",
+        "default_entities": "patient, atmosphere, zyxostin, filinan, snevox, treatment, medical, clinic",
     },
     "crime_scene": {
         "label": "Crime Scene",
@@ -393,12 +393,21 @@ def simulate_step():
                 cfg["setup_fn"](turn_store)
                 for k, v in cfg["initial_beliefs"].items():
                     turn_store.add_hypothesis(k, v)
-                for prev_idx in range(turn_idx + 1):
+                for prev_idx in range(turn_idx):
                     prev = turns[prev_idx]
                     if prev["beliefs"]:
                         for k, v in prev["beliefs"].items():
                             turn_store.add_hypothesis(k, v)
+                turn_store.resolve_all_dirty()
+                
+                # Now track updates for CURRENT turn
+                log_start_idx = len(turn_store.revision_log)
+                if turn["beliefs"]:
+                    for k, v in turn["beliefs"].items():
+                        turn_store.add_hypothesis(k, v)
                 turn_store.resolve_dirty(entities)
+                
+                updated_keys = list({entry["key"] for entry in turn_store.revision_log[log_start_idx:]})
                 beliefs_text, _ = turn_store.to_prompt(entities)
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
@@ -411,10 +420,13 @@ def simulate_step():
 
             elif condition == "store_history":
                 sim_store = sim_state["store"]
+                log_start_idx = len(sim_store.revision_log)
                 if turn["beliefs"]:
                     for k, v in turn["beliefs"].items():
                         sim_store.add_hypothesis(k, v)
                 sim_store.resolve_dirty(entities)
+                updated_keys = list({entry["key"] for entry in sim_store.revision_log[log_start_idx:]})
+                
                 beliefs_text, _ = sim_store.to_prompt(entities)
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
@@ -427,6 +439,7 @@ def simulate_step():
                         beliefs_snapshot[key] = {"value": value, "is_derived": is_derived}
 
             elif condition == "baseline":
+                updated_keys = []
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 prompt = _build_baseline_prompt(cfg["baseline_rules"], new_lines, turn)
                 sim_state["messages"].append({"role": "user", "content": prompt})
@@ -449,6 +462,7 @@ def simulate_step():
         "hit": hit,
         "llm_response": llm_response,
         "beliefs_snapshot": beliefs_snapshot,
+        "updated_keys": updated_keys,
         "done": turn_idx + 1 >= len(turns),
     }
 
