@@ -1,213 +1,313 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Belief-Aware LLM</title>
-    <meta name="description" content="Interactive dashboard for the Belief-Aware LLM system — dependency graphs, simulations, and belief-aware chat.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+    <meta
+      name="description"
+      content="Interactive dashboard for the Belief-Aware LLM system — dependency graphs, simulations, and belief-aware chat."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
     <!-- ─── Top Bar ──────────────────────────────────────────── -->
     <header class="topbar">
-        <div class="topbar-left">
-            <div class="logo">
-                <span class="logo-icon">◈</span>
-                <h1>Belief-Aware LLM</h1>
-            </div>
-            <select id="domain-selector" class="domain-select" title="Select domain">
-                <option value="loan">Loan Eligibility</option>
-                <option value="alien_clinic">Alien Clinic</option>
-                <option value="crime_scene">Crime Scene</option>
-                <option value="thorncrester">Thorncrester</option>
-            </select>
-            <select id="model-selector" class="model-select" title="Select LLM model">
-                <option value="">Loading models...</option>
-            </select>
+      <div class="topbar-left">
+        <div class="logo">
+          <span class="logo-icon">◈</span>
+          <h1>Belief-Aware LLM</h1>
         </div>
-        <div class="topbar-center">
-            <div class="mode-tabs">
-                <button class="mode-tab active" data-mode="chat" id="tab-chat">Chat</button>
-                <button class="mode-tab" data-mode="simulation" id="tab-simulation">Simulation</button>
-            </div>
+        <select
+          id="domain-selector"
+          class="domain-select"
+          title="Select domain"
+        >
+          <option value="loan">Loan Eligibility</option>
+          <option value="alien_clinic">Alien Clinic</option>
+          <option value="crime_scene">Crime Scene</option>
+          <option value="thorncrester">Thorncrester</option>
+        </select>
+        <select
+          id="model-selector"
+          class="model-select"
+          title="Select LLM model"
+        >
+          <option value="">Loading models...</option>
+        </select>
+      </div>
+      <div class="topbar-center">
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="chat" id="tab-chat">
+            Chat
+          </button>
+          <button class="mode-tab" data-mode="simulation" id="tab-simulation">
+            Simulation
+          </button>
         </div>
-        <div class="topbar-actions">
-            <button id="btn-resolve" class="btn btn-secondary" title="Resolve dirty beliefs">
-                <span class="btn-icon">⟳</span> Resolve
-            </button>
-            <button id="btn-reset" class="btn btn-danger" title="Reset the store">
-                <span class="btn-icon">✕</span> Reset
-            </button>
-        </div>
+      </div>
+      <div class="topbar-actions">
+        <button
+          id="btn-resolve"
+          class="btn btn-secondary"
+          title="Resolve dirty beliefs"
+        >
+          <span class="btn-icon">⟳</span> Resolve
+        </button>
+        <button id="btn-reset" class="btn btn-danger" title="Reset the store">
+          <span class="btn-icon">✕</span> Reset
+        </button>
+      </div>
     </header>
 
     <!-- ─── Main Layout ──────────────────────────────────────── -->
     <main class="layout">
-
-        <!-- LEFT: Dependency Graph -->
-        <section class="panel panel-graph" id="panel-graph">
-            <div class="panel-header">
-                <div class="panel-header-left">
-                    <button class="btn-collapse" id="btn-graph-toggle" title="Collapse graph">◂</button>
-                    <h2>Dependency Graph</h2>
-                </div>
-                <div class="graph-legend" id="graph-legend">
-                    <span class="legend-item legend-base">● base</span>
-                    <span class="legend-item legend-derived">◆ derived</span>
-                    <span class="legend-item legend-dirty">◉ dirty</span>
-                </div>
+      <!-- LEFT: Dependency Graph -->
+      <section class="panel panel-graph" id="panel-graph">
+        <div class="panel-header">
+          <div class="panel-header-left">
+            <button
+              class="btn-collapse"
+              id="btn-graph-toggle"
+              title="Collapse graph"
+            >
+              ◂
+            </button>
+            <h2>Dependency Graph</h2>
+          </div>
+          <div class="graph-legend" id="graph-legend">
+            <span class="legend-item legend-base">● base</span>
+            <span class="legend-item legend-derived">◆ derived</span>
+            <span class="legend-item legend-dirty">◉ dirty</span>
+          </div>
+        </div>
+        <div class="graph-container" id="graph-container">
+          <canvas id="graph-canvas"></canvas>
+        </div>
+        <div class="panel-footer graph-footer">
+          <div class="add-belief-form">
+            <select id="input-key" class="attr-select">
+              <option value="">-- attribute --</option>
+            </select>
+            <div id="input-value-container">
+              <input
+                type="text"
+                id="input-value"
+                placeholder="value"
+                spellcheck="false"
+              />
             </div>
-            <div class="graph-container" id="graph-container">
-                <canvas id="graph-canvas"></canvas>
-            </div>
-            <div class="panel-footer graph-footer">
-                <div class="add-belief-form">
-                    <select id="input-key" class="attr-select">
-                        <option value="">-- attribute --</option>
-                    </select>
-                    <div id="input-value-container">
-                        <input type="text" id="input-value" placeholder="value" spellcheck="false">
-                    </div>
-                    <button id="btn-add" class="btn btn-primary btn-sm" title="Add hypothesis">+</button>
-                </div>
-            </div>
-        </section>
+            <button
+              id="btn-add"
+              class="btn btn-primary btn-sm"
+              title="Add hypothesis"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </section>
 
-        <!-- Resize Handle -->
-        <div class="resize-handle" id="resize-handle" title="Drag to resize"></div>
+      <!-- Resize Handle -->
+      <div
+        class="resize-handle"
+        id="resize-handle"
+        title="Drag to resize"
+      ></div>
 
-        <!-- CENTER: Chat Panel (default mode) -->
-        <section class="panel panel-chat" id="panel-chat">
-            <div class="panel-header">
-                <h2>Chat</h2>
-                <div class="chat-header-controls">
-                    <select id="chat-condition" class="condition-select" title="LLM condition">
-                        <option value="store">🟢 Store Inject</option>
-                        <option value="store_history">🟡 Store + History</option>
-                        <option value="baseline">🔴 Baseline</option>
-                    </select>
-                    <select id="prompt-version" class="condition-select" title="System prompt version">
-                        <option value="v1">Prompt v1 (structured)</option>
-                        <option value="v2">Prompt v2 (few-shot)</option>
-                        <option value="v3">Prompt v3 (compact)</option>
-                    </select>
-                    <div class="dirty-indicator" id="dirty-indicator" style="display:none">
-                        <span class="dirty-dot"></span> Dirty
-                    </div>
-                </div>
+      <!-- CENTER: Chat Panel (default mode) -->
+      <section class="panel panel-chat" id="panel-chat">
+        <div class="panel-header">
+          <h2>Chat</h2>
+          <div class="chat-header-controls">
+            <select
+              id="chat-condition"
+              class="condition-select"
+              title="LLM condition"
+            >
+              <option value="store">🟢 Store Inject</option>
+              <option value="store_history">🟡 Store + History</option>
+              <option value="baseline">🔴 Baseline</option>
+            </select>
+            <select
+              id="prompt-version"
+              class="condition-select"
+              title="System prompt version"
+            >
+              <option value="v1">Prompt v1 (structured)</option>
+              <option value="v2">Prompt v2 (few-shot)</option>
+              <option value="v3">Prompt v3 (compact)</option>
+            </select>
+            <div
+              class="dirty-indicator"
+              id="dirty-indicator"
+              style="display: none"
+            >
+              <span class="dirty-dot"></span> Dirty
             </div>
+          </div>
+        </div>
 
-            <div class="chat-messages" id="chat-messages">
-                <div class="chat-welcome">
-                    <div class="chat-welcome-icon">◈</div>
-                    <p>Ask a question about the current belief state.</p>
-                    <p class="chat-welcome-sub">The LLM will reason over clean, resolved beliefs.</p>
-                </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-welcome">
+            <div class="chat-welcome-icon">◈</div>
+            <p>Ask a question about the current belief state.</p>
+            <p class="chat-welcome-sub">
+              The LLM will reason over clean, resolved beliefs.
+            </p>
+          </div>
+        </div>
+
+        <!-- Structured Prompt Builder -->
+        <div class="prompt-builder" id="prompt-builder">
+          <div class="prompt-section">
+            <label class="prompt-label">[ENTITY]</label>
+            <div class="entity-chips" id="entity-chips"></div>
+          </div>
+          <div class="prompt-section">
+            <label class="prompt-label">[NEW BELIEF]</label>
+            <div class="belief-rows" id="belief-rows">
+              <!-- dynamic rows added here -->
             </div>
-
-            <!-- Structured Prompt Builder -->
-            <div class="prompt-builder" id="prompt-builder">
-                <div class="prompt-section">
-                    <label class="prompt-label">[ENTITY]</label>
-                    <div class="entity-chips" id="entity-chips"></div>
-                </div>
-                <div class="prompt-section">
-                    <label class="prompt-label">[NEW BELIEF]</label>
-                    <div class="belief-rows" id="belief-rows">
-                        <!-- dynamic rows added here -->
-                    </div>
-                    <button class="btn btn-ghost btn-xs" id="btn-add-belief-row">+ Add belief</button>
-                </div>
-                <div class="prompt-section prompt-query-section">
-                    <label class="prompt-label">[QUERY]</label>
-                    <div class="query-row">
-                        <textarea id="chat-input" placeholder="What is the applicant's eligibility?" rows="2" spellcheck="false"></textarea>
-                        <button type="button" class="btn btn-primary" id="btn-send">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
-                        </button>
-                    </div>
-                </div>
+            <button class="btn btn-ghost btn-xs" id="btn-add-belief-row">
+              + Add belief
+            </button>
+          </div>
+          <div class="prompt-section prompt-query-section">
+            <label class="prompt-label">[QUERY]</label>
+            <div class="query-row">
+              <textarea
+                id="chat-input"
+                placeholder="What is the applicant's eligibility?"
+                rows="2"
+                spellcheck="false"
+              ></textarea>
+              <button type="button" class="btn btn-primary" id="btn-send">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M22 2L11 13" />
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" />
+                </svg>
+              </button>
             </div>
+          </div>
+        </div>
 
-            <!-- Full Prompt Viewer -->
-            <div class="full-prompt" id="full-prompt">
-                <div class="full-prompt-header">
-                    <span class="full-prompt-title">Full Prompt Sent</span>
-                    <button class="btn btn-ghost btn-xs" id="btn-toggle-prompt">Show</button>
-                </div>
-                <div class="full-prompt-body" id="full-prompt-body" style="display:none">
-                    <div class="full-prompt-section">
-                        <label class="prompt-label">System Prompt</label>
-                        <pre id="system-prompt-view"></pre>
-                    </div>
-                    <div class="full-prompt-section">
-                        <label class="prompt-label">User Prompt</label>
-                        <pre id="user-prompt-view"></pre>
-                    </div>
-                </div>
+        <!-- Full Prompt Viewer -->
+        <div class="full-prompt" id="full-prompt">
+          <div class="full-prompt-header">
+            <span class="full-prompt-title">Full Prompt Sent</span>
+            <button class="btn btn-ghost btn-xs" id="btn-toggle-prompt">
+              Show
+            </button>
+          </div>
+          <div
+            class="full-prompt-body"
+            id="full-prompt-body"
+            style="display: none"
+          >
+            <div class="full-prompt-section">
+              <label class="prompt-label">System Prompt</label>
+              <pre id="system-prompt-view"></pre>
             </div>
-        </section>
-
-        <!-- CENTER: Simulation Panel (hidden by default) -->
-        <section class="panel panel-simulation" id="panel-simulation" style="display:none">
-            <div class="panel-header">
-                <h2>Simulation</h2>
-                <div class="sim-header-controls">
-                    <select id="sim-condition" class="condition-select" title="LLM condition">
-                        <option value="store">🟢 Store (Stateless)</option>
-                        <option value="store_history">🟡 Store + History</option>
-                        <option value="baseline">🔴 Baseline</option>
-                    </select>
-                </div>
+            <div class="full-prompt-section">
+              <label class="prompt-label">User Prompt</label>
+              <pre id="user-prompt-view"></pre>
             </div>
+          </div>
+        </div>
+      </section>
 
-            <div class="sim-body" id="sim-body">
-                <!-- Pre-start state -->
-                <div class="sim-welcome" id="sim-welcome">
-                    <div class="sim-welcome-icon">▶</div>
-                    <p>Run a 10-turn evaluation step-by-step.</p>
-                    <p class="sim-welcome-sub">Select a domain and condition, then click Start.</p>
-                    <button class="btn btn-primary" id="btn-sim-start">Start Simulation</button>
-                </div>
+      <!-- CENTER: Simulation Panel (hidden by default) -->
+      <section
+        class="panel panel-simulation"
+        id="panel-simulation"
+        style="display: none"
+      >
+        <div class="panel-header">
+          <h2>Simulation</h2>
+          <div class="sim-header-controls">
+            <select
+              id="sim-condition"
+              class="condition-select"
+              title="LLM condition"
+            >
+              <option value="store">🟢 Store (Stateless)</option>
+              <option value="store_history">🟡 Store + History</option>
+              <option value="baseline">🔴 Baseline</option>
+            </select>
+          </div>
+        </div>
 
-                <!-- Running state -->
-                <div class="sim-turns" id="sim-turns" style="display:none"></div>
+        <div class="sim-body" id="sim-body">
+          <!-- Pre-start state -->
+          <div class="sim-welcome" id="sim-welcome">
+            <div class="sim-welcome-icon">▶</div>
+            <p>Run a 10-turn evaluation step-by-step.</p>
+            <p class="sim-welcome-sub">
+              Select a domain and condition, then click Start.
+            </p>
+            <button class="btn btn-primary" id="btn-sim-start">
+              Start Simulation
+            </button>
+          </div>
+
+          <!-- Running state -->
+          <div class="sim-turns" id="sim-turns" style="display: none"></div>
+        </div>
+
+        <div class="sim-footer" id="sim-footer" style="display: none">
+          <div class="sim-progress">
+            <span class="sim-turn-label" id="sim-turn-label">Turn 0 / 10</span>
+            <div class="sim-progress-bar">
+              <div class="sim-progress-fill" id="sim-progress-fill"></div>
             </div>
+            <span class="sim-score" id="sim-score">0 / 0</span>
+          </div>
+          <div class="sim-footer-buttons">
+            <button
+              class="btn btn-danger btn-sm"
+              id="btn-sim-stop"
+              title="Stop simulation"
+            >
+              ■ Stop
+            </button>
+            <button class="btn btn-primary" id="btn-sim-step">
+              Next Turn →
+            </button>
+          </div>
+        </div>
+      </section>
 
-            <div class="sim-footer" id="sim-footer" style="display:none">
-                <div class="sim-progress">
-                    <span class="sim-turn-label" id="sim-turn-label">Turn 0 / 10</span>
-                    <div class="sim-progress-bar">
-                        <div class="sim-progress-fill" id="sim-progress-fill"></div>
-                    </div>
-                    <span class="sim-score" id="sim-score">0 / 0</span>
-                </div>
-                <div class="sim-footer-buttons">
-                    <button class="btn btn-danger btn-sm" id="btn-sim-stop" title="Stop simulation">■ Stop</button>
-                    <button class="btn btn-primary" id="btn-sim-step">Next Turn →</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- RIGHT: Revision Log Panel -->
-        <section class="panel panel-log" id="panel-log">
-            <div class="panel-header">
-                <h2>Revision Log</h2>
-                <span class="log-count" id="log-count">0</span>
-            </div>
-            <div class="log-entries" id="log-entries">
-                <div class="empty-state">No revisions yet.</div>
-            </div>
-        </section>
-
+      <!-- RIGHT: Revision Log Panel -->
+      <section class="panel panel-log" id="panel-log">
+        <div class="panel-header">
+          <h2>Revision Log</h2>
+          <span class="log-count" id="log-count">0</span>
+        </div>
+        <div class="log-entries" id="log-entries">
+          <div class="empty-state">No revisions yet.</div>
+        </div>
+      </section>
     </main>
 
     <!-- Tooltip at body level so it's never clipped -->
     <div class="graph-tooltip" id="graph-tooltip"></div>
 
     <script src="/static/app.js"></script>
-</body>
+  </body>
 </html>
