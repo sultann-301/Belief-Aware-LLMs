@@ -20,9 +20,10 @@ class ReasoningEngine:
 
         Returns (system_prompt, user_prompt) without calling the LLM.
 
-        Args:
-            structured_input: The user's structured input text.
-            prompt_version: "v1" (original) or "v2" (closed-world + few-shot).
+        If the [ENTITY] section contains dotted keys (e.g.
+        ``loan.application_status``), they are treated as **attribute-level**
+        targets and routed through the HopWalker.  Plain names (``loan``)
+        use the original entity-level path.
         """
         entities, new_beliefs, question = self._parse_input(structured_input)
 
@@ -33,11 +34,17 @@ class ReasoningEngine:
             elif action == "retract":
                 self.store.remove_hypothesis(key)
 
-        # Resolve only beliefs relevant to the queried entities
-        self.store.resolve_dirty(entities)
+        # Detect attribute-level vs entity-level
+        is_attribute_mode = any("." in e for e in entities)
 
-        # Build final prompt for the LLM
-        beliefs_text, _ = self.store.to_prompt(entities)
+        if is_attribute_mode:
+            # Attribute-level: HopWalker path
+            self.store.resolve_dirty_for_attributes(entities)
+            beliefs_text, _ = self.store.to_prompt_attributes(entities)
+        else:
+            # Entity-level: original path
+            self.store.resolve_dirty(entities)
+            beliefs_text, _ = self.store.to_prompt(entities)
 
         user_prompt = "\n".join([
             "[ENTITY]",

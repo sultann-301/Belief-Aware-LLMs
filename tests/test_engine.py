@@ -246,3 +246,46 @@ class TestFullTurnCycle:
         assert store.get_value("applicant.income") is None
         # It should physically pull it entirely from the store, cascading anything if hooked up
         assert "applicant.income" not in store.beliefs
+
+
+class TestAttributeLevelRouting:
+
+    def test_dotted_entity_triggers_attribute_mode(self):
+        """When [ENTITY] contains dotted keys, engine uses HopWalker path."""
+        store, mock, engine = _make_engine()
+        _seed(store)
+        engine.query(_structured(
+            entities="loan.application_status",
+            query="What is the status?",
+        ))
+        prompt = mock.calls[0]["user_prompt"]
+        # Should contain the layered HopWalker output
+        assert "# Root facts" in prompt or "# Target beliefs" in prompt
+        assert "loan.application_status" in prompt
+
+    def test_attribute_mode_shows_upstream(self):
+        """Attribute mode includes upstream base facts in the prompt."""
+        store, mock, engine = _make_engine()
+        _seed(store)
+        engine.query(_structured(
+            entities="loan.adjusted_income",
+            query="What is the adjusted income?",
+        ))
+        prompt = mock.calls[0]["user_prompt"]
+        # Should include the inputs of adjusted_income
+        assert "applicant.income" in prompt
+        assert "applicant.dependents" in prompt
+
+    def test_plain_entity_uses_old_path(self):
+        """Plain entity names (no dot) use original entity-level path."""
+        store, mock, engine = _make_engine()
+        _seed(store)
+        engine.query(_structured(
+            entities="applicant",
+            query="What are the applicant facts?",
+        ))
+        prompt = mock.calls[0]["user_prompt"]
+        # Should use old-style flat listing, not layered
+        assert "# Root facts" not in prompt
+        assert "applicant.income = 6000" in prompt
+

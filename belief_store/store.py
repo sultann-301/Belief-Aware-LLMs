@@ -2,8 +2,20 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Any, Callable
 from .belief_lookup import BELIEF_DESCRIPTIONS
+
+
+@dataclass
+class HopNode:
+    """A single node in a HopWalker traversal."""
+
+    key: str
+    value: Any
+    is_derived: bool
+    hop_level: int            # 0 = target, 1 = direct input, 2 = input-of-input, …
+    feeds_into: list[str] = field(default_factory=list)  # keys this feeds
 
 
 class BeliefStore:
@@ -186,6 +198,148 @@ class BeliefStore:
                 prompt_keys.append(key)
 
         return "\n".join(lines), prompt_keys
+
+    # ── HopWalker ────────────────────────────────────────────────────
+
+    def hopwalk(self, attributes: list[str]) -> list[HopNode]:
+        """Walk the dependency graph backward from *attributes* to base facts.
+
+        Returns a deduplicated list of :class:`HopNode` sorted by hop level
+        (deepest base facts first, targets last).  Each derived node carries
+        an inline ``feeds_into`` list showing which of the requested
+        *attributes* (transitively) depend on it.
+        """
+        visited: dict[str, HopNode] = {}  # key → HopNode
+
+        def _walk(key: str, depth: int, target: str) -> None:
+            if key in visited:
+                node = visited[key]
+                # Keep the deepest hop level (furthest from target)
+                node.hop_level = max(node.hop_level, depth)
+                if target not in node.feeds_into:
+                    node.feeds_into.append(target)
+                return
+
+            entry = self.beliefs.get(key)
+            if entry is None or key in self.removed:
+                return  # belief doesn't exist
+
+            value, is_derived = entry
+            node = HopNode(
+                key=key,
+                value=value,
+                is_derived=is_derived,
+                hop_level=depth,
+                feeds_into=[target],
+            )
+            visited[key] = node
+
+            # Recurse into upstream inputs (if this key is derived)
+            rule = self.rule_index.get(key)
+            if rule:
+                for inp in rule["inputs"]:
+                    _walk(inp, depth + 1, target)
+
+        for attr in attributes:
+            _walk(attr, 0, attr)
+
+        # Sort: highest hop level first (base facts), targets last
+        return sorted(visited.values(), key=lambda n: (-n.hop_level, n.key))
+
+    def to_prompt_attributes(self, attributes: list[str]) -> tuple[str, list[str]]:
+        """Serialize beliefs for *attributes* into a layered prompt.
+
+        Uses :meth:`hopwalk` to collect upstream dependencies and produces
+        a prompt with inline derivation comments.
+        """
+        hops = self.hopwalk(attributes)
+        if not hops:
+            return "", []
+
+        lines: list[str] = []
+        prompt_keys: list[str] = []
+        attr_set = set(attributes)
+
+        # Group by: base facts, intermediate derivations, target beliefs
+        base_facts = [h for h in hops if not h.is_derived]
+        intermediates = [h for h in hops if h.is_derived and h.key not in attr_set]
+        targets = [h for h in hops if h.is_derived and h.key in attr_set]
+        # Non-derived targets (base fact asked for directly)
+        base_targets = [h for h in hops if not h.is_derived and h.key in attr_set]
+
+        if base_facts:
+            lines.append("# Root facts")
+            for node in base_facts:
+                tag = "base"
+                desc = BELIEF_DESCRIPTIONS.get(node.key)
+                line = f"[{tag}] {node.key} = {node.value}"
+                if desc:
+                    line += f"  # {desc}"
+                lines.append(line)
+                prompt_keys.append(node.key)
+
+        if intermediates:
+            lines.append("")
+            lines.append("# Intermediate derivations")
+            for node in intermediates:
+                rule = self.rule_index.get(node.key)
+                inputs_str = ", ".join(rule["inputs"]) if rule else ""
+                desc = BELIEF_DESCRIPTIONS.get(node.key)
+                line = f"[derived] {node.key} = {node.value}"
+                if desc:
+                    line += f"  # {desc}"
+                if inputs_str:
+                    line += f"  (from {inputs_str})"
+                lines.append(line)
+                prompt_keys.append(node.key)
+
+        if targets or base_targets:
+            lines.append("")
+            lines.append("# Target beliefs")
+            for node in base_targets:
+                line = f"[base] {node.key} = {node.value}"
+                desc = BELIEF_DESCRIPTIONS.get(node.key)
+                if desc:
+                    line += f"  # {desc}"
+                lines.append(line)
+                prompt_keys.append(node.key)
+            for node in targets:
+                rule = self.rule_index.get(node.key)
+                inputs_str = ", ".join(rule["inputs"]) if rule else ""
+                desc = BELIEF_DESCRIPTIONS.get(node.key)
+                line = f"[derived] {node.key} = {node.value}"
+                if desc:
+                    line += f"  # {desc}"
+                if inputs_str:
+                    line += f"  (from {inputs_str})"
+                lines.append(line)
+                prompt_keys.append(node.key)
+
+        return "\n".join(lines), prompt_keys
+
+    def resolve_dirty_for_attributes(self, attributes: list[str]) -> None:
+        """Resolve dirty beliefs needed by the given attribute keys.
+
+        Walks the dependency graph backward from *attributes* to discover
+        all upstream entities, then resolves every dirty belief in that set.
+        """
+        # Collect all keys that would appear in a hopwalk
+        all_keys: set[str] = set()
+
+        def _collect(key: str) -> None:
+            if key in all_keys:
+                return
+            all_keys.add(key)
+            rule = self.rule_index.get(key)
+            if rule:
+                for inp in rule["inputs"]:
+                    _collect(inp)
+
+        for attr in attributes:
+            _collect(attr)
+
+        entities = list({self.entity_of(k) for k in all_keys})
+        self.resolve_dirty(entities)
 
     def format_revision_log(self, since_index: int = 0) -> str:
         """Format the revision log from ``since_index`` onward."""

@@ -371,3 +371,153 @@ class TestRetractionCascade:
         assert "loan.high_risk_flag" not in resolved_loan_store.beliefs
 
 
+# =====================================================================
+# HopWalker Tests
+# =====================================================================
+
+
+class TestHopWalk:
+
+    def test_single_base_attribute(self, resolved_loan_store):
+        """Hopwalking a base fact returns just that fact at hop 0."""
+        hops = resolved_loan_store.hopwalk(["applicant.income"])
+        assert len(hops) == 1
+        assert hops[0].key == "applicant.income"
+        assert hops[0].hop_level == 0
+        assert hops[0].is_derived is False
+
+    def test_derived_attribute_has_inputs(self, resolved_loan_store):
+        """Hopwalking a derived key includes its upstream inputs."""
+        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+        keys = {h.key for h in hops}
+        assert "loan.adjusted_income" in keys  # target
+        assert "applicant.income" in keys       # input
+        assert "applicant.dependents" in keys   # input
+
+    def test_hop_levels_ordered_correctly(self, resolved_loan_store):
+        """Base facts have higher hop_level (deeper), targets have 0."""
+        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+        target = next(h for h in hops if h.key == "loan.adjusted_income")
+        inputs = [h for h in hops if h.key != "loan.adjusted_income"]
+        assert target.hop_level == 0
+        for inp in inputs:
+            assert inp.hop_level > 0
+
+    def test_deduplication_with_shared_upstream(self, resolved_loan_store):
+        """Multiple targets sharing upstream inputs don't duplicate nodes."""
+        hops = resolved_loan_store.hopwalk([
+            "loan.application_status", "loan.review_queue",
+        ])
+        keys = [h.key for h in hops]
+        # Each key appears exactly once
+        assert len(keys) == len(set(keys))
+        # Both targets appear
+        assert "loan.application_status" in keys
+        assert "loan.review_queue" in keys
+
+    def test_deep_chain_traversal(self, resolved_loan_store):
+        """Hopwalk goes all the way to base facts through multi-hop chains."""
+        hops = resolved_loan_store.hopwalk(["loan.base_interest_rate"])
+        keys = {h.key for h in hops}
+        # base_interest_rate <- rate_tier <- credit_score_effective <- credit_score, co_signer
+        assert "loan.base_interest_rate" in keys
+        assert "loan.rate_tier" in keys
+        assert "loan.credit_score_effective" in keys
+        assert "applicant.credit_score" in keys
+        assert "applicant.co_signer" in keys
+
+    def test_feeds_into_tracks_targets(self, resolved_loan_store):
+        """Each node's feeds_into lists which target it contributes to."""
+        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+        income_node = next(h for h in hops if h.key == "applicant.income")
+        assert "loan.adjusted_income" in income_node.feeds_into
+
+    def test_sorted_output_base_first(self, resolved_loan_store):
+        """Output is sorted with deepest base facts first, targets last."""
+        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+        hop_levels = [h.hop_level for h in hops]
+        assert hop_levels == sorted(hop_levels, reverse=True)
+
+    def test_empty_attributes(self, resolved_loan_store):
+        """Hopwalking with empty list returns empty."""
+        assert resolved_loan_store.hopwalk([]) == []
+
+
+class TestToPromptAttributes:
+
+    def test_output_has_layered_sections(self, resolved_loan_store):
+        """Prompt output contains root facts and target beliefs sections."""
+        prompt, keys = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
+        assert "# Root facts" in prompt
+        assert "# Target beliefs" in prompt
+        assert "loan.adjusted_income" in prompt
+        assert "applicant.income" in prompt
+
+    def test_inline_from_comments(self, resolved_loan_store):
+        """Derived beliefs have (from ...) comments."""
+        prompt, _ = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
+        assert "(from applicant.income, applicant.dependents)" in prompt
+
+    def test_intermediate_derivations_shown(self, resolved_loan_store):
+        """Multi-hop chains show intermediate derivations."""
+        prompt, _ = resolved_loan_store.to_prompt_attributes(["loan.base_interest_rate"])
+        assert "# Intermediate derivations" in prompt
+        assert "loan.rate_tier" in prompt
+
+    def test_prompt_keys_match_all_hops(self, resolved_loan_store):
+        """Returned prompt_keys include all hopwalked beliefs."""
+        prompt, keys = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
+        assert "loan.adjusted_income" in keys
+        assert "applicant.income" in keys
+        assert "applicant.dependents" in keys
+
+    def test_empty_attributes_returns_empty(self, resolved_loan_store):
+        """Empty attributes → empty prompt."""
+        prompt, keys = resolved_loan_store.to_prompt_attributes([])
+        assert prompt == ""
+        assert keys == []
+
+
+class TestResolveDirtyForAttributes:
+
+    def test_resolves_upstream_entities(self):
+        """resolve_dirty_for_attributes resolves all upstream entities."""
+        from belief_store.domains.alien_clinic import setup_alien_clinic_domain
+        store = BeliefStore()
+        setup_alien_clinic_domain(store)
+        store.add_hypothesis("patient.organism_type", "Glerps")
+        store.add_hypothesis("patient.symptoms", [])
+        store.add_hypothesis("atmosphere.ambient_pressure", 3.5)
+        store.add_hypothesis("atmosphere.dominant_gas", "methane")
+
+        assert len(store.dirty) > 0
+        store.resolve_dirty_for_attributes(["treatment.active_prescription"])
+        # The target and all upstream should be resolved
+        assert store.get_value("treatment.active_prescription") is not None
+        assert store.get_value("patient.organ_integrity") is not None
+        assert store.get_value("treatment.zyxostin_hazard") is not None
+
+    def test_alien_clinic_hopwalk_chain(self):
+        """Full hopwalk on active_prescription shows the whole chain."""
+        from belief_store.domains.alien_clinic import setup_alien_clinic_domain
+        store = BeliefStore()
+        setup_alien_clinic_domain(store)
+        store.add_hypothesis("patient.organism_type", "Glerps")
+        store.add_hypothesis("patient.symptoms", [])
+        store.add_hypothesis("atmosphere.ambient_pressure", 3.5)
+        store.add_hypothesis("atmosphere.dominant_gas", "methane")
+        store.resolve_all_dirty()
+
+        hops = store.hopwalk(["treatment.active_prescription"])
+        keys = {h.key for h in hops}
+        # Should include base facts
+        assert "patient.organism_type" in keys
+        assert "patient.symptoms" in keys
+        assert "atmosphere.dominant_gas" in keys
+        assert "atmosphere.ambient_pressure" in keys
+        # Should include intermediates
+        assert "patient.organ_integrity" in keys
+        assert "treatment.zyxostin_phase" in keys
+        assert "treatment.zyxostin_hazard" in keys
+        # Should include target
+        assert "treatment.active_prescription" in keys

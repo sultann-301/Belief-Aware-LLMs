@@ -90,9 +90,29 @@ def log_incorrect_answer(
 
 # ── Prompt construction ─────────────────────────────────────────────
 
-def _get_entities(turn: dict, default: str) -> list[str]:
+def _get_filter(turn: dict, default: str) -> tuple[list[str], bool]:
+    """Return (filter_items, is_attribute_mode) from a turn definition.
+
+    If the turn has an ``attributes`` key, use attribute-level filtering
+    (HopWalker path).  Otherwise fall back to entity-level.
+    """
+    if "attributes" in turn:
+        return list(turn["attributes"]), True
     ents = turn.get("entities", default).split(", ")
-    return [e.strip() for e in ents]
+    return [e.strip() for e in ents], False
+
+
+def _resolve_and_prompt(
+    store: BeliefStore, filter_items: list[str], is_attribute_mode: bool,
+) -> str:
+    """Resolve dirty beliefs and serialize to prompt text."""
+    if is_attribute_mode:
+        store.resolve_dirty_for_attributes(filter_items)
+        beliefs_text, _ = store.to_prompt_attributes(filter_items)
+    else:
+        store.resolve_dirty(filter_items)
+        beliefs_text, _ = store.to_prompt(filter_items)
+    return beliefs_text
 
 
 def _format_question(turn: dict) -> str:
@@ -104,12 +124,12 @@ def _format_question(turn: dict) -> str:
 
 
 def _build_prompt(
-    entities: list[str],
+    filter_items: list[str],
     new_beliefs_lines: list[str],
     beliefs_text: str | None,
     turn: dict,
 ) -> str:
-    parts = [f"[ENTITY]\n{', '.join(entities)}"]
+    parts = [f"[ENTITY]\n{', '.join(filter_items)}"]
     if new_beliefs_lines:
         parts.append("[NEW BELIEF]\n" + "\n".join(new_beliefs_lines))
     if beliefs_text:
@@ -173,12 +193,11 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
                 for k, v in prev_turn["beliefs"].items():
                     store.add_hypothesis(k, v)
 
-        entities = _get_entities(turn, config.default_entities)
-        store.resolve_dirty(entities)
-        beliefs_text, _ = store.to_prompt(entities)
+        filter_items, is_attr = _get_filter(turn, config.default_entities)
+        beliefs_text = _resolve_and_prompt(store, filter_items, is_attr)
 
         new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-        full_prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
+        full_prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
 
         response = llm.generate(EVAL_SYSTEM_PROMPT, full_prompt)
         results.append(_log_and_print("WITH STORE", i + 1, turn, response))
@@ -199,16 +218,15 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
     initial_lines = [f"{k} = {v}" for k, v in config.initial_beliefs.items()]
 
     for i, turn in enumerate(config.turns):
-        entities = _get_entities(turn, config.default_entities)
+        filter_items, is_attr = _get_filter(turn, config.default_entities)
         if turn["beliefs"]:
             for key, value in turn["beliefs"].items():
                 store.add_hypothesis(key, value)
 
-        store.resolve_dirty(entities)
-        beliefs_text, _ = store.to_prompt(entities)
+        beliefs_text = _resolve_and_prompt(store, filter_items, is_attr)
 
         new_lines = initial_lines if i == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-        full_prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
+        full_prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
 
         messages.append({"role": "user", "content": full_prompt})
         response = llm.generate_with_history(messages)

@@ -26,7 +26,8 @@ from evaluation.scenarios import (
 )
 from evaluation.eval_harness import (
     DomainConfig, EVAL_SYSTEM_PROMPT, BASELINE_SYSTEM_PROMPT,
-    extract_answer, _get_entities, _format_question, _build_prompt,
+    extract_answer, _get_filter, _resolve_and_prompt,
+    _format_question, _build_prompt,
     _build_baseline_prompt,
 )
 
@@ -395,7 +396,7 @@ def simulate_step():
 
     turn = turns[turn_idx]
     initial_lines = [f"{k} = {v}" for k, v in cfg["initial_beliefs"].items()]
-    entities = _get_entities(turn, cfg["default_entities"])
+    filter_items, is_attr = _get_filter(turn, cfg["default_entities"])
 
     llm_answer = None
     llm_response = ""
@@ -425,12 +426,12 @@ def simulate_step():
                 if turn["beliefs"]:
                     for k, v in turn["beliefs"].items():
                         turn_store.add_hypothesis(k, v)
-                turn_store.resolve_dirty(entities)
+
+                beliefs_text = _resolve_and_prompt(turn_store, filter_items, is_attr)
                 
                 updated_keys = list({entry["key"] for entry in turn_store.revision_log[log_start_idx:]})
-                beliefs_text, _ = turn_store.to_prompt(entities)
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-                prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
+                prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
                 llm_response = llm.generate(EVAL_SYSTEM_PROMPT, prompt, model=sim_state.get("model"))
 
                 # Snapshot beliefs
@@ -444,12 +445,12 @@ def simulate_step():
                 if turn["beliefs"]:
                     for k, v in turn["beliefs"].items():
                         sim_store.add_hypothesis(k, v)
-                sim_store.resolve_dirty(entities)
+
+                beliefs_text = _resolve_and_prompt(sim_store, filter_items, is_attr)
                 updated_keys = list({entry["key"] for entry in sim_store.revision_log[log_start_idx:]})
                 
-                beliefs_text, _ = sim_store.to_prompt(entities)
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-                prompt = _build_prompt(entities, new_lines, beliefs_text, turn)
+                prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
                 sim_state["messages"].append({"role": "user", "content": prompt})
                 llm_response = llm.generate_with_history(sim_state["messages"], model=sim_state.get("model"))
                 sim_state["messages"].append({"role": "assistant", "content": llm_response})

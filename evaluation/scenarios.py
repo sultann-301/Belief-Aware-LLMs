@@ -4,7 +4,7 @@ Evaluation Scenarios for Belief-Aware LLMs.
 Contains the predefined scenarios for each domain, including:
   - Baseline deterministic rules [RULES]
   - Initial beliefs
-  - Sequential MCQ evaluation turns
+  - Sequential MCQ evaluation turns (attribute-level filtering)
 """
 
 # =====================================================================
@@ -43,7 +43,7 @@ LOAN_INITIAL_BELIEFS = {
 
 LOAN_TURNS = [
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status", "loan.review_queue"],
         "beliefs": {},
         "question": "What is the application status and review queue?",
         "options": {
@@ -54,7 +54,7 @@ LOAN_TURNS = [
         "correct": "B",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.requires_insurance", "loan.review_queue"],
         "beliefs": {"applicant.debt_ratio": 0.35},
         "question": "What is the required insurance status and review queue?",
         "options": {
@@ -65,7 +65,7 @@ LOAN_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status"],
         "beliefs": {"applicant.credit_score": 740},
         "question": "What is the current application status?",
         "options": {
@@ -76,7 +76,7 @@ LOAN_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.base_interest_rate"],
         "beliefs": {"applicant.co_signer": True},
         "question": "What is the new base interest rate?",
         "options": {
@@ -87,7 +87,7 @@ LOAN_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status", "loan.base_interest_rate"],
         "beliefs": {"applicant.has_collateral": True},
         "question": "What are the final application status and base interest rate?",
         "options": {
@@ -98,7 +98,7 @@ LOAN_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status", "loan.base_interest_rate"],
         "beliefs": {"applicant.employment_status": "unemployed"},
         "question": "What is the application status and base interest rate?",
         "options": {
@@ -109,7 +109,7 @@ LOAN_TURNS = [
         "correct": "B",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.max_amount", "loan.application_status"],
         "beliefs": {"applicant.employment_status": "employed"},
         "question": "What is the maximum loan amount and application status?",
         "options": {
@@ -120,7 +120,7 @@ LOAN_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "applicant, loan",
+        "attributes": ["loan.adjusted_income", "loan.application_status"],
         "beliefs": {"applicant.dependents": 3},
         "question": "What is the adjusted income and application status?",
         "options": {
@@ -131,7 +131,7 @@ LOAN_TURNS = [
         "correct": "B",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status"],
         "beliefs": {"applicant.loan_amount_requested": 20_000},
         "question": "What is the application status?",
         "options": {
@@ -142,7 +142,7 @@ LOAN_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "loan",
+        "attributes": ["loan.application_status"],
         "beliefs": {"applicant.income": 7000},
         "question": "What is the application status?",
         "options": {
@@ -190,7 +190,7 @@ ALIEN_INITIAL_BELIEFS_CF = {
 # --- Alien Clinic: Turns ---
 ALIEN_TURNS_BASIC = [
     {
-        "entities": "treatment, clinic",
+        "attributes": ["treatment.active_prescription", "clinic.billing_tier"],
         "beliefs": {},
         "question": "What is the active prescription and billing tier?",
         "options": {
@@ -201,7 +201,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, clinic",
+        "attributes": ["treatment.active_prescription", "clinic.billing_tier"],
         "beliefs": {"patient.symptoms": ["fever", "spasms"]},
         "question": "What is the new active prescription and billing tier?",
         "options": {
@@ -212,7 +212,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, clinic",
+        "attributes": ["treatment.active_prescription"],
         "beliefs": {"patient.symptoms": ["fever"]},
         "question": "What is the active prescription?",
         "options": {
@@ -223,7 +223,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription", "patient.recovery_prospect"],
         "beliefs": {"atmosphere.ambient_pressure": 4.5},
         "question": "What is the active prescription and recovery prospect?",
         "options": {
@@ -234,7 +234,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["patient.recovery_prospect"],
         "beliefs": {"patient.symptoms": []},
         "question": "What is the recovery prospect?",
         "options": {
@@ -245,7 +245,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, medical",
+        "attributes": ["treatment.active_prescription", "medical.staff_requirement"],
         "beliefs": {"patient.organism_type": "Yorp"},
         "question": "What is the active prescription and staff requirement?",
         "options": {
@@ -256,7 +256,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "B",
     },
     {
-        "entities": "treatment, medical",
+        "attributes": ["treatment.active_prescription", "medical.staff_requirement"],
         "beliefs": {"patient.symptoms": ["acid_sweat"]},
         "question": "What is the new prescription and staff requirement?",
         "options": {
@@ -267,7 +267,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription", "patient.recovery_prospect"],
         "beliefs": {"atmosphere.ambient_pressure": 5.5},
         "question": "What is the active prescription and recovery prospect?",
         "options": {
@@ -278,7 +278,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "B",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription", "patient.recovery_prospect"],
         "beliefs": {"atmosphere.dominant_gas": "xenon"},
         "question": "What is the active prescription and recovery prospect?",
         "options": {
@@ -289,7 +289,7 @@ ALIEN_TURNS_BASIC = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription", "patient.recovery_prospect"],
         "beliefs": {"patient.organism_type": "Qwerl"},
         "question": "What is the active prescription and recovery prospect?",
         "options": {
@@ -303,7 +303,7 @@ ALIEN_TURNS_BASIC = [
 
 ALIEN_TURNS_CF = [
     {
-        "entities": "treatment, patient",
+        "attributes": ["patient.organ_integrity"],
         "beliefs": {"atmosphere.ambient_pressure": 2.0},
         "question": "Under the latest pressure condition, what is the organ integrity?",
         "options": {
@@ -314,7 +314,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription"],
         "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": []},
         "question": "Given the patient species and symptom clearance in the latest belief update, what is the active prescription at this low pressure?",
         "options": {
@@ -325,7 +325,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.zyxostin_phase"],
         "beliefs": {"atmosphere.dominant_gas": "methane"},
         "question": "Under the latest atmospheric gas, what is treatment.zyxostin_phase?",
         "options": {
@@ -336,7 +336,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.zyxostin_hazard"],
         "beliefs": {"atmosphere.ambient_pressure": 4.1},
         "question": "At the current pressure and gas, is treatment.zyxostin_hazard symbiotic?",
         "options": {
@@ -347,7 +347,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, clinic",
+        "attributes": ["clinic.billing_tier"],
         "beliefs": {"patient.symptoms": ["fever", "spasms"]},
         "question": "Given the current symptoms and resulting medication, what is the billing tier?",
         "options": {
@@ -358,7 +358,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["treatment.active_prescription"],
         "beliefs": {"patient.organism_type": "Qwerl"},
         "question": "Given the species transformation in the latest update, what is the active prescription?",
         "options": {
@@ -369,7 +369,7 @@ ALIEN_TURNS_CF = [
         "correct": "B",
     },
     {
-        "entities": "treatment, medical",
+        "attributes": ["medical.staff_requirement"],
         "beliefs": {"atmosphere.dominant_gas": "chlorine"},
         "question": "Does the current gas and species combination necessitate specialized hazmat staffing?",
         "options": {
@@ -380,7 +380,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, clinic",
+        "attributes": ["clinic.billing_tier"],
         "beliefs": {"patient.symptoms": []},
         "question": "After clearing all symptoms, has the billing tier returned to the standard class?",
         "options": {
@@ -391,7 +391,7 @@ ALIEN_TURNS_CF = [
         "correct": "B",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["patient.recovery_prospect"],
         "beliefs": {"atmosphere.ambient_pressure": 5.5},
         "question": "At the highest pressure recorded so far, what is the recovery prospect for the current species?",
         "options": {
@@ -402,7 +402,7 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "entities": "treatment, patient",
+        "attributes": ["patient.recovery_prospect"],
         "beliefs": {"patient.organism_type": "Glerps"},
         "question": "Given the substitution in the latest update, what is the recovery prospect?",
         "options": {
@@ -449,7 +449,7 @@ CRIME_INITIAL_BELIEFS = {
 
 CRIME_TURNS = [
     {
-        "entities": "case",
+        "attributes": ["case.theory", "case.lead_suspect"],
         "beliefs": {},
         "question": "What is the initial case theory and lead suspect?",
         "options": {
@@ -460,7 +460,7 @@ CRIME_TURNS = [
         "correct": "B",
     },
     {
-        "entities": "case, suspect_a",
+        "attributes": ["case.lead_suspect"],
         "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt"},
         "question": "After discovering debt via a warrant, who is the lead suspect?",
         "options": {
@@ -471,7 +471,7 @@ CRIME_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "case",
+        "attributes": ["case.lead_suspect"],
         "beliefs": {"suspect_b.relation_to_victim": "enemy"},
         "question": "With both motives verified, who is the lead suspect?",
         "options": {
@@ -482,7 +482,7 @@ CRIME_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "suspect_a, suspect_b, case",
+        "attributes": ["suspect_a.status", "case.theory", "case.lead_suspect"],
         "beliefs": {"officer_smith.status": "suspended"},
         "question": "Officer Smith is suspended. What is Suspect A's status, Case Theory, and Lead Suspect?",
         "options": {
@@ -493,7 +493,7 @@ CRIME_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "case",
+        "attributes": ["case.theory"],
         "beliefs": {"suspect_a.evidence_logger": "officer_jones"},
         "question": "After logging the evidence with a new active officer, what is the case theory?",
         "options": {
@@ -504,7 +504,7 @@ CRIME_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "suspect_b, case",
+        "attributes": ["suspect_b.status", "case.theory"],
         "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
         "question": "Given the new CCTV evidence clearing Suspect B dynamically, what is Suspect B's status and the case theory?",
         "options": {
@@ -515,7 +515,7 @@ CRIME_TURNS = [
         "correct": "A",
     },
     {
-        "entities": "suspect_b, case",
+        "attributes": ["suspect_b.final_alibi", "case.lead_suspect"],
         "beliefs": {"case.cctv_status": "corrupted"},
         "question": "If the CCTV is discovered to be corrupted, what is the final alibi for Suspect B and the lead suspect?",
         "options": {
@@ -526,7 +526,7 @@ CRIME_TURNS = [
         "correct": "B",
     },
     {
-        "entities": "suspect_a, case",
+        "attributes": ["suspect_a.status", "case.theory"],
         "beliefs": {"suspect_a.home_evidence": "none"},
         "question": "Without the home evidence, what is Suspect A's status and the case theory?",
         "options": {
@@ -537,7 +537,7 @@ CRIME_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "case",
+        "attributes": ["case.theory"],
         "beliefs": {"suspect_a.home_evidence": "gun"},
         "question": "If the gun is found again, what is the case theory?",
         "options": {
@@ -548,7 +548,7 @@ CRIME_TURNS = [
         "correct": "C",
     },
     {
-        "entities": "case",
+        "attributes": ["case.lead_suspect"],
         "beliefs": {"case.warrant_status": False},
         "question": "If the warrant is thrown out, who is the lead suspect?",
         "options": {
@@ -587,70 +587,70 @@ THORNCRESTER_INITIAL_BELIEFS = {
 
 THORNCRESTER_TURNS = [
     {
-        "entities": "adult_thorncrester",
+        "attributes": ["adult_thorncrester.plumage_color"],
         "beliefs": {},
         "question": "Given the stable environment, what is the current plumage color of the adult Thorncrester?",
         "options": {"A": "dull_grey", "B": "crimson", "C": "azure"},
         "correct": "B",
     },
     {
-        "entities": "environment, adult_thorncrester",
+        "attributes": ["adult_thorncrester.ecological_stress"],
         "beliefs": {"environment.weather_pattern": "drought"},
         "question": "A drought has begun. If food is still plentiful (no scarcity), what is the ecological stress level?",
         "options": {"A": "nominal", "B": "high", "C": "critical"},
         "correct": "A",
     },
     {
-        "entities": "environment, adult_thorncrester",
+        "attributes": ["adult_thorncrester.expressed_diet"],
         "beliefs": {"environment.food_scarcity": True},
         "question": "Food scarcity has hit during the drought. What is the adult's expressed diet now?",
         "options": {"A": "frugivore", "B": "scavenger", "C": "insectivore"},
         "correct": "B",
     },
     {
-        "entities": "adult_thorncrester, juvenile_thorncrester",
+        "attributes": ["juvenile_thorncrester.metabolic_state"],
         "beliefs": {},
         "question": "The adults have shifted to scavenging. What is the metabolic state of the juvenile (fructose processor) offspring?",
         "options": {"A": "thriving", "B": "starving", "C": "dormant"},
         "correct": "B",
     },
     {
-        "entities": "adult_thorncrester, feather_mite, environment",
+        "attributes": ["feather_mite.bloom_status"],
         "beliefs": {},
         "question": "With the plumage turned dull_grey during a drought, what is the status of the feather mite bloom?",
         "options": {"A": "dormant", "B": "active_bloom", "C": "lethal"},
         "correct": "B",
     },
     {
-        "entities": "feather_mite, thorncrester_flock, adult_thorncrester",
+        "attributes": ["adult_thorncrester.mortality_risk"],
         "beliefs": {},
         "question": "Between the lethal parasitic load and the social aggression, what is the mortality risk?",
         "options": {"A": "low", "B": "moderate", "C": "critical"},
         "correct": "C",
     },
     {
-        "entities": "environment, adult_thorncrester",
+        "attributes": ["adult_thorncrester.plumage_color"],
         "beliefs": {"environment.weather_pattern": "stable"},
         "question": "The rains have returned (stable). What has happened to the adult's plumage color?",
         "options": {"A": "remains dull_grey", "B": "reverts to crimson", "C": "turns azure"},
         "correct": "B",
     },
     {
-        "entities": "environment, adult_thorncrester",
+        "attributes": ["adult_thorncrester.mortality_risk"],
         "beliefs": {"environment.food_scarcity": False},
         "question": "Food is now abundant again. What is the current mortality risk for the adults?",
         "options": {"A": "low", "B": "critical", "C": "moderate"},
         "correct": "A",
     },
     {
-        "entities": "juvenile_thorncrester, adult_thorncrester",
+        "attributes": ["juvenile_thorncrester.development"],
         "beliefs": {"juvenile_thorncrester.digestive_enzyme": "general_processor"},
         "question": "A subspecies with a 'general_processor' enzyme is found. If the adults were scavenging, what would this juvenile's development status be?",
         "options": {"A": "arrested", "B": "maturing", "C": "unknown"},
         "correct": "B",
     },
     {
-        "entities": "environment, thorncrester_flock, adult_thorncrester",
+        "attributes": ["thorncrester_flock.expressed_structure"],
         "beliefs": {"environment.weather_pattern": "drought", "environment.food_scarcity": True},
         "question": "Stress is high again. What is the currently expressed social structure of the flock?",
         "options": {"A": "matriarchal_pairs", "B": "solitary", "C": "survival_swarm"},

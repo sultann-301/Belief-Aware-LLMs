@@ -21,3 +21,22 @@ ANSWER: No
 REASONING: The query asks about whether the application status or base interest rate has changed. The belief store contains loan.base_interest_rate = 5.5. The applicant has collateral, meaning the application status is still approved. Therefore, the status remains approved, and the base interest rate remains unchanged. The answer is No.
 ANSWER: No
 ----------------------------------------
+[WITH STORE - Turn 6]
+REASONING: The query asks for the loan application status and base interest rate. We’ve derived that the loan application status is denied_ineligible because the applicant’s pre-qualification is determined by eligibility criteria and the loan amount requested, and the loan is denied if the applicant is ineligible. The base interest rate is currently unknown as it is derived from a tier and insurance requirement.
+
+ANSWER: denied_ineligible, None
+----------------------------------------
+[WITH STORE - Turn 9]
+REASONING: The query asks for the application status. The belief store contains information about the loan’s application status, including whether it’s approved, denied, or denied_amount_exceeded. The loan’s application status is determined by the applicant’s loan amount requested, the applicant’s credit score, the loan amount ratio, employment status, and bankruptcy history. The loan's maximum amount is also considered. The logic is that the loan status is denied ineligible because it exceeds the maximum allowed.
+
+ANSWER: denied_ineligible
+----------------------------------------
+[WITH STORE - Turn 6]
+REASONING: The query asks for the application status and base interest rate. The belief store indicates that the loan application status is denied_ineligible and the base interest rate is None.
+ANSWER: denied_ineligible, None
+----------------------------------------
+[WITH STORE - Turn 9]
+REASONING: The query asks for the application status, and the belief store indicates the loan application is denied_ineligible because the applicant is ineligible for the loan and the loan amount requested exceeds the maximum amount.
+
+ANSWER: denied_ineligible
+----------------------------------------
