@@ -189,23 +189,15 @@ async function loadModels() {
 // DEPENDENCY GRAPH RENDERER (Canvas-based force-directed layout)
 // ══════════════════════════════════════════════════════════════════
 
-const ENTITY_COLORS = {
-  applicant: "#4a9eff",
-  loan: "#6c5ce7",
-  patient: "#00cec9",
-  case: "#fd79a8",
-  suspect_a: "#e74c3c",
-  suspect_b: "#f39c12",
-  officer_smith: "#00b894",
-  environment: "#00cec9",
-  adult_thorncrester: "#e84393",
-  thorncrester_flock: "#fdcb6e",
-  juvenile_thorncrester: "#55efc4",
-  feather_mite: "#d63031",
-};
+const PALETTE = ["#4a9eff", "#6c5ce7", "#00cec9", "#fd79a8", "#f39c12", "#00b894", "#e84393", "#fdcb6e", "#e74c3c", "#d63031", "#55efc4"];
 
 function getEntityColor(entity) {
-  return ENTITY_COLORS[entity] || "#8b949e";
+  let hash = 0;
+  for (let i = 0; i < entity.length; i++) {
+    hash = entity.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % PALETTE.length;
+  return PALETTE[index];
 }
 
 // Force simulation state
@@ -862,8 +854,6 @@ async function switchDomain(domainKey) {
     method: "POST",
     body: JSON.stringify({ domain: domainKey }),
   });
-  updateEntityChips();
-  updateAttributeDropdowns();
   // Clear chat
   $chatMessages.innerHTML = `
         <div class="chat-welcome">
@@ -878,6 +868,8 @@ async function switchDomain(domainKey) {
   if ($fullPromptBody) $fullPromptBody.style.display = "none";
   if ($btnTogglePrompt) $btnTogglePrompt.textContent = "Show";
   await refresh();
+  updateEntityChips();
+  updateAttributeDropdowns();
 }
 
 // ── Chat ────────────────────────────────────────────────────────────
@@ -1281,7 +1273,7 @@ $btnTogglePrompt?.addEventListener("click", () => {
   $btnTogglePrompt.textContent = isHidden ? "Hide" : "Show";
 });
 $chatInput.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     sendChat();
   }
