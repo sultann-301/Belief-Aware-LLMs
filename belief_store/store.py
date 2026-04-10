@@ -29,6 +29,9 @@ class BeliefStore:
         self.revision_log: list[dict[str, Any]] = []
         self.rule_index: dict[str, dict[str, Any]] = {}  # output_key → rule
         self._entity_cache: dict[str, str] = {}  # key → entity name cache
+        # Derivation traces: output_key → {inputs: {k: v}, name: str}
+        # Populated during rule resolution — stores actual input values
+        self.derivation_traces: dict[str, dict[str, Any]] = {}
 
     def entity_of(self, key: str) -> str:
         """Extract the entity name from a belief key (cached)."""
@@ -159,6 +162,11 @@ class BeliefStore:
                 self.beliefs[key] = (new_value, True)
                 self.dirty.discard(key)
                 resolved.add(key)
+                # Store derivation trace — actual input values at resolution time
+                self.derivation_traces[key] = {
+                    "inputs": dict(input_values),
+                    "name": rule["name"],
+                }
                 self.revision_log.append({
                     "action": "derived",
                     "key": key,
@@ -201,15 +209,32 @@ class BeliefStore:
 
     # ── HopWalker ────────────────────────────────────────────────────
 
-    def hopwalk(self, attributes: list[str]) -> list[HopNode]:
+    def hopwalk(
+        self,
+        attributes: list[str],
+        max_depth: int = 3,
+        prune_clean_derived: bool = True,
+    ) -> list[HopNode]:
         """Walk the dependency graph backward from *attributes* to base facts.
 
         Returns a deduplicated list of :class:`HopNode` sorted by hop level
         (deepest base facts first, targets last).  Each derived node carries
         an inline ``feeds_into`` list showing which of the requested
         *attributes* (transitively) depend on it.
+
+        Parameters
+        ----------
+        max_depth
+            Hard cap on backward traversal depth.  Acts as a safety net.
+        prune_clean_derived
+            When ``True``, stop recursing at derived nodes whose value is
+            already clean (not in ``self.dirty``).  The node itself is
+            included but its parents are not — the derivation trace embedded
+            in the prompt annotation provides the evidence instead.
+            Dirty nodes are always expanded regardless of this flag.
         """
         visited: dict[str, HopNode] = {}  # key → HopNode
+        attr_set = set(attributes)  # targets — never pruned
 
         def _walk(key: str, depth: int, target: str) -> None:
             if key in visited:
@@ -234,9 +259,19 @@ class BeliefStore:
             )
             visited[key] = node
 
-            # Recurse into upstream inputs (if this key is derived)
+            # Decide whether to recurse into upstream inputs
             rule = self.rule_index.get(key)
             if rule:
+                # Prune: stop at clean derived nodes (evidence is in trace)
+                # BUT never prune the targets themselves — always expand them
+                if (prune_clean_derived and is_derived
+                        and key not in self.dirty
+                        and key not in attr_set):
+                    return  # node included, but ancestors are not
+                # Depth cap: safety net — nodes AT max_depth are included
+                # but we don't recurse further beyond it
+                if depth >= max_depth:
+                    return
                 for inp in rule["inputs"]:
                     _walk(inp, depth + 1, target)
 
@@ -246,13 +281,19 @@ class BeliefStore:
         # Sort: highest hop level first (base facts), targets last
         return sorted(visited.values(), key=lambda n: (-n.hop_level, n.key))
 
-    def to_prompt_attributes(self, attributes: list[str]) -> tuple[str, list[str]]:
+    def to_prompt_attributes(
+        self,
+        attributes: list[str],
+        max_depth: int = 3,
+        prune_clean_derived: bool = True,
+    ) -> tuple[str, list[str]]:
         """Serialize beliefs for *attributes* into a layered prompt.
 
         Uses :meth:`hopwalk` to collect upstream dependencies and produces
-        a prompt with inline derivation comments.
+        a prompt with inline evidence annotations.
         """
-        hops = self.hopwalk(attributes)
+        hops = self.hopwalk(attributes, max_depth=max_depth,
+                           prune_clean_derived=prune_clean_derived)
         if not hops:
             return "", []
 
@@ -267,12 +308,21 @@ class BeliefStore:
         # Non-derived targets (base fact asked for directly)
         base_targets = [h for h in hops if not h.is_derived and h.key in attr_set]
 
+        def _evidence(key: str) -> str:
+            """Build a flat evidence string from the derivation trace."""
+            trace = self.derivation_traces.get(key)
+            if not trace:
+                # Fallback: just list input key names
+                rule = self.rule_index.get(key)
+                return ", ".join(rule["inputs"]) if rule else ""
+            parts = [f"{k}={v}" for k, v in trace["inputs"].items()]
+            return ", ".join(parts)
+
         if base_facts:
             lines.append("# Root facts")
             for node in base_facts:
-                tag = "base"
                 desc = BELIEF_DESCRIPTIONS.get(node.key)
-                line = f"[{tag}] {node.key} = {node.value}"
+                line = f"[base] {node.key} = {node.value}"
                 if desc:
                     line += f"  # {desc}"
                 lines.append(line)
@@ -282,14 +332,13 @@ class BeliefStore:
             lines.append("")
             lines.append("# Intermediate derivations")
             for node in intermediates:
-                rule = self.rule_index.get(node.key)
-                inputs_str = ", ".join(rule["inputs"]) if rule else ""
                 desc = BELIEF_DESCRIPTIONS.get(node.key)
+                evidence = _evidence(node.key)
                 line = f"[derived] {node.key} = {node.value}"
                 if desc:
                     line += f"  # {desc}"
-                if inputs_str:
-                    line += f"  (from {inputs_str})"
+                if evidence:
+                    line += f"  (evidence: {evidence})"
                 lines.append(line)
                 prompt_keys.append(node.key)
 
@@ -304,14 +353,13 @@ class BeliefStore:
                 lines.append(line)
                 prompt_keys.append(node.key)
             for node in targets:
-                rule = self.rule_index.get(node.key)
-                inputs_str = ", ".join(rule["inputs"]) if rule else ""
                 desc = BELIEF_DESCRIPTIONS.get(node.key)
+                evidence = _evidence(node.key)
                 line = f"[derived] {node.key} = {node.value}"
                 if desc:
                     line += f"  # {desc}"
-                if inputs_str:
-                    line += f"  (from {inputs_str})"
+                if evidence:
+                    line += f"  (evidence: {evidence})"
                 lines.append(line)
                 prompt_keys.append(node.key)
 

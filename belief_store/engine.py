@@ -15,6 +15,7 @@ class ReasoningEngine:
 
     def build_prompt(
         self, structured_input: str, prompt_version: str = "v1",
+        max_depth: int = 3, prune_clean_derived: bool = True,
     ) -> tuple[str, str]:
         """Parse structured input, inject beliefs, resolve, return prompts.
 
@@ -40,7 +41,9 @@ class ReasoningEngine:
         if is_attribute_mode:
             # Attribute-level: HopWalker path
             self.store.resolve_dirty_for_attributes(entities)
-            beliefs_text, _ = self.store.to_prompt_attributes(entities)
+            beliefs_text, _ = self.store.to_prompt_attributes(
+                entities, max_depth=max_depth, prune_clean_derived=prune_clean_derived
+            )
         else:
             # Entity-level: original path
             self.store.resolve_dirty(entities)
@@ -62,10 +65,13 @@ class ReasoningEngine:
 
     def query(
         self, structured_input: str, model: str | None = None,
-        prompt_version: str = "v1",
+        prompt_version: str = "v1", max_depth: int = 3, prune_clean_derived: bool = True,
     ) -> str:
         """One-shot: build prompt + call LLM (no history)."""
-        sys_prompt, user_prompt = self.build_prompt(structured_input, prompt_version)
+        sys_prompt, user_prompt = self.build_prompt(
+            structured_input, prompt_version=prompt_version,
+            max_depth=max_depth, prune_clean_derived=prune_clean_derived,
+        )
         return self.llm.generate(sys_prompt, user_prompt, model=model)
 
     @staticmethod

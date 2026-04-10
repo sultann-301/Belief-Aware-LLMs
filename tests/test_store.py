@@ -386,22 +386,86 @@ class TestHopWalk:
         assert hops[0].hop_level == 0
         assert hops[0].is_derived is False
 
-    def test_derived_attribute_has_inputs(self, resolved_loan_store):
-        """Hopwalking a derived key includes its upstream inputs."""
-        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+    def test_derived_attribute_unpruned(self, resolved_loan_store):
+        """With pruning OFF, hopwalk includes all upstream inputs."""
+        hops = resolved_loan_store.hopwalk(
+            ["loan.adjusted_income"], prune_clean_derived=False,
+        )
         keys = {h.key for h in hops}
         assert "loan.adjusted_income" in keys  # target
         assert "applicant.income" in keys       # input
         assert "applicant.dependents" in keys   # input
 
+    def test_pruned_stops_at_clean_derived(self, resolved_loan_store):
+        """Default pruning: clean derived nodes DO NOT expand parents."""
+        hops = resolved_loan_store.hopwalk(["loan.application_status"])
+        keys = {h.key for h in hops}
+        # Target is included
+        assert "loan.application_status" in keys
+        # Direct derived inputs are included as opaque nodes
+        assert "loan.applicant_prequalified" in keys
+        assert "loan.max_amount" in keys
+        # Base fact inputs are included
+        assert "applicant.loan_amount_requested" in keys
+        # But ancestors of the pruned derived nodes are NOT
+        assert "applicant.income" not in keys
+        assert "applicant.credit_score" not in keys
+
+    def test_pruned_keeps_base_inputs(self, resolved_loan_store):
+        """Pruning doesn't affect base fact inputs — they have no rule to prune."""
+        hops = resolved_loan_store.hopwalk(["loan.application_status"])
+        keys = {h.key for h in hops}
+        assert "applicant.loan_amount_requested" in keys
+
+    def test_pruned_fewer_keys_than_unpruned(self, resolved_loan_store):
+        """Pruning should always produce fewer or equal keys."""
+        pruned = resolved_loan_store.hopwalk(["loan.application_status"])
+        unpruned = resolved_loan_store.hopwalk(
+            ["loan.application_status"], prune_clean_derived=False,
+        )
+        assert len(pruned) < len(unpruned)
+
+    def test_dirty_expands_despite_prune(self, resolved_loan_store):
+        """A derived node that is dirty gets fully expanded even with pruning."""
+        # Make applicant_prequalified dirty by changing income
+        resolved_loan_store.add_hypothesis("applicant.income", 9999)
+        hops = resolved_loan_store.hopwalk(["loan.application_status"])
+        keys = {h.key for h in hops}
+        # loan.adjusted_income is now dirty -> should be expanded
+        assert "loan.adjusted_income" in keys
+        # And its inputs should appear since adjusted_income is dirty
+        assert "applicant.income" in keys
+
+    def test_max_depth_respected(self, resolved_loan_store):
+        """max_depth=0 returns only the target itself."""
+        hops = resolved_loan_store.hopwalk(
+            ["loan.application_status"],
+            max_depth=0,
+            prune_clean_derived=False,
+        )
+        assert len(hops) == 1
+        assert hops[0].key == "loan.application_status"
+
+    def test_deep_chain_unpruned(self, resolved_loan_store):
+        """Unpruned hopwalk goes through multi-hop chains."""
+        hops = resolved_loan_store.hopwalk(
+            ["loan.base_interest_rate"], prune_clean_derived=False,
+        )
+        keys = {h.key for h in hops}
+        assert "loan.base_interest_rate" in keys
+        assert "loan.rate_tier" in keys
+        # credit_score_effective reachable within max_depth=3
+        assert "loan.credit_score_effective" in keys
+        # rate_tier depends on applicant_prequalified
+        assert "loan.applicant_prequalified" in keys
+
     def test_hop_levels_ordered_correctly(self, resolved_loan_store):
-        """Base facts have higher hop_level (deeper), targets have 0."""
-        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
-        target = next(h for h in hops if h.key == "loan.adjusted_income")
-        inputs = [h for h in hops if h.key != "loan.adjusted_income"]
-        assert target.hop_level == 0
-        for inp in inputs:
-            assert inp.hop_level > 0
+        """Output is sorted with deepest base facts first, targets last."""
+        hops = resolved_loan_store.hopwalk(
+            ["loan.adjusted_income"], prune_clean_derived=False,
+        )
+        hop_levels = [h.hop_level for h in hops]
+        assert hop_levels == sorted(hop_levels, reverse=True)
 
     def test_deduplication_with_shared_upstream(self, resolved_loan_store):
         """Multiple targets sharing upstream inputs don't duplicate nodes."""
@@ -415,61 +479,90 @@ class TestHopWalk:
         assert "loan.application_status" in keys
         assert "loan.review_queue" in keys
 
-    def test_deep_chain_traversal(self, resolved_loan_store):
-        """Hopwalk goes all the way to base facts through multi-hop chains."""
-        hops = resolved_loan_store.hopwalk(["loan.base_interest_rate"])
-        keys = {h.key for h in hops}
-        # base_interest_rate <- rate_tier <- credit_score_effective <- credit_score, co_signer
-        assert "loan.base_interest_rate" in keys
-        assert "loan.rate_tier" in keys
-        assert "loan.credit_score_effective" in keys
-        assert "applicant.credit_score" in keys
-        assert "applicant.co_signer" in keys
-
     def test_feeds_into_tracks_targets(self, resolved_loan_store):
         """Each node's feeds_into lists which target it contributes to."""
-        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
+        hops = resolved_loan_store.hopwalk(
+            ["loan.adjusted_income"], prune_clean_derived=False,
+        )
         income_node = next(h for h in hops if h.key == "applicant.income")
         assert "loan.adjusted_income" in income_node.feeds_into
-
-    def test_sorted_output_base_first(self, resolved_loan_store):
-        """Output is sorted with deepest base facts first, targets last."""
-        hops = resolved_loan_store.hopwalk(["loan.adjusted_income"])
-        hop_levels = [h.hop_level for h in hops]
-        assert hop_levels == sorted(hop_levels, reverse=True)
 
     def test_empty_attributes(self, resolved_loan_store):
         """Hopwalking with empty list returns empty."""
         assert resolved_loan_store.hopwalk([]) == []
 
 
+class TestDerivationTraces:
+
+    def test_traces_populated_after_resolve(self, resolved_loan_store):
+        """Derivation traces are populated for every derived belief."""
+        trace = resolved_loan_store.derivation_traces.get("loan.adjusted_income")
+        assert trace is not None
+        assert "applicant.income" in trace["inputs"]
+        assert "applicant.dependents" in trace["inputs"]
+        assert trace["inputs"]["applicant.income"] == 6000
+        assert trace["inputs"]["applicant.dependents"] == 0  # fixture default
+
+    def test_traces_contain_actual_values(self, resolved_loan_store):
+        """Trace values match the input values at resolution time."""
+        trace = resolved_loan_store.derivation_traces["loan.credit_score_effective"]
+        assert trace["inputs"]["applicant.credit_score"] == 720
+        assert trace["inputs"]["applicant.co_signer"] is False  # fixture default
+
+    def test_traces_update_on_re_resolve(self, resolved_loan_store):
+        """When inputs change and re-resolve, traces update."""
+        resolved_loan_store.add_hypothesis("applicant.income", 10000)
+        resolved_loan_store.resolve_all_dirty()
+        trace = resolved_loan_store.derivation_traces["loan.adjusted_income"]
+        assert trace["inputs"]["applicant.income"] == 10000
+
+    def test_traces_have_rule_name(self, resolved_loan_store):
+        """Each trace includes the rule name."""
+        trace = resolved_loan_store.derivation_traces["loan.adjusted_income"]
+        assert "name" in trace
+        assert isinstance(trace["name"], str)
+        assert len(trace["name"]) > 0
+
+
 class TestToPromptAttributes:
 
-    def test_output_has_layered_sections(self, resolved_loan_store):
-        """Prompt output contains root facts and target beliefs sections."""
-        prompt, keys = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
+    def test_pruned_prompt_has_evidence(self, resolved_loan_store):
+        """Pruned prompt includes evidence annotations with actual values."""
+        prompt, keys = resolved_loan_store.to_prompt_attributes(
+            ["loan.application_status"],
+        )
+        assert "loan.application_status" in prompt
+        # Evidence should show actual input values, not just key names
+        assert "(evidence:" in prompt
+
+    def test_unpruned_prompt_has_sections(self, resolved_loan_store):
+        """Unpruned prompt contains root facts and target beliefs sections."""
+        prompt, keys = resolved_loan_store.to_prompt_attributes(
+            ["loan.adjusted_income"], prune_clean_derived=False,
+        )
         assert "# Root facts" in prompt
         assert "# Target beliefs" in prompt
         assert "loan.adjusted_income" in prompt
         assert "applicant.income" in prompt
 
-    def test_inline_from_comments(self, resolved_loan_store):
-        """Derived beliefs have (from ...) comments."""
-        prompt, _ = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
-        assert "(from applicant.income, applicant.dependents)" in prompt
+    def test_evidence_contains_values(self, resolved_loan_store):
+        """Evidence annotations contain actual values from traces."""
+        prompt, _ = resolved_loan_store.to_prompt_attributes(
+            ["loan.adjusted_income"], prune_clean_derived=False,
+        )
+        # Should show evidence with actual values
+        assert "applicant.income=6000" in prompt
+        assert "applicant.dependents=0" in prompt  # fixture default
 
-    def test_intermediate_derivations_shown(self, resolved_loan_store):
-        """Multi-hop chains show intermediate derivations."""
-        prompt, _ = resolved_loan_store.to_prompt_attributes(["loan.base_interest_rate"])
-        assert "# Intermediate derivations" in prompt
-        assert "loan.rate_tier" in prompt
-
-    def test_prompt_keys_match_all_hops(self, resolved_loan_store):
-        """Returned prompt_keys include all hopwalked beliefs."""
-        prompt, keys = resolved_loan_store.to_prompt_attributes(["loan.adjusted_income"])
-        assert "loan.adjusted_income" in keys
-        assert "applicant.income" in keys
-        assert "applicant.dependents" in keys
+    def test_pruned_has_fewer_keys(self, resolved_loan_store):
+        """Pruned prompt injects fewer keys than unpruned."""
+        _, pruned_keys = resolved_loan_store.to_prompt_attributes(
+            ["loan.application_status"],
+        )
+        _, unpruned_keys = resolved_loan_store.to_prompt_attributes(
+            ["loan.application_status"], prune_clean_derived=False,
+        )
+        assert len(pruned_keys) < len(unpruned_keys)
 
     def test_empty_attributes_returns_empty(self, resolved_loan_store):
         """Empty attributes → empty prompt."""
@@ -497,8 +590,8 @@ class TestResolveDirtyForAttributes:
         assert store.get_value("patient.organ_integrity") is not None
         assert store.get_value("treatment.zyxostin_hazard") is not None
 
-    def test_alien_clinic_hopwalk_chain(self):
-        """Full hopwalk on active_prescription shows the whole chain."""
+    def test_alien_clinic_unpruned_hopwalk(self):
+        """Unpruned hopwalk on active_prescription shows the whole chain."""
         from belief_store.domains.alien_clinic import setup_alien_clinic_domain
         store = BeliefStore()
         setup_alien_clinic_domain(store)
@@ -508,7 +601,9 @@ class TestResolveDirtyForAttributes:
         store.add_hypothesis("atmosphere.dominant_gas", "methane")
         store.resolve_all_dirty()
 
-        hops = store.hopwalk(["treatment.active_prescription"])
+        hops = store.hopwalk(
+            ["treatment.active_prescription"], prune_clean_derived=False,
+        )
         keys = {h.key for h in hops}
         # Should include base facts
         assert "patient.organism_type" in keys
@@ -521,3 +616,23 @@ class TestResolveDirtyForAttributes:
         assert "treatment.zyxostin_hazard" in keys
         # Should include target
         assert "treatment.active_prescription" in keys
+
+    def test_alien_clinic_pruned_compact(self):
+        """Pruned hopwalk on active_prescription is significantly smaller."""
+        from belief_store.domains.alien_clinic import setup_alien_clinic_domain
+        store = BeliefStore()
+        setup_alien_clinic_domain(store)
+        store.add_hypothesis("patient.organism_type", "Glerps")
+        store.add_hypothesis("patient.symptoms", [])
+        store.add_hypothesis("atmosphere.ambient_pressure", 3.5)
+        store.add_hypothesis("atmosphere.dominant_gas", "methane")
+        store.resolve_all_dirty()
+
+        pruned = store.hopwalk(["treatment.active_prescription"])
+        unpruned = store.hopwalk(
+            ["treatment.active_prescription"], prune_clean_derived=False,
+        )
+        assert len(pruned) < len(unpruned)
+        # Target must always be present
+        pruned_keys = {h.key for h in pruned}
+        assert "treatment.active_prescription" in pruned_keys

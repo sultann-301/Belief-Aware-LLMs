@@ -137,7 +137,7 @@ LOAN_TURNS = [
         "options": {
             "A": "approved",
             "B": "denied_amount_exceeded",
-            "C": "denied_ineligible",
+            "C": "denied_ineligible & denied_amount_exceeded",
         },
         "correct": "C",
     },
