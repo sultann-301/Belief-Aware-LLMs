@@ -492,6 +492,59 @@ def simulate_step():
     return jsonify(result)
 
 
+# ── HopWalker API ────────────────────────────────────────────────────
+
+
+@app.route("/api/hopwalk", methods=["POST"])
+def hopwalk():
+    """Return HopWalker visualization data for given attribute keys."""
+    data = request.get_json(force=True)
+    attributes = data.get("attributes", [])
+    if not attributes:
+        return jsonify({"error": "attributes list required"}), 400
+
+    # Resolve dirty first so values are current
+    store.resolve_dirty_for_attributes(attributes)
+
+    hops = store.hopwalk(attributes)
+    prompt_text, prompt_keys = store.to_prompt_attributes(attributes)
+
+    attr_set = set(attributes)
+    nodes = []
+    for h in hops:
+        rule = store.rule_index.get(h.key)
+        inputs = rule["inputs"] if rule else []
+        layer = "target" if h.key in attr_set else ("base" if not h.is_derived else "intermediate")
+        nodes.append({
+            "key": h.key,
+            "value": h.value,
+            "is_derived": h.is_derived,
+            "hop_level": h.hop_level,
+            "feeds_into": h.feeds_into,
+            "inputs": inputs,
+            "layer": layer,
+            "entity": store.entity_of(h.key),
+        })
+
+    # Build edges from the hopwalk set
+    hopwalk_keys = {h.key for h in hops}
+    edges = []
+    for h in hops:
+        rule = store.rule_index.get(h.key)
+        if rule:
+            for inp in rule["inputs"]:
+                if inp in hopwalk_keys:
+                    edges.append({"source": inp, "target": h.key})
+
+    return jsonify({
+        "nodes": nodes,
+        "edges": edges,
+        "prompt": prompt_text,
+        "prompt_keys": prompt_keys,
+        "attributes": attributes,
+    })
+
+
 # ── Utility endpoints ────────────────────────────────────────────────
 
 

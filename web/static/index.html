@@ -140,9 +140,10 @@
               class="condition-select"
               title="System prompt version"
             >
-              <option value="v1">Prompt v1 (structured)</option>
+            <option value="v1">Prompt v1 (structured)</option>
               <option value="v2">Prompt v2 (few-shot)</option>
               <option value="v3">Prompt v3 (compact)</option>
+              <option value="v4">Prompt v4 (HopWalker)</option>
             </select>
             <div
               class="dirty-indicator"
@@ -167,8 +168,23 @@
         <!-- Structured Prompt Builder -->
         <div class="prompt-builder" id="prompt-builder">
           <div class="prompt-section">
-            <label class="prompt-label">[ENTITY]</label>
+            <div class="prompt-label-row">
+              <label class="prompt-label">[ENTITY]</label>
+              <div class="filter-mode-toggle">
+                <button class="filter-mode-btn active" data-mode="entity" id="btn-entity-mode">Entities</button>
+                <button class="filter-mode-btn" data-mode="attribute" id="btn-attr-mode">Attributes</button>
+              </div>
+            </div>
             <div class="entity-chips" id="entity-chips"></div>
+            <div class="attribute-chips" id="attribute-chips" style="display:none">
+              <div class="attr-search-row">
+                <input type="text" id="attr-search" class="attr-search" placeholder="Search attributes…" spellcheck="false">
+                <button class="btn btn-ghost btn-xs" id="btn-hopwalk" title="Visualize HopWalker chain">
+                  ⟳ HopWalk
+                </button>
+              </div>
+              <div class="attr-chip-grid" id="attr-chip-grid"></div>
+            </div>
           </div>
           <div class="prompt-section">
             <label class="prompt-label">[NEW BELIEF]</label>
@@ -307,6 +323,34 @@
 
     <!-- Tooltip at body level so it's never clipped -->
     <div class="graph-tooltip" id="graph-tooltip"></div>
+
+    <!-- HopWalker Visualizer Overlay -->
+    <div class="hopwalk-overlay" id="hopwalk-overlay" style="display:none">
+      <div class="hopwalk-panel">
+        <div class="hopwalk-header">
+          <div class="hopwalk-title">
+            <span class="hopwalk-icon">⟳</span>
+            <h3>HopWalker Visualizer</h3>
+          </div>
+          <div class="hopwalk-header-right">
+            <div class="hopwalk-attrs" id="hopwalk-attrs"></div>
+            <button class="btn btn-ghost btn-xs" id="btn-hopwalk-close">✕ Close</button>
+          </div>
+        </div>
+        <div class="hopwalk-body">
+          <div class="hopwalk-graph-area">
+            <canvas id="hopwalk-canvas"></canvas>
+          </div>
+          <div class="hopwalk-prompt-area">
+            <div class="hopwalk-prompt-header">
+              <span class="prompt-label">Generated Prompt</span>
+              <span class="hopwalk-key-count" id="hopwalk-key-count">0 keys</span>
+            </div>
+            <pre class="hopwalk-prompt-text" id="hopwalk-prompt-text"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script src="/static/app.js"></script>
   </body>

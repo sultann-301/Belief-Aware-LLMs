@@ -12,6 +12,8 @@ let graphData = { nodes: [], edges: [] };
 let domainInfo = {};
 let currentDomain = "loan";
 let selectedEntities = new Set();
+let selectedAttributes = new Set();
+let filterMode = "entity"; // "entity" or "attribute"
 let currentMode = "chat"; // "chat" or "simulation"
 let updatedKeys = new Set();
 
@@ -638,6 +640,62 @@ function updateEntityChips() {
       }
     });
   });
+
+  // Also build attribute chips
+  updateAttributeChips();
+}
+
+// ── Attribute chip picker ───────────────────────────────────────────
+
+function updateAttributeChips() {
+  const $grid = document.getElementById("attr-chip-grid");
+  if (!$grid) return;
+
+  // Collect all keys from store graph data (base + derived)
+  const allKeys = new Set();
+  graphData.nodes.forEach((n) => allKeys.add(n.id));
+  // Also add schema keys
+  Object.keys(DOMAIN_SCHEMA[currentDomain] || {}).forEach((k) => allKeys.add(k));
+
+  const sorted = Array.from(allKeys).sort();
+  selectedAttributes = new Set();
+
+  $grid.innerHTML = sorted
+    .map((key) => {
+      const ent = key.split(".")[0];
+      const color = getEntityColor(ent);
+      return `<span class="attr-chip" data-key="${key}">
+        <span class="attr-dot" style="background:${color}"></span>
+        ${key}
+      </span>`;
+    })
+    .join("");
+
+  $grid.querySelectorAll(".attr-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const key = chip.dataset.key;
+      if (selectedAttributes.has(key)) {
+        selectedAttributes.delete(key);
+        chip.classList.remove("selected");
+      } else {
+        selectedAttributes.add(key);
+        chip.classList.add("selected");
+      }
+    });
+  });
+
+  // Search filter
+  const $search = document.getElementById("attr-search");
+  if ($search) {
+    $search.value = "";
+    $search.oninput = () => {
+      const q = $search.value.toLowerCase();
+      $grid.querySelectorAll(".attr-chip").forEach((chip) => {
+        const key = chip.dataset.key;
+        chip.classList.toggle("attr-chip-hidden", !key.includes(q));
+      });
+    };
+  }
 }
 
 // ── Attribute dropdown helpers ───────────────────────────────────────
@@ -724,13 +782,18 @@ function addBeliefRow() {
 }
 
 function buildStructuredInput() {
-  const entities = Array.from(selectedEntities);
-  if (entities.length === 0) return null;
-
   const query = $chatInput.value.trim();
   if (!query) return null;
 
-  let parts = [`[ENTITY]\n${entities.join(", ")}`];
+  let filterItems;
+  if (filterMode === "attribute" && selectedAttributes.size > 0) {
+    filterItems = Array.from(selectedAttributes);
+  } else {
+    filterItems = Array.from(selectedEntities);
+  }
+  if (filterItems.length === 0) return null;
+
+  let parts = [`[ENTITY]\n${filterItems.join(", ")}`];
 
   // Collect belief rows
   const rows = $beliefRows.querySelectorAll(".belief-row");
@@ -1248,10 +1311,277 @@ $btnSimStop.addEventListener("click", stopSimulation);
 
 $btnGraphToggle.addEventListener("click", toggleGraphPanel);
 
+// ── Filter mode toggle ──────────────────────────────────────────────
+
+const $btnEntityMode = document.getElementById("btn-entity-mode");
+const $btnAttrMode = document.getElementById("btn-attr-mode");
+const $attributeChips = document.getElementById("attribute-chips");
+
+function setFilterMode(mode) {
+  filterMode = mode;
+  $btnEntityMode.classList.toggle("active", mode === "entity");
+  $btnAttrMode.classList.toggle("active", mode === "attribute");
+  $entityChips.style.display = mode === "entity" ? "flex" : "none";
+  $attributeChips.style.display = mode === "attribute" ? "block" : "none";
+
+  // If switching to attribute mode and prompt is v1-v3, auto-switch to v4
+  if (mode === "attribute") {
+    const $pv = document.getElementById("prompt-version");
+    if ($pv && !$pv.value.startsWith("v4")) {
+      $pv.value = "v4";
+    }
+  }
+}
+
+$btnEntityMode.addEventListener("click", () => setFilterMode("entity"));
+$btnAttrMode.addEventListener("click", () => setFilterMode("attribute"));
+
+// ══════════════════════════════════════════════════════════════════
+// HOPWALKER VISUALIZER
+// ══════════════════════════════════════════════════════════════════
+
+const $hopwalkOverlay = document.getElementById("hopwalk-overlay");
+const $hopwalkCanvas = document.getElementById("hopwalk-canvas");
+const $hopwalkPromptText = document.getElementById("hopwalk-prompt-text");
+const $hopwalkKeyCount = document.getElementById("hopwalk-key-count");
+const $hopwalkAttrs = document.getElementById("hopwalk-attrs");
+const $btnHopwalk = document.getElementById("btn-hopwalk");
+const $btnHopwalkClose = document.getElementById("btn-hopwalk-close");
+
+const LAYER_COLORS = {
+  base: "#4a9eff",
+  intermediate: "#6c5ce7",
+  target: "#00cec9",
+};
+
+async function openHopWalker() {
+  const attrs = Array.from(selectedAttributes);
+  if (attrs.length === 0) {
+    alert("Select at least one attribute to visualize.");
+    return;
+  }
+
+  // Show overlay immediately with loading state
+  $hopwalkOverlay.style.display = "flex";
+  $hopwalkPromptText.textContent = "Loading...";
+  $hopwalkKeyCount.textContent = "...";
+  $hopwalkAttrs.innerHTML = attrs.map(a => `<span class="hopwalk-attr-tag">${a}</span>`).join("");
+
+  try {
+    const data = await api("/api/hopwalk", {
+      method: "POST",
+      body: JSON.stringify({ attributes: attrs }),
+    });
+
+    $hopwalkPromptText.textContent = data.prompt || "(empty)";
+    $hopwalkKeyCount.textContent = `${data.prompt_keys?.length || 0} keys`;
+
+    renderHopWalkGraph(data.nodes, data.edges, data.attributes);
+  } catch (err) {
+    $hopwalkPromptText.textContent = "Error: " + err.message;
+  }
+}
+
+function closeHopWalker() {
+  $hopwalkOverlay.style.display = "none";
+}
+
+function renderHopWalkGraph(nodes, edges, targetAttrs) {
+  const canvas = $hopwalkCanvas;
+  const container = canvas.parentElement;
+  const rect = container.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  canvas.style.width = rect.width + "px";
+  canvas.style.height = rect.height + "px";
+
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const W = rect.width;
+  const H = rect.height;
+  const padding = 60;
+
+  if (!nodes || nodes.length === 0) {
+    ctx.fillStyle = "#8b949e";
+    ctx.font = "14px Inter, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("No beliefs found for these attributes.", W / 2, H / 2);
+    return;
+  }
+
+  // Group by layer
+  const layers = { base: [], intermediate: [], target: [] };
+  const nodeMap = {};
+  nodes.forEach((n) => {
+    layers[n.layer].push(n);
+    nodeMap[n.key] = n;
+  });
+
+  const layerOrder = ["base", "intermediate", "target"];
+  const activeLayerOrder = layerOrder.filter((l) => layers[l].length > 0);
+  const colWidth = (W - 2 * padding) / Math.max(activeLayerOrder.length - 1, 1);
+
+  // Position nodes
+  const positions = {};
+  activeLayerOrder.forEach((layer, li) => {
+    const layerNodes = layers[layer];
+    const x = padding + li * colWidth;
+    const rowH = (H - 2 * padding) / Math.max(layerNodes.length, 1);
+    layerNodes.forEach((n, ni) => {
+      positions[n.key] = {
+        x,
+        y: padding + ni * rowH + rowH / 2,
+        color: LAYER_COLORS[layer],
+        layer,
+        node: n,
+      };
+    });
+  });
+
+  // Animation: draw edges first, then nodes
+  const totalFrames = 60;
+  let frame = 0;
+
+  function animate() {
+    frame++;
+    const progress = Math.min(frame / totalFrames, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Layer labels
+    ctx.font = "10px Inter, sans-serif";
+    ctx.textAlign = "center";
+    activeLayerOrder.forEach((layer, li) => {
+      const x = padding + li * colWidth;
+      ctx.fillStyle = LAYER_COLORS[layer];
+      ctx.globalAlpha = ease;
+      const label = layer === "base" ? "ROOT FACTS" : layer === "intermediate" ? "INTERMEDIATE" : "TARGETS";
+      ctx.fillText(label, x, 25);
+    });
+    ctx.globalAlpha = 1;
+
+    // Draw edges with animated opacity
+    edges.forEach((e) => {
+      const srcPos = positions[e.source];
+      const tgtPos = positions[e.target];
+      if (!srcPos || !tgtPos) return;
+
+      const edgeAlpha = ease * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(srcPos.x, srcPos.y);
+
+      // Curved edge
+      const midX = (srcPos.x + tgtPos.x) / 2;
+      const midY = (srcPos.y + tgtPos.y) / 2 - 20;
+      ctx.quadraticCurveTo(midX, midY, tgtPos.x, tgtPos.y);
+
+      ctx.strokeStyle = `rgba(110, 118, 129, ${edgeAlpha})`;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Arrowhead
+      const angle = Math.atan2(tgtPos.y - midY, tgtPos.x - midX);
+      const aLen = 7;
+      ctx.beginPath();
+      ctx.moveTo(tgtPos.x, tgtPos.y);
+      ctx.lineTo(tgtPos.x - aLen * Math.cos(angle - 0.35), tgtPos.y - aLen * Math.sin(angle - 0.35));
+      ctx.lineTo(tgtPos.x - aLen * Math.cos(angle + 0.35), tgtPos.y - aLen * Math.sin(angle + 0.35));
+      ctx.closePath();
+      ctx.fillStyle = `rgba(110, 118, 129, ${edgeAlpha * 1.5})`;
+      ctx.fill();
+    });
+
+    // Draw nodes
+    Object.values(positions).forEach((pos) => {
+      const n = pos.node;
+      const r = n.layer === "target" ? 16 : n.layer === "base" ? 14 : 12;
+      const alpha = ease;
+
+      // Glow for targets
+      if (n.layer === "target") {
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, r + 12, 0, Math.PI * 2);
+        const grad = ctx.createRadialGradient(pos.x, pos.y, r, pos.x, pos.y, r + 12);
+        grad.addColorStop(0, `rgba(0, 206, 201, ${0.3 * alpha})`);
+        grad.addColorStop(1, "rgba(0, 206, 201, 0)");
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      // Node
+      ctx.beginPath();
+      if (n.layer === "target") {
+        // Diamond
+        ctx.moveTo(pos.x, pos.y - r);
+        ctx.lineTo(pos.x + r, pos.y);
+        ctx.lineTo(pos.x, pos.y + r);
+        ctx.lineTo(pos.x - r, pos.y);
+        ctx.closePath();
+      } else if (n.layer === "intermediate") {
+        // Rounded square
+        const s = r * 0.85;
+        ctx.roundRect(pos.x - s, pos.y - s, s * 2, s * 2, 4);
+      } else {
+        // Circle
+        ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+      }
+      ctx.fillStyle = pos.color;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+
+      // Label
+      const label = n.key.split(".").pop();
+      ctx.font = "bold 9px Inter, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillStyle = `rgba(230, 237, 243, ${0.8 * alpha})`;
+      ctx.fillText(label, pos.x, pos.y + r + 14);
+
+      // Value below label
+      if (n.value !== null && n.value !== undefined) {
+        const valStr = String(n.value).length > 20 ? String(n.value).slice(0, 17) + "…" : String(n.value);
+        ctx.font = "9px 'JetBrains Mono', monospace";
+        ctx.fillStyle = `rgba(139, 148, 158, ${0.7 * alpha})`;
+        ctx.fillText(valStr, pos.x, pos.y + r + 26);
+      }
+    });
+
+    if (frame < totalFrames) {
+      requestAnimationFrame(animate);
+    }
+  }
+
+  animate();
+}
+
+$btnHopwalk.addEventListener("click", openHopWalker);
+$btnHopwalkClose.addEventListener("click", closeHopWalker);
+
+// Close overlay on backdrop click
+$hopwalkOverlay.addEventListener("click", (e) => {
+  if (e.target === $hopwalkOverlay) closeHopWalker();
+});
+
+// Close on Escape
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && $hopwalkOverlay.style.display !== "none") {
+    closeHopWalker();
+  }
+});
+
 // ── Initial load ────────────────────────────────────────────────────
 
 (async () => {
   await loadModels();
   await loadDomains();
   await refresh();
+  // Build attribute chips after initial graph data is loaded
+  updateAttributeChips();
 })();
