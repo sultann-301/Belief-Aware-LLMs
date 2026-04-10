@@ -41,24 +41,24 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         derive_fn=_snevox_phase,
     )
 
-    # R3: hazards per compound
+    # R3: danger_levels per compound
     store.add_rule(
-        name="zyxostin_hazard",
+        name="zyxostin_danger_level",
         inputs=["patient.organism_type", "treatment.zyxostin_phase", "patient.organ_integrity"],
-        output_key="treatment.zyxostin_hazard",
-        derive_fn=_zyxostin_hazard,
+        output_key="treatment.zyxostin_danger_level",
+        derive_fn=_zyxostin_danger_level,
     )
     store.add_rule(
-        name="filinan_hazard",
+        name="filinan_danger_level",
         inputs=["patient.organism_type", "treatment.filinan_phase", "patient.organ_integrity"],
-        output_key="treatment.filinan_hazard",
-        derive_fn=_filinan_hazard,
+        output_key="treatment.filinan_danger_level",
+        derive_fn=_filinan_danger_level,
     )
     store.add_rule(
-        name="snevox_hazard",
+        name="snevox_danger_level",
         inputs=["patient.organism_type", "treatment.snevox_phase", "patient.organ_integrity"],
-        output_key="treatment.snevox_hazard",
-        derive_fn=_snevox_hazard,
+        output_key="treatment.snevox_danger_level",
+        derive_fn=_snevox_danger_level,
     )
 
     # R4
@@ -67,9 +67,9 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         inputs=[
             "patient.organism_type",
             "patient.symptoms",
-            "treatment.zyxostin_hazard",
-            "treatment.filinan_hazard",
-            "treatment.snevox_hazard",
+            "treatment.zyxostin_danger_level",
+            "treatment.filinan_danger_level",
+            "treatment.snevox_danger_level",
         ],
         output_key="treatment.active_prescription",
         derive_fn=_active_prescription,
@@ -112,9 +112,9 @@ def setup_alien_clinic_domain(store: BeliefStore) -> None:
         name="recovery_prospect",
         inputs=[
             "treatment.active_prescription",
-            "treatment.zyxostin_hazard",
-            "treatment.filinan_hazard",
-            "treatment.snevox_hazard",
+            "treatment.zyxostin_danger_level",
+            "treatment.filinan_danger_level",
+            "treatment.snevox_danger_level",
             "treatment.duration_cycles",
             "medical.staff_requirement"
         ],
@@ -158,8 +158,8 @@ def _snevox_phase(inputs: dict[str, Any]) -> str:
     return "liquid" if inputs["atmosphere.dominant_gas"] == "chlorine" else "vapor"
 
 
-# --- R3: hazards ---
-def _evaluate_hazard(
+# --- R3: danger_levels ---
+def _evaluate_danger_level(
     compound: str,
     organism: str,
     phase: str,
@@ -177,23 +177,23 @@ def _evaluate_hazard(
     if is_explode:
         if integrity == "volatile":
             return "symbiotic"
-        return "LETHAL"
+        return "fatal_to_patient"
     
     # 2. State-Based
     if phase == "plasma" and compound == "filinan":
-        return "LETHAL"
+        return "fatal_to_patient"
     if phase == "vapor" and compound == "snevox" and organism == "Qwerl":
-        return "LETHAL"
+        return "fatal_to_patient"
     
     # 3. Condition-Based
     if integrity == "volatile":
-        return "LETHAL"
+        return "fatal_to_patient"
     
     return "safe"
 
 
-def _zyxostin_hazard(inputs: dict[str, Any]) -> str:
-    return _evaluate_hazard(
+def _zyxostin_danger_level(inputs: dict[str, Any]) -> str:
+    return _evaluate_danger_level(
         "zyxostin",
         inputs["patient.organism_type"],
         inputs["treatment.zyxostin_phase"],
@@ -201,8 +201,8 @@ def _zyxostin_hazard(inputs: dict[str, Any]) -> str:
     )
 
 
-def _filinan_hazard(inputs: dict[str, Any]) -> str:
-    return _evaluate_hazard(
+def _filinan_danger_level(inputs: dict[str, Any]) -> str:
+    return _evaluate_danger_level(
         "filinan",
         inputs["patient.organism_type"],
         inputs["treatment.filinan_phase"],
@@ -210,8 +210,8 @@ def _filinan_hazard(inputs: dict[str, Any]) -> str:
     )
 
 
-def _snevox_hazard(inputs: dict[str, Any]) -> str:
-    return _evaluate_hazard(
+def _snevox_danger_level(inputs: dict[str, Any]) -> str:
+    return _evaluate_danger_level(
         "snevox",
         inputs["patient.organism_type"],
         inputs["treatment.snevox_phase"],
@@ -223,18 +223,18 @@ def _snevox_hazard(inputs: dict[str, Any]) -> str:
 def _active_prescription(inputs: dict[str, Any]) -> str:
     organism = inputs["patient.organism_type"]
     symptoms = inputs.get("patient.symptoms", [])
-    hazards = {
-        "zyxostin": inputs["treatment.zyxostin_hazard"],
-        "filinan": inputs["treatment.filinan_hazard"],
-        "snevox": inputs["treatment.snevox_hazard"],
+    danger_levels = {
+        "zyxostin": inputs["treatment.zyxostin_danger_level"],
+        "filinan": inputs["treatment.filinan_danger_level"],
+        "snevox": inputs["treatment.snevox_danger_level"],
     }
     
     # 1. MIRACLE OVERRIDE
-    if hazards["filinan"] == "symbiotic":
+    if danger_levels["filinan"] == "symbiotic":
         return "filinan"
-    if hazards["zyxostin"] == "symbiotic":
+    if danger_levels["zyxostin"] == "symbiotic":
         return "zyxostin"
-    if hazards["snevox"] == "symbiotic":
+    if danger_levels["snevox"] == "symbiotic":
         return "snevox"
         
     # 2. SYMPTOM PRIORITIES
@@ -256,7 +256,7 @@ def _active_prescription(inputs: dict[str, Any]) -> str:
         priority = []
         
     for option in priority:
-        if hazards[option] == "safe":
+        if danger_levels[option] == "safe":
             return option
             
     return "none"
@@ -310,8 +310,8 @@ def _recovery_prospect(inputs: dict[str, Any]) -> str:
     
     # 1. MIRACLE CHECK
     if prescription != "none":
-        hazard_key = f"treatment.{prescription}_hazard"
-        if inputs.get(hazard_key) == "symbiotic":
+        danger_level_key = f"treatment.{prescription}_danger_level"
+        if inputs.get(danger_level_key) == "symbiotic":
             return "miraculous"
             
     # 2. STANDARD CHECK

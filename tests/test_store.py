@@ -588,7 +588,7 @@ class TestResolveDirtyForAttributes:
         # The target and all upstream should be resolved
         assert store.get_value("treatment.active_prescription") is not None
         assert store.get_value("patient.organ_integrity") is not None
-        assert store.get_value("treatment.zyxostin_hazard") is not None
+        assert store.get_value("treatment.zyxostin_danger_level") is not None
 
     def test_alien_clinic_unpruned_hopwalk(self):
         """Unpruned hopwalk on active_prescription shows the whole chain."""
@@ -613,7 +613,7 @@ class TestResolveDirtyForAttributes:
         # Should include intermediates
         assert "patient.organ_integrity" in keys
         assert "treatment.zyxostin_phase" in keys
-        assert "treatment.zyxostin_hazard" in keys
+        assert "treatment.zyxostin_danger_level" in keys
         # Should include target
         assert "treatment.active_prescription" in keys
 

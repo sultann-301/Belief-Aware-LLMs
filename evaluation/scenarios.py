@@ -137,7 +137,7 @@ LOAN_TURNS = [
         "options": {
             "A": "approved",
             "B": "denied_amount_exceeded",
-            "C": "denied_ineligible & denied_amount_exceeded",
+            "C": "denied_ineligible",
         },
         "correct": "C",
     },
@@ -163,13 +163,13 @@ ALIEN_RULES = """\
 [RULES]
 1. patient.organ_integrity = "volatile" if ambient_pressure > 5.0 and organism_type == "Yorp". "volatile" if ambient_pressure > 4.0 and organism_type == "Glerps". "brittle" if ambient_pressure > 3.0. Otherwise "stable".
 2. treatment.zyxostin_phase = "plasma" IF dominant_gas == "methane" ELSE "crystalline". treatment.filinan_phase = "vapor" IF dominant_gas == "xenon" ELSE "plasma". treatment.snevox_phase = "liquid" IF dominant_gas == "chlorine" ELSE "vapor".
-3. hazards: If organism_type + compound has explode constraint (Glerps+zyxostin, Yorp+filinan, Qwerl+snevox), then if organ_integrity is "volatile", hazard is "symbiotic" (Biological Singularity). Else hazard is "LETHAL". If phase="plasma" and filinan -> "LETHAL". If phase="vapor" and snevox and Qwerl -> "LETHAL". If organ_integrity="volatile" -> "LETHAL". Else "safe". (hazards are treatment.{compound}_hazard)
-4. treatment.active_prescription = MIRACLE OVERRIDE: If any hazard is "symbiotic", pick it immediately ignoring priority. SYMPTOM PRIORITIES: Glerps: if "fever" and "spasms" in symptoms (snevox -> zyxostin -> filinan), if "fever" in symptoms (zyxostin -> snevox -> filinan), else (filinan -> zyxostin -> snevox). Yorp: if "acid_sweat" in symptoms (filinan -> snevox -> zyxostin), else (zyxostin -> snevox -> filinan). Qwerl: (snevox -> zyxostin -> filinan). Select highest priority safe. Else none.
+3. danger_levels: If organism_type + compound has explode constraint (Glerps+zyxostin, Yorp+filinan, Qwerl+snevox), then if organ_integrity is "volatile", danger_level is "symbiotic" (Biological Singularity). Else danger_level is "fatal_to_patient". If phase="plasma" and filinan -> "fatal_to_patient". If phase="vapor" and snevox and Qwerl -> "fatal_to_patient". If organ_integrity="volatile" -> "fatal_to_patient". Else "safe". (danger_levels are treatment.{compound}_danger_level)
+4. treatment.active_prescription = MIRACLE OVERRIDE: If any danger_level is "symbiotic", pick it immediately ignoring priority. SYMPTOM PRIORITIES: Glerps: if "fever" and "spasms" in symptoms (snevox -> zyxostin -> filinan), if "fever" in symptoms (zyxostin -> snevox -> filinan), else (filinan -> zyxostin -> snevox). Yorp: if "acid_sweat" in symptoms (filinan -> snevox -> zyxostin), else (zyxostin -> snevox -> filinan). Qwerl: (snevox -> zyxostin -> filinan). Select highest priority compound where danger_level is "safe". NEVER select a "fatal_to_patient" compound (fallback to "none" if all are fatal_to_patient).
 5. patient.sensory_status = "telepathic" if active_prescription == "snevox", else "normal".
 6. patient.quarantine_required = True if (dominant_gas == "chlorine" AND organism_type == "Qwerl") or (dominant_gas == "methane" AND organism_type == "Yorp"), else False.
 7. treatment.duration_cycles = 12 if active_prescription == "snevox" and organ_integrity == "volatile". 0 if active_prescription == "none". Otherwise 5.
 8. medical.staff_requirement = "hazmat_team" if quarantine_required == True. "psionic_handler" if sensory_status == "telepathic". Else "standard_medic". (Quarantine overrides Psionic).
-9. patient.recovery_prospect = "miraculous" if hazard is "symbiotic". "guarded" if duration_cycles > 10 and staff_requirement == "hazmat_team". "terminal" if duration_cycles == 0. Else "excellent". (hazards are treatment.{compound}_hazard)
+9. patient.recovery_prospect = "miraculous" if danger_level is "symbiotic". "guarded" if duration_cycles > 10 and staff_requirement == "hazmat_team". "terminal" if duration_cycles == 0. Else "excellent". (danger_levels are treatment.{compound}_danger_level)
 10. clinic.billing_tier = "class_omega" if staff_requirement == "psionic_handler" or active_prescription == "snevox". "class_delta" if staff_requirement == "hazmat_team". Otherwise "class_standard".
 """
 
@@ -336,12 +336,12 @@ ALIEN_TURNS_CF = [
         "correct": "A",
     },
     {
-        "attributes": ["treatment.zyxostin_hazard"],
+        "attributes": ["treatment.zyxostin_danger_level"],
         "beliefs": {"atmosphere.ambient_pressure": 4.1},
-        "question": "At the current pressure and gas, is treatment.zyxostin_hazard symbiotic?",
+        "question": "At the current pressure and gas, is treatment.zyxostin_danger_level symbiotic?",
         "options": {
             "A": "Yes",
-            "B": "No, it is LETHAL",
+            "B": "No, it is fatal_to_patient",
             "C": "No, it is safe",
         },
         "correct": "A",

@@ -205,9 +205,9 @@ The **high-stakes safety domain**. It evaluates the system's ability to handle "
 | `treatment.zyxostin_phase`      | str       | crystalline, plasma                      | Derived from gas (R2)             |
 | `treatment.filinan_phase`       | str       | vapor, plasma                            | Derived from gas (R2)             |
 | `treatment.snevox_phase`        | str       | liquid, vapor                            | Derived from gas (R2)             |
-| `treatment.zyxostin_hazard`     | str       | safe, LETHAL, symbiotic                  | Safety check for zyxostin         |
-| `treatment.filinan_hazard`      | str       | safe, LETHAL, symbiotic                  | Safety check for filinan          |
-| `treatment.snevox_hazard`       | str       | safe, LETHAL, symbiotic                  | Safety check for snevox           |
+| `treatment.zyxostin_hazard`     | str       | safe, fatal_to_patient, symbiotic                  | Safety check for zyxostin         |
+| `treatment.filinan_hazard`      | str       | safe, fatal_to_patient, symbiotic                  | Safety check for filinan          |
+| `treatment.snevox_hazard`       | str       | safe, fatal_to_patient, symbiotic                  | Safety check for snevox           |
 | `patient.quarantine_required`   | bool      | True, False                              | Derived (R6)                      |
 | `treatment.duration_cycles`     | numeric   | 5, 12, 0                                 | Derived (R7)                      |
 | `medical.staff_requirement`     | str       | hazmat_team, psionic_handler             | Derived (R8)                      |
@@ -246,14 +246,14 @@ R3: treatment.{compound}_hazard (Calculated 3x: for zyxostin, filinan, snevox)
        (organism_type == "Yorp" AND compound == "filinan") OR
        (organism_type == "Qwerl" AND compound == "snevox"):
        IF organ_integrity == "volatile" → "symbiotic"
-       ELSE → "LETHAL"
+       ELSE → "fatal_to_patient"
 
     # 2. State-Based
-    IF treatment.{compound}_phase == "plasma" AND compound == "filinan" → "LETHAL"
-    IF treatment.{compound}_phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "LETHAL"
+    IF treatment.{compound}_phase == "plasma" AND compound == "filinan" → "fatal_to_patient"
+    IF treatment.{compound}_phase == "vapor" AND compound == "snevox" AND organism_type == "Qwerl" → "fatal_to_patient"
 
     # 3. Condition-Based
-    IF organ_integrity == "volatile" → "LETHAL"
+    IF organ_integrity == "volatile" → "fatal_to_patient"
     ELSE → "safe"
 
 R4: treatment.active_prescription
@@ -384,8 +384,8 @@ graph TD
 t=0: organism_type = "Glerps", symptoms = [], ambient_pressure = 3.5, dominant_gas = "methane"
      → R1: 3.5 > 3.0 AND 3.5 <= 4.0 → organ_integrity = "brittle"
   → R2: methane → treatment.zyxostin_phase = "plasma", treatment.filinan_phase = "plasma", treatment.snevox_phase = "vapor"
-  → R3: (treatment.zyxostin_hazard) Glerps + zyxostin = LETHAL (no singularity since state is brittle)
-  → R3: (treatment.filinan_hazard) phase=plasma + filinan = LETHAL
+  → R3: (treatment.zyxostin_hazard) Glerps + zyxostin = fatal_to_patient (no singularity since state is brittle)
+  → R3: (treatment.filinan_hazard) phase=plasma + filinan = fatal_to_patient
     → R3: (treatment.snevox_hazard) safe (vapor is safe for Glerps)
      → R4: Glerps logic (Prefers filinan → zyxostin → snevox). Top two are Lethal.
           → active_prescription = "snevox"
@@ -405,7 +405,7 @@ t=2: Pressure spike! ambient_pressure = 4.5
      → resolve_all_dirty():
        R1: > 4.0 + Glerps → organ_integrity = "volatile"
        R3: Singularity! Glerps + zyxostin + volatile = "symbiotic".
-           Other compounds without explode constraints: filinan=LETHAL, snevox=LETHAL.
+           Other compounds without explode constraints: filinan=fatal_to_patient, snevox=fatal_to_patient.
        R4: Symbiotic override! active_prescription = "zyxostin".
        R5: active_prescription is zyxostin → sensory_status = "normal"
        R7: active_prescription is zyxostin → duration_cycles = 5
