@@ -189,17 +189,6 @@ async function loadModels() {
 // DEPENDENCY GRAPH RENDERER (Canvas-based force-directed layout)
 // ══════════════════════════════════════════════════════════════════
 
-const PALETTE = ["#4a9eff", "#6c5ce7", "#00cec9", "#fd79a8", "#f39c12", "#00b894", "#e84393", "#fdcb6e", "#e74c3c", "#d63031", "#55efc4"];
-
-function getEntityColor(entity) {
-  let hash = 0;
-  for (let i = 0; i < entity.length; i++) {
-    hash = entity.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  const index = Math.abs(hash) % PALETTE.length;
-  return PALETTE[index];
-}
-
 // Force simulation state
 let gNodes = [];
 let gEdges = [];
@@ -415,7 +404,14 @@ function draw(ctx, W, H) {
 
   // Draw nodes
   for (const n of gNodes) {
-    const color = getEntityColor(n.entity);
+    let color;
+    if (n.is_dirty) {
+      color = "#f39c12"; // orange
+    } else if (n.is_derived) {
+      color = "#6c5ce7"; // purple
+    } else {
+      color = "#4a9eff"; // blue
+    }
 
     // Dirty glow
     if (n.is_dirty) {
@@ -474,7 +470,7 @@ function draw(ctx, W, H) {
       ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
     }
 
-    ctx.fillStyle = n.is_dirty ? "#f39c12" : color;
+    ctx.fillStyle = color;
     ctx.fill();
     ctx.strokeStyle = n === hoveredNode ? "#fff" : "rgba(0,0,0,0.3)";
     ctx.lineWidth = n === hoveredNode ? 2 : 1;
@@ -654,8 +650,15 @@ function updateAttributeChips() {
 
   $grid.innerHTML = sorted
     .map((key) => {
-      const ent = key.split(".")[0];
-      const color = getEntityColor(ent);
+      const node = graphData.nodes.find(n => n.id === key);
+      let color = "#4a9eff"; // base blue by default
+      if (node) {
+        if (node.is_dirty) {
+          color = "#f39c12"; // dirty orange
+        } else if (node.is_derived) {
+          color = "#6c5ce7"; // derived purple
+        }
+      }
       return `<span class="attr-chip" data-key="${key}">
         <span class="attr-dot" style="background:${color}"></span>
         ${key}
