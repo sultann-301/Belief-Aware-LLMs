@@ -520,7 +520,7 @@ def hopwalk():
             "value": h.value,
             "is_derived": h.is_derived,
             "hop_level": h.hop_level,
-            "feeds_into": h.feeds_into,
+            "feeds_into": list(h.feeds_into),
             "inputs": inputs,
             "layer": layer,
             "entity": store.entity_of(h.key),

@@ -15,7 +15,7 @@ class HopNode:
     value: Any
     is_derived: bool
     hop_level: int            # 0 = target, 1 = direct input, 2 = input-of-input, …
-    feeds_into: list[str] = field(default_factory=list)  # keys this feeds
+    feeds_into: set[str] = field(default_factory=set)  # keys this feeds
 
 
 class BeliefStore:
@@ -219,7 +219,7 @@ class BeliefStore:
 
         Returns a deduplicated list of :class:`HopNode` sorted by hop level
         (deepest base facts first, targets last).  Each derived node carries
-        an inline ``feeds_into`` list showing which of the requested
+        an inline ``feeds_into`` set showing which of the requested
         *attributes* (transitively) depend on it.
 
         Parameters
@@ -233,21 +233,29 @@ class BeliefStore:
             in the prompt annotation provides the evidence instead.
             Dirty nodes are always expanded regardless of this flag.
         """
+        from collections import deque
+
         visited: dict[str, HopNode] = {}  # key → HopNode
         attr_set = set(attributes)  # targets — never pruned
 
-        def _walk(key: str, depth: int, target: str) -> None:
+        # BFS queue stores: (key, depth, target)
+        queue = deque()
+        for attr in attributes:
+            queue.append((attr, 0, attr))
+
+        while queue:
+            key, depth, target = queue.popleft()
+
             if key in visited:
                 node = visited[key]
                 # Keep the deepest hop level (furthest from target)
                 node.hop_level = max(node.hop_level, depth)
-                if target not in node.feeds_into:
-                    node.feeds_into.append(target)
-                return
+                node.feeds_into.add(target)
+                continue
 
             entry = self.beliefs.get(key)
             if entry is None or key in self.removed:
-                return  # belief doesn't exist
+                continue  # belief doesn't exist
 
             value, is_derived = entry
             node = HopNode(
@@ -255,7 +263,7 @@ class BeliefStore:
                 value=value,
                 is_derived=is_derived,
                 hop_level=depth,
-                feeds_into=[target],
+                feeds_into={target},
             )
             visited[key] = node
 
@@ -267,16 +275,15 @@ class BeliefStore:
                 if (prune_clean_derived and is_derived
                         and key not in self.dirty
                         and key not in attr_set):
-                    return  # node included, but ancestors are not
+                    continue  # node included, but ancestors are not
+                
                 # Depth cap: safety net — nodes AT max_depth are included
                 # but we don't recurse further beyond it
                 if depth >= max_depth:
-                    return
+                    continue
+                    
                 for inp in rule["inputs"]:
-                    _walk(inp, depth + 1, target)
-
-        for attr in attributes:
-            _walk(attr, 0, attr)
+                    queue.append((inp, depth + 1, target))
 
         # Sort: highest hop level first (base facts), targets last
         return sorted(visited.values(), key=lambda n: (-n.hop_level, n.key))
