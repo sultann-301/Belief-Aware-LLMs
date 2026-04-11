@@ -1,4 +1,4 @@
-﻿# Final Agreed Implementation
+# Final Agreed Implementation
 
 ---
 
@@ -461,4 +461,23 @@ Loan domain rules:
 - **Lazy revision.** Dirty flags propagate immediately; resolution happens at query time.
 - **Cascading retraction.** Deleted hypotheses cascade to unsupported derivations.
 - **Full audit trail.** Every add, update, derivation, and retraction is logged.
+
 ---
+
+## HopWalker and Prompt Construction
+
+The system restricts the LLM's context window by only showing the relevant segment of the belief graph, isolating its reasoning to the exact nodes involved in the query. This is achieved using the `HopWalker` algorithm:
+
+1. **Target Selection**: The module identifies rule inputs (`attributes`) required to evaluate the current scenario.
+2. **Reverse Traversal**: `HopWalker` performs a reverse traversal of the dependency graph, tracing backwards from target attributes through their connected rules (`rule_index`) up to the base facts.
+3. **Graph Pruning**: To save tokens and avoid unneeded complexity, `HopWalker` prunes traversal at any intermediate node that is already clean (i.e. not dirty). Instead of displaying the clean node's full ancestral tree, it leverages the `derivation_traces` cached during the `resolve_all_dirty` phase to inject an inline summary: `(evidence: a=1, b=2)`. Dirty nodes, however, are always fully expanded regardless of depth.
+4. **Depth Capping**: A `max_depth` parameter acts as a secondary safety net to prevent infinite or runaway traversals in exceptionally deep graphs.
+5. **Prompt Grouping**: The collected `HopNode` objects are mapped by depth, sorting from highest depth (root facts) down to depth 0 (targets). They are serialized into distinct sections (`# Root facts`, `# Intermediate derivations`, `# Target beliefs`) so the LLM processes them in top-down chronological sequence.
+
+### Proposed Optimization: DFS to BFS Refactor
+
+Currently, `hopwalk()` implements a recursive Depth-First Search (DFS). While functional, this produces a well-known edge case when combined with a `max_depth` cutoff:
+
+If a dependency node is reachable via two separate paths, and the DFS happens to explore the longer path first (hitting the condition `depth >= max_depth`), it will correctly cease recursing on that branch. However, because it caches that node in the `visited` dict, when the DFS subsequently explores the shorter path (where `depth` is safely below the max limit), it will see the node in `visited` and trigger an early return. This permanently skips those ancestors, dropping necessary context from the prompt.
+
+**Recommendation:** The nested `_walk` function should be replaced with an iterative **Breadth-First Search (BFS)** queue. BFS guarantees that every node is initially encountered via its shortest possible dependency path, naturally resolving the `max_depth` collision bug and ensuring deterministic expansion.

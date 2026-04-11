@@ -27,12 +27,38 @@ from belief_store.domains.alien_clinic import setup_alien_clinic_domain
 from belief_store.domains.crime_scene import setup_crime_scene_domain
 from belief_store.domains.thorncrester import setup_thorncrester_domain
 
+from evaluation.loan_extended_scenarios import (
+    LOAN_NEGATION_TURNS, LOAN_1HOP_TURNS, LOAN_2HOP_TURNS, LOAN_3HOP_TURNS, LOAN_4HOP_TURNS, LOAN_BELIEF_MAINTENANCE_TURNS
+)
+from evaluation.alien_clinic_extended_scenarios import (
+    ALIEN_NEGATION_TURNS, ALIEN_1HOP_TURNS, ALIEN_2HOP_TURNS, ALIEN_3HOP_TURNS, ALIEN_4HOP_TURNS, ALIEN_BELIEF_MAINTENANCE_TURNS
+)
+from evaluation.crime_scene_extended_scenarios import (
+    CRIME_NEGATION_TURNS, CRIME_1HOP_TURNS, CRIME_2HOP_TURNS, CRIME_3HOP_TURNS, CRIME_4HOP_TURNS, CRIME_BELIEF_MAINTENANCE_TURNS
+)
+from evaluation.thorncrester_extended_scenarios import (
+    THORNCRESTER_NEGATION_TURNS, THORNCRESTER_1HOP_TURNS, THORNCRESTER_2HOP_TURNS, THORNCRESTER_3HOP_TURNS, THORNCRESTER_4HOP_TURNS, THORNCRESTER_BELIEF_MAINTENANCE_TURNS
+)
+
+LOAN_EXTENDED_TURNS = LOAN_NEGATION_TURNS + LOAN_1HOP_TURNS + LOAN_2HOP_TURNS + LOAN_3HOP_TURNS + LOAN_4HOP_TURNS + LOAN_BELIEF_MAINTENANCE_TURNS
+ALIEN_EXTENDED_TURNS = ALIEN_NEGATION_TURNS + ALIEN_1HOP_TURNS + ALIEN_2HOP_TURNS + ALIEN_3HOP_TURNS + ALIEN_4HOP_TURNS + ALIEN_BELIEF_MAINTENANCE_TURNS
+CRIME_EXTENDED_TURNS = CRIME_NEGATION_TURNS + CRIME_1HOP_TURNS + CRIME_2HOP_TURNS + CRIME_3HOP_TURNS + CRIME_4HOP_TURNS + CRIME_BELIEF_MAINTENANCE_TURNS
+THORNCRESTER_EXTENDED_TURNS = THORNCRESTER_NEGATION_TURNS + THORNCRESTER_1HOP_TURNS + THORNCRESTER_2HOP_TURNS + THORNCRESTER_3HOP_TURNS + THORNCRESTER_4HOP_TURNS + THORNCRESTER_BELIEF_MAINTENANCE_TURNS
+
 DOMAIN_REGISTRY = {
     "loan": DomainConfig(
         name="loan",
         setup_fn=setup_loan_domain,
         initial_beliefs=LOAN_INITIAL_BELIEFS,
         turns=LOAN_TURNS,
+        baseline_rules=LOAN_RULES,
+        default_entities="applicant, loan",
+    ),
+    "loan_extended": DomainConfig(
+        name="loan_extended",
+        setup_fn=setup_loan_domain,
+        initial_beliefs=LOAN_INITIAL_BELIEFS,
+        turns=LOAN_EXTENDED_TURNS,
         baseline_rules=LOAN_RULES,
         default_entities="applicant, loan",
     ),
@@ -52,11 +78,27 @@ DOMAIN_REGISTRY = {
         baseline_rules=ALIEN_RULES,
         default_entities="patient",
     ),
+    "alien_clinic_extended": DomainConfig(
+        name="alien_clinic_extended",
+        setup_fn=setup_alien_clinic_domain,
+        initial_beliefs=ALIEN_INITIAL_BELIEFS,
+        turns=ALIEN_EXTENDED_TURNS,
+        baseline_rules=ALIEN_RULES,
+        default_entities="patient",
+    ),
     "crime_scene": DomainConfig(
         name="crime_scene",
         setup_fn=setup_crime_scene_domain,
         initial_beliefs=CRIME_INITIAL_BELIEFS,
         turns=CRIME_TURNS,
+        baseline_rules=CRIME_RULES,
+        default_entities="case, suspect_a, suspect_b, officer_smith",
+    ),
+    "crime_scene_extended": DomainConfig(
+        name="crime_scene_extended",
+        setup_fn=setup_crime_scene_domain,
+        initial_beliefs=CRIME_INITIAL_BELIEFS,
+        turns=CRIME_EXTENDED_TURNS,
         baseline_rules=CRIME_RULES,
         default_entities="case, suspect_a, suspect_b, officer_smith",
     ),
@@ -68,7 +110,87 @@ DOMAIN_REGISTRY = {
         baseline_rules=THORNCRESTER_RULES,
         default_entities="environment, adult_thorncrester, thorncrester_flock, juvenile_thorncrester, feather_mite",
     ),
+    "thorncrester_extended": DomainConfig(
+        name="thorncrester_extended",
+        setup_fn=setup_thorncrester_domain,
+        initial_beliefs=THORNCRESTER_INITIAL_BELIEFS,
+        turns=THORNCRESTER_EXTENDED_TURNS,
+        baseline_rules=THORNCRESTER_RULES,
+        default_entities="environment, adult_thorncrester, thorncrester_flock, juvenile_thorncrester, feather_mite",
+    ),
 }
+
+# --- Add Isolated Subsets ---
+_SUBSET_MAP = {
+    "loan": {
+        "setup_fn": setup_loan_domain,
+        "initial_beliefs": LOAN_INITIAL_BELIEFS,
+        "baseline_rules": LOAN_RULES,
+        "default_entities": "applicant, loan",
+        "subsets": {
+            "negation": LOAN_NEGATION_TURNS,
+            "1hop": LOAN_1HOP_TURNS,
+            "2hop": LOAN_2HOP_TURNS,
+            "3hop": LOAN_3HOP_TURNS,
+            "4hop": LOAN_4HOP_TURNS,
+            "belief_maintenance": LOAN_BELIEF_MAINTENANCE_TURNS,
+        }
+    },
+    "alien_clinic": {
+        "setup_fn": setup_alien_clinic_domain,
+        "initial_beliefs": ALIEN_INITIAL_BELIEFS,
+        "baseline_rules": ALIEN_RULES,
+        "default_entities": "patient",
+        "subsets": {
+            "negation": ALIEN_NEGATION_TURNS,
+            "1hop": ALIEN_1HOP_TURNS,
+            "2hop": ALIEN_2HOP_TURNS,
+            "3hop": ALIEN_3HOP_TURNS,
+            "4hop": ALIEN_4HOP_TURNS,
+            "belief_maintenance": ALIEN_BELIEF_MAINTENANCE_TURNS,
+        }
+    },
+    "crime_scene": {
+        "setup_fn": setup_crime_scene_domain,
+        "initial_beliefs": CRIME_INITIAL_BELIEFS,
+        "baseline_rules": CRIME_RULES,
+        "default_entities": "case, suspect_a, suspect_b, officer_smith",
+        "subsets": {
+            "negation": CRIME_NEGATION_TURNS,
+            "1hop": CRIME_1HOP_TURNS,
+            "2hop": CRIME_2HOP_TURNS,
+            "3hop": CRIME_3HOP_TURNS,
+            "4hop": CRIME_4HOP_TURNS,
+            "belief_maintenance": CRIME_BELIEF_MAINTENANCE_TURNS,
+        }
+    },
+    "thorncrester": {
+        "setup_fn": setup_thorncrester_domain,
+        "initial_beliefs": THORNCRESTER_INITIAL_BELIEFS,
+        "baseline_rules": THORNCRESTER_RULES,
+        "default_entities": "environment, adult_thorncrester, thorncrester_flock, juvenile_thorncrester, feather_mite",
+        "subsets": {
+            "negation": THORNCRESTER_NEGATION_TURNS,
+            "1hop": THORNCRESTER_1HOP_TURNS,
+            "2hop": THORNCRESTER_2HOP_TURNS,
+            "3hop": THORNCRESTER_3HOP_TURNS,
+            "4hop": THORNCRESTER_4HOP_TURNS,
+            "belief_maintenance": THORNCRESTER_BELIEF_MAINTENANCE_TURNS,
+        }
+    }
+}
+
+for base_name, config_data in _SUBSET_MAP.items():
+    for subset_name, turns in config_data["subsets"].items():
+        full_name = f"{base_name}_{subset_name}"
+        DOMAIN_REGISTRY[full_name] = DomainConfig(
+            name=full_name,
+            setup_fn=config_data["setup_fn"],
+            initial_beliefs=config_data["initial_beliefs"],
+            turns=turns,
+            baseline_rules=config_data["baseline_rules"],
+            default_entities=config_data["default_entities"],
+        )
 
 def main():
     parser = argparse.ArgumentParser(description="Run MCQ evaluations for a domain.")
