@@ -159,5 +159,5 @@ SYSTEM_PROMPTS = {
 }
 
 # Default prompt (used when version is not specified)
-SYSTEM_PROMPT = SYSTEM_PROMPT_V1
+SYSTEM_PROMPT = SYSTEM_PROMPT_V5
 

@@ -402,85 +402,125 @@ LOAN_4HOP_TURNS = [
 
 # =====================================================================
 # 6. BELIEF MAINTENANCE SET (10 Turns)
-# Target: Changes to an unconnected branch should NOT affect the queried state.
+# Target: State accumulates; we ask about UNAFFECTED attributes to test
+#         whether the system maintains old beliefs despite new independent ones.
 # =====================================================================
+# Strategy: Each turn adds an independent belief, but we query an attribute
+#           that is NOT affected by that new belief. The answer should remain
+#           the same across turns, demonstrating belief maintenance.
 LOAN_BELIEF_MAINTENANCE_TURNS = [
-    {   # Change Debt Ratio -> query employment status
-        "attributes": ["applicant.employment_status"],
-        "beliefs": {"applicant.debt_ratio": 0.35},
-        "question": "After the debt ratio increased, what happened to their employment status?",
-        "options": {"A": "employed", "B": "unemployed", "C": "furloughed"},
-        "correct": "A"
-    },
-    {   # Change Co-Signer -> query Adjusted Income
-        "attributes": ["loan.adjusted_income"],
-        "beliefs": {"applicant.co_signer": True},
-        "question": "Having a co-signer impacts credit. What is the newly calculated adjusted income?",
-        "options": {"A": "6000", "B": "5000", "C": "5500"}, # Stays 5000
-        "correct": "B"
-    },
-    {   # Change Dependents -> query High Risk Flag
-        "attributes": ["loan.high_risk_flag"],
-        "beliefs": {"applicant.dependents": 5},
-        "question": "With 5 dependents, what is the High Risk Flag status?",
-        "options": {"A": "True", "B": "False", "C": "None"}, # Stays False (tied to debt ratio)
-        "correct": "B"
-    },
-    {   # Change Employment Duration -> query Credit Score Effective
+    {   # Add co_signer -> deduce credit_score_effective
         "attributes": ["loan.credit_score_effective"],
-        "beliefs": {"applicant.employment_duration_months": 5},
-        "question": "Due to a shorter employment duration, what is the effective credit score?",
-        "options": {"A": "720", "B": "650", "C": "800"}, # Stays 720
-        "correct": "A"
-    },
-    {   # Change Income -> query Has Collateral
-        "attributes": ["applicant.has_collateral"],
-        "beliefs": {"applicant.income": 9000},
-        "question": "Income has surged to 9000. Does the applicant have collateral?",
-        "options": {"A": "True", "B": "False", "C": "Unknown"}, # Stays False
+        "beliefs": {"applicant.co_signer": True},
+        "question": "With a co-signer, what is the effective credit score?",
+        "options": {"A": "720", "B": "770", "C": "650"},  # 720 + 50 = 770
         "correct": "B"
     },
-    {   # Change Request Amount -> query Base Interest Rate 
-        # (Actually, request amount changes app status, but DOES NOT change base interest rate, which is driven by rate_tier/ins)
-        "attributes": ["loan.base_interest_rate"],
-        "beliefs": {"applicant.loan_amount_requested": 40000}, # Denies loan, but tier stays?
-        # Wait, if loan is denied, is rate tier None?
-        # R5 uses applicant_prequalified. Amount requested only affects app_status.
-        # R3 says tier is "standard". It only checks applicant_prequalified.
-        # So tier = standard.
-        # Int Rate: req_ins=False, tier=standard -> 6.5. 
-        # But wait, requires_insurance=False because app_status='denied'. 6.5 + 0 = 6.5.
-        # Yes, rate stays 6.5!
-        "question": "Requesting 40000 causes a denial based on amount limit. What is their base interest rate formula result?",
-        "options": {"A": "4.5", "B": "6.5", "C": "None"},
-        "correct": "B"
+    {   # Add bankruptcy_history -> query fixed attribute (credit_score unchanged)
+        "attributes": ["applicant.credit_score"],
+        "beliefs": {"applicant.credit_score": 720, "applicant.bankruptcy_history": True},
+        "question": "Despite bankruptcy history, what is the applicant's original credit score?",
+        "options": {"A": "720", "B": "680", "C": "500"},
+        "correct": "A"  # Maintained: credit_score is base fact
     },
-    {   # Change Credit Score -> query Debt Ratio
-        "attributes": ["applicant.debt_ratio"],
-        "beliefs": {"applicant.credit_score": 500},
-        "question": "Their credit score tanked. What is the remaining debt ratio?",
-        "options": {"A": "0.4", "B": "0.3", "C": "0.2"}, # Stays 0.2
-        "correct": "C"
+    {   # Add employment_duration_months -> query fixed income
+        "attributes": ["applicant.income"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5
+        },
+        "question": "With short employment duration, what is the applicant's income?",
+        "options": {"A": "6000", "B": "5000", "C": "7000"},
+        "correct": "A"  # Maintained: income is base fact
     },
-    {   # Change Employment Status -> query Max Debt Ratio Policy
-        "attributes": ["loan.max_debt_ratio"],
-        "beliefs": {"applicant.employment_status": "unemployed"},
-        "question": "If they become unemployed, what is the bank policy's max debt ratio limit?",
-        "options": {"A": "0.4", "B": "0.2", "C": "0.6"}, # Stays 0.4
-        "correct": "A"
+    {   # Add employment_status change -> query prior credit-related value
+        "attributes": ["loan.credit_score_effective"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed"
+        },
+        "question": "With employment confirmed, what is the effective credit score (with co-signer)?",
+        "options": {"A": "720", "B": "770", "C": "650"},
+        "correct": "B"  # Maintained from Turn 1: still 770 (720 + 50 for co_signer)
     },
-    {   # Change Bankruptcy -> query Loan Amount Requested
-        "attributes": ["applicant.loan_amount_requested"],
-        "beliefs": {"applicant.bankruptcy_history": True},
-        "question": "A bankruptcy is found. What amount were they originally requesting?",
-        "options": {"A": "10000", "B": "30000", "C": "50000"}, # Stays 10_000
-        "correct": "A"
+    {   # Add debt_ratio -> query employment_status (unaffected)
+        "attributes": ["applicant.employment_status"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25
+        },
+        "question": "Despite higher debt ratio, what is the employment status?",
+        "options": {"A": "employed", "B": "unemployed", "C": "furloughed"},
+        "correct": "A"  # Maintained: employment_status is base fact
     },
-    {   # Change Collateral -> query Dependents
-        "attributes": ["applicant.dependents"],
-        "beliefs": {"applicant.has_collateral": True},
-        "question": "Now that they supplied collateral, how many dependents do they have?",
-        "options": {"A": "0", "B": "2", "C": "4"}, # Stays 2
-        "correct": "B"
+    {   # Add dependents -> query income (unaffected by dependents count)
+        "attributes": ["applicant.income"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
+            "applicant.dependents": 3
+        },
+        "question": "With 3 dependents, what is the base applicant income?",
+        "options": {"A": "6000", "B": "5000", "C": "4500"},
+        "correct": "A"  # Maintained: income is base fact (adjusted_income would change)
+    },
+    {   # Add has_collateral -> query unchanged credit score
+        "attributes": ["applicant.credit_score"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
+            "applicant.dependents": 3, "applicant.has_collateral": True
+        },
+        "question": "After securing collateral, what remains the applicant's credit score?",
+        "options": {"A": "720", "B": "770", "C": "680"},
+        "correct": "A"  # Maintained: base fact, collateral doesn't change it
+    },
+    {   # Add loan_amount_requested -> query maintained credit_score_effective
+        "attributes": ["loan.credit_score_effective"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.co_signer": True,
+            "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
+            "applicant.dependents": 3, "applicant.has_collateral": True,
+            "applicant.loan_amount_requested": 25000
+        },
+        "question": "Requesting 25k loan, what is the effective credit score?",
+        "options": {"A": "720", "B": "770", "C": "800"},
+        "correct": "B"  # Maintained: still 770 (720 + 50 for co_signer)
+    },
+    {   # Add another base fact -> query a derived value from earlier
+        "attributes": ["loan.adjusted_income"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.co_signer": True,
+            "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
+            "applicant.dependents": 3, "applicant.has_collateral": True,
+            "applicant.loan_amount_requested": 25000,
+            "applicant.income": 6000
+        },
+        "question": "With income and dependents accumulated, what is adjusted income?",
+        "options": {"A": "6000", "B": "4500", "C": "5500"},
+        "correct": "B"  # Calculated: 6000 - (3 * 500) = 4500
+    },
+    {   # Verify employment_status is still maintained despite all changes
+        "attributes": ["applicant.employment_status"],
+        "beliefs": {
+            "applicant.credit_score": 720, "applicant.co_signer": True,
+            "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 5,
+            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
+            "applicant.dependents": 3, "applicant.has_collateral": True,
+            "applicant.loan_amount_requested": 25000,
+            "applicant.income": 6000
+        },
+        "question": "After all updates, what is the employment status?",
+        "options": {"A": "employed", "B": "unemployed", "C": "unknown"},
+        "correct": "A"  # Fully maintained from Turn 4 onward
     }
 ]

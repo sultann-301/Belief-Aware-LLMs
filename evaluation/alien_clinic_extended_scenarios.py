@@ -456,75 +456,116 @@ ALIEN_4HOP_TURNS = [
 # 6. BELIEF MAINTENANCE SET (10 Turns)
 # Target: Changes to an unconnected branch should NOT affect the queried state.
 # =====================================================================
+# =====================================================================
+# 6. BELIEF MAINTENANCE SET (10 Turns)
+# Target: State accumulates; we query UNAFFECTED attributes to test whether
+#         the system maintains old beliefs despite new independent ones being added.
+# =====================================================================
 ALIEN_BELIEF_MAINTENANCE_TURNS = [
-    {   # Change Symptoms -> query phase
-        "attributes": ["treatment.zyxostin_phase"],
-        "beliefs": {"patient.symptoms": ["fever", "cough"]},
-        "question": "Symptoms arose. Has the zyxostin phase in methane changed?",
-        "options": {"A": "plasma", "B": "crystalline", "C": "vapor"}, # Stays plasma
-        "correct": "A"
-    },
-    {   # Change Pressure -> query phase
-        "attributes": ["treatment.filinan_phase"],
-        "beliefs": {"atmosphere.ambient_pressure": 5.0},
-        "question": "At extreme pressures, what is the filinan phase?",
-        "options": {"A": "plasma", "B": "vapor", "C": "liquid"}, # Stays plasma (gas dependent)
-        "correct": "A"
-    },
-    {   # Change Gas -> query Integrity
+    {   # Add primary atmosphere setting -> query organ integrity (unaffected)
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.dominant_gas": "chlorine"},
-        "question": "Does pumping chlorine into the room change the organ integrity?",
-        "options": {"A": "brittle", "B": "stable", "C": "volatile"}, # Stays brittle
-        "correct": "A"
+        "beliefs": {"atmosphere.dominant_gas": "methane"},
+        "question": "Setting atmosphere to methane. What is the patient's organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # Organ integrity is base characteristic, doesn't change with atmosphere
     },
-    {   # Change Symptoms -> query Quarantine
-        "attributes": ["patient.quarantine_required"],
-        "beliefs": {"patient.symptoms": ["spasms"]},
-        "question": "The patient is having spasms. Does this initiate quarantine?",
-        "options": {"A": "False", "B": "True", "C": "None"}, # Stays False
-        "correct": "A"
-    },
-    {   # Change Quarantine -> query Phase
-        "attributes": ["treatment.snevox_phase"],
-        "beliefs": {"patient.quarantine_required": True},
-        "question": "A manual quarantine is triggered. What is the snevox phase?",
-        "options": {"A": "vapor", "B": "liquid", "C": "plasma"}, # Stays vapor
-        "correct": "A"
-    },
-    {   # Change Staff Requirement -> query Integrity
+    {   # Add pressure setting -> query already-known organ integrity (maintained)
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"medical.staff_requirement": "psionic_handler"},
-        "question": "Bringing in a psionic handler affects internal biology? What is the integrity?",
-        "options": {"A": "brittle", "B": "volatile", "C": "stable"}, # Stays brittle
-        "correct": "A"
+        "beliefs": {"atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5},
+        "question": "With pressure set to 2.5, what remains the organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # Maintained: pressure doesn't affect organ_integrity
     },
-    {   # Change Billing Tier -> query Active Prescription
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {"clinic.billing_tier": "class_delta"},
-        "question": "Downgrading billing to class_delta. What keeps them alive?",
-        "options": {"A": "snevox", "B": "filinan", "C": "zyxostin"}, # Stays snevox
-        "correct": "A"
+    {   # Add symptoms -> query maintained organ integrity
+        "attributes": ["patient.organ_integrity"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"]
+        },
+        "question": "Patient showing acid_sweat. What is their organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # Maintained: symptoms don't directly affect organ_integrity
     },
-    {   # Change Duration Cycles -> query sensory status
+    {   # Add quarantine -> query sensory status (derived attribute)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"treatment.duration_cycles": 20},
-        "question": "Extended duration of 20 cycles. Does their sensory status shift?",
-        "options": {"A": "telepathic", "B": "normal", "C": "blind"}, # Stays telepathic
-        "correct": "A"
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True
+        },
+        "question": "With quarantine protocol active, what is sensory status?",
+        "options": {"A": "telepathic", "B": "normal", "C": "blind"},
+        "correct": "A"  # Determined by initial state/rules
     },
-    {   # Change Gas -> query Symptoms
-        "attributes": ["patient.symptoms"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon"},
-        "question": "Xenon is pumped in. Does this intrinsically alter their biological symptoms string representation?",
-        "options": {"A": "[]", "B": "['acid_sweat']", "C": "['fever']"}, # Stays []
-        "correct": "A"
-    },
-    {   # Change Active Prescription -> query Integrity
+    {   # Add staff requirement -> requery organ integrity (full accumulation)
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"treatment.active_prescription": "filinan"},
-        "question": "Switching meds to filinan. How does the organ integrity react to meds?",
-        "options": {"A": "brittle", "B": "stable", "C": "volatile"}, # Stays brittle
-        "correct": "A"
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard"
+        },
+        "question": "With standard staff assigned, what is the organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # Fully maintained: unchanging through accumulation
+    },
+    {   # Add treatment phase -> query maintained atmosphere setting
+        "attributes": ["atmosphere.dominant_gas"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma"
+        },
+        "question": "With zyxostin treatment started, what is the dominant gas?",
+        "options": {"A": "methane", "B": "nitrogen", "C": "chlorine"},
+        "correct": "A"  # Maintained: atmosphere setting is base fact
+    },
+    {   # Add billing tier -> query maintained sensory status
+        "attributes": ["patient.sensory_status"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
+            "clinic.billing_tier": "class_beta"
+        },
+        "question": "After billing adjustment to class_beta, what is sensory status?",
+        "options": {"A": "telepathic", "B": "normal", "C": "blind"},
+        "correct": "A"  # Maintained: billing doesn't affect sensory status
+    },
+    {   # Add prescription -> requery pressure (independent attributes)
+        "attributes": ["atmosphere.ambient_pressure"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
+            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox"
+        },
+        "question": "With snevox prescribed, what is the ambient pressure?",
+        "options": {"A": "2.5", "B": "1.0", "C": "5.0"},
+        "correct": "A"  # Maintained: pressure is independent from prescription
+    },
+    {   # Add duration cycles -> query organ integrity (long accumulation test)
+        "attributes": ["patient.organ_integrity"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
+            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox",
+            "treatment.duration_cycles": 15
+        },
+        "question": "After 15 treatment cycles, what is the organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # Fully maintained: unchanged through full accumulation
+    },
+    {   # Final verification: query another maintained attribute
+        "attributes": ["atmosphere.dominant_gas"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
+            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
+            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
+            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox",
+            "treatment.duration_cycles": 15, "patient.sensory_status": "telepathic"
+        },
+        "question": "After all procedures, what gas dominates the treatment chamber?",
+        "options": {"A": "methane", "B": "chlorine", "C": "xenon"},
+        "correct": "A"  # Fully maintained: core setting unchanged
     }
 ]

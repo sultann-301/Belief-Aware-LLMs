@@ -14,7 +14,7 @@ class ReasoningEngine:
         self.llm = llm
 
     def build_prompt(
-        self, structured_input: str, prompt_version: str = "v1",
+        self, structured_input: str, prompt_version: str | None = None,
         max_depth: int = 3, prune_clean_derived: bool = True,
     ) -> tuple[str, str]:
         """Parse structured input, inject beliefs, resolve, return prompts.
@@ -60,12 +60,12 @@ class ReasoningEngine:
             question,
         ])
 
-        sys_prompt = SYSTEM_PROMPTS.get(prompt_version, SYSTEM_PROMPT)
+        sys_prompt = SYSTEM_PROMPTS.get(prompt_version, SYSTEM_PROMPT) if prompt_version else SYSTEM_PROMPT
         return sys_prompt, user_prompt
 
     def query(
         self, structured_input: str, model: str | None = None,
-        prompt_version: str = "v1", max_depth: int = 3, prune_clean_derived: bool = True,
+        prompt_version: str | None = None, max_depth: int = 3, prune_clean_derived: bool = True,
     ) -> str:
         """One-shot: build prompt + call LLM (no history)."""
         sys_prompt, user_prompt = self.build_prompt(

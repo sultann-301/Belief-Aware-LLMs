@@ -106,6 +106,8 @@ class BeliefStore:
             "derive_fn": derive_fn,
         }
         self.dependencies[output_key] = inputs
+        if hasattr(self, '_upstream_closure'):
+            self._upstream_closure.clear()
 
     def _propagate_dirty(self, key: str) -> None:
         """Recursively mark all downstream dependents as dirty."""
@@ -372,26 +374,37 @@ class BeliefStore:
 
         return "\n".join(lines), prompt_keys
 
+    def get_upstream_closure(self, key: str) -> dict[str, int]:
+        """Return a cached mapping of all upstream dependencies to their max depth from this key."""
+        if not hasattr(self, '_upstream_closure'):
+            self._upstream_closure: dict[str, dict[str, int]] = {}
+        if key in self._upstream_closure:
+            return self._upstream_closure[key]
+
+        # Sentinel to prevent cycles if the graph is malformed
+        self._upstream_closure[key] = {}
+        matrix: dict[str, int] = {}
+
+        rule = self.rule_index.get(key)
+        if rule:
+            for inp in rule["inputs"]:
+                matrix[inp] = max(matrix.get(inp, 0), 1)
+                for up_key, up_depth in self.get_upstream_closure(inp).items():
+                    matrix[up_key] = max(matrix.get(up_key, 0), up_depth + 1)
+
+        self._upstream_closure[key] = matrix
+        return matrix
+
     def resolve_dirty_for_attributes(self, attributes: list[str]) -> None:
         """Resolve dirty beliefs needed by the given attribute keys.
 
-        Walks the dependency graph backward from *attributes* to discover
+        Uses O(1) statically cached transitive closures to instantly discover
         all upstream entities, then resolves every dirty belief in that set.
         """
-        # Collect all keys that would appear in a hopwalk
-        all_keys: set[str] = set()
-
-        def _collect(key: str) -> None:
-            if key in all_keys:
-                return
-            all_keys.add(key)
-            rule = self.rule_index.get(key)
-            if rule:
-                for inp in rule["inputs"]:
-                    _collect(inp)
+        all_keys: set[str] = set(attributes)
 
         for attr in attributes:
-            _collect(attr)
+            all_keys.update(self.get_upstream_closure(attr).keys())
 
         entities = list({self.entity_of(k) for k in all_keys})
         self.resolve_dirty(entities)

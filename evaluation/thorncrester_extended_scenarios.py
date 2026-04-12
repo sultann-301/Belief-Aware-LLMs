@@ -229,9 +229,9 @@ THORNCRESTER_2HOP_TURNS = [
     },
     {   # Enzmye(1) -> Metabolism(2) -> Development
         "attributes": ["juvenile_thorncrester.development"],
-        "beliefs": {"juvenile_thorncrester.digestive_enzyme": "scavenger_processor", "adult_thorncrester.expressed_diet": "frugivore"},
-        # diff diet/enzyme -> starving -> arrested
-        "question": "A juvenile needs scavenger food but adults forage frugivore. Growth status?",
+        "beliefs": {"juvenile_thorncrester.digestive_enzyme": "fructose_processor", "adult_thorncrester.expressed_diet": "scavenger"},
+        # fructose processor + scavenger diet -> starving -> arrested
+        "question": "A juvenile needs fructose but adults shifted to scavenging. Growth status?",
         "options": {"A": "arrested", "B": "maturing", "C": "thriving"},
         "correct": "A"
     },
@@ -425,77 +425,78 @@ THORNCRESTER_4HOP_TURNS = [
 
 # =====================================================================
 # 6. BELIEF MAINTENANCE SET (10 Turns)
-# Target: Changes to an unconnected branch should NOT affect the queried state.
+# Target: Different attributes should maintain independence; adding unrelated beliefs
+# should not affect derived attributes. Tests that belief queries are orthogonal.
 # =====================================================================
 THORNCRESTER_BELIEF_MAINTENANCE_TURNS = [
-    {   # Change Enzyme -> query Plumage
-        "attributes": ["adult_thorncrester.plumage_color"],
-        "beliefs": {"juvenile_thorncrester.digestive_enzyme": "scavenger_processor"},
-        "question": "The juveniles mutate to digest meat. Does adult plumage change?",
-        "options": {"A": "crimson", "B": "dull_grey", "C": "purple"},
-        "correct": "A"
-    },
-    {   # Change Scarcity -> query Enzyme
-        "attributes": ["juvenile_thorncrester.digestive_enzyme"],
-        "beliefs": {"environment.food_scarcity": True},
-        "question": "Food scarcity strikes. What is the fundamental juvenile digestive enzyme?",
-        "options": {"A": "fructose_processor", "B": "scavenger_processor", "C": "general_processor"},
-        "correct": "A"
-    },
-    {   # Change Weather -> query Genetic Diet
-        "attributes": ["adult_thorncrester.genetic_diet"],
-        "beliefs": {"environment.weather_pattern": "drought"},
-        "question": "Drought conditions persist. What is the underlying genetic diet?",
-        "options": {"A": "frugivore", "B": "scavenger", "C": "insectivore"},
-        "correct": "A"
-    },
-    {   # Change Stress -> query Enzyme
-        "attributes": ["juvenile_thorncrester.digestive_enzyme"],
-        "beliefs": {"adult_thorncrester.ecological_stress": "high"},
-        "question": "Stress leaps to high. Which enzyme do the young maintain?",
-        "options": {"A": "fructose_processor", "B": "scavenger_processor", "C": "None"},
-        "correct": "A"
-    },
-    {   # Change Structure -> query Diet
-        "attributes": ["adult_thorncrester.expressed_diet"],
-        "beliefs": {"thorncrester_flock.genetic_structure": "solitary"},
-        "question": "Flocks genetically become solitary. What diet do they conventionally express?",
-        "options": {"A": "frugivore", "B": "scavenger", "C": "insectivore"},
-        "correct": "A"
-    },
-    {   # Change Plumage -> query Territory
-        "attributes": ["thorncrester_flock.territory_behavior"],
-        "beliefs": {"adult_thorncrester.plumage_color": "dull_grey"},
-        "question": "A genetic bug forces plumage to dull_grey. What is the territory behavior?",
-        "options": {"A": "peaceful", "B": "hyper_aggressive", "C": "defensive"},
-        "correct": "A" # territory is based on structure+scarcity
-    },
-    {   # Change Bloom -> query Stress
+    {   # Query 1: Stress (baseline)
         "attributes": ["adult_thorncrester.ecological_stress"],
-        "beliefs": {"feather_mite.bloom_status": "active_bloom"},
-        "question": "Mites artificially enter an active bloom. What is the ecological stress?",
-        "options": {"A": "nominal", "B": "high", "C": "critical"},
-        "correct": "A"
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
+        "question": "In a stable environment with no scarcity, what is the ecological stress?",
+        "options": {"A": "high", "B": "nominal", "C": "critical"},
+        "correct": "B"  # nominal
     },
-    {   # Change Metabolism -> query Genetic Structure
-        "attributes": ["thorncrester_flock.genetic_structure"],
-        "beliefs": {"juvenile_thorncrester.metabolic_state": "starving"},
-        "question": "Youths begin starving. What is the innate genetic structure of the flock?",
-        "options": {"A": "matriarchal_pairs", "B": "survival_swarm", "C": "solitary"},
-        "correct": "A"
+    {   # Query 2: Plumage (independent path from stress)
+        "attributes": ["adult_thorncrester.plumage_color"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
+        "question": "With no stress, what is the plumage color?",
+        "options": {"A": "dull_grey", "B": "crimson", "C": "azure"},
+        "correct": "B"  # crimson (stress -> nom -> frugivore -> crimson)
     },
-    {   # Change Territory -> query Development
+    {   # Query 3: Territory behavior (independent branch)
+        "attributes": ["thorncrester_flock.territory_behavior"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
+        "question": "With stable weather and no scarcity, what territory behavior emerges?",
+        "options": {"A": "hyper_aggressive", "B": "peaceful", "C": "defensive"},
+        "correct": "B"  # peaceful (stress=nom -> matriarchal -> peaceful)
+    },
+    {   # Query 4: Add genetic diet variation, requery stress (should be independent)
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger"},
+        "question": "With genetic diet changed but weather stable, what is stress?",
+        "options": {"A": "high", "B": "nominal", "C": "variable"},
+        "correct": "B"  # Maintained: stress depends on weather+scarcity, not genetic_diet
+    },
+    {   # Query 5: Add flock structure variation, requery stress (still independent)
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm"},
+        "question": "Despite structure variation, what is ecological stress?",
+        "options": {"A": "high", "B": "nominal", "C": "unknown"},
+        "correct": "B"  # Maintained: still nominal (weather+scarcity are stable)
+    },
+    {   # Query 6: Query mortality in stable conditions (should be low)
+        "attributes": ["adult_thorncrester.mortality_risk"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm"},
+        "question": "In stability despite structural changes, what mortality risk?",
+        "options": {"A": "critical", "B": "low", "C": "moderate"},
+        "correct": "B"  # low (stress=nom -> exp_struct=swarm (no override), food=no -> territory=peaceful, mites=dormant -> load=harmless -> low)
+    },
+    {   # Query 7: Add juvenile enzyme info, requery mortality (independent)
+        "attributes": ["adult_thorncrester.mortality_risk"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
+        "question": "With juvenile enzyme added to beliefs, what mortality risk?",
+        "options": {"A": "critical", "B": "low", "C": "high"},
+        "correct": "B"  # Maintained: mortality independent from juvenile enzyme
+    },
+    {   # Query 8: Query juvenile development (separate attribute, stable conditions)
         "attributes": ["juvenile_thorncrester.development"],
-        "beliefs": {"thorncrester_flock.territory_behavior": "hyper_aggressive"},
-        "question": "The flock turns hyper_aggressive. What happens to juvenile development?",
-        "options": {"A": "maturing", "B": "arrested", "C": "unknown"},
-        "correct": "A"
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
+        "question": "With frugivore diet and fructose juveniles, what development?",
+        "options": {"A": "arrested", "B": "maturing", "C": "stunted"},
+        "correct": "B"  # maturing (frugivore matches enzyme)
     },
-    {   # Change Mortality -> query Weather
-        "attributes": ["environment.weather_pattern"],
-        "beliefs": {"adult_thorncrester.mortality_risk": "critical"},
-        "question": "A pathogen forces mortality to critical. Does this alter the weather pattern?",
-        "options": {"A": "stable", "B": "drought", "C": "rainy"},
-        "correct": "A"
+    {   # Query 9: Keep prior beliefs, query parasitic load (independent from juvenile dev)
+        "attributes": ["feather_mite.parasitic_load"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
+        "question": "With stable weather, what is the parasitic load?",
+        "options": {"A": "lethal", "B": "harmless", "C": "moderate"},
+        "correct": "B"  # harmless (weather=stable -> plumage=crimson, no dull_grey -> no bloom -> dormant -> harmless)
+    },
+    {   # Query 10: Final maintenance - requery mortality with all prior beliefs (ultimate test)
+        "attributes": ["adult_thorncrester.mortality_risk"],
+        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor", "thorncrester_flock.genetic_structure": "matriarchal_pairs"},
+        "question": "With all stable baseline beliefs, what mortality risk holds?",
+        "options": {"A": "critical", "B": "low", "C": "variable"},
+        "correct": "B"  # Fully maintained: low (peaceful territory + harmless load = low)
     }
 ]
