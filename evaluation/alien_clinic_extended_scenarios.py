@@ -97,10 +97,10 @@ ALIEN_NEGATION_TURNS = [
         "correct": "A" # Quarantine is required. So asserting it's bypassed is untrue.
     },
     {
-        "attributes": ["treatment.snevox_hazard"],
+        "attributes": ["treatment.snevox_danger_level"],
         "beliefs": {"patient.organ_integrity": "volatile", "atmosphere.dominant_gas": "chlorine"},
         # Chlorine -> snevox=liquid. Glerps + volatile + snevox(liquid) -> No explode, but volatile -> fatal_to_patient.
-        "question": "Is it false that the snevox hazard is considered safe?",
+        "question": "Is it false that the snevox danger level is considered safe?",
         "options": {"A": "Yes", "B": "No", "C": "None"},
         "correct": "A" # It is fatal_to_patient.
     }
@@ -155,12 +155,10 @@ ALIEN_1HOP_TURNS = [
     },
     {
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"medical.staff_requirement": "hazmat_team"},
-        "question": "If the staff requirement is hazmat_team, what is the billing tier?",
-        "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"}, # Wait, active_presc snevox = omega over delta.
-        # But for 1-hop, wait. If active_prescription is still snevox, billing tier is omega.
-        # Let me supply active="filinan" to isolate the hop.
-        "correct": "B" # Because active_prescription defaults to snevox in base! So omega actually overrides delta. That's a trick question.
+        "beliefs": {"medical.staff_requirement": "hazmat_team", "treatment.active_prescription": "filinan"},
+        "question": "If the staff requirement is hazmat_team and filinan is prescribed, what is the billing tier?",
+        "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"},
+        "correct": "A" # hazmat_team -> class_delta (filinan doesn't override)
     },
     {
         "attributes": ["treatment.duration_cycles"],
@@ -171,11 +169,10 @@ ALIEN_1HOP_TURNS = [
     },
     {
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"treatment.zyxostin_hazard": "symbiotic"},
-        "question": "If the hazard profile turns symbiotic, what is the prospect?",
-        "options": {"A": "miraculous", "B": "guarded", "C": "excellent"}, # Wait: R9 checks active_prescription hazard == symbiotic. Does it check the attribute?
-        # "IF active_prescription hazard == symbiotic". So it's not direct. Let's ask about duration_cycles = 0.
-        "correct": "A" # Let's change the question just to be safe.
+        "beliefs": {"treatment.duration_cycles": 0},
+        "question": "If the duration cycles are forced to 0, what is the recovery prospect?",
+        "options": {"A": "terminal", "B": "guarded", "C": "excellent"},
+        "correct": "A"
     },
     {
         "attributes": ["patient.recovery_prospect"],
@@ -192,34 +189,34 @@ ALIEN_1HOP_TURNS = [
 # =====================================================================
 ALIEN_2HOP_TURNS = [
     {   # Gas(1) -> Phase(2) -> Hazard(3)
-        "attributes": ["treatment.filinan_hazard"],
+        "attributes": ["treatment.filinan_danger_level"],
         "beliefs": {"atmosphere.dominant_gas": "xenon"}, 
         # Xenon -> filinan_phase=vapor. Vapor filinan -> safe (brittle)
-        "question": "In a xenon atmosphere, what is the filinan hazard level?",
+        "question": "In a xenon atmosphere, what is the filinan danger level?",
         "options": {"A": "safe", "B": "fatal_to_patient", "C": "symbiotic"},
         "correct": "A"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3)
-        "attributes": ["treatment.snevox_hazard"],
+        "attributes": ["treatment.snevox_danger_level"],
         "beliefs": {"atmosphere.dominant_gas": "chlorine"},
         # Chlorine -> snevox_phase=liquid. Liquid snevox -> safe
-        "question": "In a chlorine environment, what is the snevox hazard?",
+        "question": "In a chlorine environment, what is the snevox danger level?",
         "options": {"A": "safe", "B": "fatal_to_patient", "C": "symbiotic"},
         "correct": "A"
     },
     {   # Pressure(1) -> Integrity(2) -> Hazard(3)
-        "attributes": ["treatment.snevox_hazard"],
+        "attributes": ["treatment.snevox_danger_level"],
         "beliefs": {"atmosphere.ambient_pressure": 5.0},
         # 5.0 + Glerps -> volatile. Volatile + snevox(vapor) -> fatal_to_patient.
-        "question": "When pressure hits 5.0, what happens to the snevox hazard?",
+        "question": "When pressure hits 5.0, what happens to the snevox danger level?",
         "options": {"A": "fatal_to_patient", "B": "safe", "C": "symbiotic"},
         "correct": "A"
     },
-    {   # Hazard(1) -> Prescription(2) -> Sensory(3)
+    {   # Prescription(1) -> Sensory(2)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"treatment.filinan_hazard": "safe"},
-        # Glerps priority: F -> Z -> S. If F is safe, choose F. F -> normal.
-        "question": "If the filinan hazard is neutralized to 'safe', what is the sensory status?",
+        "beliefs": {"treatment.active_prescription": "filinan"},
+        # filinan -> normal
+        "question": "If filinan is prescribed, what is the sensory status?",
         "options": {"A": "normal", "B": "telepathic", "C": "blind"},
         "correct": "A"
     },
@@ -250,7 +247,7 @@ ALIEN_2HOP_TURNS = [
     {
         # Integrity(1) -> Duration(2) -> Recovery(3)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"treatment.active_prescription": "snevox", "patient.organ_integrity": "volatile", "treatment.zyxostin_hazard": "fatal_to_patient"},
+        "beliefs": {"treatment.active_prescription": "snevox", "patient.organ_integrity": "volatile"},
         # active=snevox + volatile -> duration=12. staff=psionic (bc snevox=telepathic). 
         # Duration>10 AND staff=hazmat -> guarded. But staff is psionic -> excellent.
         "question": "With a volatile integrity and active snevox, what is the recovery prospect?",
@@ -267,7 +264,7 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Prescription(1) -> Duration(2) -> Recovery(3)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"treatment.active_prescription": "none", "treatment.zyxostin_hazard": "fatal_to_patient"},
+        "beliefs": {"treatment.active_prescription": "none"},
         # none -> duration=0 -> terminal
         "question": "If no prescription can be found (active = none), what is the recovery prospect?",
         "options": {"A": "terminal", "B": "excellent", "C": "guarded"},
@@ -454,118 +451,78 @@ ALIEN_4HOP_TURNS = [
 
 # =====================================================================
 # 6. BELIEF MAINTENANCE SET (10 Turns)
-# Target: Changes to an unconnected branch should NOT affect the queried state.
-# =====================================================================
-# =====================================================================
-# 6. BELIEF MAINTENANCE SET (10 Turns)
-# Target: State accumulates; we query UNAFFECTED attributes to test whether
-#         the system maintains old beliefs despite new independent ones being added.
+# Target: Adding unrelated input beliefs should NOT affect independently-derived attributes.
+# Tests that different dependency chains are orthogonal.
 # =====================================================================
 ALIEN_BELIEF_MAINTENANCE_TURNS = [
-    {   # Add primary atmosphere setting -> query organ integrity (unaffected)
+    {   # Query: organ_integrity with just pressure
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.dominant_gas": "methane"},
-        "question": "Setting atmosphere to methane. What is the patient's organ integrity?",
+        "beliefs": {"atmosphere.ambient_pressure": 2.0},
+        "question": "At 2.0 pressure, what is the organ integrity?",
         "options": {"A": "brittle", "B": "stable", "C": "volatile"},
-        "correct": "A"  # Organ integrity is base characteristic, doesn't change with atmosphere
+        "correct": "B"  # 2.0 -> stable
     },
-    {   # Add pressure setting -> query already-known organ integrity (maintained)
+    {   # Add symptoms (unrelated input) -> organ_integrity should stay same
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5},
-        "question": "With pressure set to 2.5, what remains the organ integrity?",
+        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.symptoms": ["fever"]},
+        "question": "After adding symptoms, what is organ integrity?",
         "options": {"A": "brittle", "B": "stable", "C": "volatile"},
-        "correct": "A"  # Maintained: pressure doesn't affect organ_integrity
+        "correct": "B"  # Maintained: symptoms don't affect organ_integrity
     },
-    {   # Add symptoms -> query maintained organ integrity
+    {   # Query: active_prescription with just pressure
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {"atmosphere.ambient_pressure": 2.0},
+        "question": "At 2.0 pressure, what prescription is active?",
+        "options": {"A": "filinan", "B": "snevox", "C": "zyxostin"},
+        "correct": "A"  # Glerps default: filinan
+    },
+    {   # Add organism type (different input) -> pressure-derived integral should stay same
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"]
-        },
-        "question": "Patient showing acid_sweat. What is their organ integrity?",
+        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.organism_type": "Yorp"},
+        "question": "With Yorp organism type added, what is organ integrity?",
         "options": {"A": "brittle", "B": "stable", "C": "volatile"},
-        "correct": "A"  # Maintained: symptoms don't directly affect organ_integrity
+        "correct": "B"  # Maintained: 2.0 pressure is stable regardless of organism
     },
-    {   # Add quarantine -> query sensory status (derived attribute)
+    {   # Query: zyxostin_phase with just gas
+        "attributes": ["treatment.zyxostin_phase"],
+        "beliefs": {"atmosphere.dominant_gas": "xenon"},
+        "question": "In xenon atmosphere, what is the zyxostin phase?",
+        "options": {"A": "crystalline", "B": "plasma", "C": "vapor"},
+        "correct": "A"  # xenon -> crystalline
+    },
+    {   # Add pressure (different input) -> phase should stay same
+        "attributes": ["treatment.zyxostin_phase"],
+        "beliefs": {"atmosphere.dominant_gas": "xenon", "atmosphere.ambient_pressure": 3.5},
+        "question": "After adding pressure, what is zyxostin phase?",
+        "options": {"A": "crystalline", "B": "plasma", "C": "vapor"},
+        "correct": "A"  # Maintained: phase depends on gas only, not pressure
+    },
+    {   # Query: sensory_status from prescription
         "attributes": ["patient.sensory_status"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True
-        },
-        "question": "With quarantine protocol active, what is sensory status?",
-        "options": {"A": "telepathic", "B": "normal", "C": "blind"},
-        "correct": "A"  # Determined by initial state/rules
+        "beliefs": {"treatment.active_prescription": "filinan"},
+        "question": "With filinan prescribed, what is sensory status?",
+        "options": {"A": "normal", "B": "telepathic", "C": "blind"},
+        "correct": "A"  # Only snevox -> telepathic
     },
-    {   # Add staff requirement -> requery organ integrity (full accumulation)
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard"
-        },
-        "question": "With standard staff assigned, what is the organ integrity?",
-        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
-        "correct": "A"  # Fully maintained: unchanging through accumulation
-    },
-    {   # Add treatment phase -> query maintained atmosphere setting
-        "attributes": ["atmosphere.dominant_gas"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma"
-        },
-        "question": "With zyxostin treatment started, what is the dominant gas?",
-        "options": {"A": "methane", "B": "nitrogen", "C": "chlorine"},
-        "correct": "A"  # Maintained: atmosphere setting is base fact
-    },
-    {   # Add billing tier -> query maintained sensory status
+    {   # Add organism info (different chain) -> sensory should unchanged
         "attributes": ["patient.sensory_status"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
-            "clinic.billing_tier": "class_beta"
-        },
-        "question": "After billing adjustment to class_beta, what is sensory status?",
-        "options": {"A": "telepathic", "B": "normal", "C": "blind"},
-        "correct": "A"  # Maintained: billing doesn't affect sensory status
+        "beliefs": {"treatment.active_prescription": "filinan", "patient.organism_type": "Glerps"},
+        "question": "After specifying organism, what is sensory status?",
+        "options": {"A": "normal", "B": "telepathic", "C": "blind"},
+        "correct": "A"  # Maintained: sensory depends on prescription only
     },
-    {   # Add prescription -> requery pressure (independent attributes)
-        "attributes": ["atmosphere.ambient_pressure"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
-            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox"
-        },
-        "question": "With snevox prescribed, what is the ambient pressure?",
-        "options": {"A": "2.5", "B": "1.0", "C": "5.0"},
-        "correct": "A"  # Maintained: pressure is independent from prescription
+    {   # Query: quarantine_required with gas+organism
+        "attributes": ["patient.quarantine_required"],
+        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Yorp"},
+        "question": "Xenon + Yorp: is quarantine required?",
+        "options": {"A": "True", "B": "False", "C": "Pending"},
+        "correct": "B"  # Xenon+Yorp doesn't trigger quarantine
     },
-    {   # Add duration cycles -> query organ integrity (long accumulation test)
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
-            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox",
-            "treatment.duration_cycles": 15
-        },
-        "question": "After 15 treatment cycles, what is the organ integrity?",
-        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
-        "correct": "A"  # Fully maintained: unchanged through full accumulation
-    },
-    {   # Final verification: query another maintained attribute
-        "attributes": ["atmosphere.dominant_gas"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "methane", "atmosphere.ambient_pressure": 2.5,
-            "patient.symptoms": ["acid_sweat"], "patient.quarantine_required": True,
-            "medical.staff_requirement": "standard", "treatment.zyxostin_phase": "plasma",
-            "clinic.billing_tier": "class_beta", "treatment.active_prescription": "snevox",
-            "treatment.duration_cycles": 15, "patient.sensory_status": "telepathic"
-        },
-        "question": "After all procedures, what gas dominates the treatment chamber?",
-        "options": {"A": "methane", "B": "chlorine", "C": "xenon"},
-        "correct": "A"  # Fully maintained: core setting unchanged
+    {   # Add symptoms + pressure (different inputs) -> quarantine should stay false
+        "attributes": ["patient.quarantine_required"],
+        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Yorp", "patient.symptoms": ["fever"], "atmosphere.ambient_pressure": 4.0},
+        "question": "With symptoms and pressure added, is quarantine still required?",
+        "options": {"A": "True", "B": "False", "C": "Changed"},
+        "correct": "B"  # Maintained: quarantine depends on gas+organism pair only
     }
 ]

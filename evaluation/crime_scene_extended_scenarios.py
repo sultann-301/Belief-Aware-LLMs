@@ -437,118 +437,78 @@ CRIME_4HOP_TURNS = [
 
 # =====================================================================
 # 6. BELIEF MAINTENANCE SET (10 Turns)
-# Target: State accumulates; we query UNAFFECTED attributes to test whether
-#         the system maintains old beliefs despite new independent ones being added.
+# Target: Adding unrelated input beliefs should NOT affect independently-derived attributes.
+# Tests that different dependency chains are orthogonal.
 # =====================================================================
 CRIME_BELIEF_MAINTENANCE_TURNS = [
-    {   # Establish crime location -> query officer experience (unaffected)
-        "attributes": ["officer_smith.years_on_force"],
-        "beliefs": {"case.location": "warehouse"},
-        "question": "The crime occurred in a warehouse. How many years has Officer Smith been on the force?",
-        "options": {"A": "15", "B": "10", "C": "5"},
-        "correct": "A"  # Officer experience is independent from location
+    {   # Query: suspect_a.status with just home evidence
+        "attributes": ["suspect_a.status"],
+        "beliefs": {"suspect_a.home_evidence": "knife"},
+        "question": "With a knife found at A's home, what is A's status?",
+        "options": {"A": "prime_suspect", "B": "cleared", "C": "unknown"},
+        "correct": "A"  # Home evidence present -> admissible -> prime_suspect
     },
-    {   # Add victim identity -> query officer rank (maintained)
-        "attributes": ["officer_smith.rank"],
-        "beliefs": {"case.location": "warehouse", "victim.name": "Sarah Jones"},
-        "question": "Victim identified as Sarah Jones. What is Officer Smith's rank?",
-        "options": {"A": "detective", "B": "sergeant", "C": "patrol"},
-        "correct": "A"  # Rank is independent from victim identity
+    {   # Add unrelated warrant status (affects motive, not status) -> A status same
+        "attributes": ["suspect_a.status"],
+        "beliefs": {"suspect_a.home_evidence": "knife", "case.warrant_status": True},
+        "question": "After securing a warrant, is A still a prime suspect?",
+        "options": {"A": "prime_suspect", "B": "cleared", "C": "changed"},
+        "correct": "A"  # Maintained: status depends on evidence only, not warrant
     },
-    {   # Add investigation phase -> query officer rank (maintained through accumulation)
-        "attributes": ["officer_smith.rank"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation"
-        },
-        "question": "As the investigation begins, what remains Officer Smith's rank?",
-        "options": {"A": "detective", "B": "sergeant", "C": "patrol"},
-        "correct": "A"  # Maintained: rank doesn't change with investigation phase
+    {   # Query: suspect_b.motive_verified with just relation
+        "attributes": ["suspect_b.motive_verified"],
+        "beliefs": {"suspect_b.relation_to_victim": "enemy"},
+        "question": "If B is an enemy of the victim, is motive verified?",
+        "options": {"A": "True", "B": "False", "C": "Pending"},
+        "correct": "A"  # B relation -> motive verified
     },
-    {   # Add suspect status -> query location (maintained)
-        "attributes": ["case.location"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary"
-        },
-        "question": "Suspect A identified as primary person of interest. Where was the crime?",
-        "options": {"A": "warehouse", "B": "penthouse", "C": "office"},
-        "correct": "A"  # Maintained: location is independent from suspect status
+    {   # Add unrelated evidence chain (affects A, not B motive) -> B motive same
+        "attributes": ["suspect_b.motive_verified"],
+        "beliefs": {"suspect_b.relation_to_victim": "enemy", "suspect_a.home_evidence": "gun"},
+        "question": "Adding evidence about A, is B's motive still verified?",
+        "options": {"A": "True", "B": "False", "C": "Unclear"},
+        "correct": "A"  # Maintained: B motive depends on relation only
     },
-    {   # Add forensics finding -> query victim name (maintained)
-        "attributes": ["victim.name"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True
-        },
-        "question": "Forensics evidence is recovered. Who is the victim?",
-        "options": {"A": "Sarah Jones", "B": "John Doe", "C": "Emma Wilson"},
-        "correct": "A"  # Maintained: victim identity doesn't change with forensics
+    {   # Query: suspect_a.motive_verified with warrant + financial records
+        "attributes": ["suspect_a.motive_verified"],
+        "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt"},
+        "question": "With warrant and debt records, is A's motive verified?",
+        "options": {"A": "True", "B": "False", "C": "Unclear"},
+        "correct": "A"  # Warrant + debt -> motive verified
     },
-    {   # Add witness testimony -> query officer years (maintained)
-        "attributes": ["officer_smith.years_on_force"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True,
-            "case.witness_testimony_coherent": True
-        },
-        "question": "Witnesses provide coherent testimony. How long has Officer Smith served?",
-        "options": {"A": "15", "B": "10", "C": "20"},
-        "correct": "A"  # Maintained: officer experience is static
+    {   # Add unrelated alibi witness (affects B, not A motive) -> A motive same
+        "attributes": ["suspect_a.motive_verified"],
+        "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt", "suspect_b.alibi_partner": "sister"},
+        "question": "After B provides an alibi witness, is A's motive still verified?",
+        "options": {"A": "True", "B": "False", "C": "Changed"},
+        "correct": "A"  # Maintained: A motive depends on warrant + records only
     },
-    {   # Add second suspect -> query original suspect status (maintained)
-        "attributes": ["suspect_a.suspect_status"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True,
-            "case.witness_testimony_coherent": True, "suspect_b.suspect_status": "secondary"
-        },
-        "question": "Suspect B is being investigated. What is Suspect A's status?",
-        "options": {"A": "primary", "B": "secondary", "C": "cleared"},
-        "correct": "A"  # Maintained: Suspect A remains primary despite B being added
+    {   # Query: suspect_b.digital_alibi with CCTV chain
+        "attributes": ["suspect_b.digital_alibi"],
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "With CCTV recording B, is digital alibi confirmed?",
+        "options": {"A": "confirmed", "B": "none", "C": "broken"},
+        "correct": "A"  # Digital CCTV confirms alibi
     },
-    {   # Add motive -> query crime scene integrity (maintained)
-        "attributes": ["case.crime_scene_integrity"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True,
-            "case.witness_testimony_coherent": True, "suspect_b.suspect_status": "secondary",
-            "case.identified_motive": "financial"
-        },
-        "question": "Financial motive is identified. What is the crime scene status?",
-        "options": {"A": "intact", "B": "compromised", "C": "unknown"},
-        "correct": "A"  # Maintained: scene integrity doesn't change with motive
+    {   # Add unrelated home evidence (affects A status, not B digital) -> B digital same
+        "attributes": ["suspect_b.digital_alibi"],
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b", "suspect_a.home_evidence": "none"},
+        "question": "When A's home evidence disappears, is B's digital alibi still confirmed?",
+        "options": {"A": "confirmed", "B": "none", "C": "compromised"},
+        "correct": "A"  # Maintained: digital depends on CCTV only
     },
-    {   # Add alibi verification -> query location again (deep maintenance test)
-        "attributes": ["case.location"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True,
-            "case.witness_testimony_coherent": True, "suspect_b.suspect_status": "secondary",
-            "case.identified_motive": "financial", "suspect_a.alibi_verified": False
-        },
-        "question": "Suspect A's alibi cannot be verified. Where was the crime scene?",
-        "options": {"A": "warehouse", "B": "penthouse", "C": "park"},
-        "correct": "A"  # Fully maintained: location persists through all changes
+    {   # Query: case.theory with both statuses (A prime, B cleared)
+        "attributes": ["case.theory"],
+        "beliefs": {"suspect_a.status": "prime_suspect", "suspect_b.status": "cleared"},
+        "question": "With A prime and B cleared, what is the case theory?",
+        "options": {"A": "solo_perpetrator", "B": "collusion", "C": "unsolved"},
+        "correct": "A"  # One prime -> solo_perpetrator
     },
-    {   # Final verification with full accumulation
-        "attributes": ["officer_smith.rank"],
-        "beliefs": {
-            "case.location": "warehouse", "victim.name": "Sarah Jones",
-            "case.investigation_phase": "initial_investigation",
-            "suspect_a.suspect_status": "primary", "case.forensics_match_found": True,
-            "case.witness_testimony_coherent": True, "suspect_b.suspect_status": "secondary",
-            "case.identified_motive": "financial", "suspect_a.alibi_verified": False,
-            "case.primary_witness_reliability": "high"
-        },
-        "question": "With all evidence considered, what continues to be Officer Smith's rank?",
-        "options": {"A": "detective", "B": "sergeant", "C": "lieutenant"},
-        "correct": "A"  # Fully maintained: rank unchanged through entire accumulation
+    {   # Add unrelated motive facts (B relation) -> theory still solo
+        "attributes": ["case.theory"],
+        "beliefs": {"suspect_a.status": "prime_suspect", "suspect_b.status": "cleared", "suspect_b.relation_to_victim": "friend"},
+        "question": "After learning B is friends with victim, is theory still solo?",
+        "options": {"A": "solo_perpetrator", "B": "collusion", "C": "changed"},
+        "correct": "A"  # Maintained: theory depends on statuses only, not motives
     }
 ]
