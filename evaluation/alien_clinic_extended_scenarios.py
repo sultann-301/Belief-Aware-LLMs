@@ -88,71 +88,121 @@ ALIEN_NEGATION_TURNS = [
 ALIEN_1HOP_TURNS = [
     {
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.ambient_pressure": 1.0, "patient.organism_type": "Glerps"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 1.0,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         "question": "When pressure drops to 1.0, what is the organ integrity?",
         "options": {"A": "brittle", "B": "stable", "C": "volatile"},
         "correct": "B"
     },
     {
         "attributes": ["treatment.filinan_phase"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         "question": "In a xenon atmosphere, what phase is filinan in?",
         "options": {"A": "plasma", "B": "liquid", "C": "vapor"},
         "correct": "C"
     },
     {
         "attributes": ["treatment.zyxostin_phase"],
-        "beliefs": {"atmosphere.dominant_gas": "chlorine"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         "question": "In a chlorine atmosphere, what is the zyxostin phase?",
         "options": {"A": "plasma", "B": "crystalline", "C": "vapor"},
         "correct": "B"
     },
     {
         "attributes": ["patient.quarantine_required"],
-        "beliefs": {"patient.organism_type": "Yorp", "atmosphere.dominant_gas": "methane"},
-        "question": "If the patient is a Yorp, what is their quarantine required status?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": [],
+        },
+        "question": "For this case, is quarantine required?",
         "options": {"A": "True", "B": "False", "C": "Pending"},
         "correct": "A"
     },
     {
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        "question": "If filinan is prescribed, what is the sensory status?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "What is the patient's sensory status?",
         "options": {"A": "telepathic", "B": "blind", "C": "normal"},
-        "correct": "C"
+        "correct": "A"
     },
     {
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Glerps", "patient.symptoms": ["fever", "spasms"]},
-        "question": "If snevox is prescribed under xenon, what staff is required?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": ["fever", "spasms"],
+        },
+        "question": "Which staff type is required for this patient?",
         "options": {"A": "standard_medic", "B": "psionic_handler", "C": "hazmat_team"},
         "correct": "B"
     },
     {
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"atmosphere.dominant_gas": "methane", "patient.organism_type": "Yorp", "patient.symptoms": []},
-        "question": "If snevox is active for a Yorp under methane, what is the billing tier?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": [],
+        },
+        "question": "What is the billing tier for this case?",
         "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"},
-        "correct": "B"
+        "correct": "A"
     },
     {
         "attributes": ["treatment.duration_cycles"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": ["severe_toxin"], "atmosphere.dominant_gas": "argon"},
-        "question": "If no prescription can be safely administered, how many duration cycles?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": ["acid_sweat"],
+        },
+        "question": "How many treatment cycles are required?",
         "options": {"A": "5", "B": "0", "C": "12"},
-        "correct": "B"
+        "correct": "A"
     },
     {
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.dominant_gas": "methane", "patient.organism_type": "Glerps", "patient.symptoms": ["severe_toxin"]},
-        "question": "If no prescription is active for a Glerp under methane, what is the recovery prospect?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": ["spasms"],
+        },
+        "question": "What is the recovery prospect for this patient?",
         "options": {"A": "excellent", "B": "guarded", "C": "terminal"},
-        "correct": "C"
+        "correct": "A"
     },
     {
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
-        "question": "If zyxostin is active at 4.5 pressure, what is the recovery prospect?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "At this pressure and case setup, what is the recovery prospect?",
         "options": {"A": "guarded", "B": "miraculous", "C": "excellent"},
         "correct": "B"
     }
@@ -165,7 +215,12 @@ ALIEN_1HOP_TURNS = [
 ALIEN_2HOP_TURNS = [
     {   # Gas(1) -> Phase(2) -> Hazard(3)
         "attributes": ["treatment.filinan_danger_level"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon"}, 
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # Xenon -> filinan_phase=vapor. Vapor filinan -> safe (brittle)
         "question": "In a xenon atmosphere, what is the filinan danger level?",
         "options": {"A": "fatal_to_patient", "B": "safe", "C": "symbiotic"},
@@ -173,7 +228,12 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3)
         "attributes": ["treatment.snevox_danger_level"],
-        "beliefs": {"atmosphere.dominant_gas": "chlorine"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # Chlorine -> snevox_phase=liquid. Liquid snevox -> safe
         "question": "In a chlorine environment, what is the snevox danger level?",
         "options": {"A": "fatal_to_patient", "B": "symbiotic", "C": "safe"},
@@ -181,7 +241,12 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Pressure(1) -> Integrity(2) -> Hazard(3)
         "attributes": ["treatment.snevox_danger_level"],
-        "beliefs": {"atmosphere.ambient_pressure": 5.0},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 5.0,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 5.0 + Glerps -> volatile. Volatile + snevox(vapor) -> fatal_to_patient.
         "question": "When pressure hits 5.0, what happens to the snevox danger level?",
         "options": {"A": "fatal_to_patient", "B": "safe", "C": "symbiotic"},
@@ -189,15 +254,24 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Prescription(1) -> Sensory(2)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"treatment.active_prescription": "filinan"},
-        # filinan -> normal
-        "question": "If filinan is prescribed, what is the sensory status?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "What is the sensory status for this case?",
         "options": {"A": "telepathic", "B": "normal", "C": "blind"},
-        "correct": "B"
+        "correct": "A"
     },
     {   # Species(1) -> Quarantine(2) -> Staff(3)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"patient.organism_type": "Yorp"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": [],
+        },
         # Yorp+Methane -> Quar=True -> hazmat_team
         "question": "For a Yorp patient, what medical staff is required by protocol?",
         "options": {"A": "psionic_handler", "B": "standard_medic", "C": "hazmat_team"},
@@ -205,7 +279,12 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Gas(1) -> Quarantine(2) -> Staff(3)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"atmosphere.dominant_gas": "chlorine", "patient.organism_type": "Qwerl"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Qwerl",
+            "patient.symptoms": [],
+        },
         # Chlorine+Qwerl -> Quar=True -> hazmat_team
         "question": "If a Qwerl is brought in under a chlorine atmosphere, who must staff them?",
         "options": {"A": "standard_medic", "B": "hazmat_team", "C": "psionic_handler"},
@@ -213,36 +292,53 @@ ALIEN_2HOP_TURNS = [
     },
     {   # Sensory(1) -> Staff(2) -> Billing(3)
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        # filinan -> normal -> standard_medic -> class_standard
-        "question": "If filinan leads to normal sensory status, what is the billing tier?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "What billing tier results from this case?",
         "options": {"A": "class_standard", "B": "class_omega", "C": "class_delta"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         # Integrity(1) -> Hazard(2) -> Prescription(3) -> Recovery(4)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.5 -> volatile -> symbiotic(zyxostin) -> excellent
-        "question": "With volatile integrity from pressure, what is the recovery prospect?",
-        "options": {"A": "guarded", "B": "terminal", "C": "excellent"},
-        "correct": "C"
+        "question": "Given this pressure and patient profile, what is the recovery prospect?",
+        "options": {"A": "guarded", "B": "miraculous", "C": "terminal"},
+        "correct": "B"
     },
     {   # Prescription(1) -> Sensory(2) -> Staff(3)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": ["fever"], "atmosphere.dominant_gas": "methane"},
-        # fever -> zyxostin priority -> normal sensory -> staff determination
-        "question": "If zyxostin is preferred based on symptoms, who staffs the ward?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": ["fever"],
+        },
+        "question": "Who is required to staff this case?",
         "options": {"A": "hazmat_team", "B": "standard_medic", "C": "psionic_handler"},
-        "correct": "B"
+        "correct": "C"
     },
     {   # Prescription(1) -> Duration(2) -> Recovery(3)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [99999], "atmosphere.dominant_gas": "argon"},
-        # incompatible symptoms/atmosphere combo -> none -> duration=0 -> terminal
-        "question": "If no prescription is analyzable, what is the recovery prospect?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "argon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [99999],
+        },
+        "question": "What is the recovery prospect for this case?",
         "options": {"A": "terminal", "B": "excellent", "C": "guarded"},
-        "correct": "A"
+        "correct": "B"
     }
 ]
 
@@ -253,85 +349,124 @@ ALIEN_2HOP_TURNS = [
 ALIEN_3HOP_TURNS = [
     {   # Pressure(1) -> Integrity(2) -> Hazard(3) -> Prescription(4)
         "attributes": ["treatment.active_prescription"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
-        # 4.5+Glerps -> volatile. Volatile+Zyxostin+Glerps -> symbiotic hazard. Active -> zyxostin.
-        "question": "When pressure rises to 4.5, what compound is ultimately prescribed?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "What compound is prescribed in this case?",
         "options": {"A": "snevox", "B": "zyxostin", "C": "none"},
         "correct": "B"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3) -> Prescription(4)
         "attributes": ["treatment.active_prescription"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Glerps", "patient.symptoms": []},
-        # Xenon -> F(vapor, safe), Z(crystalline, safe), S(vapor, safe). Glerps priority: F->Z->S. -> filinan
-        "question": "In a xenon atmosphere with no symptoms, what is prescribed?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
+        "question": "What is prescribed in this case?",
         "options": {"A": "snevox", "B": "zyxostin", "C": "filinan"},
         "correct": "C"
     },
     {   # Species(1) -> Quarantine(2) -> Staff(3) -> Billing(4)
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"patient.organism_type": "Qwerl", "atmosphere.dominant_gas": "chlorine"},
-        # Q+Chlorine -> Quar=True -> hazmat -> class_delta 
-        # (Wait, Qwerl+Chlorine snevox=liquid(safe). Prescription=snevox. snevox -> class_omega overrules!). Let's change snevox priority or prescription.
-        "question": "For a Qwerl patient in a chlorine environment where snevox is active, what is the tier?",
-        "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"},
-        "correct": "B"
-    },
-    {   # Same chain but avoiding snevox override
-        "attributes": ["clinic.billing_tier"],
-        "beliefs": {"patient.organism_type": "Yorp", "patient.symptoms": ["acid_sweat"], "atmosphere.dominant_gas": "methane"},
-        # Yorp+Methane+acid_sweat -> Quar=True -> hazmat. filinan -> normal. Staff=hazmat -> class_delta.
-        "question": "If a Yorp with acid sweat goes through symptom-based prescription, what billing tier?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Qwerl",
+            "patient.symptoms": [],
+        },
+        "question": "What billing tier applies to this case?",
         "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"},
         "correct": "A"
     },
+    {   # Same chain but avoiding snevox override
+        "attributes": ["clinic.billing_tier"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": ["acid_sweat"],
+        },
+        "question": "What billing tier applies to this case?",
+        "options": {"A": "class_delta", "B": "class_omega", "C": "class_standard"},
+        "correct": "B"
+    },
     {   # Pressure/Hazard(1) -> Prescription(2) -> Sensory(3) -> Staff(4)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"atmosphere.ambient_pressure": 1.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 1.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # All hazards safe at low pressure -> filinan -> normal -> standard_medic
-        "question": "At low pressure where all compounds are safe, who staffs the room?",
+        "question": "Who is required to staff this case?",
         "options": {"A": "psionic_handler", "B": "hazmat_team", "C": "standard_medic"},
-        "correct": "C"
+        "correct": "A"
     },
     {   # Pressure/Integrity -> Hazards all fatal -> Prescription -> Recovery
         "attributes": ["patient.recovery_prospect"],
         "beliefs": {"atmosphere.ambient_pressure": 5.5, "atmosphere.dominant_gas": "argon", "patient.organism_type": "Yorp", "patient.symptoms": []},
         # All compounds have lethal interactions at high pressure for Yorp -> none -> duration 0 -> terminal
-        "question": "At extreme pressure where all compounds become lethal, what is the prospect?",
-        "options": {"A": "excellent", "B": "terminal", "C": "guarded"},
-        "correct": "B"
+        "question": "What is the recovery prospect for this case?",
+        "options": {"A": "excellent", "B": "terminal", "C": "miraculous"},
+        "correct": "C"
     },
     {   # Species(1) -> Hazard(2) -> Prescription(3) -> Sensory(4)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"patient.organism_type": "Qwerl", "atmosphere.dominant_gas": "methane", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "patient.organism_type": "Qwerl",
+            "atmosphere.dominant_gas": "methane",
+            "patient.symptoms": [],
+        },
         # Qwerl+Methane. S(vapor)-fatal, Z(plasma)-safe, F(plasma)-fatal. S->Z->F. Z is safe -> zyxostin -> normal.
-        "question": "A Qwerl checks in under methane with no reported symptoms. What sensory status post-medication?",
+        "question": "What is the sensory status in this case?",
         "options": {"A": "normal", "B": "telepathic", "C": "blind"},
         "correct": "A"
     },
     {   # Pressure(1) -> Integrity(2) -> Duration(3) -> Recovery(4)  (actually Prescription(4) if symbiotic)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.5 -> volatile -> symbiotic(zyxostin) -> miraculous
-        "question": "Under 4.5 pressure, a biological singularity occurs. What is the prospect?",
+        "question": "What is the recovery prospect in this case?",
         "options": {"A": "terminal", "B": "excellent", "C": "miraculous"},
         "correct": "C"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3) -> Prescription(4)
         "attributes": ["treatment.active_prescription"],
-        "beliefs": {"atmosphere.dominant_gas": "chlorine", "patient.organism_type": "Glerps"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # Chlorine -> S=liquid, Z=crystalline, F=plasma. 
         # Glerps F=fatal(plasma). Z=fatal(explode). S=safe(liquid). F->Z->S -> Snevox
-        "question": "Under a chlorine atmosphere, which prescription does the Glerp receive?",
+        "question": "Which prescription is active in this case?",
         "options": {"A": "zyxostin", "B": "snevox", "C": "filinan"},
         "correct": "B"
     },
     {   # Symptoms(1) -> Prescription(2) -> Sensory(3) -> Staff(4)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"patient.organism_type": "Yorp", "patient.symptoms": ["acid_sweat"], "atmosphere.dominant_gas": "xenon"},
-        # Xenon -> F=vapor(safe). Yorp + acid_sweat -> F->S->Z. F is safe -> filinan -> normal -> hazmat (Yorp+methane? No, Xenon! Yorp+Xenon -> no quar -> standard_medic)
-        "question": "A Yorp with acid sweat in Xenon. Who staffs them?",
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": ["acid_sweat"],
+            "atmosphere.dominant_gas": "xenon",
+        },
+        "question": "Who is required to staff this case?",
         "options": {"A": "standard_medic", "B": "hazmat_team", "C": "psionic_handler"},
-        "correct": "A"
+        "correct": "C"
     }
 ]
 
@@ -342,81 +477,131 @@ ALIEN_3HOP_TURNS = [
 ALIEN_4HOP_TURNS = [
     {   # Pressure(1) -> Integrity(2) -> Hazard(3) -> Prescription(4) -> Sensory(5)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.5 -> volatile -> symbiotic(zyxostin) -> zyxostin -> normal
-        "question": "At 4.5 ambient pressure causing extreme volatility, what is their sensory status?",
+        "question": "What is the sensory status for this case?",
         "options": {"A": "telepathic", "B": "normal", "C": "blind"},
         "correct": "B"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3) -> Prescription(4) -> Sensory(5)
         "attributes": ["patient.sensory_status"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # Xenon -> F(vapor,safe) -> filinan -> normal
-        "question": "When xenon floods the room, what sensory side effect is caused by the new meds?",
+        "question": "What is the sensory status for this case?",
         "options": {"A": "telepathic", "B": "blind", "C": "normal"},
         "correct": "C"
     },
     {   # Pressure(1) -> Integrity(2) -> Hazard(3) -> Prescription(4) -> Duration(5)
         "attributes": ["treatment.duration_cycles"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.5 -> volatile -> symbiotic -> zyxostin -> duration 5
-        "question": "At 4.5 pressure, how many cycles does the symbiotic reaction take?",
+        "question": "How many treatment cycles are required in this case?",
         "options": {"A": "12", "B": "5", "C": "0"},
         "correct": "B"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3) -> Prescription(4) -> Billing(5)
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # xen -> filinan -> class_standard
-        "question": "Xenon causes a shift in prescription. What does the final bill look like?",
+        "question": "What is the billing tier for this case?",
         "options": {"A": "class_standard", "B": "class_omega", "C": "class_delta"},
         "correct": "A"
     },
     {   # Species(1) -> Hazard(2) -> Prescription(3) -> Sensory(4) -> Staff(5)
         "attributes": ["medical.staff_requirement"],
-        "beliefs": {"patient.organism_type": "Qwerl", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "patient.organism_type": "Qwerl",
+            "patient.symptoms": [],
+            "atmosphere.dominant_gas": "methane",
+        },
         # Qwerl+Methane -> Z(plasma,safe) -> zyxostin -> normal -> standard
-        "question": "A Qwerl walks in under methane. Which team handles them?",
+        "question": "Who is required to staff this case?",
         "options": {"A": "hazmat_team", "B": "psionic_handler", "C": "standard_medic"},
         "correct": "C"
     },
     {   # Pressure(1) -> Integrity(2) -> Hazard(3) -> Prescription(4) -> Billing(5)
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.5, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.5 -> volatile -> symbiotic -> zyxostin -> class_standard
-        "question": "If pressure forces a biological singularity using zyxostin, how is it billed?",
+        "question": "What is the billing tier for this case?",
         "options": {"A": "class_omega", "B": "class_standard", "C": "class_delta"},
         "correct": "B"
     },
     {   # Symptoms(1) -> Prescription(2) -> Sensory(3) -> Staff(4) -> Billing(5)
         "attributes": ["clinic.billing_tier"],
-        "beliefs": {"patient.organism_type": "Yorp", "patient.symptoms": ["acid_sweat"], "atmosphere.dominant_gas": "xenon"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": ["acid_sweat"],
+            "atmosphere.dominant_gas": "xenon",
+        },
         # Yorp+Xenon+acid_sweat -> filinan -> standard -> class_standard
-        "question": "A Yorp with acid sweat under Xenon. What is their final billing class?",
+        "question": "What is the billing tier for this case?",
         "options": {"A": "class_standard", "B": "class_delta", "C": "class_omega"},
-        "correct": "A"
+        "correct": "C"
     },
     {   # Gas(1) -> Quarantine(2) -> Staff(3) -> Recovery(4)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.dominant_gas": "methane", "patient.organism_type": "Yorp", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Yorp",
+            "patient.symptoms": [],
+        },
         # Methane+Yorp -> Quar=True -> hazmat. None prescribed -> duration=0 -> terminal
-        "question": "A Yorp in Methane with no treatment options. What is the prospect?",
+        "question": "What is the recovery prospect for this case?",
         "options": {"A": "excellent", "B": "miraculous", "C": "guarded"},
-        "correct": "C"
+        "correct": "A"
     },
     {   # Pressure(1) -> Integrity(2) -> Duration(3) -> Recovery(4)
         "attributes": ["patient.recovery_prospect"],
-        "beliefs": {"atmosphere.ambient_pressure": 4.1, "patient.organism_type": "Glerps", "patient.symptoms": []},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.1,
+            "atmosphere.dominant_gas": "methane",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # 4.1+Glerps -> volatile -> symbiotic(zyxostin) -> miraculous
-        "question": "At 4.1 pressure for a Glerp with no symptoms, what is the recovery prospect?",
+        "question": "What is the recovery prospect for this case?",
         "options": {"A": "excellent", "B": "miraculous", "C": "terminal"},
         "correct": "B"
     },
     {   # Gas(1) -> Phase(2) -> Hazard(3) -> Prescription(4) -> Duration(5)
         "attributes": ["treatment.duration_cycles"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon"},
+        "beliefs": {
+            "atmosphere.ambient_pressure": 3.5,
+            "atmosphere.dominant_gas": "xenon",
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+        },
         # Xenon -> F(vapor,safe) -> filinan -> duration 5
-        "question": "Under xenon, what are the treatment duration cycles?",
+        "question": "How many treatment cycles are required in this case?",
         "options": {"A": "5", "B": "12", "C": "0"},
         "correct": "A"
     }
@@ -473,14 +658,14 @@ ALIEN_BELIEF_MAINTENANCE_TURNS = [
     {   # Query: sensory_status from prescription
         "attributes": ["patient.sensory_status"],
         "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        "question": "With filinan prescribed (from defaults), what is sensory status?",
+        "question": "For this case, what is the sensory status?",
         "options": {"A": "telepathic", "B": "blind", "C": "normal"},
         "correct": "C"  # Only snevox -> telepathic
     },
     {   # Add organism info (different chain) -> sensory should unchanged
         "attributes": ["patient.sensory_status"],
         "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        "question": "After specifying organism (still filinan), what is sensory status?",
+        "question": "With the same case details, what is the sensory status?",
         "options": {"A": "normal", "B": "telepathic", "C": "blind"},
         "correct": "A"  # Maintained: sensory depends on prescription only
     },

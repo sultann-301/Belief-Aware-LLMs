@@ -105,63 +105,63 @@ THORNCRESTER_1HOP_TURNS = [
         "beliefs": {"adult_thorncrester.ecological_stress": "high"},
         "question": "If ecological stress hits high, what does the expressed diet instantly become?",
         "options": {"A": "scavenger", "B": "frugivore", "C": "insectivore"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["adult_thorncrester.plumage_color"],
         "beliefs": {"adult_thorncrester.expressed_diet": "scavenger"},
         "question": "If they are forced to scavenge, what happens to their plumage?",
         "options": {"A": "dull_grey", "B": "crimson", "C": "molting"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["thorncrester_flock.expressed_structure"],
         "beliefs": {"adult_thorncrester.ecological_stress": "high"},
         "question": "High stress alters the flock setup. What is the new expressed structure?",
         "options": {"A": "survival_swarm", "B": "matriarchal_pairs", "C": "solitary"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["thorncrester_flock.territory_behavior"],
         "beliefs": {"thorncrester_flock.expressed_structure": "survival_swarm", "environment.food_scarcity": True},
         "question": "With a survival swarm active during scarcity, what is the territory behavior?",
         "options": {"A": "hyper_aggressive", "B": "peaceful", "C": "defensive"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["juvenile_thorncrester.metabolic_state"],
         "beliefs": {"adult_thorncrester.expressed_diet": "scavenger"},
         "question": "If adults scavenge but young process fructose, what is the juvenile state?",
         "options": {"A": "starving", "B": "thriving", "C": "stable"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["juvenile_thorncrester.development"],
         "beliefs": {"juvenile_thorncrester.metabolic_state": "starving"},
         "question": "A starving juvenile has what development prospect?",
         "options": {"A": "arrested", "B": "maturing", "C": "unknown"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["feather_mite.bloom_status"],
         "beliefs": {"adult_thorncrester.plumage_color": "dull_grey", "environment.weather_pattern": "drought"},
         "question": "Drought conditions with dull_grey plumage - what is the mite bloom status?",
         "options": {"A": "active_bloom", "B": "dormant", "C": "lethal"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["feather_mite.parasitic_load"],
         "beliefs": {"feather_mite.bloom_status": "active_bloom"},
         "question": "An active bloom creates what parasitic load on the hosts?",
         "options": {"A": "lethal", "B": "harmless", "C": "moderate"},
-        "correct": "A"
+        "correct": "B"
     },
     {
         "attributes": ["adult_thorncrester.mortality_risk"],
         "beliefs": {"feather_mite.parasitic_load": "lethal"},
         "question": "When the parasitic load is lethal, what is the adult mortality risk?",
         "options": {"A": "critical", "B": "low", "C": "high"},
-        "correct": "A"
+        "correct": "B"
     }
 ]
 
@@ -199,7 +199,7 @@ THORNCRESTER_2HOP_TURNS = [
         # scav + fructose -> starving -> arrested
         "question": "If adults shift to scavengers, what happens to youth development?",
         "options": {"A": "arrested", "B": "maturing", "C": "accelerated"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Plumage(1) -> Bloom(2) -> Load
         "attributes": ["feather_mite.parasitic_load"],
@@ -207,7 +207,7 @@ THORNCRESTER_2HOP_TURNS = [
         # active_bloom -> lethal
         "question": "Dull_grey birds in a drought trigger a bloom. What is the parasitic load?",
         "options": {"A": "lethal", "B": "harmless", "C": "low"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Bloom(1) -> Load(2) -> Mortality
         "attributes": ["adult_thorncrester.mortality_risk"],
@@ -215,7 +215,7 @@ THORNCRESTER_2HOP_TURNS = [
         # lethal -> critical
         "question": "An active bloom is present. What is the mortality risk?",
         "options": {"A": "critical", "B": "low", "C": "moderate"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Territory(1) -> Mortality(2)  Wait, Territory is 1 hop from Mortality.
         # How about ExpStruct(1) -> Territory(2) -> Mortality(3)  <- 3 hop
@@ -225,7 +225,7 @@ THORNCRESTER_2HOP_TURNS = [
         # high obj -> swarm -> aggressive
         "question": "Forced into high stress and scarcity, how does the flock act?",
         "options": {"A": "hyper_aggressive", "B": "peaceful", "C": "fearful"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Enzmye(1) -> Metabolism(2) -> Development
         "attributes": ["juvenile_thorncrester.development"],
@@ -233,14 +233,14 @@ THORNCRESTER_2HOP_TURNS = [
         # fructose processor + scavenger diet -> starving -> arrested
         "question": "A juvenile needs fructose but adults shifted to scavenging. Growth status?",
         "options": {"A": "arrested", "B": "maturing", "C": "thriving"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Stress(1) -> ExpDiet(2) -> Plumage
         "attributes": ["adult_thorncrester.plumage_color"],
         "beliefs": {"adult_thorncrester.ecological_stress": "high"},
         "question": "High stress masks the diet. What color is the plumage?",
         "options": {"A": "dull_grey", "B": "crimson", "C": "mixed"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # GenDiet(1) -> ExpDiet(2) -> Metabolism
         "attributes": ["juvenile_thorncrester.metabolic_state"],
@@ -278,7 +278,7 @@ THORNCRESTER_3HOP_TURNS = [
         # scav -> starving -> arrested
         "question": "With stress levels flagged high, what is the developmental outcome of the young?",
         "options": {"A": "arrested", "B": "maturing", "C": "stunted"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # ExpDiet(1) -> Plumage(2) -> Bloom(3) -> Load
         "attributes": ["feather_mite.parasitic_load"],
@@ -286,7 +286,7 @@ THORNCRESTER_3HOP_TURNS = [
         # dull_grey -> active_bloom -> lethal
         "question": "Scavenging in a drought triggers feather mites. What is the parasitic load?",
         "options": {"A": "lethal", "B": "harmless", "C": "dormant"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Plumage(1) -> Bloom(2) -> Load(3) -> Mortality
         "attributes": ["adult_thorncrester.mortality_risk"],
@@ -294,7 +294,7 @@ THORNCRESTER_3HOP_TURNS = [
         # active -> lethal -> critical
         "question": "Dull_grey plumage in drought conditions leads to what mortality risk?",
         "options": {"A": "critical", "B": "low", "C": "moderate"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Stress(1) -> ExpStruct(2) -> Territory(3) -> Mortality
         "attributes": ["adult_thorncrester.mortality_risk"],
@@ -302,7 +302,7 @@ THORNCRESTER_3HOP_TURNS = [
         # swarm -> aggressive -> critical
         "question": "High stress combined with scarcity brings what level of mortality risk?",
         "options": {"A": "critical", "B": "low", "C": "moderate"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # GenDiet(1) -> ExpDiet(2) -> Metabolism(3) -> Development
         "attributes": ["juvenile_thorncrester.development"],
@@ -381,7 +381,7 @@ THORNCRESTER_4HOP_TURNS = [
         # high -> scav -> grey -> active -> lethal -> critical
         "question": "High stress is forced during a drought. What is the adult mortality?",
         "options": {"A": "critical", "B": "low", "C": "medium"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Weather(1) -> Stress(2) -> ExpDiet(3) -> Plumage(4) -> Bloom(5) -> Load(6)  Wait, Weather to Bloom is direct, but via plumage it's long.
         "attributes": ["feather_mite.parasitic_load"],
@@ -404,14 +404,14 @@ THORNCRESTER_4HOP_TURNS = [
         "beliefs": {"adult_thorncrester.expressed_diet": "scavenger", "environment.weather_pattern": "drought"},
         "question": "Scavenging in a drought drives plumage changes. Final mortality impact?",
         "options": {"A": "critical", "B": "low", "C": "high"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Stress(1) -> ExpStruct(2) -> Territory(3) -> Mortality(4)
         "attributes": ["adult_thorncrester.mortality_risk"],
         "beliefs": {"adult_thorncrester.ecological_stress": "high", "environment.food_scarcity": True},
         "question": "High stress alters flock formation amidst scarcity. Mortality risk?",
         "options": {"A": "critical", "B": "low", "C": "moderate"},
-        "correct": "A"
+        "correct": "B"
     },
     {   # Weather(1) -> Stress(2) -> ExpDiet(3) -> Plumage(4) -> Bloom(5) (negative check)
         "attributes": ["feather_mite.bloom_status"],

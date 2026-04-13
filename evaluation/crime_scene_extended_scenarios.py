@@ -108,7 +108,7 @@ CRIME_1HOP_TURNS = [
     },
     {
         "attributes": ["suspect_a.status"],
-        "beliefs": {"suspect_a.admissible_evidence": "none"},
+        "beliefs": {"suspect_a.home_evidence": "none"},
         "question": "Without admissible evidence, what is Suspect A's status?",
         "options": {"A": "cleared", "B": "prime_suspect", "C": "unsolved"},
         "correct": "A"
@@ -122,26 +122,22 @@ CRIME_1HOP_TURNS = [
     },
     {
         "attributes": ["suspect_b.final_alibi"],
-        "beliefs": {"suspect_b.digital_alibi": "confirmed"},
+        "beliefs": {"case.cctv_subject": "suspect_b", "case.cctv_status": "active"},
         "question": "If the digital alibi is hard-confirmed, what is the final alibi?",
         "options": {"A": "confirmed", "B": "broken", "C": "none"},
         "correct": "A"
     },
     {
         "attributes": ["suspect_b.status"],
-        "beliefs": {"suspect_b.final_alibi": "confirmed"},
+        "beliefs": {"case.cctv_subject": "suspect_b", "case.cctv_status": "active"},
         "question": "When the final alibi resolves to confirmed, what is Suspect B's status?",
         "options": {"A": "cleared", "B": "prime_suspect", "C": "charged"},
         "correct": "A"
     },
     {
         "attributes": ["case.theory"],
-        "beliefs": {"suspect_a.status": "cleared"}, # B defaults to prime because B's alibi is broken? 
-        # Wait, if A is cleared, B's testimonial = confirmed!
-        # Ah, these direct beliefs inject at the middle layer. If we inject suspect_a.status="cleared", B's testimonial recalculates!
-        # A="cleared" -> test="confirmed" -> final="confirmed" -> B="cleared".
-        # So Theory="unsolved".
-        "question": "If you override and forcefully clear Suspect A, what is the resulting case theory?",
+        "beliefs": {"officer_smith.status": "suspended"},
+        "question": "If Officer Smith is suspended, what is the resulting case theory?",
         "options": {"A": "unsolved", "B": "solo_perpetrator", "C": "collusion"},
         "correct": "A"
     },
@@ -161,9 +157,8 @@ CRIME_1HOP_TURNS = [
     },
     {
         "attributes": ["case.lead_suspect"],
-        "beliefs": {"case.theory": "solo_perpetrator", "suspect_b.status": "prime_suspect", "suspect_a.status": "cleared"},
-        # Theory is solo, A is clear, B is prime.
-        "question": "For a solo perpetrator theory where only B is prime, who is the lead?",
+        "beliefs": {"suspect_b.relation_to_victim": "enemy"},
+        "question": "If Suspect B's motive is verified while Suspect A's is not, who is the lead suspect?",
         "options": {"A": "suspect_b", "B": "suspect_a", "C": "both"},
         "correct": "A"
     },
@@ -197,7 +192,7 @@ CRIME_2HOP_TURNS = [
     },
     {   # Status A(1) -> Testimonial B(2) -> Final Alibi B
         "attributes": ["suspect_b.final_alibi"],
-        "beliefs": {"suspect_a.status": "cleared"},
+        "beliefs": {"suspect_a.home_evidence": "none"},
         "question": "If Suspect A is cleared, what is Suspect B's final alibi status?",
         "options": {"A": "confirmed", "B": "broken", "C": "none"},
         "correct": "A"
@@ -218,9 +213,8 @@ CRIME_2HOP_TURNS = [
     },
     {   # Final B(1) -> Status B(2) -> Theory
         "attributes": ["case.theory"],
-        "beliefs": {"suspect_b.final_alibi": "confirmed"},
-        # A is prime, B is cleared -> solo
-        "question": "If B's final alibi is fully confirmed, what is the case theory?",
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "If CCTV confirms Suspect B's whereabouts, what is the case theory?",
         "options": {"A": "solo_perpetrator", "B": "unsolved", "C": "collusion"},
         "correct": "A"
     },
@@ -242,17 +236,15 @@ CRIME_2HOP_TURNS = [
     },
     {   # Status A(1) -> Theory(2) -> Lead Suspect
         "attributes": ["case.lead_suspect"],
-        "beliefs": {"suspect_a.status": "cleared", "suspect_b.status": "prime_suspect"},
-        # A clear, B prime -> solo -> suspect_b
-        "question": "If A is cleared but B is somehow kept prime, who is the lead?",
+        "beliefs": {"suspect_b.relation_to_victim": "enemy"},
+        "question": "If Suspect B's motive is verified while A's is not, who is the lead?",
         "options": {"A": "suspect_b", "B": "suspect_a", "C": "none"},
         "correct": "A"
     },
     {   # Status B(1) -> Theory(2) -> Lead Suspect
         "attributes": ["case.lead_suspect"],
-        "beliefs": {"suspect_b.status": "cleared"},
-        # A is prime, B clear -> solo -> suspect_a
-        "question": "If B's status drops to cleared, who is the lead suspect?",
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "If CCTV clears Suspect B, who is the lead suspect?",
         "options": {"A": "suspect_a", "B": "both", "C": "suspect_b"},
         "correct": "A"
     }
@@ -289,17 +281,15 @@ CRIME_3HOP_TURNS = [
     },
     {   # Status A(1) -> Testimonial(2) -> Final(3) -> Status B
         "attributes": ["suspect_b.status"],
-        "beliefs": {"suspect_a.status": "cleared"},
-        # A clear -> test confirm -> B clear
-        "question": "If A is cleared manually, what happens to B's status?",
+        "beliefs": {"suspect_a.home_evidence": "none"},
+        "question": "If A is cleared by evidence, what happens to B's status?",
         "options": {"A": "cleared", "B": "prime_suspect", "C": "both"},
         "correct": "A"
     },
     {   # Final B(1) -> Status B(2) -> Theory(3) -> Lead
         "attributes": ["case.lead_suspect"],
-        "beliefs": {"suspect_b.final_alibi": "confirmed"},
-        # B cleared. A is prime. Theory solo -> Lead = A
-        "question": "Given B's final alibi is confirmed, who is the lead suspect?",
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "Given CCTV confirms B's alibi, who is the lead suspect?",
         "options": {"A": "suspect_a", "B": "suspect_b", "C": "none"},
         "correct": "A"
     },
@@ -314,9 +304,8 @@ CRIME_3HOP_TURNS = [
     {   # Status A(1) -> Theory(2) -> Lead(3)    (Actually Status A(1)->Test(2)->Final(3)->SB(4)->Theory...)
         # Let's do: B.Status(1) -> Theory(2) -> Lead(3)
         "attributes": ["case.lead_suspect"],
-        "beliefs": {"suspect_b.status": "cleared"},
-        # A prime -> solo -> A
-        "question": "If Suspect B is cleared of all charges, who leads the solo theory?",
+        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
+        "question": "If evidence clears Suspect B, who leads the solo theory?",
         "options": {"A": "suspect_a", "B": "suspect_b", "C": "none"},
         "correct": "A"
     },
@@ -499,16 +488,16 @@ CRIME_BELIEF_MAINTENANCE_TURNS = [
     },
     {   # Query: case.theory with both statuses (A prime, B cleared)
         "attributes": ["case.theory"],
-        "beliefs": {"suspect_a.status": "prime_suspect", "suspect_b.status": "cleared"},
-        "question": "With A prime and B cleared, what is the case theory?",
+        "beliefs": {"suspect_b.alibi_partner": "wife"},
+        "question": "With B's alibi partner changed away from A, what is the case theory?",
         "options": {"A": "solo_perpetrator", "B": "collusion", "C": "unsolved"},
-        "correct": "A"  # One prime -> solo_perpetrator
+        "correct": "C"
     },
     {   # Add unrelated motive facts (B relation) -> theory still solo
         "attributes": ["case.theory"],
-        "beliefs": {"suspect_a.status": "prime_suspect", "suspect_b.status": "cleared", "suspect_b.relation_to_victim": "friend"},
-        "question": "After learning B is friends with victim, is theory still solo?",
-        "options": {"A": "solo_perpetrator", "B": "collusion", "C": "changed"},
-        "correct": "A"  # Maintained: theory depends on statuses only, not motives
+        "beliefs": {"suspect_b.alibi_partner": "wife", "suspect_b.relation_to_victim": "friend"},
+        "question": "After learning B is friends with the victim, what is the case theory?",
+        "options": {"A": "unsolved", "B": "collusion", "C": "changed"},
+        "correct": "A"
     }
 ]
