@@ -44,6 +44,7 @@ BASELINE_SYSTEM_PROMPT = """\
 You are a reasoning assistant evaluating facts over a conversation.
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
+First, output your reasoning starting with REASONING: 
 IMPORTANT: For multiple-choice questions, you MUST end your response with
 the word ANSWER: followed by exactly one capital letter (A, B, or C).
 Do not write anything after the letter.
@@ -163,7 +164,6 @@ def _format_question(turn: dict) -> str:
     lines = [turn["question"], "\nChoose exactly one:"]
     for letter, text in turn["options"].items():
         lines.append(f"  {letter}) {text}")
-    lines.append("\nRespond with REASONING then ANSWER: [Letter]")
     return "\n".join(lines)
 
 
@@ -177,6 +177,13 @@ def _build_store_prompt(beliefs_text: str, question: str) -> str:
     if beliefs_text:
         parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
     parts.append(f"[QUERY]\n{question}")
+    parts.append(
+        "Answer the query using ONLY the beliefs above. Respond in this exact format:\n"
+        "\n"
+        "FACT: <copy the exact key=value from the beliefs that answers the question>\n"
+        "MATCH: <explain which option A, B, or C matches the FACT>\n"
+        "ANSWER: <a single capital letter>"
+    )
     return "\n\n".join(parts)
 
 
@@ -188,6 +195,7 @@ def _build_baseline_prompt(
     if belief_updates:
         parts.append("[NEW BELIEF]\n" + "\n".join(belief_updates))
     parts.append(f"[QUERY]\n{question}")
+    parts.append("\nIMPORTANT RULES: Start with REASONING. Your very last line MUST be exactly: ANSWER: [Letter]")
     return "\n\n".join(parts)
 
 
@@ -257,7 +265,10 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
 def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     """[2] WITH Store + Chat History: Store-derived beliefs + conversational context."""
     results = []
-    messages = [{"role": "system", "content": EVAL_SYSTEM_PROMPT}]
+    
+    # Base messages tracking
+    base_messages = [{"role": "system", "content": EVAL_SYSTEM_PROMPT}]
+    messages = base_messages.copy()
 
     # For conversational: maintain one store across all turns
     if config.is_conversational:
@@ -294,6 +305,10 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
         question = _format_question(turn)
         prompt = _build_store_prompt(beliefs_text, question)
 
+        if not config.is_conversational:
+            # Snapshot mode: start from a fresh chat history each turn
+            messages = base_messages.copy()
+
         messages.append({"role": "user", "content": prompt})
         response = llm.generate_with_history(messages)
         messages.append({"role": "assistant", "content": response})
@@ -306,15 +321,30 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
 def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     """[3] NO Store (Baseline): Rules + chat history only, no explicit belief tracking."""
     results = []
-    messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
+    base_messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
+    messages = base_messages.copy()
     initial_belief_lines = [f"{k} = {v}" for k, v in config.initial_beliefs.items()]
 
     for i, turn in enumerate(config.turns):
-        # Only new beliefs for this turn (relying on chat history for prior context)
-        if i == 0:
-            belief_lines = initial_belief_lines
+        if config.is_conversational:
+            # Conversational mode: relying on chat history for prior context
+            if i == 0:
+                belief_lines = initial_belief_lines
+            else:
+                belief_lines = [f"{k} = {v}" for k, v in (turn.get("beliefs") or {}).items()]
         else:
-            belief_lines = [f"{k} = {v}" for k, v in (turn.get("beliefs") or {}).items()]
+            # Snapshot mode: start from fresh history and reconstruct full belief state
+            messages = base_messages.copy()
+            belief_state = config.initial_beliefs.copy()
+            
+            if config.accumulate_prior_beliefs:
+                accumulated = _accumulate_prior_beliefs(config, i)
+                belief_state.update(accumulated)
+                
+            if turn.get("beliefs"):
+                belief_state.update(turn["beliefs"])
+                
+            belief_lines = [f"{k} = {v}" for k, v in belief_state.items()]
 
         # Build and send prompt as part of chat history
         question = _format_question(turn)

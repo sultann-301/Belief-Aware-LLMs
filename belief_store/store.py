@@ -24,6 +24,9 @@ class BeliefStore:
         # beliefs maps key → (value, is_derived)
         self.beliefs: dict[str, tuple[Any, bool]] = {}
         self.dependencies: dict[str, list[str]] = {}
+        # Reverse adjacency: input_key → [output_keys that read it]
+        # Used for O(edges) dirty propagation instead of full graph scan.
+        self._dependents: dict[str, list[str]] = {}
         self.dirty: set[str] = set()
         self.removed: set[str] = set()  # tombstone set — lazy retraction
         self.revision_log: list[dict[str, Any]] = []
@@ -106,13 +109,14 @@ class BeliefStore:
             "derive_fn": derive_fn,
         }
         self.dependencies[output_key] = inputs
-        if hasattr(self, '_upstream_closure'):
-            self._upstream_closure.clear()
+        # Keep reverse-adjacency map in sync.
+        for inp in inputs:
+            self._dependents.setdefault(inp, []).append(output_key)
 
     def _propagate_dirty(self, key: str) -> None:
-        """Recursively mark all downstream dependents as dirty."""
-        for dep_key, dep_sources in self.dependencies.items():
-            if key in dep_sources and dep_key not in self.dirty:
+        """Mark all downstream dependents dirty using the reverse-adjacency map."""
+        for dep_key in self._dependents.get(key, []):
+            if dep_key not in self.dirty:
                 self.dirty.add(dep_key)
                 self._propagate_dirty(dep_key)
 
@@ -374,37 +378,20 @@ class BeliefStore:
 
         return "\n".join(lines), prompt_keys
 
-    def get_upstream_closure(self, key: str) -> dict[str, int]:
-        """Return a cached mapping of all upstream dependencies to their max depth from this key."""
-        if not hasattr(self, '_upstream_closure'):
-            self._upstream_closure: dict[str, dict[str, int]] = {}
-        if key in self._upstream_closure:
-            return self._upstream_closure[key]
-
-        # Sentinel to prevent cycles if the graph is malformed
-        self._upstream_closure[key] = {}
-        matrix: dict[str, int] = {}
-
-        rule = self.rule_index.get(key)
-        if rule:
-            for inp in rule["inputs"]:
-                matrix[inp] = max(matrix.get(inp, 0), 1)
-                for up_key, up_depth in self.get_upstream_closure(inp).items():
-                    matrix[up_key] = max(matrix.get(up_key, 0), up_depth + 1)
-
-        self._upstream_closure[key] = matrix
-        return matrix
-
     def resolve_dirty_for_attributes(self, attributes: list[str]) -> None:
         """Resolve dirty beliefs needed by the given attribute keys.
 
-        Uses O(1) statically cached transitive closures to instantly discover
-        all upstream entities, then resolves every dirty belief in that set.
+        Walks the dependency graph upstream from each attribute to collect all
+        relevant entities, then resolves every dirty belief in that set.
         """
         all_keys: set[str] = set(attributes)
-
-        for attr in attributes:
-            all_keys.update(self.get_upstream_closure(attr).keys())
+        stack = list(attributes)
+        while stack:
+            key = stack.pop()
+            for inp in self.dependencies.get(key, []):
+                if inp not in all_keys:
+                    all_keys.add(inp)
+                    stack.append(inp)
 
         entities = list({self.entity_of(k) for k in all_keys})
         self.resolve_dirty(entities)

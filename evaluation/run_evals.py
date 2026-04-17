@@ -45,6 +45,12 @@ from evaluation.thorncrester_extended_scenarios import (
     THORNCRESTER_NEGATION_TURNS, THORNCRESTER_1HOP_TURNS, THORNCRESTER_2HOP_TURNS,
     THORNCRESTER_3HOP_TURNS, THORNCRESTER_4HOP_TURNS, THORNCRESTER_BELIEF_MAINTENANCE_TURNS
 )
+from evaluation.belief_awareness_scenarios import (
+    LOAN_COUNTERFACTUAL_TURNS, LOAN_GROUNDING_TURNS,
+    ALIEN_COUNTERFACTUAL_TURNS, ALIEN_GROUNDING_TURNS,
+    CRIME_COUNTERFACTUAL_TURNS, CRIME_GROUNDING_TURNS,
+    THORNCRESTER_COUNTERFACTUAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
+)
 
 # ────────────────────────────────────────────────────────────────────
 # Domain Configuration Map
@@ -181,6 +187,62 @@ DOMAIN_REGISTRY["alien_clinic_cf"] = DomainConfig(
     baseline_rules=ALIEN_RULES,
     default_entities="patient",
 )
+
+# ────────────────────────────────────────────────────────────────────
+# Belief-Awareness Evaluation Configs
+# ────────────────────────────────────────────────────────────────────
+# Two dimensions: counterfactual (prior suppression) and grounding
+# (hallucination resistance).  Non-conversational, no accumulation.
+
+_BELIEF_AWARENESS_MAP = {
+    "loan": {
+        "counterfactual": LOAN_COUNTERFACTUAL_TURNS,
+        "grounding": LOAN_GROUNDING_TURNS,
+    },
+    "alien_clinic": {
+        "counterfactual": ALIEN_COUNTERFACTUAL_TURNS,
+        "grounding": ALIEN_GROUNDING_TURNS,
+    },
+    "crime_scene": {
+        "counterfactual": CRIME_COUNTERFACTUAL_TURNS,
+        "grounding": CRIME_GROUNDING_TURNS,
+    },
+    "thorncrester": {
+        "counterfactual": THORNCRESTER_COUNTERFACTUAL_TURNS,
+        "grounding": THORNCRESTER_GROUNDING_TURNS,
+    },
+}
+
+for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
+    domain_config = _SUBSET_MAP[domain_name]
+
+    # Individual subsets: e.g. loan_counterfactual, loan_grounding
+    for subset_name, turns in ba_subsets.items():
+        full_name = f"{domain_name}_{subset_name}"
+        DOMAIN_REGISTRY[full_name] = DomainConfig(
+            name=full_name,
+            setup_fn=domain_config["setup_fn"],
+            initial_beliefs=domain_config["initial_beliefs"],
+            turns=turns,
+            baseline_rules=domain_config["baseline_rules"],
+            default_entities=domain_config["default_entities"],
+            is_conversational=False,
+            accumulate_prior_beliefs=False,
+        )
+
+    # Combined: e.g. loan_belief_awareness (20 turns)
+    combined_name = f"{domain_name}_belief_awareness"
+    combined_turns = ba_subsets["counterfactual"] + ba_subsets["grounding"]
+    DOMAIN_REGISTRY[combined_name] = DomainConfig(
+        name=combined_name,
+        setup_fn=domain_config["setup_fn"],
+        initial_beliefs=domain_config["initial_beliefs"],
+        turns=combined_turns,
+        baseline_rules=domain_config["baseline_rules"],
+        default_entities=domain_config["default_entities"],
+        is_conversational=False,
+        accumulate_prior_beliefs=False,
+    )
 
 
 # ────────────────────────────────────────────────────────────────────
