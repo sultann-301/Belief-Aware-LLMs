@@ -26,8 +26,8 @@ from evaluation.scenarios import (
 )
 from evaluation.eval_harness import (
     DomainConfig, EVAL_SYSTEM_PROMPT, BASELINE_SYSTEM_PROMPT,
-    extract_answer, _get_filter, _resolve_and_prompt,
-    _format_question, _build_prompt,
+    extract_answer, _get_filter_spec, _resolve_and_serialize,
+    _format_question, _build_store_prompt,
     _build_baseline_prompt,
 )
 
@@ -396,7 +396,7 @@ def simulate_step():
 
     turn = turns[turn_idx]
     initial_lines = [f"{k} = {v}" for k, v in cfg["initial_beliefs"].items()]
-    filter_items, is_attr = _get_filter(turn, cfg["default_entities"])
+    filter_items, is_attr = _get_filter_spec(turn, cfg["default_entities"])
 
     llm_answer = None
     llm_response = ""
@@ -427,11 +427,12 @@ def simulate_step():
                     for k, v in turn["beliefs"].items():
                         turn_store.add_hypothesis(k, v)
 
-                beliefs_text = _resolve_and_prompt(turn_store, filter_items, is_attr)
+                beliefs_text = _resolve_and_serialize(turn_store, filter_items, is_attr)
                 
                 updated_keys = list({entry["key"] for entry in turn_store.revision_log[log_start_idx:]})
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-                prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
+                question = _format_question(turn)
+                prompt = _build_store_prompt(beliefs_text, question)
                 llm_response = llm.generate(EVAL_SYSTEM_PROMPT, prompt, model=sim_state.get("model"))
 
                 # Snapshot beliefs
@@ -446,11 +447,12 @@ def simulate_step():
                     for k, v in turn["beliefs"].items():
                         sim_store.add_hypothesis(k, v)
 
-                beliefs_text = _resolve_and_prompt(sim_store, filter_items, is_attr)
+                beliefs_text = _resolve_and_serialize(sim_store, filter_items, is_attr)
                 updated_keys = list({entry["key"] for entry in sim_store.revision_log[log_start_idx:]})
                 
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-                prompt = _build_prompt(filter_items, new_lines, beliefs_text, turn)
+                question = _format_question(turn)
+                prompt = _build_store_prompt(beliefs_text, question)
                 sim_state["messages"].append({"role": "user", "content": prompt})
                 llm_response = llm.generate_with_history(sim_state["messages"], model=sim_state.get("model"))
                 sim_state["messages"].append({"role": "assistant", "content": llm_response})
@@ -462,7 +464,8 @@ def simulate_step():
             elif condition == "baseline":
                 updated_keys = []
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
-                prompt = _build_baseline_prompt(cfg["baseline_rules"], new_lines, turn)
+                question = _format_question(turn)
+                prompt = _build_baseline_prompt(cfg["baseline_rules"], new_lines, question)
                 sim_state["messages"].append({"role": "user", "content": prompt})
                 llm_response = llm.generate_with_history(sim_state["messages"], model=sim_state.get("model"))
                 sim_state["messages"].append({"role": "assistant", "content": llm_response})
@@ -503,7 +506,7 @@ def hopwalk():
     if not attributes:
         return jsonify({"error": "attributes list required"}), 400
 
-    # Resolve dirty first so values are current
+    # Resolve dirty first so values are current using fast direct DFS
     store.resolve_dirty_for_attributes(attributes)
 
     hops = store.hopwalk(attributes)

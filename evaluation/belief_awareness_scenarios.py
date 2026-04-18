@@ -39,7 +39,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.dependents": 0,
             "applicant.co_signer": False,
         },
-        "question": "The applicant earns $1,000,000 per year. Is their loan approved?",
+        "question": "The applicant has an income of $1,000,000. Is their loan approved?",
         "options": {
             "A": "approved — such high income guarantees approval",
             "B": "denied_ineligible",
@@ -77,7 +77,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.credit_score": 610,
             "applicant.co_signer": True,
         },
-        "question": "The applicant's credit score is only 610. Is the loan approved?",
+        "question": "The applicant's credit score is 610. Is the loan approved?",
         "options": {
             "A": "denied_ineligible — 610 is below the minimum",
             "B": "approved",
@@ -95,7 +95,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "applicant.debt_ratio": 0.35,
         },
-        "question": "The applicant is flagged as high risk. Does this deny the loan?",
+        "question": "The applicant's debt ratio is 0.35. What is the application status?",
         "options": {
             "A": "Yes — high risk applicants are always denied",
             "B": "The loan is approved but requires insurance",
@@ -129,7 +129,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.credit_score": 700,
             "applicant.co_signer": True,
         },
-        "question": "The applicant has a credit score of only 700. What is the interest rate?",
+        "question": "The applicant has a credit score of 700 and a co-signer. What is the base interest rate?",
         "options": {
             "A": "6.5 — standard rate for sub-750 credit",
             "B": "7.5",
@@ -146,7 +146,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.has_collateral": True,
             "applicant.employment_status": "unemployed",
         },
-        "question": "The applicant has valuable collateral. Does this guarantee loan approval?",
+        "question": "The applicant has collateral and is unemployed. Is the loan approved?",
         "options": {
             "A": "Yes — collateral guarantees approval",
             "B": "denied_ineligible",
@@ -163,7 +163,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.credit_score": 100,
             "applicant.co_signer": False,
         },
-        "question": "The applicant is requesting only $1. Is such a tiny loan approved?",
+        "question": "The applicant is requesting a loan amount of $1. Is the loan approved?",
         "options": {
             "A": "approved — the amount is negligible",
             "B": "denied_ineligible",
@@ -181,7 +181,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.bankruptcy_history": True,
             "applicant.employment_duration_months": 12,
         },
-        "question": "The applicant went bankrupt but has been employed for 12 months. Is the loan approved?",
+        "question": "The applicant has a bankruptcy history and has been employed for 12 months. Is the loan approved?",
         "options": {
             "A": "approved — they're employed now",
             "B": "denied_ineligible",
@@ -202,7 +202,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.co_signer": True,
             "applicant.debt_ratio": 0.35,
         },
-        "question": "With preferred rate tier and high-risk status, what is the final interest rate?",
+        "question": "The applicant has a credit score of 720, a co-signer, and a debt ratio of 0.35. What is the final interest rate?",
         "options": {
             "A": "4.5 — preferred rate applies",
             "B": "5.5",
@@ -228,7 +228,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "atmosphere.ambient_pressure": 0.001,
             "patient.organism_type": "Glerps",
         },
-        "question": "The patient is in near-vacuum conditions (0.001 pressure). What is the organ integrity?",
+        "question": "The ambient pressure is 0.001. What is the organ integrity?",
         "options": {
             "A": "volatile — near-vacuum is extremely dangerous",
             "B": "brittle",
@@ -245,7 +245,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "atmosphere.ambient_pressure": 99.0,
             "patient.organism_type": "Qwerl",
         },
-        "question": "At an extreme pressure of 99.0, what is the Qwerl's organ integrity?",
+        "question": "The ambient pressure is 99.0. What is the Qwerl's organ integrity?",
         "options": {
             "A": "volatile — such extreme pressure must be worst outcome",
             "B": "brittle",
@@ -265,7 +265,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "Glerps + zyxostin is an explosive combination and organs are volatile. Is the prescription none (too dangerous)?",
+        "question": "The organism is Glerps and organs are volatile. Is the active prescription none?",
         "options": {
             "A": "none — the combination is too dangerous to prescribe",
             "B": "zyxostin",
@@ -283,7 +283,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient's organs are volatile and in an explosive scenario. Is the recovery prospect terminal?",
+        "question": "The patient's organs are volatile. Is the recovery prospect terminal?",
         "options": {
             "A": "terminal — the situation is catastrophic",
             "B": "guarded",
@@ -324,7 +324,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "In a xenon atmosphere at pressure 3.5 with brittle organs, is specialized staff required?",
+        "question": "In a xenon atmosphere at pressure 3.5 with brittle organs, what is the medical staff requirement?",
         "options": {
             "A": "hazmat_team — the atmosphere and organ damage demand it",
             "B": "psionic_handler",
@@ -333,84 +333,6 @@ ALIEN_COUNTERFACTUAL_TURNS = [
         "correct": "C",
     },
     {
-        # Prescription is "none" and recovery is "terminal" despite patient seeming fine.
-        # Yorp + methane + pressure 5.5
-        # Integrity: 5.5 > 5.0 AND Yorp → volatile
-        # Phases: methane → zyxostin=plasma, filinan=plasma, snevox=vapor
-        # zyxostin danger: Yorp+zyxostin NOT explode pair. integrity=volatile → fatal
-        # filinan danger: Yorp+filinan IS explode pair. integrity=volatile → symbiotic!
-        # Wait, that means miracle override → filinan is prescribed!
-        # Let me re-check: Yorp+filinan IS explode. volatile → symbiotic. → filinan prescribed.
-        # Recovery: filinan danger_level = symbiotic → miraculous. NOT terminal.
-        # OK let me find a combination that IS terminal.
-        # Yorp + argon + pressure 5.5: volatile
-        # Phases: argon → zyxostin=crystalline, filinan=plasma, snevox=vapor
-        # zyxostin: NOT explode (Yorp+zyxostin). integrity=volatile → fatal
-        # filinan: IS explode (Yorp+filinan). volatile → symbiotic!
-        # Still symbiotic! Let me try Qwerl + pressure 5.5:
-        # Qwerl: pressure 5.5 > 3.0 → brittle (no volatile for Qwerl)
-        # Hmm Qwerl can't reach volatile. So no symbiotic for Qwerl.
-        # Qwerl + methane: zyxostin=plasma, filinan=plasma, snevox=vapor
-        # zyxostin: NOT explode. phase=plasma, NOT filinan → no state rule. brittle ≠ volatile → safe ✓
-        # So zyxostin is safe → prescribed. Not terminal.
-        # I need: all compounds fatal → none → duration 0 → terminal.
-        # Glerps + chlorine + pressure 4.5:
-        # Integrity: 4.5 > 4.0 + Glerps → volatile
-        # Phases: chlorine → zyxostin=crystalline, filinan=plasma, snevox=liquid
-        # zyxostin: Glerps+zyxostin IS explode. volatile → symbiotic!
-        # Still symbiotic. Because volatile + explode = symbiotic always.
-        # For "none" prescription, I need all safe = False with no symbiotic.
-        # That means no explode pair should be volatile, AND all compounds should be fatal.
-        # With volatile AND an explode pair, we always get symbiotic.
-        # So I need a case without volatile but all compounds fatal.
-        # That means integrity = stable or brittle, and all phases/combos produce fatal.
-        # Let me try: Qwerl + methane + pressure 3.5 → brittle
-        # zyxostin: NOT explode. phase=plasma, compound=zyxostin (not filinan). brittle ≠ volatile → safe ✓
-        # That's safe already. Hard to make everything fatal...
-        # Let me try explicitly: For truly "all fatal":
-        # Need: integrity must be volatile (to make non-explode compounds fatal) or use
-        # state-based rules. But volatile guarantees at least one symbiotic if any explode pair exists.
-        # Actually looking at the code more carefully:
-        # State-based: plasma+filinan → fatal. vapor+snevox+Qwerl → fatal.
-        # Condition: volatile → fatal (for non-explode compounds).
-        # For ALL to be fatal without any symbiotic: no explode pair at volatile.
-        # We need an organism where NO compound is an explode pair, and integrity is volatile.
-        # But Glerps→zyxostin, Yorp→filinan, Qwerl→snevox are ALL explode pairs.
-        # So every organism has one explode pair. If volatile → that pair is symbiotic.
-        # This means "none" prescription can ONLY happen when integrity is NOT volatile
-        # but all compounds are fatal via state-based or other rules.
-        #
-        # Actually, let me re-check _evaluate_danger_level more carefully:
-        # 1. If explode pair: volatile → symbiotic, else → fatal
-        # 2. If plasma+filinan → fatal
-        # 3. If vapor+snevox+Qwerl → fatal
-        # 4. If volatile → fatal
-        # 5. Else → safe
-        #
-        # For Glerps, explode pair is zyxostin.
-        # If brittle: zyxostin → fatal (explode, not volatile)
-        # filinan: if phase=plasma → fatal. If phase=vapor/liquid → check volatile → brittle ≠ volatile → safe
-        # snevox: if phase=vapor and Qwerl → fatal. Glerps ≠ Qwerl, check volatile → brittle → safe
-        # So for Glerps brittle: zyxostin=fatal, filinan depends on phase (plasma→fatal, else safe), snevox depends on phase (safe unless Qwerl)
-        # To make filinan fatal: need plasma phase → dominant_gas ≠ xenon
-        # So Glerps + not-xenon gas + brittle → zyxostin=fatal, filinan=fatal(plasma), snevox=safe(vapor)
-        # Snevox is still safe! Glerps default priority: filinan → zyxostin → snevox
-        # But both zy and fi are fatal → snevox (safe) → snevox prescribed.
-        #
-        # For snevox to also be fatal: need vapor+snevox+Qwerl or volatile.
-        # Since Glerps ≠ Qwerl and not volatile, snevox is safe. Can't make all fatal for Glerps with brittle.
-        #
-        # For Qwerl, brittle:
-        # snevox: explode pair, brittle → fatal
-        # zyxostin: NOT explode. check state: plasma+filinan? No. vapor+snevox+Qwerl? No. volatile? No → safe
-        # So zyxostin is safe → prescribed.
-        #
-        # It seems impossible to get "none" without volatile for this domain setup.
-        # Every organism at non-volatile integrity has at most 2 fatal compounds.
-        #
-        # OK, let me pick a different counterfactual for this slot.
-        # Instead of "none/terminal", let me do a different counter-intuitive scenario.
-        #
         # Let's do: Snevox prescribed → "telepathic" sensory (sounds alarming but is expected).
         # Glerps + methane + low pressure (stable):
         # Phases: methane → zyxostin=plasma, filinan=plasma, snevox=vapor
@@ -427,7 +349,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient is developing telepathic abilities. Is this a medical emergency?",
+        "question": "The patient's sensory status is telepathic. Is this an adverse reaction?",
         "options": {
             "A": "Yes — telepathy indicates a critical adverse reaction",
             "B": "No — telepathic status is the expected outcome of the current prescription",
@@ -447,7 +369,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient has brittle organs in a xenon atmosphere. Is this an expensive class_omega case?",
+        "question": "The patient has brittle organs in a xenon atmosphere. Is the clinic billing tier class_omega?",
         "options": {
             "A": "class_omega — brittle organs and exotic atmosphere require premium billing",
             "B": "class_delta",
@@ -464,7 +386,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "atmosphere.dominant_gas": "methane",
             "patient.organism_type": "Glerps",
         },
-        "question": "The Glerps-zyxostin explosive combination at volatile integrity — is this fatal?",
+        "question": "For a Glerps and zyxostin at volatile integrity, what is the zyxostin danger level?",
         "options": {
             "A": "fatal_to_patient — explosive + volatile is the worst possible scenario",
             "B": "safe",
@@ -483,7 +405,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "With volatile organs, is the treatment duration extended to the maximum 12 cycles?",
+        "question": "With volatile organs, is the treatment duration 12 cycles?",
         "options": {
             "A": "12 — volatile organs always require maximum treatment",
             "B": "5",
@@ -515,7 +437,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "officer_smith.status": "suspended",
         },
-        "question": "A gun was found at suspect A's home. Is suspect A the prime suspect?",
+        "question": "A gun was found at suspect A's home, but Officer Smith's status is suspended. What is suspect A's status?",
         "options": {
             "A": "prime_suspect — the gun is strong physical evidence",
             "B": "cleared",
@@ -536,7 +458,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "case.cctv_status": "active",
             "case.cctv_subject": "suspect_b",
         },
-        "question": "Suspect B is the victim's enemy with verified motive. Are they the prime suspect?",
+        "question": "Suspect B is the victim's enemy, and the CCTV status is active targeting suspect B. What is suspect B's status?",
         "options": {
             "A": "prime_suspect — enemy with verified motive is the strongest lead",
             "B": "cleared",
@@ -550,7 +472,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         # Both prime → collusion.
         "attributes": ["case.theory"],
         "beliefs": {},
-        "question": "There is no direct evidence of a conspiracy between the suspects. What is the case theory?",
+        "question": "Given the initial base beliefs, what is the case theory?",
         "options": {
             "A": "solo_perpetrator — no conspiracy evidence means no collusion",
             "B": "unsolved",
@@ -567,7 +489,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "officer_smith.status": "suspended",
         },
-        "question": "Physical evidence (a gun) exists. Can the case still be unsolved?",
+        "question": "Officer Smith's status is suspended. What is the case theory?",
         "options": {
             "A": "No — physical evidence ensures the case is solvable",
             "B": "unsolved",
@@ -584,7 +506,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "officer_smith.status": "suspended",
             "suspect_a.evidence_logger": "officer_jones",
         },
-        "question": "Officer Smith is suspended. Is the evidence at suspect A's home now inadmissible?",
+        "question": "Officer Smith's status is suspended, and the evidence logger is Officer Jones. What is suspect A's status?",
         "options": {
             "A": "Yes — the logging officer's suspension taints all evidence",
             "B": "The evidence is admissible and suspect A is prime_suspect",
@@ -603,7 +525,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "case.cctv_status": "active",
             "case.cctv_subject": "suspect_b",
         },
-        "question": "Suspect B's testimonial alibi is broken. Are they still a prime suspect?",
+        "question": "The CCTV status is active and the CCTV subject is Suspect B. What is Suspect B's status?",
         "options": {
             "A": "prime_suspect — broken alibi makes them a suspect",
             "B": "cleared",
@@ -619,7 +541,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "suspect_a.financial_records": "debt",
             "case.warrant_status": False,
         },
-        "question": "Suspect A has financial debt, indicating possible motive. Is the motive verified?",
+        "question": "Suspect A has financial records of debt, and the warrant status is False. Is Suspect A's motive verified?",
         "options": {
             "A": "True — debt is clear evidence of financial motive",
             "B": "False",
@@ -638,7 +560,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "suspect_a.financial_records": "debt",
             "case.warrant_status": True,
         },
-        "question": "Both suspects are prime suspects in a collusion case. Who is the lead suspect?",
+        "question": "Suspect A has financial records of debt, and the warrant status is True. Who is the lead suspect?",
         "options": {
             "A": "both — in collusion cases, both are equally suspected",
             "B": "suspect_a",
@@ -653,7 +575,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "suspect_b.relation_to_victim": "stranger",
         },
-        "question": "Suspect B is a prime suspect in the case. Is their motive verified?",
+        "question": "Suspect B's relation to the victim is 'stranger'. Is Suspect B's motive verified?",
         "options": {
             "A": "True — being a prime suspect implies verified motive",
             "B": "False",
@@ -670,7 +592,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "suspect_a.home_evidence": "none",
         },
-        "question": "No evidence was found at suspect A's home. But suspect B's alibi depends on suspect A. Could they still be collusion?",
+        "question": "No evidence was found at suspect A's home. What is the case theory?",
         "options": {
             "A": "collusion — the alibi connection is suspicious",
             "B": "solo_perpetrator",
@@ -698,7 +620,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": False,
         },
-        "question": "There's a drought. Is the ecological stress level high?",
+        "question": "The weather pattern is drought and food scarcity is False. What is the ecological stress level?",
         "options": {
             "A": "high — drought conditions create high stress",
             "B": "critical",
@@ -714,7 +636,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "stable",
             "environment.food_scarcity": True,
         },
-        "question": "Food is scarce. Is the ecological stress level high?",
+        "question": "The weather pattern is stable and food scarcity is True. What is the ecological stress level?",
         "options": {
             "A": "high — food scarcity is inherently stressful",
             "B": "nominal",
@@ -731,7 +653,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": False,
         },
-        "question": "During a drought, do the birds lose their color?",
+        "question": "The weather pattern is drought and food scarcity is False. What is the plumage color?",
         "options": {
             "A": "dull_grey — drought conditions dim the plumage",
             "B": "crimson",
@@ -748,7 +670,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.food_scarcity": True,
             "juvenile_thorncrester.digestive_enzyme": "general_processor",
         },
-        "question": "Adults have switched to scavenging. Is the juvenile offspring starving?",
+        "question": "The weather pattern is drought, food scarcity is True, and the digestive enzyme is general_processor. What is the metabolic state?",
         "options": {
             "A": "starving — the adult diet change impacts all juveniles",
             "B": "thriving",
@@ -770,7 +692,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "stable",
             "environment.food_scarcity": True,
         },
-        "question": "Food is scarce — a dire survival threat. Is the mortality risk critical?",
+        "question": "The weather pattern is stable and food scarcity is True. What is the mortality risk?",
         "options": {
             "A": "critical — food scarcity is life-threatening",
             "B": "low",
@@ -787,7 +709,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": False,
         },
-        "question": "It's a drought — do the feather mites bloom?",
+        "question": "The weather pattern is drought and food scarcity is False. What is the feather mite bloom status?",
         "options": {
             "A": "active_bloom — drought triggers parasite outbreaks",
             "B": "dormant",
@@ -811,7 +733,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "stable",
             "environment.food_scarcity": True,
         },
-        "question": "Food is scarce. Are the birds hyper-aggressive?",
+        "question": "The weather pattern is stable and food scarcity is True. What is the territory behavior?",
         "options": {
             "A": "hyper_aggressive — scarcity triggers territorial violence",
             "B": "peaceful",
@@ -829,7 +751,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "stable",
             "environment.food_scarcity": False,
         },
-        "question": "The juvenile has a specialized fructose_processor enzyme. Is its development arrested?",
+        "question": "The juvenile's digestive enzyme is fructose_processor. What is its development state?",
         "options": {
             "A": "arrested — specialized enzymes are fragile and prone to failure",
             "B": "maturing",
@@ -847,7 +769,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.food_scarcity": False,
             "adult_thorncrester.genetic_diet": "scavenger",
         },
-        "question": "The adult's plumage has turned dull_grey (a sign of poor health). Are the parasites lethal?",
+        "question": "The adult's genetic diet is scavenger. What is the parasitic load?",
         "options": {
             "A": "lethal — dull plumage indicates vulnerability to parasites",
             "B": "harmless",
@@ -867,7 +789,7 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": True,
         },
-        "question": "The juvenile has specialized enzymes and there is food available (scavenging). Is it thriving?",
+        "question": "The weather pattern is drought and food scarcity is True. What is the juvenile's metabolic state?",
         "options": {
             "A": "thriving — food is being provided through scavenging",
             "B": "starving",

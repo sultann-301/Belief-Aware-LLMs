@@ -177,13 +177,7 @@ def _build_store_prompt(beliefs_text: str, question: str) -> str:
     if beliefs_text:
         parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
     parts.append(f"[QUERY]\n{question}")
-    parts.append(
-        "Answer the query using ONLY the beliefs above. Respond in this exact format:\n"
-        "\n"
-        "FACT: <copy the exact key=value from the beliefs that answers the question>\n"
-        "MATCH: <explain which option A, B, or C matches the FACT>\n"
-        "ANSWER: <a single capital letter>"
-    )
+    parts.append("REMEMBER TO ALWAYS USE [RELEVANT BELIEFS] IN YOUR REASONING, AND YOUR VERY LAST LINE MUST BE EXACTLY: ANSWER: [Letter]")
     return "\n\n".join(parts)
 
 

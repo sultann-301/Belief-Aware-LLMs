@@ -23,9 +23,13 @@ class OllamaClient:
         self,
         model: str = "qwen3:4b",
         host: str = "http://localhost:11434",
+        think: bool = False,
+        temperature: float = 0.0,
     ) -> None:
         self.model = model
         self._client = _ollama.Client(host=host)
+        self.think = think
+        self.temperature = temperature
 
     def generate(self, system_prompt: str, user_prompt: str, model: str | None = None) -> str:
         response = self._client.chat(
@@ -34,7 +38,10 @@ class OllamaClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            think=False,
+            options={
+                "temperature": self.temperature,
+                "think": self.think,
+            },
         )
         return response.message.content
 

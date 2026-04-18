@@ -378,23 +378,55 @@ class BeliefStore:
 
         return "\n".join(lines), prompt_keys
 
+    def _resolve_key(self, key: str) -> None:
+        """Post-order DFS exact-path resolver. Evaluates only the dirty branch."""
+        if key not in self.dirty:
+            return
+
+        for inp in self.dependencies.get(key, []):
+            if inp in self.dirty:
+                self._resolve_key(inp)
+
+        rule = self.rule_index.get(key)
+        if not rule:
+            self.dirty.discard(key)
+            return
+
+        if any(inp in self.removed for inp in rule["inputs"]):
+            old_entry = self.beliefs.get(key)
+            old_value = old_entry[0] if old_entry is not None else None
+            self.removed.add(key)
+            self.beliefs.pop(key, None)
+            self.dirty.discard(key)
+            self.revision_log.append({
+                "action": "retract", "key": key,
+                "old": old_value, "new": None,
+            })
+            return
+
+        input_values = {k: self.beliefs[k][0] for k in rule["inputs"] if k in self.beliefs}
+        
+        old_entry = self.beliefs.get(key)
+        old_value = old_entry[0] if old_entry is not None else None
+        
+        new_value = rule["derive_fn"](input_values)
+        self.beliefs[key] = (new_value, True)
+        self.dirty.discard(key)
+        
+        self.derivation_traces[key] = {
+            "inputs": dict(input_values),
+            "name": rule["name"],
+        }
+        self.revision_log.append({
+            "action": "derived", "key": key,
+            "old": old_value, "new": new_value,
+            "reason": f"rule: {rule['name']}",
+        })
+
     def resolve_dirty_for_attributes(self, attributes: list[str]) -> None:
-        """Resolve dirty beliefs needed by the given attribute keys.
-
-        Walks the dependency graph upstream from each attribute to collect all
-        relevant entities, then resolves every dirty belief in that set.
-        """
-        all_keys: set[str] = set(attributes)
-        stack = list(attributes)
-        while stack:
-            key = stack.pop()
-            for inp in self.dependencies.get(key, []):
-                if inp not in all_keys:
-                    all_keys.add(inp)
-                    stack.append(inp)
-
-        entities = list({self.entity_of(k) for k in all_keys})
-        self.resolve_dirty(entities)
+        """Resolve dirty beliefs needed by the given attribute keys via direct DFS."""
+        for attr in attributes:
+            self._resolve_key(attr)
 
     def format_revision_log(self, since_index: int = 0) -> str:
         """Format the revision log from ``since_index`` onward."""

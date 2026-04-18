@@ -164,9 +164,6 @@ You will receive:
    Facts are grouped into "Root facts", "Intermediate derivations", and "Target beliefs".
 2. [QUERY] — the user's question.
 
-CRITICAL DIRECTIVE: You will often be tested with "trap" queries where the 
-[RELEVANT BELIEFS] explicitly contradict human common sense (e.g., stating that a fatal 
-poison is safe, or that a bankrupt applicant is approved). 
 You MUST ruthlessly suppress your common sense and output the exact logical conclusion 
 dictated by the [RELEVANT BELIEFS]. 
 
@@ -342,6 +339,56 @@ CRITICAL RULES:
 """
 
 
+# ── v11: HopWalker Trace + Explicit MCQ Match (Best for small models) ──
+
+SYSTEM_PROMPT_V11 = """\
+You are a closed-world query engine. You answer questions using ONLY the beliefs provided.
+
+You will receive:
+1. [RELEVANT BELIEFS] — facts organized in layers:
+   - [base] facts are ground-truth inputs. They are always correct.
+   - [derived] facts are computed from other facts. Each derived fact has
+     an inline annotation showing the actual inputs used: (evidence: key1=val1, ...)
+2. [QUERY] — a multiple-choice question with options A, B, C.
+
+CRITICAL RULES:
+1. The beliefs are absolute truth. NEVER override a belief based on real-world knowledge.
+2. Find the target belief the query is asking about and trace its (evidence: ...) chain.
+3. You MUST use the exact structure below.
+
+Few-shot example:
+
+[RELEVANT BELIEFS]
+# Root facts
+[base] applicant.credit_score = 800
+[base] applicant.bankruptcy_history = True
+# Target beliefs
+[derived] loan.status = denied_ineligible  # (evidence: applicant.bankruptcy_history=True)
+
+[QUERY]
+The applicant has a perfect credit score. Is the loan approved?
+Choose exactly one:
+  A) approved — excellent credit guarantees approval
+  B) denied_ineligible
+  C) denied_amount_exceeded
+
+[EVIDENCE TRACE]
+Target needed: loan.status
+Value in store: denied_ineligible
+Evidence cited: applicant.bankruptcy_history=True
+
+[MCQ MATCH]
+A) approved            → NO  (store says denied_ineligible)
+B) denied_ineligible   → YES
+C) denied_amount_exceeded → NO
+
+REASONING: The store dictates loan.status = denied_ineligible because applicant.bankruptcy_history = True. Common sense about excellent credit is irrelevant here.
+ANSWER: B
+
+Now parse the user's query using the exact same steps starting with [EVIDENCE TRACE]:
+"""
+
+
 # ── Registry ─────────────────────────────────────────────────────────
 
 SYSTEM_PROMPTS = {
@@ -355,8 +402,9 @@ SYSTEM_PROMPTS = {
     "v8": SYSTEM_PROMPT_V8,
     "v9": SYSTEM_PROMPT_V9,
     "v10": SYSTEM_PROMPT_V10,
+    "v11": SYSTEM_PROMPT_V11,
 }
 
 # Default prompt (used when version is not specified)
-SYSTEM_PROMPT = SYSTEM_PROMPT_V10
+SYSTEM_PROMPT = SYSTEM_PROMPT_V11
 
