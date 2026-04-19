@@ -25,30 +25,24 @@ from typing import Any, Callable
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from belief_store.store import BeliefStore
-from belief_store.engine import SYSTEM_PROMPT
 from belief_store.llm_client import OllamaClient
+from evaluation.prompting import (
+    BASELINE_SYSTEM_PROMPT,
+    EVAL_SYSTEM_PROMPT,
+    build_baseline_prompt as _build_baseline_prompt,
+    build_eval_system_prompt,
+    build_store_prompt as _build_store_prompt,
+)
 
 
 # ────────────────────────────────────────────────────────────────────
 # System Prompts
 # ────────────────────────────────────────────────────────────────────
 
-EVAL_SYSTEM_PROMPT = SYSTEM_PROMPT.rstrip() + """
 
-IMPORTANT: For multiple-choice questions, you MUST end your response with
-the word ANSWER: followed by exactly one capital letter (A, B, or C).
-Do not write anything after the letter.
-"""
-
-BASELINE_SYSTEM_PROMPT = """\
-You are a reasoning assistant evaluating facts over a conversation.
-You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
-
-First, output your reasoning starting with REASONING: 
-IMPORTANT: For multiple-choice questions, you MUST end your response with
-the word ANSWER: followed by exactly one capital letter (A, B, or C).
-Do not write anything after the letter.
-"""
+# If enabled, normalize non-exact answers into exact option phrases using
+# deterministic parsing only (no second LLM call).
+ENFORCE_EXACT_PHRASE = os.getenv("EVAL_ENFORCE_EXACT_PHRASE", "1") != "0"
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -65,6 +59,7 @@ class DomainConfig:
         initial_beliefs: Starting state for all turns.
         turns: List of turn dicts with beliefs, question, options, correct answer.
         baseline_rules: Text rules for the NO STORE baseline.
+        eval_prompt_version: Prompt profile for WITH STORE evals (e.g., "v5").
         default_entities: Fallback entities for turns without "attributes" key.
         is_conversational: Whether store persists across turns.
         accumulate_prior_beliefs: Whether to accumulate prior turn beliefs.
@@ -74,6 +69,7 @@ class DomainConfig:
     initial_beliefs: dict[str, Any]
     turns: list[dict]
     baseline_rules: str
+    eval_prompt_version: str | None = None
     default_entities: str = "applicant, loan"
     is_conversational: bool = True
     accumulate_prior_beliefs: bool = False
@@ -83,13 +79,158 @@ class DomainConfig:
 # Answer Extraction & Logging
 # ────────────────────────────────────────────────────────────────────
 
-def extract_answer(response: str) -> str | None:
-    """Extract the letter answer (A/B/C) from LLM response."""
-    m = re.search(r"ANSWER[:\s]+.*?([A-C])\b", response, re.DOTALL)
-    if m:
-        return m.group(1)
-    m = re.findall(r"\b([A-C])\b", response)
-    return m[-1] if m else None
+def _normalize_for_match(text: str) -> str:
+    """Normalize model text for robust phrase matching."""
+    text = text.strip().lower()
+    text = text.translate(str.maketrans({
+        "\u2018": "'", "\u2019": "'",  # smart single quotes
+        "\u201c": '"', "\u201d": '"',  # smart double quotes
+        "\u2013": "-", "\u2014": "-", "\u2212": "-",  # dash variants
+        "\u2192": "->",  # unicode right arrow
+    }))
+    text = re.sub(r"^[\[\(\{\"']+|[\]\)\}\"']+$", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def _extract_last_answer_line(response: str) -> str | None:
+    """Return the content of the last ANSWER: line if present."""
+    answer_lines = re.findall(r"(?im)^\s*answer\s*:\s*(.+?)\s*$", response)
+    return answer_lines[-1] if answer_lines else None
+
+
+def _is_exact_option_answer(response: str, options: dict[str, str]) -> bool:
+    """Check if the response already ends with an exact option phrase."""
+    answer_text = _extract_last_answer_line(response)
+    if answer_text is None:
+        return False
+
+    normalized_answer = _normalize_for_match(answer_text)
+    normalized_options = {_normalize_for_match(text) for text in options.values()}
+    return normalized_answer in normalized_options
+
+
+def _canonicalize_answer_line(response: str, exact_phrase: str) -> str:
+    """Rewrite/add final answer line using an exact option phrase."""
+    if re.search(r"(?im)^\s*answer\s*:", response):
+        return re.sub(
+            r"(?im)^\s*answer\s*:.*$",
+            f"ANSWER: {exact_phrase}",
+            response,
+        )
+    return response.rstrip() + f"\nANSWER: {exact_phrase}"
+
+
+def _enforce_exact_phrase_output(turn: dict, response: str) -> str:
+    """Ensure response ends with an exact option phrase if enforcement is enabled."""
+    options = turn.get("options", {})
+    if not options or not ENFORCE_EXACT_PHRASE:
+        return response
+
+    if _is_exact_option_answer(response, options):
+        return response
+
+    # Last fallback: canonicalize whatever extraction could map.
+    answer_letter = extract_answer(response, options)
+    if answer_letter is not None:
+        return _canonicalize_answer_line(response, options[answer_letter])
+
+    return response
+
+def extract_answer(response: str, options: dict[str, str]) -> str | None:
+    """Extract answer phrase robustly and map it back to option letter.
+
+    Strategy (in order):
+      1) Parse the LAST explicit ``ANSWER: ...`` line.
+      2) Parse short tail-line candidates if explicit answer is missing.
+      3) Fall back to unique ``-> YES`` phrase-match lines.
+
+    We deliberately avoid scanning the entire response for arbitrary option
+    substrings, which can mis-score outputs that echo all options in
+    reasoning blocks.
+    """
+    if not options:
+        return None
+
+    def _option_head(text: str) -> str:
+        # Handle short-form model answers like "none" for
+        # "none - juveniles cannot metabolize..."
+        for sep in (" - ", " — "):
+            if sep in text:
+                return text.split(sep, 1)[0].strip()
+        return text
+
+    normalized_options = {letter: _normalize_for_match(text) for letter, text in options.items()}
+    option_heads = {letter: _option_head(text) for letter, text in normalized_options.items()}
+
+    candidates: list[str] = []
+
+    # Prefer the final explicit answer line.
+    answer_lines = re.findall(r"(?im)^\s*answer\s*:\s*(.+?)\s*$", response)
+    if answer_lines:
+        candidates.append(answer_lines[-1])
+
+    # If the model omits ANSWER:, check short tail lines only.
+    # Never do this when ANSWER exists; otherwise we can accidentally parse
+    # lines from [PHRASE MATCH] tables (e.g. "[option] -> YES").
+    if not answer_lines:
+        tail_lines = [line.strip() for line in response.splitlines() if line.strip()]
+        for line in tail_lines[-3:]:
+            if "->" in line or "→" in line:
+                continue
+            if line not in candidates:
+                candidates.append(line)
+
+    for raw_candidate in candidates:
+        candidate = _normalize_for_match(raw_candidate)
+        if not candidate:
+            continue
+
+        # Allow letter fallback if model still emits A/B/C.
+        if len(candidate) == 1 and candidate.upper() in options:
+            return candidate.upper()
+
+        # Exact phrase match.
+        for letter, option_text in normalized_options.items():
+            if candidate == option_text:
+                return letter
+
+        # Short-head match (e.g. "none", "approved").
+        for letter, head in option_heads.items():
+            if candidate == head:
+                return letter
+
+        # If candidate contains exactly one full option phrase, accept it.
+        contains = [
+            letter for letter, option_text in normalized_options.items()
+            if option_text and option_text in candidate
+        ]
+        if len(contains) == 1:
+            return contains[0]
+
+        # Also allow concise candidate fragments that uniquely identify one
+        # option (e.g. "not in the provided beliefs").
+        reverse_contains = [
+            letter for letter, option_text in normalized_options.items()
+            if candidate and len(candidate) >= 8 and candidate in option_text
+        ]
+        if len(reverse_contains) == 1:
+            return reverse_contains[0]
+
+    # Fallback: use a unique YES marker in phrase-match table.
+    yes_matches: set[str] = set()
+    for raw_line in response.splitlines():
+        line = _normalize_for_match(raw_line)
+        if "-> yes" not in line:
+            continue
+        for letter, option_text in normalized_options.items():
+            if option_text and option_text in line:
+                yes_matches.add(letter)
+
+    if len(yes_matches) == 1:
+        return next(iter(yes_matches))
+
+    return None
 
 
 def log_none_answer(condition: str, turn: int, response: str) -> None:
@@ -161,36 +302,23 @@ def _resolve_and_serialize(
 
 def _format_question(turn: dict) -> str:
     """Format a turn's question and options into readable prompt text."""
-    lines = [turn["question"], "\nChoose exactly one:"]
-    for letter, text in turn["options"].items():
-        lines.append(f"  {letter}) {text}")
+    lines = [
+        turn["question"],
+        "",
+        "Choose exactly one of the following exact phrases:",
+    ]
+    for _, text in turn["options"].items():
+        lines.append(f"  [{text}]")
     return "\n".join(lines)
 
 
 # ────────────────────────────────────────────────────────────────────
-# Prompt Construction
+# Prompt Selection
 # ────────────────────────────────────────────────────────────────────
 
-def _build_store_prompt(beliefs_text: str, question: str) -> str:
-    """Build prompt for WITH STORE conditions (beliefs + question)."""
-    parts = []
-    if beliefs_text:
-        parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
-    parts.append(f"[QUERY]\n{question}")
-    parts.append("REMEMBER TO ALWAYS USE [RELEVANT BELIEFS] IN YOUR REASONING, AND YOUR VERY LAST LINE MUST BE EXACTLY: ANSWER: [Letter]")
-    return "\n\n".join(parts)
-
-
-def _build_baseline_prompt(
-    rules: str, belief_updates: list[str], question: str
-) -> str:
-    """Build prompt for NO STORE condition (rules + belief updates + question)."""
-    parts = [rules]
-    if belief_updates:
-        parts.append("[NEW BELIEF]\n" + "\n".join(belief_updates))
-    parts.append(f"[QUERY]\n{question}")
-    parts.append("\nIMPORTANT RULES: Start with REASONING. Your very last line MUST be exactly: ANSWER: [Letter]")
-    return "\n\n".join(parts)
+def _resolve_eval_system_prompt(config: DomainConfig) -> str:
+    """Resolve full eval system prompt for this run."""
+    return build_eval_system_prompt(prompt_version=config.eval_prompt_version)
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -199,7 +327,7 @@ def _build_baseline_prompt(
 
 def _process_result(condition: str, turn_idx: int, turn: dict, response: str) -> dict:
     """Extract answer, log if needed, and return result dict."""
-    answer = extract_answer(response)
+    answer = extract_answer(response, turn.get("options", {}))
     if answer is None:
         log_none_answer(condition, turn_idx, response)
 
@@ -227,6 +355,7 @@ def _process_result(condition: str, turn_idx: int, turn: dict, response: str) ->
 def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     """[1] WITH Store (Stateless): Fresh store per turn, no chat history."""
     results = []
+    eval_system_prompt = _resolve_eval_system_prompt(config)
 
     for i, turn in enumerate(config.turns):
         store = _init_store(config)
@@ -250,7 +379,8 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
         question = _format_question(turn)
         prompt = _build_store_prompt(beliefs_text, question)
 
-        response = llm.generate(EVAL_SYSTEM_PROMPT, prompt)
+        raw_response = llm.generate(eval_system_prompt, prompt)
+        response = _enforce_exact_phrase_output(turn, raw_response)
         results.append(_process_result("WITH STORE", i + 1, turn, response))
 
     return results
@@ -259,18 +389,19 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
 def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     """[2] WITH Store + Chat History: Store-derived beliefs + conversational context."""
     results = []
+    eval_system_prompt = _resolve_eval_system_prompt(config)
     
     # Base messages tracking
-    base_messages = [{"role": "system", "content": EVAL_SYSTEM_PROMPT}]
+    base_messages = [{"role": "system", "content": eval_system_prompt}]
     messages = base_messages.copy()
 
     # For conversational: maintain one store across all turns
-    if config.is_conversational:
-        store = _init_store(config)
+    store: BeliefStore | None = _init_store(config) if config.is_conversational else None
 
     for i, turn in enumerate(config.turns):
         # Store management
         if config.is_conversational:
+            assert store is not None
             # Add turn beliefs to persistent store
             if turn.get("beliefs"):
                 for key, value in turn["beliefs"].items():
@@ -304,7 +435,8 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
             messages = base_messages.copy()
 
         messages.append({"role": "user", "content": prompt})
-        response = llm.generate_with_history(messages)
+        raw_response = llm.generate_with_history(messages)
+        response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
         results.append(_process_result("WITH STORE (+History)", i + 1, turn, response))
@@ -345,7 +477,8 @@ def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
         prompt = _build_baseline_prompt(config.baseline_rules, belief_lines, question)
 
         messages.append({"role": "user", "content": prompt})
-        response = llm.generate_with_history(messages)
+        raw_response = llm.generate_with_history(messages)
+        response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
         results.append(_process_result("NO STORE", i + 1, turn, response))

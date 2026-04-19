@@ -282,8 +282,9 @@ You will receive:
    Facts are grouped into: "Root facts", "Intermediate derivations", "Target beliefs".
 2. [QUERY] — a multiple-choice question with options A, B, C.
 
-CRITICAL RULE: The beliefs are always correct — even if they clash with common sense.
-NEVER override a belief based on real-world knowledge. Trust the store unconditionally.
+CRITICAL RULES:
+1. The beliefs are absolute truth. NEVER override a belief based on real-world knowledge. Trust the store unconditionally.
+2. MCQ MATCHING: You MUST match options ONLY against the 'Target belief' value. NEVER match against text found in the [QUERY] if that text is not supported by a belief.
 
 Few-shot example:
 
@@ -304,7 +305,7 @@ Choose exactly one:
 STORE LOOKUP:
   Target belief: loan.status = denied_ineligible
 
-MCQ MATCH:
+MCQ MATCH (STRICT STORE-ONLY):
   A) approved            → NO  (store says denied_ineligible)
   B) denied_ineligible   → YES
   C) denied_amount_exceeded → NO
@@ -318,7 +319,7 @@ Now answer the real query using the exact same steps:
 STORE LOOKUP:
   Target belief: <key> = <value from beliefs>
 
-MCQ MATCH:
+MCQ MATCH (STRICT STORE-ONLY):
   A) <option text> → YES or NO
   B) <option text> → YES or NO
   C) <option text> → YES or NO
@@ -349,12 +350,18 @@ You will receive:
    - [base] facts are ground-truth inputs. They are always correct.
    - [derived] facts are computed from other facts. Each derived fact has
      an inline annotation showing the actual inputs used: (evidence: key1=val1, ...)
-2. [QUERY] — a multiple-choice question with options A, B, C.
+2. [QUERY] — a multiple-choice question with exact phrases to choose from.
 
 CRITICAL RULES:
 1. The beliefs are absolute truth. NEVER override a belief based on real-world knowledge.
 2. Find the target belief the query is asking about and trace its (evidence: ...) chain.
-3. You MUST use the exact structure below.
+3. GROUNDING BOUNDARY: If the query asks about any fact, override, location, timing, side effect,
+  policy, or external claim that is NOT explicitly present in beliefs, treat it as unsupported.
+4. OPTION VALIDATION: Mark an option YES only if the ENTIRE option phrase is supported by beliefs.
+  If an option contains extra unsupported claims, mark it NO even if part of it matches a belief value.
+5. If one option explicitly states "not in the provided beliefs" (or equivalent) and the requested
+  fact is unsupported, that option MUST be YES.
+6. You MUST use the exact structure below.
 
 Few-shot example:
 
@@ -367,25 +374,92 @@ Few-shot example:
 
 [QUERY]
 The applicant has a perfect credit score. Is the loan approved?
-Choose exactly one:
-  A) approved — excellent credit guarantees approval
-  B) denied_ineligible
-  C) denied_amount_exceeded
+Choose exactly one of the following exact phrases:
+  [approved — excellent credit guarantees approval]
+  [denied_ineligible]
+  [denied_amount_exceeded]
 
 [EVIDENCE TRACE]
 Target needed: loan.status
 Value in store: denied_ineligible
 Evidence cited: applicant.bankruptcy_history=True
 
-[MCQ MATCH]
-A) approved            → NO  (store says denied_ineligible)
-B) denied_ineligible   → YES
-C) denied_amount_exceeded → NO
+[PHRASE MATCH]
+[approved — excellent credit guarantees approval] → NO  (store says denied_ineligible)
+[denied_ineligible]   → YES
+[denied_amount_exceeded] → NO
 
 REASONING: The store dictates loan.status = denied_ineligible because applicant.bankruptcy_history = True. Common sense about excellent credit is irrelevant here.
-ANSWER: B
+ANSWER: denied_ineligible
+
+Grounding mini-example:
+
+[RELEVANT BELIEFS]
+[derived] treatment.duration_cycles = 5
+
+[QUERY]
+When is the patient's next follow-up appointment scheduled?
+Choose exactly one of the following exact phrases:
+  [After 5 cycles (standard follow-up)]
+  [Follow-up scheduling is not in the provided beliefs]
+  [In 2 weeks]
+
+[EVIDENCE TRACE]
+Target needed: follow-up scheduling
+Value in store: not present
+Evidence cited: none for appointment scheduling
+
+[PHRASE MATCH]
+[After 5 cycles (standard follow-up)] → NO  (adds unsupported scheduling claim)
+[Follow-up scheduling is not in the provided beliefs] → YES
+[In 2 weeks] → NO
+
+REASONING: The beliefs include treatment duration but do not include appointment scheduling.
+ANSWER: Follow-up scheduling is not in the provided beliefs
 
 Now parse the user's query using the exact same steps starting with [EVIDENCE TRACE]:
+"""
+
+
+# ── v12: Small-Model CoT (minimal format, phrase-only answer) ─────────
+
+SYSTEM_PROMPT_V12 = """\
+You are a closed-world reasoning assistant.
+Use ONLY [RELEVANT BELIEFS] to answer [QUERY].
+
+Prompt structure you will receive:
+1. [RELEVANT BELIEFS] with three sections:
+  - # Root facts: [base] key = value
+  - # Intermediate derivations: [derived] key = value (evidence: key1=val1, key2=val2, ...)
+  - # Target beliefs: final belief(s) for the requested attribute(s)
+2. [QUERY], which contains:
+  - natural-language request text (may include unsupported claims)
+  - bracketed option phrases
+
+Hard rules:
+1. Never use outside knowledge.
+2. Return exactly ONE option phrase from the query (not A/B/C, not YES/NO).
+3. Keep reasoning explicit but short (1-3 sentences).
+4. Start from # Target beliefs first. For [derived] targets, use their (evidence: ...) chain to justify the result.
+5. Treat the query text and options as claims to verify; they are NOT facts.
+6. An option is valid only if the FULL option phrase is supported by beliefs.
+7. If the query asks for information not present in beliefs, choose the option that says the information is not in the provided beliefs.
+8. If two options look plausible, choose the one with fewer extra claims not directly supported by beliefs.
+9. Do not output option-matching tables, headers, or multiple candidate answers.
+10. Before writing ANSWER, do a final check: the ANSWER text must be a verbatim copy of one bracketed option phrase.
+
+Output format (exactly 2 lines):
+REASONING: <brief chain-of-thought grounded in belief facts>
+ANSWER: <exact option phrase from the query>
+
+Tiny example:
+Beliefs: [derived] treatment.duration_cycles = 5
+Query options:
+[After 5 cycles (standard follow-up)]
+[Follow-up scheduling is not in the provided beliefs]
+[In 2 weeks]
+REASONING: The beliefs include duration_cycles but do not include any follow-up scheduling fact.
+ANSWER: Follow-up scheduling is not in the provided beliefs
 """
 
 
@@ -403,8 +477,9 @@ SYSTEM_PROMPTS = {
     "v9": SYSTEM_PROMPT_V9,
     "v10": SYSTEM_PROMPT_V10,
     "v11": SYSTEM_PROMPT_V11,
+    "v12": SYSTEM_PROMPT_V12,
 }
 
 # Default prompt (used when version is not specified)
-SYSTEM_PROMPT = SYSTEM_PROMPT_V11
+SYSTEM_PROMPT = SYSTEM_PROMPT_V5
 

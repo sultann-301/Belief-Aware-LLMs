@@ -15,7 +15,7 @@ from belief_store.domains.loan import setup_loan_domain
 from belief_store.domains.alien_clinic import setup_alien_clinic_domain
 from belief_store.domains.crime_scene import setup_crime_scene_domain
 from belief_store.domains.thorncrester import setup_thorncrester_domain
-from belief_store.engine import ReasoningEngine, SYSTEM_PROMPT
+from belief_store.engine import ReasoningEngine
 from belief_store.llm_client import OllamaClient, LLMClient
 
 from evaluation.scenarios import (
@@ -25,10 +25,13 @@ from evaluation.scenarios import (
     THORNCRESTER_RULES, THORNCRESTER_INITIAL_BELIEFS, THORNCRESTER_TURNS,
 )
 from evaluation.eval_harness import (
-    DomainConfig, EVAL_SYSTEM_PROMPT, BASELINE_SYSTEM_PROMPT,
-    extract_answer, _get_filter_spec, _resolve_and_serialize,
-    _format_question, _build_store_prompt,
-    _build_baseline_prompt,
+    extract_answer, _get_filter_spec, _resolve_and_serialize, _format_question,
+)
+from evaluation.prompting import (
+    BASELINE_SYSTEM_PROMPT,
+    build_baseline_prompt,
+    build_eval_system_prompt,
+    build_store_prompt,
 )
 
 app = Flask(__name__, static_folder="static", static_url_path="/static")
@@ -119,6 +122,7 @@ _reset_store(current_domain_key)
 sim_state: dict = {
     "domain": None,
     "condition": None,
+    "eval_system_prompt": None,
     "turn_index": 0,
     "store": None,
     "messages": [],
@@ -353,6 +357,9 @@ def simulate_start():
     sim_state["domain"] = domain_key
     sim_state["condition"] = condition
     sim_state["model"] = model
+    sim_state["eval_system_prompt"] = build_eval_system_prompt(
+        prompt_version=cfg.get("eval_prompt_version")
+    )
     sim_state["turn_index"] = 0
     sim_state["results"] = []
 
@@ -365,7 +372,7 @@ def simulate_start():
 
     # Set up message history for history / baseline conditions
     if condition == "store_history":
-        sim_state["messages"] = [{"role": "system", "content": EVAL_SYSTEM_PROMPT}]
+        sim_state["messages"] = [{"role": "system", "content": sim_state["eval_system_prompt"]}]
     elif condition == "baseline":
         sim_state["messages"] = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
     else:
@@ -395,6 +402,9 @@ def simulate_step():
         return jsonify({"error": "Simulation complete. No more turns.", "done": True}), 200
 
     turn = turns[turn_idx]
+    eval_system_prompt = sim_state.get("eval_system_prompt") or build_eval_system_prompt(
+        prompt_version=cfg.get("eval_prompt_version")
+    )
     initial_lines = [f"{k} = {v}" for k, v in cfg["initial_beliefs"].items()]
     filter_items, is_attr = _get_filter_spec(turn, cfg["default_entities"])
 
@@ -403,6 +413,7 @@ def simulate_step():
     correct = turn["correct"]
     hit = False
     beliefs_snapshot = {}
+    updated_keys = []
 
     if llm is None:
         llm_response = "(Ollama not available — showing belief state only)"
@@ -432,8 +443,8 @@ def simulate_step():
                 updated_keys = list({entry["key"] for entry in turn_store.revision_log[log_start_idx:]})
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 question = _format_question(turn)
-                prompt = _build_store_prompt(beliefs_text, question)
-                llm_response = llm.generate(EVAL_SYSTEM_PROMPT, prompt, model=sim_state.get("model"))
+                prompt = build_store_prompt(beliefs_text, question)
+                llm_response = llm.generate(eval_system_prompt, prompt, model=sim_state.get("model"))
 
                 # Snapshot beliefs
                 for key, (value, is_derived) in turn_store.beliefs.items():
@@ -452,7 +463,7 @@ def simulate_step():
                 
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 question = _format_question(turn)
-                prompt = _build_store_prompt(beliefs_text, question)
+                prompt = build_store_prompt(beliefs_text, question)
                 sim_state["messages"].append({"role": "user", "content": prompt})
                 llm_response = llm.generate_with_history(sim_state["messages"], model=sim_state.get("model"))
                 sim_state["messages"].append({"role": "assistant", "content": llm_response})
@@ -465,12 +476,12 @@ def simulate_step():
                 updated_keys = []
                 new_lines = initial_lines if turn_idx == 0 else [f"{k} = {v}" for k, v in (turn["beliefs"] or {}).items()]
                 question = _format_question(turn)
-                prompt = _build_baseline_prompt(cfg["baseline_rules"], new_lines, question)
+                prompt = build_baseline_prompt(cfg["baseline_rules"], new_lines, question)
                 sim_state["messages"].append({"role": "user", "content": prompt})
                 llm_response = llm.generate_with_history(sim_state["messages"], model=sim_state.get("model"))
                 sim_state["messages"].append({"role": "assistant", "content": llm_response})
 
-            llm_answer = extract_answer(llm_response)
+            llm_answer = extract_answer(llm_response, turn.get("options", {}))
             hit = llm_answer == correct
         except Exception as exc:
             llm_response = f"Error: {exc}"

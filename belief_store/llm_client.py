@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
-import ollama as _ollama
+import ollama as _ollama # type: ignore
 
 
 @runtime_checkable

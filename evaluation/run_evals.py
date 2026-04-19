@@ -51,6 +51,7 @@ from evaluation.belief_awareness_scenarios import (
     CRIME_COUNTERFACTUAL_TURNS, CRIME_GROUNDING_TURNS,
     THORNCRESTER_COUNTERFACTUAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
 )
+from evaluation.prompting import get_eval_prompt_version
 
 # ────────────────────────────────────────────────────────────────────
 # Domain Configuration Map
@@ -292,13 +293,27 @@ Examples:
         default="gemma3:1b",
         help="Ollama model name (default: gemma3:1b)"
     )
+    parser.add_argument(
+        "--eval-prompt-version",
+        default=None,
+        help=(
+            "Base belief-store prompt profile for WITH STORE evals "
+            "(e.g., v5, v12). Defaults to EVAL_BASE_PROMPT_VERSION or v5."
+        ),
+    )
 
     args = parser.parse_args()
 
     config = DOMAIN_REGISTRY[args.domain]
+    if args.eval_prompt_version:
+        config.eval_prompt_version = args.eval_prompt_version
+    resolved_eval_prompt_version = get_eval_prompt_version(config.eval_prompt_version)
     print(f"\n{'='*75}")
     print(f"Domain: {config.name} ({len(config.turns)} turns)")
-    print(f"Model: {args.model} | Runs: {args.runs} | Workers: {args.workers}")
+    print(
+        f"Model: {args.model} | Runs: {args.runs} | Workers: {args.workers} "
+        f"| Eval Prompt: {resolved_eval_prompt_version}"
+    )
     print(f"{'='*75}\n")
 
     run_multi_eval(
