@@ -24,7 +24,7 @@ class OllamaClient:
         model: str = "qwen3:4b",
         host: str = "http://localhost:11434",
         think: bool = False,
-        temperature: float = 0.0,
+        temperature: float = 0.2,
     ) -> None:
         self.model = model
         self._client = _ollama.Client(host=host)
@@ -38,9 +38,9 @@ class OllamaClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
+            think=False,
             options={
                 "temperature": self.temperature,
-                "think": self.think,
             },
         )
         return response.message.content
@@ -51,5 +51,8 @@ class OllamaClient:
             model=model or self.model,
             messages=messages,
             think=False,
+            options={
+                "temperature": self.temperature,
+            },
         )
         return response.message.content

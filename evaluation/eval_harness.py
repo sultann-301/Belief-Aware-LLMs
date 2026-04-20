@@ -137,99 +137,116 @@ def _enforce_exact_phrase_output(turn: dict, response: str) -> str:
 
     return response
 
-def extract_answer(response: str, options: dict[str, str]) -> str | None:
-    """Extract answer phrase robustly and map it back to option letter.
+def _extract_bracketed_answer(answer_line: str) -> str | None:
+    """Extract bracketed content from ANSWER: line.
+    
+    Expected format: ANSWER: [exact phrase]
+    Returns the content inside brackets, or None if no brackets found.
+    """
+    match = re.search(r"\[([^\[\]]+)\]", answer_line)
+    if match:
+        return match.group(1).strip()
+    return None
 
-    Strategy (in order):
-      1) Parse the LAST explicit ``ANSWER: ...`` line.
-      2) Parse short tail-line candidates if explicit answer is missing.
-      3) Fall back to unique ``-> YES`` phrase-match lines.
 
-    We deliberately avoid scanning the entire response for arbitrary option
-    substrings, which can mis-score outputs that echo all options in
-    reasoning blocks.
+def extract_answer_with_confidence(response: str, options: dict[str, str]) -> dict | None:
+    """Extract answer with method tracking.
+    
+    Returns:
+        {
+            "answer": "A",
+            "method": "bracketed_exact" | "bracketed_normalized" | "unbracketed_normalized" | None,
+            "confidence": "HIGH" | "LOW"
+        }
+        Returns None if no answer found.
     """
     if not options:
         return None
 
-    def _option_head(text: str) -> str:
-        # Handle short-form model answers like "none" for
-        # "none - juveniles cannot metabolize..."
-        for sep in (" - ", " — "):
-            if sep in text:
-                return text.split(sep, 1)[0].strip()
-        return text
+    answer_line = _extract_last_answer_line(response)
+    if not answer_line:
+        return None
+
+    # Strategy 1: Bracketed format (HIGH confidence)
+    bracketed = _extract_bracketed_answer(answer_line)
+    if bracketed:
+        # Exact match (case-sensitive)
+        for letter, option_text in options.items():
+            if bracketed == option_text:
+                return {"answer": letter, "method": "bracketed_exact", "confidence": "HIGH"}
+        
+        # Normalized match
+        normalized_bracketed = _normalize_for_match(bracketed)
+        normalized_options = {letter: _normalize_for_match(text) for letter, text in options.items()}
+        for letter, norm_option in normalized_options.items():
+            if normalized_bracketed == norm_option:
+                return {"answer": letter, "method": "bracketed_normalized", "confidence": "HIGH"}
+        
+        # Bracketed but didn't match
+        return None
+
+    # Strategy 2: Unbracketed fallback (LOW confidence)
+    candidate = _normalize_for_match(answer_line)
+    if not candidate:
+        return None
 
     normalized_options = {letter: _normalize_for_match(text) for letter, text in options.items()}
-    option_heads = {letter: _option_head(text) for letter, text in normalized_options.items()}
+    for letter, norm_option in normalized_options.items():
+        if candidate == norm_option:
+            return {"answer": letter, "method": "unbracketed_normalized", "confidence": "LOW"}
 
-    candidates: list[str] = []
+    return None
 
-    # Prefer the final explicit answer line.
-    answer_lines = re.findall(r"(?im)^\s*answer\s*:\s*(.+?)\s*$", response)
-    if answer_lines:
-        candidates.append(answer_lines[-1])
 
-    # If the model omits ANSWER:, check short tail lines only.
-    # Never do this when ANSWER exists; otherwise we can accidentally parse
-    # lines from [PHRASE MATCH] tables (e.g. "[option] -> YES").
-    if not answer_lines:
-        tail_lines = [line.strip() for line in response.splitlines() if line.strip()]
-        for line in tail_lines[-3:]:
-            if "->" in line or "→" in line:
-                continue
-            if line not in candidates:
-                candidates.append(line)
+def extract_answer(response: str, options: dict[str, str]) -> str | None:
+    """Extract answer phrase and map to option letter.
 
-    for raw_candidate in candidates:
-        candidate = _normalize_for_match(raw_candidate)
-        if not candidate:
-            continue
+    Strategy (in order of priority):
+      1) Extract from ANSWER: [bracketed phrase] format (PRIMARY)
+      2) Extract from ANSWER: unbracketed phrase (FALLBACK)
+      3) Return None (no guessing)
 
-        # Allow letter fallback if model still emits A/B/C.
-        if len(candidate) == 1 and candidate.upper() in options:
-            return candidate.upper()
+    Returns the option letter (A/B/C/...) if found, else None.
+    """
+    if not options:
+        return None
 
-        # Exact phrase match.
-        for letter, option_text in normalized_options.items():
-            if candidate == option_text:
+    # Get the last ANSWER: line content
+    answer_line = _extract_last_answer_line(response)
+    if not answer_line:
+        return None
+
+    # Strategy 1: Try bracketed format [exact phrase]
+    bracketed = _extract_bracketed_answer(answer_line)
+    if bracketed:
+        # Try exact match first (case-sensitive, space-sensitive)
+        for letter, option_text in options.items():
+            if bracketed == option_text:
                 return letter
-
-        # Short-head match (e.g. "none", "approved").
-        for letter, head in option_heads.items():
-            if candidate == head:
+        
+        # Try normalized match if exact fails
+        normalized_bracketed = _normalize_for_match(bracketed)
+        normalized_options = {letter: _normalize_for_match(text) for letter, text in options.items()}
+        for letter, norm_option in normalized_options.items():
+            if normalized_bracketed == norm_option:
                 return letter
+        
+        # Bracketed content didn't match any option
+        return None
 
-        # If candidate contains exactly one full option phrase, accept it.
-        contains = [
-            letter for letter, option_text in normalized_options.items()
-            if option_text and option_text in candidate
-        ]
-        if len(contains) == 1:
-            return contains[0]
+    # Strategy 2: Try unbracketed phrase match (fallback for models that ignore bracket instruction)
+    candidate = _normalize_for_match(answer_line)
+    if not candidate:
+        return None
 
-        # Also allow concise candidate fragments that uniquely identify one
-        # option (e.g. "not in the provided beliefs").
-        reverse_contains = [
-            letter for letter, option_text in normalized_options.items()
-            if candidate and len(candidate) >= 8 and candidate in option_text
-        ]
-        if len(reverse_contains) == 1:
-            return reverse_contains[0]
+    normalized_options = {letter: _normalize_for_match(text) for letter, text in options.items()}
+    
+    # Exact normalized match
+    for letter, norm_option in normalized_options.items():
+        if candidate == norm_option:
+            return letter
 
-    # Fallback: use a unique YES marker in phrase-match table.
-    yes_matches: set[str] = set()
-    for raw_line in response.splitlines():
-        line = _normalize_for_match(raw_line)
-        if "-> yes" not in line:
-            continue
-        for letter, option_text in normalized_options.items():
-            if option_text and option_text in line:
-                yes_matches.add(letter)
-
-    if len(yes_matches) == 1:
-        return next(iter(yes_matches))
-
+    # If nothing matched, return None (don't guess with fragments)
     return None
 
 
@@ -326,10 +343,18 @@ def _resolve_eval_system_prompt(config: DomainConfig) -> str:
 # ────────────────────────────────────────────────────────────────────
 
 def _process_result(condition: str, turn_idx: int, turn: dict, response: str) -> dict:
-    """Extract answer, log if needed, and return result dict."""
-    answer = extract_answer(response, turn.get("options", {}))
-    if answer is None:
+    """Extract answer with confidence tracking, log if needed, and return result dict."""
+    extraction_result = extract_answer_with_confidence(response, turn.get("options", {}))
+    
+    if extraction_result is None:
+        answer = None
+        confidence = None
+        extraction_method = None
         log_none_answer(condition, turn_idx, response)
+    else:
+        answer = extraction_result["answer"]
+        confidence = extraction_result["confidence"]
+        extraction_method = extraction_result["method"]
 
     correct = turn["correct"]
     hit = answer == correct
@@ -337,11 +362,14 @@ def _process_result(condition: str, turn_idx: int, turn: dict, response: str) ->
     if answer is not None and not hit:
         log_incorrect_answer(condition, turn_idx, turn["question"], answer, correct, response)
 
-    print(f"  Turn {turn_idx}: LLM={answer}  correct={correct}  {'✓' if hit else '✗'}", flush=True)
+    confidence_label = f" ({confidence})" if confidence else ""
+    print(f"  Turn {turn_idx}: LLM={answer}{confidence_label}  correct={correct}  {'✓' if hit else '✗'}", flush=True)
 
     return {
         "turn": turn_idx,
         "answer": answer,
+        "confidence": confidence,
+        "extraction_method": extraction_method,
         "correct": correct,
         "hit": hit,
         "response": response,

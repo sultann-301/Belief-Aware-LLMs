@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 import os
 
@@ -17,6 +18,11 @@ from belief_store.domains.crime_scene import setup_crime_scene_domain
 from belief_store.domains.thorncrester import setup_thorncrester_domain
 from belief_store.engine import ReasoningEngine
 from belief_store.llm_client import OllamaClient, LLMClient
+from belief_store.answer_validation import (
+    canonicalize_answer_line,
+    extract_last_answer_line,
+    normalize_for_match,
+)
 
 from evaluation.scenarios import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
@@ -94,6 +100,101 @@ try:
     llm: LLMClient = OllamaClient()
 except Exception:
     llm = None  # type: ignore
+
+
+_YES_NO_PREFIXES = (
+    "can ", "is ", "are ", "do ", "does ", "did ", "should ",
+    "would ", "could ", "will ", "may ", "has ", "have ", "had ",
+)
+
+
+def _extract_query_text(structured_input: str) -> str:
+    """Extract query text from [QUERY] section for lightweight checks."""
+    match = re.search(r"(?is)\[QUERY\]\s*(.*)$", structured_input)
+    return match.group(1).strip() if match else ""
+
+
+def _first_reasoning_sentence(reasoning: str) -> str:
+    """Return a short first sentence suitable for answer expansion."""
+    clean = re.sub(r"\s+", " ", reasoning).strip()
+    if not clean:
+        return ""
+    sentence = re.split(r"(?<=[.!?])\s+", clean, maxsplit=1)[0].strip()
+    if len(sentence) > 180:
+        sentence = sentence[:177].rstrip() + "..."
+    return sentence.rstrip(".")
+
+
+def _normalize_chat_response(response: str, structured_input: str) -> str:
+    """Harden chat output for small models without extra model calls.
+
+    This keeps chat responses predictable by enforcing an ANSWER line,
+    nudging yes/no polarity to agree with reasoning when conflict is obvious,
+    and expanding one-token answers into short grounded sentences.
+    """
+    text = response.strip()
+    if not text:
+        return response
+
+    # Normalize the common two-line pattern: "Answer" followed by value.
+    text = re.sub(
+        r"(?is)\n\s*answer\s*\n\s*([^\n]+)",
+        lambda m: f"\nANSWER: {m.group(1).strip()}",
+        text,
+    )
+
+    if not re.search(r"(?im)^\s*reasoning\s*:", text):
+        text = f"REASONING: {text}"
+
+    reasoning_match = re.search(r"(?is)^\s*reasoning\s*:\s*(.*?)(?:^\s*answer\s*:|\Z)", text, flags=re.MULTILINE)
+    reasoning = reasoning_match.group(1).strip() if reasoning_match else ""
+
+    answer = extract_last_answer_line(text)
+    if answer is None:
+        non_empty = [line.strip() for line in text.splitlines() if line.strip()]
+        if non_empty:
+            tail = non_empty[-1]
+            if not re.match(r"(?i)^reasoning\s*:", tail):
+                answer = tail
+                text = canonicalize_answer_line(text, answer)
+
+    answer = extract_last_answer_line(text) or ""
+    normalized_answer = normalize_for_match(answer)
+    query_text = _extract_query_text(structured_input).lower()
+    is_yes_no_query = query_text.startswith(_YES_NO_PREFIXES)
+    is_yes_no_answer = normalized_answer in {"yes", "no", "yes.", "no."}
+
+    if is_yes_no_query and is_yes_no_answer:
+        reasoning_norm = normalize_for_match(reasoning)
+
+        negative_cues = (
+            "cannot", "can not", "can't", "fatal_to_patient", "unsafe",
+            "not in", "not provided", "unsupported", "denied", "none",
+        )
+        positive_cues = ("safe", "approved", "allowed", "supported", "eligible")
+
+        neg_score = sum(1 for cue in negative_cues if cue in reasoning_norm)
+        pos_score = sum(1 for cue in positive_cues if cue in reasoning_norm)
+
+        should_flip_to_no = normalized_answer.startswith("yes") and neg_score > pos_score
+        should_flip_to_yes = normalized_answer.startswith("no") and pos_score > neg_score
+
+        if should_flip_to_no or should_flip_to_yes:
+            normalized_answer = "no" if should_flip_to_no else "yes"
+
+        short_reason = _first_reasoning_sentence(reasoning)
+        if short_reason:
+            final_answer = f"{normalized_answer.capitalize()}. {short_reason}."
+        else:
+            final_answer = normalized_answer.capitalize()
+        text = canonicalize_answer_line(text, final_answer)
+
+    elif len(normalized_answer) <= 2:
+        short_reason = _first_reasoning_sentence(reasoning)
+        if short_reason:
+            text = canonicalize_answer_line(text, f"{answer.strip()} {short_reason}.")
+
+    return text
 
 
 def _reset_store(domain_key: str | None = None) -> None:
@@ -283,7 +384,7 @@ def query():
     structured_input = data.get("input", "").strip()
     condition = data.get("condition", "store")  # store, store_history, baseline
     model = data.get("model")  # optional override
-    prompt_version = data.get("prompt_version", "v1")  # v1 or v2
+    prompt_version = data.get("prompt_version", "v1")
     if not structured_input:
         return jsonify({"error": "input is required"}), 400
     if llm is None:
@@ -297,6 +398,7 @@ def query():
                 chat_messages = [{"role": "system", "content": BASELINE_CHAT_SYSTEM_PROMPT}]
             chat_messages.append({"role": "user", "content": prompt})
             response = llm.generate_with_history(chat_messages, model=model)
+            response = _normalize_chat_response(response, structured_input)
             chat_messages.append({"role": "assistant", "content": response})
             return jsonify({
                 "response": response,
@@ -313,6 +415,7 @@ def query():
                 chat_messages = [{"role": "system", "content": sys_prompt}]
             chat_messages.append({"role": "user", "content": user_prompt})
             response = llm.generate_with_history(chat_messages, model=model)
+            response = _normalize_chat_response(response, structured_input)
             chat_messages.append({"role": "assistant", "content": response})
             return jsonify({
                 "response": response,
@@ -327,6 +430,7 @@ def query():
             chat_messages = []  # reset history when switching to stateless
             sys_prompt, user_prompt = engine.build_prompt(structured_input, prompt_version)
             response = llm.generate(sys_prompt, user_prompt, model=model)
+            response = _normalize_chat_response(response, structured_input)
             return jsonify({
                 "response": response,
                 "prompt": {

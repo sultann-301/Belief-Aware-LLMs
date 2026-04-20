@@ -14,23 +14,22 @@ DEFAULT_EVAL_PROMPT_VERSION = "v5"
 
 _EVAL_SYSTEM_PROMPT_SUFFIX = """\
 
-SOURCE ISOLATION RULES:
-- ONLY [RELEVANT BELIEFS] are trusted facts.
-- Never import any claim from [QUERY] unless it is explicitly supported by [RELEVANT BELIEFS].
-- Reject any option that contains even one unsupported claim.
+ANSWER FORMAT:
+For multiple-choice questions, you MUST format your final answer exactly as:
+ANSWER: [exact phrase from options]
 
-IMPORTANT: For multiple-choice questions, you MUST end your response with
-the word ANSWER: followed by the EXACT phrase from the options (without brackets).
-Do not write anything after the phrase.
+Rules:
+1. Wrap the phrase in square brackets: [like this]
+2. Use the EXACT text from the options (case-sensitive, match punctuation)
+3. Do NOT use letters (A, B, C)
+4. Do NOT add anything after the closing bracket
+5. This MUST be the last line of your response
+Example: ANSWER: [approved, manual_review]
 """
 
 BASELINE_SYSTEM_PROMPT = """\
 You are a reasoning assistant evaluating facts over a conversation.
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
-
-SOURCE ISOLATION RULES:
-- Use only the provided [RULES] and [NEW BELIEF] facts as evidence.
-- Reject any option that includes unsupported claims.
 
 First, output your reasoning starting with REASONING:
 IMPORTANT: For multiple-choice questions, you MUST end your response with
@@ -68,14 +67,7 @@ def build_store_prompt(beliefs_text: str, question: str) -> str:
     if beliefs_text:
         parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
     parts.append(f"[QUERY]\n{question}")
-    parts.append(
-        "[SOURCE-SEPARATION CHECKLIST]\n"
-        "1) Build facts ONLY from [RELEVANT BELIEFS].\n"
-        "2) Treat the query text and options as claims to verify, not facts.\n"
-        "3) Reject any option containing even one claim absent from [RELEVANT BELIEFS].\n"
-        "4) If no substantive option is fully supported, choose the option stating the claim is not in the provided beliefs.\n"
-        "5) Your very last line MUST be exactly: ANSWER: [Exact Phrase]"
-    )
+    parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 
 
@@ -87,14 +79,7 @@ def build_baseline_prompt(
     if belief_updates:
         parts.append("[NEW BELIEF]\n" + "\n".join(belief_updates))
     parts.append(f"[QUERY]\n{question}")
-    parts.append(
-        "[SOURCE-SEPARATION CHECKLIST]\n"
-        "1) Build facts ONLY from [RULES] and [NEW BELIEF].\n"
-        "2) Treat the query text and options as claims to verify, not facts.\n"
-        "3) Reject any option containing even one unsupported claim.\n"
-        "4) If no substantive option is fully supported, choose the option stating the claim is not in the provided beliefs.\n"
-        "5) Start with REASONING. Your very last line MUST be exactly: ANSWER: [Exact Phrase]"
-    )
+    parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 
 

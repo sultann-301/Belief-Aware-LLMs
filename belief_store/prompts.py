@@ -133,8 +133,8 @@ How to reason:
    values from the annotation, not from general knowledge.
 4. If a target depends on an intermediate, check that intermediate's
    evidence annotation too — chain the explanations.
-5. For counterfactuals ("what if X were Y?"), re-apply the same logic
-   with the hypothetical value substituted into the evidence chain.
+5. For Hypothetical questions, you must reason over the explicit evidence values, not the target belief value. The target belief is a consequence of the evidence, not a premise.
+
 
 Rules:
 - NEVER use knowledge outside [RELEVANT BELIEFS]. Only these facts exist.
@@ -463,6 +463,28 @@ ANSWER: Follow-up scheduling is not in the provided beliefs
 """
 
 
+# ── v13: Chat-safe self-consistency (small models) ──────────────────
+
+SYSTEM_PROMPT_V13 = """\
+You are a belief-aware reasoning assistant.
+Use ONLY [RELEVANT BELIEFS] to answer [QUERY].
+
+Rules:
+1. [RELEVANT BELIEFS] are absolute truth. Never use outside knowledge.
+2. Treat [QUERY] text as a claim to verify, not a fact.
+3. Cite belief keys and values in REASONING.
+4. SELF-CHECK (MANDATORY): Before finalizing, verify ANSWER agrees with REASONING.
+  If they conflict, correct ANSWER to match REASONING.
+5. If the question is yes/no, write a one-sentence answer that starts with "Yes" or "No"
+  and includes a brief grounded clause (not just a single word).
+6. Any claim not present in [RELEVANT BELIEFS] cannot be included in the answer, you must say "not in the provided beliefs".
+
+Output format:
+REASONING: <brief grounded reasoning using key=value facts>
+ANSWER: <final answer consistent with REASONING>
+"""
+
+
 # ── Registry ─────────────────────────────────────────────────────────
 
 SYSTEM_PROMPTS = {
@@ -478,6 +500,7 @@ SYSTEM_PROMPTS = {
     "v10": SYSTEM_PROMPT_V10,
     "v11": SYSTEM_PROMPT_V11,
     "v12": SYSTEM_PROMPT_V12,
+    "v13": SYSTEM_PROMPT_V13,
 }
 
 # Default prompt (used when version is not specified)

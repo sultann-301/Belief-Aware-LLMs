@@ -96,6 +96,10 @@ const $btnTogglePrompt = document.getElementById("btn-toggle-prompt");
 
 let selectedModel = "";
 
+// Disable chat until initialization completes
+$chatInput.disabled = true;
+$btnSend.disabled = true;
+
 // Mode tabs
 const $tabChat = document.getElementById("tab-chat");
 const $tabSim = document.getElementById("tab-simulation");
@@ -643,14 +647,16 @@ function updateAttributeChips() {
   const allKeys = new Set();
   graphData.nodes.forEach((n) => allKeys.add(n.id));
   // Also add schema keys
-  Object.keys(DOMAIN_SCHEMA[currentDomain] || {}).forEach((k) => allKeys.add(k));
+  Object.keys(DOMAIN_SCHEMA[currentDomain] || {}).forEach((k) =>
+    allKeys.add(k),
+  );
 
   const sorted = Array.from(allKeys).sort();
   selectedAttributes = new Set();
 
   $grid.innerHTML = sorted
     .map((key) => {
-      const node = graphData.nodes.find(n => n.id === key);
+      const node = graphData.nodes.find((n) => n.id === key);
       let color = "#4a9eff"; // base blue by default
       if (node) {
         if (node.is_dirty) {
@@ -1360,7 +1366,9 @@ async function openHopWalker() {
   $hopwalkOverlay.style.display = "flex";
   $hopwalkPromptText.textContent = "Loading...";
   $hopwalkKeyCount.textContent = "...";
-  $hopwalkAttrs.innerHTML = attrs.map(a => `<span class="hopwalk-attr-tag">${a}</span>`).join("");
+  $hopwalkAttrs.innerHTML = attrs
+    .map((a) => `<span class="hopwalk-attr-tag">${a}</span>`)
+    .join("");
 
   try {
     const data = await api("/api/hopwalk", {
@@ -1454,7 +1462,12 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       const x = padding + li * colWidth;
       ctx.fillStyle = LAYER_COLORS[layer];
       ctx.globalAlpha = ease;
-      const label = layer === "base" ? "ROOT FACTS" : layer === "intermediate" ? "INTERMEDIATE" : "TARGETS";
+      const label =
+        layer === "base"
+          ? "ROOT FACTS"
+          : layer === "intermediate"
+            ? "INTERMEDIATE"
+            : "TARGETS";
       ctx.fillText(label, x, 25);
     });
     ctx.globalAlpha = 1;
@@ -1483,8 +1496,14 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       const aLen = 7;
       ctx.beginPath();
       ctx.moveTo(tgtPos.x, tgtPos.y);
-      ctx.lineTo(tgtPos.x - aLen * Math.cos(angle - 0.35), tgtPos.y - aLen * Math.sin(angle - 0.35));
-      ctx.lineTo(tgtPos.x - aLen * Math.cos(angle + 0.35), tgtPos.y - aLen * Math.sin(angle + 0.35));
+      ctx.lineTo(
+        tgtPos.x - aLen * Math.cos(angle - 0.35),
+        tgtPos.y - aLen * Math.sin(angle - 0.35),
+      );
+      ctx.lineTo(
+        tgtPos.x - aLen * Math.cos(angle + 0.35),
+        tgtPos.y - aLen * Math.sin(angle + 0.35),
+      );
       ctx.closePath();
       ctx.fillStyle = `rgba(110, 118, 129, ${edgeAlpha * 1.5})`;
       ctx.fill();
@@ -1500,7 +1519,14 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       if (n.layer === "target") {
         ctx.beginPath();
         ctx.arc(pos.x, pos.y, r + 12, 0, Math.PI * 2);
-        const grad = ctx.createRadialGradient(pos.x, pos.y, r, pos.x, pos.y, r + 12);
+        const grad = ctx.createRadialGradient(
+          pos.x,
+          pos.y,
+          r,
+          pos.x,
+          pos.y,
+          r + 12,
+        );
         grad.addColorStop(0, `rgba(0, 206, 201, ${0.3 * alpha})`);
         grad.addColorStop(1, "rgba(0, 206, 201, 0)");
         ctx.fillStyle = grad;
@@ -1541,7 +1567,10 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
 
       // Value below label
       if (n.value !== null && n.value !== undefined) {
-        const valStr = String(n.value).length > 20 ? String(n.value).slice(0, 17) + "…" : String(n.value);
+        const valStr =
+          String(n.value).length > 20
+            ? String(n.value).slice(0, 17) + "…"
+            : String(n.value);
         ctx.font = "9px 'JetBrains Mono', monospace";
         ctx.fillStyle = `rgba(139, 148, 158, ${0.7 * alpha})`;
         ctx.fillText(valStr, pos.x, pos.y + r + 26);
@@ -1579,4 +1608,8 @@ document.addEventListener("keydown", (e) => {
   await refresh();
   // Build attribute chips after initial graph data is loaded
   updateAttributeChips();
+
+  // Enable chat AFTER initialization is complete
+  $chatInput.disabled = false;
+  $btnSend.disabled = false;
 })();
