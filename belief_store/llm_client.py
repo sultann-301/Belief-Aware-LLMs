@@ -42,6 +42,8 @@ class OllamaClient:
             think=False,
             options={
                 "temperature": self.temperature,
+                "num_predict": 5000,
+                "num_ctx": 8192,
             },
         )
         return response.message.content
@@ -55,6 +57,8 @@ class OllamaClient:
             think=False,
             options={
                 "temperature": self.temperature,
+                "num_predict": 5000,
+                "num_ctx": 8192,
             },
         )
         return response.message.content

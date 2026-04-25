@@ -168,42 +168,28 @@ def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[st
 
 def _extract_last_answer_line(response: str) -> str | None:
     """Return the content of the last ANSWER: line if present."""
-    answer_lines = re.findall(r"(?im)^\s*answer\s*:\s*(.+?)\s*$", response)
+    answer_lines = re.findall(r"(?im)\banswer\s*:\s*(.+?)\s*$", response)
     return answer_lines[-1] if answer_lines else None
 
 
-def _is_exact_option_answer(response: str, options: dict[str, str]) -> bool:
-    """Check if the response already ends with an exact option phrase."""
-    answer_text = _extract_last_answer_line(response)
-    if answer_text is None:
-        return False
-
-    normalized_answer = _normalize_for_match(answer_text)
-    normalized_options = {_normalize_for_match(text) for text in options.values()}
-    return normalized_answer in normalized_options
-
-
 def _canonicalize_answer_line(response: str, exact_phrase: str) -> str:
-    """Rewrite/add final answer line using an exact option phrase."""
-    if re.search(r"(?im)^\s*answer\s*:", response):
+    """Rewrite/add final answer line using an exact option phrase with brackets."""
+    if re.search(r"(?im)\banswer\s*:", response):
         return re.sub(
-            r"(?im)^\s*answer\s*:.*$",
-            f"ANSWER: {exact_phrase}",
+            r"(?im)\banswer\s*:.*$",
+            f"ANSWER: [{exact_phrase}]",
             response,
         )
-    return response.rstrip() + f"\nANSWER: {exact_phrase}"
+    return response.rstrip() + f"\nANSWER: [{exact_phrase}]"
 
 
 def _enforce_exact_phrase_output(turn: dict, response: str) -> str:
-    """Ensure response ends with an exact option phrase if enforcement is enabled."""
+    """Ensure response ends with an exact option phrase with brackets if enforcement is enabled."""
     options = turn.get("options", {})
     if not options or not ENFORCE_EXACT_PHRASE:
         return response
 
-    if _is_exact_option_answer(response, options):
-        return response
-
-    # Last fallback: canonicalize whatever extraction could map.
+    # Extract answer and fully canonicalize to guarantee exact phrase and brackets format
     answer_letter = extract_answer(response, options)
     if answer_letter is not None:
         return _canonicalize_answer_line(response, options[answer_letter])
@@ -822,6 +808,7 @@ def run_multi_eval(
     workers: int = 4,
     model: str = "gemma3:1b",
     temperature: float = 0.0,
+    model_alias: str | None = None,
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
@@ -902,16 +889,17 @@ def run_multi_eval(
             writer = csv.writer(f)
             if not file_exists:
                 writer.writerow([
-                    "Domain", "Model", "Temp", "Prompt_Ver", "Summary_Metric",
+                    "Domain", "Model", "Temp", "Prompt_Ver", "Runs", "Summary_Metric",
                     "With_Store", "Store_History", "No_Store"
                 ])
 
             # Accuracy per domain
+            display_model = model_alias or model
             avg0 = (sum(scores[0]) / n) / n_turns if n_turns > 0 else 0
             avg1 = (sum(scores[1]) / n) / n_turns if n_turns > 0 else 0
             avg2 = (sum(scores[2]) / n) / n_turns if n_turns > 0 else 0
             writer.writerow([
-                config.name, model, temperature, prompt_ver, "Average_Accuracy",
+                config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
                 f"{avg0:.4f}", f"{avg1:.4f}", f"{avg2:.4f}"
             ])
 
@@ -920,7 +908,7 @@ def run_multi_eval(
             var1 = statistics.variance(scores[1]) if n > 1 else 0.0
             var2 = statistics.variance(scores[2]) if n > 1 else 0.0
             writer.writerow([
-                config.name, model, temperature, prompt_ver, "Variance_Raw_Score",
+                config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
                 f"{var0:.4f}", f"{var1:.4f}", f"{var2:.4f}"
             ])
 
@@ -929,7 +917,7 @@ def run_multi_eval(
             std1 = statistics.stdev(scores[1]) if n > 1 else 0.0
             std2 = statistics.stdev(scores[2]) if n > 1 else 0.0
             writer.writerow([
-                config.name, model, temperature, prompt_ver, "StdDev_Raw_Score",
+                config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
                 f"{std0:.4f}", f"{std1:.4f}", f"{std2:.4f}"
             ])
 
@@ -944,6 +932,7 @@ def run_multi_eval_dual_agent(
     workers: int = 4,
     model: str = "gemma3:1b",
     temperature: float = 0.0,
+    model_alias: str | None = None,
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel.
     
@@ -1052,12 +1041,14 @@ def run_multi_eval_dual_agent(
                     "Model",
                     "Temp",
                     "Prompt_Ver",
+                    "Runs",
                     "Metric_Family",
                     "Summary_Metric",
                     "Dual_Agent_Store",
                     "Dual_Agent_Store_History",
                 ])
 
+            display_model = model_alias or model
             for metric_key, metric_family in (
                 ("binding", "Binding"),
                 ("end_to_end", "End_to_End"),
@@ -1066,9 +1057,10 @@ def run_multi_eval_dual_agent(
                 avg1 = sum(metric_scores[1][metric_key]) / n if n > 0 else 0.0
                 writer.writerow([
                     config.name,
-                    model,
+                    display_model,
                     temperature,
                     prompt_ver,
+                    runs,
                     metric_family,
                     "Average_Accuracy",
                     f"{avg0:.4f}",
@@ -1079,9 +1071,10 @@ def run_multi_eval_dual_agent(
                 var1 = statistics.variance(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
                     config.name,
-                    model,
+                    display_model,
                     temperature,
                     prompt_ver,
+                    runs,
                     metric_family,
                     "Variance_Accuracy",
                     f"{var0:.6f}",
@@ -1092,9 +1085,10 @@ def run_multi_eval_dual_agent(
                 std1 = statistics.stdev(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
                     config.name,
-                    model,
+                    display_model,
                     temperature,
                     prompt_ver,
+                    runs,
                     metric_family,
                     "Standard_Deviation_Accuracy",
                     f"{std0:.6f}",

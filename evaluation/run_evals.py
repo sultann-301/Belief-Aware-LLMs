@@ -297,6 +297,11 @@ Examples:
         help="Ollama model name (default: gemma3:1b)"
     )
     parser.add_argument(
+        "--model-alias",
+        default=None,
+        help="Optional short name for the model to use in CSV exports"
+    )
+    parser.add_argument(
         "--temperature",
         type=float,
         default=0.0,
@@ -339,8 +344,9 @@ Examples:
 
     print(f"\n{'='*75}")
     print(f"Domain: {domain_display_name} ({len(config.turns)} turns)")
+    display_model = f"{args.model} (alias: {args.model_alias})" if args.model_alias else args.model
     print(
-        f"Model: {args.model} | Runs: {args.runs} | Workers: {args.workers} "
+        f"Model: {display_model} | Runs: {args.runs} | Workers: {args.workers} "
         f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
     )
     print(f"{'='*75}\n")
@@ -352,6 +358,7 @@ Examples:
             workers=args.workers,
             model=args.model,
             temperature=args.temperature,
+            model_alias=args.model_alias,
         )
     else:
         run_multi_eval(
@@ -360,6 +367,7 @@ Examples:
             workers=args.workers,
             model=args.model,
             temperature=args.temperature,
+            model_alias=args.model_alias,
         )
 
 
