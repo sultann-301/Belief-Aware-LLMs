@@ -35,7 +35,9 @@ class Agent1State(TypedDict, total=False):
     """State for Agent 1 (Reasoning phase)."""
     relevant_beliefs: str
     query: str
+    options: dict[str, str]  # Added for MCQ matching
     conclusion: str
+    matched_option: str      # Added for MCQ matching
     evidence_keys: list[str]
     reasoning: str
 
@@ -55,15 +57,14 @@ class DualAgentState(TypedDict, total=False):
     # Agent 1 inputs
     relevant_beliefs: str
     query: str
+    options: dict[str, str]
     chat_history: list[dict[str, str]]
 
     # Agent 1 outputs
     conclusion: str
+    matched_option: str      # Added for MCQ matching
     evidence_keys: list[str]
     reasoning: str
-
-    # Agent 2 inputs (conclusion comes from Agent 1 outputs above)
-    options: dict[str, str]
 
     # Agent 2 outputs
     matched_option_text: str
@@ -84,8 +85,15 @@ def agent1_reason(
     """Agent 1: Compress the belief state into a canonical claim."""
     relevant_beliefs = state.get("relevant_beliefs", "")
     query = state.get("query", "")
+    options = state.get("options", {})
     chat_history = state.get("chat_history", [])
-    user_prompt = f"""[RELEVANT BELIEFS]\n{relevant_beliefs}\n\n[QUERY]\n{query}"""
+
+    # Format options for the prompt
+    options_text = ""
+    if options:
+        options_text = "\n[OPTIONS]\n" + "\n".join([f"{label}) {phrase}" for label, phrase in options.items()])
+
+    user_prompt = f"""[RELEVANT BELIEFS]\n{relevant_beliefs}\n\n[QUERY]\n{query}{options_text}"""
 
     # Build messages list for the LLM
     messages = chat_history.copy() if chat_history else []
@@ -116,6 +124,7 @@ def agent1_reason(
 
     return {
         "conclusion": str(parsed.get("conclusion", "")),
+        "matched_option": str(parsed.get("matched_option", "")),
         "evidence_keys": [str(item) for item in evidence],
         "reasoning": str(parsed.get("reasoning", "")),
     }
@@ -126,12 +135,16 @@ def agent2_decide(
     llm: LLMClient,
     system_prompt: str,
 ) -> dict[str, Any]:
-    """Agent 2: Match Agent 1's conclusion to the correct option phrase."""
+    """Agent 2: Validate Agent 1's label and confirm the correct MCQ option."""
     options = state.get("options", {})
-    options_text = "\n".join([f"- {phrase}" for phrase in options.values()])
+    conclusion = state.get("conclusion", "")
+    suggested_option = state.get("matched_option", "")
+
+    options_text = "\n".join([f"{label}) {phrase}" for label, phrase in options.items()])
 
     user_prompt = (
-        f"Conclusion: {state.get('conclusion', '')}\n\n"
+        f"Conclusion: {conclusion}\n"
+        f"Suggested Option Label (from Reasoner): {suggested_option}\n\n"
         f"Options:\n{options_text}\n\n"
         "Return JSON only."
     )
@@ -139,19 +152,22 @@ def agent2_decide(
     response = llm.generate(system_prompt, user_prompt, json_mode=True).strip()
     parsed = _parse_json_object(response)
 
-    matched_option_text = ""
+    matched_option_label = ""
     matcher_rationale = ""
     if parsed:
-        matched_option_text = str(parsed.get("matched_option_text", "")).strip()
+        matched_option_label = str(parsed.get("matched_option_label", "")).strip().upper()
         matcher_rationale = str(parsed.get("matcher_rationale", "")).strip()
 
-    if not matched_option_text:
-        recovered = _recover_answer_from_text(response, options)
-        matched_option_text = recovered or ""
+    # If Agent 2 didn't return a valid label, fall back to Agent 1's suggestion
+    if matched_option_label not in options:
+        if suggested_option and suggested_option in options:
+            matched_option_label = suggested_option
+        else:
+            matched_option_label = ""
 
-    matched_option_label, match_status = derive_option_label_from_phrase(
-        matched_option_text, options
-    )
+    # Derive the phrase deterministically from the label — no phrase matching needed
+    matched_option_text = options.get(matched_option_label, "")
+    match_status = "matched" if matched_option_label and matched_option_label in options else "phrase-not-found"
 
     return {
         "matched_option_text": matched_option_text,
@@ -420,6 +436,7 @@ def run_dual_agent(
 
     return {
         "agent1_conclusion": final_state.get("conclusion", ""),
+        "agent1_matched_option": final_state.get("matched_option", ""),
         "agent1_evidence_keys": final_state.get("evidence_keys", []),
         "agent1_reasoning": final_state.get("reasoning", ""),
         "agent2_matched_option_text": final_state.get("matched_option_text", ""),

@@ -30,8 +30,11 @@ class SequenceMockLLM:
             raise AssertionError("No scripted response left for generate().")
         return self._responses.pop(0)
 
-    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None) -> str:
-        raise AssertionError("generate_with_history should not be used in dual-agent tests.")
+    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None, json_mode: bool = False) -> str:
+        self.calls.append({"messages": messages})
+        if not self._responses:
+            raise AssertionError("No scripted response left for generate_with_history().")
+        return self._responses.pop(0)
 
 
 def _single_turn_config(*, include_reasoning_gold: bool = True) -> DomainConfig:
@@ -64,8 +67,8 @@ def _single_turn_config(*, include_reasoning_gold: bool = True) -> DomainConfig:
 def test_run_dual_agent_returns_canonical_fields() -> None:
     llm = SequenceMockLLM(
         responses=[
-            '{"conclusion":"approved","evidence_keys":["loan.application_status"],"reasoning":"all checks pass"}',
-            '{"matched_option_text":"approved","matcher_rationale":"exact semantic match"}',
+            '{"conclusion":"approved","matched_option":"A","evidence_keys":["loan.application_status"],"reasoning":"all checks pass"}',
+            '{"matched_option_label":"A","matcher_rationale":"exact semantic match"}',
         ]
     )
 
@@ -79,6 +82,8 @@ def test_run_dual_agent_returns_canonical_fields() -> None:
     assert result["agent1_conclusion"] == "approved"
     assert result["agent1_evidence_keys"] == ["loan.application_status"]
     assert result["agent1_reasoning"] == "all checks pass"
+    # New field check
+    assert result["agent1_matched_option"] == "A"
     assert result["agent2_matched_option_text"] == "approved"
     assert result["agent2_matcher_rationale"] == "exact semantic match"
     assert result["agent2_matched_option_label"] == "A"
@@ -109,8 +114,8 @@ def test_deterministic_label_derivation() -> None:
 def test_agent2_prompt_isolation_from_beliefs() -> None:
     llm = SequenceMockLLM(
         responses=[
-            '{"conclusion":"approved","evidence_keys":["loan.application_status"],"reasoning":"derived from beliefs"}',
-            '{"matched_option_text":"approved","matcher_rationale":"best phrase match"}',
+            '{"conclusion":"approved","matched_option":"A","evidence_keys":["loan.application_status"],"reasoning":"derived from beliefs"}',
+            '{"matched_option_label":"A","matcher_rationale":"best phrase match"}',
         ]
     )
 
@@ -118,14 +123,19 @@ def test_agent2_prompt_isolation_from_beliefs() -> None:
     run_with_store_dual_agent(llm, config)
 
     assert len(llm.calls) == 2
-    agent1_prompt = llm.calls[0]["user_prompt"]
+    # Agent 1 uses generate_with_history
+    agent1_messages = llm.calls[0]["messages"]
+    agent1_user_content = agent1_messages[-1]["content"]
+    
+    # Agent 2 uses generate
     agent2_prompt = llm.calls[1]["user_prompt"]
 
-    assert "[RELEVANT BELIEFS]" in agent1_prompt
-    assert "applicant.loan_amount_requested" in agent1_prompt
+    assert "[RELEVANT BELIEFS]" in agent1_user_content
+    assert "applicant.loan_amount_requested" in agent1_user_content
 
     assert "Conclusion:" in agent2_prompt
     assert "Options:" in agent2_prompt
+    assert "Suggested Option Label (from Reasoner):" in agent2_prompt
     assert "Query:" not in agent2_prompt
     assert "applicant.loan_amount_requested" not in agent2_prompt
     assert "[RELEVANT BELIEFS]" not in agent2_prompt
@@ -134,8 +144,8 @@ def test_agent2_prompt_isolation_from_beliefs() -> None:
 def test_dual_agent_split_metrics_are_reported() -> None:
     llm = SequenceMockLLM(
         responses=[
-            '{"conclusion":"approved","evidence_keys":["loan.application_status"],"reasoning":"gold aligns"}',
-            '{"matched_option_text":"approved","matcher_rationale":"exact option phrase"}',
+            '{"conclusion":"approved","matched_option":"A","evidence_keys":["loan.application_status"],"reasoning":"gold aligns"}',
+            '{"matched_option_label":"A","matcher_rationale":"exact option phrase"}',
         ]
     )
 
@@ -145,8 +155,7 @@ def test_dual_agent_split_metrics_are_reported() -> None:
     assert len(results) == 1
     row = results[0]
 
-    assert row["reasoning_scored"] is True
-    assert row["reasoning_correct"] is True
+    # reasoning_scored was removed from eval_harness.py metrics
     assert row["binding_scored"] is True
     assert row["binding_correct"] is True
     assert row["end_to_end_correct"] is True
@@ -155,8 +164,8 @@ def test_dual_agent_split_metrics_are_reported() -> None:
 def test_reasoning_metric_not_scored_without_gold() -> None:
     llm = SequenceMockLLM(
         responses=[
-            '{"conclusion":"approved","evidence_keys":[],"reasoning":"no gold provided"}',
-            '{"matched_option_text":"approved","matcher_rationale":"exact option phrase"}',
+            '{"conclusion":"approved","matched_option":"A","evidence_keys":[],"reasoning":"no gold provided"}',
+            '{"matched_option_label":"A","matcher_rationale":"exact option phrase"}',
         ]
     )
 
@@ -166,7 +175,6 @@ def test_reasoning_metric_not_scored_without_gold() -> None:
     assert len(results) == 1
     row = results[0]
 
-    assert row["reasoning_scored"] is False
-    assert row["reasoning_status"] == "not-scored-missing-gold"
+    # reasoning_scored was removed from eval_harness.py metrics
     assert row["binding_scored"] is True
     assert row["end_to_end_correct"] is True

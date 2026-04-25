@@ -282,8 +282,8 @@ Examples:
     parser.add_argument(
         "--runs",
         type=int,
-        default=10,
-        help="Number of evaluation runs (default: 10)"
+        default=None,
+        help="Number of evaluation runs (default: 1 if temp=0 else 10)"
     )
     parser.add_argument(
         "--workers",
@@ -321,14 +321,24 @@ Examples:
 
     args = parser.parse_args()
 
+    if args.runs is None:
+        args.runs = 1 if args.temperature == 0.0 else 10
+
     config = DOMAIN_REGISTRY[args.domain]
     if args.eval_prompt_version:
         config.eval_prompt_version = args.eval_prompt_version
     resolved_eval_prompt_version = get_eval_prompt_version(config.eval_prompt_version)
     
     eval_mode = "DUAL-AGENT" if args.dual_agent else "STANDARD"
+    
+    domain_display_name = config.name
+    if "counterfactual" in config.name:
+        domain_display_name += " (Belief tracking test)"
+    elif "grounding" in config.name:
+        domain_display_name += " (Closed-world assumption test)"
+
     print(f"\n{'='*75}")
-    print(f"Domain: {config.name} ({len(config.turns)} turns)")
+    print(f"Domain: {domain_display_name} ({len(config.turns)} turns)")
     print(
         f"Model: {args.model} | Runs: {args.runs} | Workers: {args.workers} "
         f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"

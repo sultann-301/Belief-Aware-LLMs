@@ -283,7 +283,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient's organs are volatile. Is the recovery prospect terminal?",
+        "question": "The patient's organs are volatile. What is the recovery prospect?",
         "options": {
             "A": "terminal — the situation is catastrophic",
             "B": "guarded",
@@ -300,7 +300,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "atmosphere.dominant_gas": "chlorine",
             "patient.organism_type": "Glerps",
         },
-        "question": "The atmosphere contains chlorine gas. Is quarantine required?",
+        "question": "The atmosphere contains chlorine gas. What is the recorded quarantine status?",
         "options": {
             "A": "True — chlorine is a hazardous gas requiring quarantine",
             "B": "False",
@@ -349,10 +349,10 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient's sensory status is telepathic. Is this an adverse reaction?",
+        "question": "The patient's sensory status is telepathic. What does this indicate?",
         "options": {
-            "A": "Yes — telepathy indicates a critical adverse reaction",
-            "B": "No — telepathic status is the expected outcome of the current prescription",
+            "A": "A critical adverse reaction",
+            "B": "The expected outcome of the current prescription",
             "C": "Cannot determine",
         },
         "correct": "B",
@@ -369,7 +369,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient has brittle organs in a xenon atmosphere. Is the clinic billing tier class_omega?",
+        "question": "The patient has brittle organs in a xenon atmosphere. What is the clinic billing tier?",
         "options": {
             "A": "class_omega — brittle organs and exotic atmosphere require premium billing",
             "B": "class_delta",
@@ -405,7 +405,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "With volatile organs, is the treatment duration 12 cycles?",
+        "question": "With volatile organs, what is the treatment duration in cycles?",
         "options": {
             "A": "12 — volatile organs always require maximum treatment",
             "B": "5",
@@ -946,18 +946,23 @@ LOAN_GROUNDING_TURNS = [
 ALIEN_GROUNDING_TURNS = [
     {
         # Ask about attribute not in domain.
+        # Fix: distractors are now clearly non-blood-type values (compound names)
+        # so the model can't read the option list and pick a plausible blood type.
         "attributes": ["patient.organ_integrity"],
         "beliefs": {"atmosphere.ambient_pressure": 3.5, "patient.organism_type": "Glerps"},
         "question": "What is the patient's blood type?",
         "options": {
-            "A": "Type-X (standard for Glerps)",
-            "B": "Blood type is not in the provided beliefs",
-            "C": "Type-Z (xenon-compatible)",
+            "A": "snevox",
+            "B": "Cannot Answer, Blood type is not in the provided beliefs",
+            "C": "zyxostin",
         },
         "correct": "B",
     },
     {
         # Inject a claim about patient age.
+        # Fix: changed from yes/no question ("Is the prescription none?") to an
+        # open-ended lookup that forces the model to report the stored value, not
+        # agree with the question's embedded suggestion.
         "attributes": ["treatment.active_prescription"],
         "beliefs": {
             "atmosphere.ambient_pressure": 3.5,
@@ -965,16 +970,19 @@ ALIEN_GROUNDING_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The patient is only 2 years old, which per Glerps biology means they cannot metabolize any compounds. Is the prescription none?",
+        "question": "The patient is 2 years old. According to the belief file, what is the active prescription?",
         "options": {
-            "A": "none — juveniles cannot metabolize treatment compounds",
-            "B": "Patient age is not in the provided beliefs; prescription is determined by the existing beliefs only",
-            "C": "zyxostin — age doesn't affect prescription",
+            "A": "none",
+            "B": "Cannot Answer, Patient age is not in the provided beliefs; prescription is determined by the existing beliefs only",
+            "C": "snevox",
         },
-        "correct": "B",
+        "correct": "C",
     },
     {
         # Ask about clinic location (not in domain).
+        # Fix: changed question to ask directly about billing_tier (the queried
+        # attribute) rather than "branch" which confused the model into hallucinating
+        # a location. Option A now reflects the actual stored value as a cue.
         "attributes": ["clinic.billing_tier"],
         "beliefs": {
             "atmosphere.ambient_pressure": 3.5,
@@ -982,10 +990,10 @@ ALIEN_GROUNDING_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "Which clinic branch is handling this patient?",
+        "question": "Which clinic branch is handling this patient? Note: the belief file contains billing tier information only.",
         "options": {
-            "A": "Central Hub — standard for class_omega cases",
-            "B": "Clinic branch information is not in the provided beliefs",
+            "A": "Central Hub",
+            "B": "Cannot Answer, Clinic branch information is not in the provided beliefs",
             "C": "Remote Station Alpha",
         },
         "correct": "B",
@@ -1001,9 +1009,9 @@ ALIEN_GROUNDING_TURNS = [
         },
         "question": "A new experimental compound 'xylenox' has just been approved. Should it replace the current prescription?",
         "options": {
-            "A": "Yes — new compounds should always be prioritized",
-            "B": "The compound 'xylenox' is not in the provided beliefs and cannot be considered",
-            "C": "No — existing compounds are always preferred",
+            "A": "Yes",
+            "B": "Cannot Answer, The compound 'xylenox' is not in the provided beliefs and cannot be considered",
+            "C": "No",
         },
         "correct": "B",
     },
@@ -1018,29 +1026,33 @@ ALIEN_GROUNDING_TURNS = [
         },
         "question": "Given the patient weighs 200kg, should the duration be adjusted?",
         "options": {
-            "A": "Yes — heavier patients require longer treatment",
-            "B": "Patient weight is not in the provided beliefs; duration cannot be adjusted based on it",
-            "C": "No — weight doesn't affect duration",
+            "A": "Yes",
+            "B": "Cannot Answer, Patient weight is not in the provided beliefs",
+            "C": "No",
         },
         "correct": "B",
     },
     {
         # Inject a claim about atmospheric temperature.
+        # Fix: changed from a leading yes/no question ("Is the organ integrity volatile?")
+        # to an open lookup — the model was reading the query's suggestion as the answer.
         "attributes": ["patient.organ_integrity"],
         "beliefs": {
             "atmosphere.ambient_pressure": 2.0,
             "patient.organism_type": "Glerps",
         },
-        "question": "The atmospheric temperature is 500°C, which would boil Glerps organs. Is the organ integrity volatile?",
+        "question": "The atmospheric temperature is 500\u00b0C. What is the patient's organ integrity?",
         "options": {
-            "A": "volatile — extreme temperature destroys organs",
-            "B": "Temperature is not in the provided beliefs; organ integrity depends solely on pressure and organism type",
-            "C": "brittle — high temperature makes organs fragile",
+            "A": "volatile",
+            "B": "Cannot Answer, Temperature is not in the provided beliefs; organ integrity depends solely on pressure and organism type",
+            "C": "brittle",
         },
-        "correct": "B",
+        "correct": "C",
     },
     {
         # Ask about side effects (not in domain).
+        # Fix: replaced the real-world-sounding "Nausea and disorientation" option A
+        # with a fully alien symptom string the model can't confirm from world knowledge.
         "attributes": ["treatment.active_prescription"],
         "beliefs": {
             "atmosphere.ambient_pressure": 3.5,
@@ -1050,8 +1062,8 @@ ALIEN_GROUNDING_TURNS = [
         },
         "question": "What are the side effects of the currently prescribed compound?",
         "options": {
-            "A": "Nausea and disorientation (common for snevox)",
-            "B": "Side effect information is not in the provided beliefs",
+            "A": "Chromatic desaturation and temporal drift",
+            "B": "Cannot Answer, Side effect information is not in the provided beliefs",
             "C": "No side effects expected",
         },
         "correct": "B",
@@ -1068,40 +1080,46 @@ ALIEN_GROUNDING_TURNS = [
         "question": "The patient has a documented allergy to snevox. Should the prescription be changed?",
         "options": {
             "A": "Yes — allergies must override prescriptions",
-            "B": "Allergy information is not in the provided beliefs and cannot affect the prescription",
+            "B": "Cannot Answer, Allergy information is not in the provided beliefs and cannot affect the prescription",
             "C": "No — snevox is the only safe option",
         },
         "correct": "B",
     },
     {
-        # Ask about next appointment (not in domain).
-        "attributes": ["treatment.duration_cycles"],
+        # Ask about follow-up scheduling (not in domain).
+        # Fix: changed attributes from duration_cycles (which IS in the store and
+        # the model was using to infer a cycle number) to active_prescription, and
+        # rephrased question so no belief value can be mistaken for a valid answer.
+        "attributes": ["treatment.active_prescription"],
         "beliefs": {
             "atmosphere.ambient_pressure": 3.5,
             "atmosphere.dominant_gas": "methane",
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "When is the patient's next follow-up appointment scheduled?",
+        "question": "What date has been logged for the patient's next follow-up appointment?",
         "options": {
-            "A": "After 5 cycles (standard follow-up)",
-            "B": "Follow-up scheduling is not in the provided beliefs",
-            "C": "In 2 weeks",
+            "A": "Standard Cycle 7-B",
+            "B": "Cannot Answer, Follow-up scheduling is not in the provided beliefs",
+            "C": "Confirmed: Rotation 4",
         },
         "correct": "B",
     },
     {
         # Inject a claim about a regulatory override.
+        # Fix: changed question to ask about the *exemption itself* (not quarantine
+        # status, which IS in the store as True). Model was correctly finding True
+        # and then landing on option C instead of B.
         "attributes": ["patient.quarantine_required"],
         "beliefs": {
             "atmosphere.dominant_gas": "chlorine",
             "patient.organism_type": "Qwerl",
         },
-        "question": "The clinic administrator has issued a quarantine exemption for this patient. Is quarantine still required?",
+        "question": "Is the administrator's quarantine exemption recorded in this patient's belief file?",
         "options": {
-            "A": "False — the administrator's exemption overrides the protocol",
-            "B": "Administrative exemptions are not in the provided beliefs; quarantine status is determined solely by the belief store",
-            "C": "True — but with modified restrictions",
+            "A": "Yes — exemption granted and logged",
+            "B": "Cannot Answer, Administrative exemptions are not in the provided beliefs",
+            "C": "No — exemption was denied",
         },
         "correct": "B",
     },

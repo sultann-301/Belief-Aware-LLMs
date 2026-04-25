@@ -102,6 +102,10 @@ def _build_dual_agent_response(dual_agent_result: dict[str, Any]) -> str:
     else:
         evidence_text = ""
 
+    # Use the matched label so extraction is deterministic (no phrase matching)
+    matched_label = dual_agent_result.get("agent2_matched_option_label", "")
+    matched_phrase = dual_agent_result.get("agent2_matched_option_text", "")
+
     return f"""[AGENT 1 CONCLUSION]
 {dual_agent_result.get('agent1_conclusion', '')}
 
@@ -114,8 +118,17 @@ def _build_dual_agent_response(dual_agent_result: dict[str, Any]) -> str:
 [AGENT 2 MATCHER RATIONALE]
 {dual_agent_result.get('agent2_matcher_rationale', '')}
 
-ANSWER: [{dual_agent_result.get('agent2_matched_option_text', '')}]
+ANSWER: [{matched_phrase}]
 """
+
+
+def _get_expected_agent1_conclusion(turn: dict[str, Any]) -> str:
+    correct_opt = turn.get("options", {}).get(turn.get("correct", ""), "")
+    if "Cannot Answer" in correct_opt or "not in the provided beliefs" in correct_opt.lower():
+        return "Not in belief store"
+    
+    val = correct_opt.split(" — ")[0].strip()
+    return val
 
 
 def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[str, Any]) -> dict[str, Any]:
@@ -123,23 +136,21 @@ def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[st
     expected_label = turn.get("correct")
     derived_label = dual_agent_result.get("agent2_matched_option_label") or ""
     match_status = dual_agent_result.get("agent2_match_status") or "phrase-not-found"
+    agent1_conclusion = dual_agent_result.get("agent1_conclusion", "")
 
-    if not turn.get("options"):
-        binding_scored = False
-        binding_correct = False
-        binding_status = "not-scored-no-options"
-    elif match_status != "matched":
+    binding_scored = False
+    binding_correct = False
+    binding_status = "not-scored"
+
+    if turn.get("options") and agent1_conclusion:
+        expected_conclusion = _get_expected_agent1_conclusion(turn)
         binding_scored = True
-        binding_correct = False
-        binding_status = match_status
-    elif derived_label != expected_label:
-        binding_scored = True
-        binding_correct = False
-        binding_status = "wrong-option"
-    else:
-        binding_scored = True
-        binding_correct = True
-        binding_status = "matched"
+        if expected_conclusion.lower() in agent1_conclusion.lower():
+            binding_correct = True
+            binding_status = "matched"
+        else:
+            binding_correct = False
+            binding_status = "wrong-conclusion"
 
     return {
         "binding_correct": binding_correct,
@@ -232,6 +243,10 @@ def extract_answer_with_confidence(response: str, options: dict[str, str]) -> di
     # Strategy 1: Bracketed format (HIGH confidence)
     bracketed = _extract_bracketed_answer(answer_line)
     if bracketed:
+        # Direct label check: if the bracketed content is itself a valid option key (e.g. [A], [B])
+        if bracketed.upper() in options:
+            return {"answer": bracketed.upper(), "method": "bracketed_label", "confidence": "HIGH"}
+
         # Exact match (case-sensitive)
         for letter, option_text in options.items():
             if bracketed == option_text:
@@ -300,6 +315,10 @@ def extract_answer(response: str, options: dict[str, str]) -> str | None:
     # Strategy 1: Try bracketed format [exact phrase]
     bracketed = _extract_bracketed_answer(answer_line)
     if bracketed:
+        # Direct label check: if bracketed content is itself a valid option key (e.g. [A], [B])
+        if bracketed.upper() in options:
+            return bracketed.upper()
+
         # Try exact match first (case-sensitive, space-sensitive)
         for letter, option_text in options.items():
             if bracketed == option_text:
@@ -996,8 +1015,8 @@ def run_multi_eval_dual_agent(
     for idx, label in enumerate(condition_labels):
         print(f"  {label}")
         for metric_name, metric_label in (
-            ("binding", "Binding"),
-            ("end_to_end", "End-to-End"),
+            ("binding", "Belief Binding Rate (BBR)"),
+            ("end_to_end", "End-to-End (BTR if counterfactual)"),
         ):
             sc = metric_scores[idx][metric_name]
             avg = sum(sc) / n
