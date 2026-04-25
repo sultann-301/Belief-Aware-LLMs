@@ -22,6 +22,7 @@ def normalize_for_match(text: str) -> str:
     normalized = re.sub(r"\s+", " ", normalized).strip()
     return normalized
 
+
 def extract_last_answer_line(response: str) -> str | None:
     """Return the content of the last ANSWER: line if present."""
     answer_lines = re.findall(r"(?im)^\s*answer\s*:\s*(.+?)\s*$", response)

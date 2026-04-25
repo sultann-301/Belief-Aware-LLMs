@@ -16,7 +16,7 @@ from os.path import join, dirname
 
 path.insert(0, join(dirname(__file__), ".."))
 
-from evaluation.eval_harness import run_multi_eval, DomainConfig
+from evaluation.eval_harness import run_multi_eval, run_multi_eval_dual_agent, DomainConfig
 from evaluation.scenarios import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
     ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
@@ -267,6 +267,9 @@ Examples:
 
   python3 evaluation/run_evals.py --domain crime_scene_2hop --model llama2
     → Run crime scene 2-hop scenarios with a different model
+
+    python3 evaluation/run_evals.py --domain alien_clinic_grounding --dual-agent --temperature 0.0
+        → Run deterministic dual-agent grounding eval
         """
     )
 
@@ -294,11 +297,25 @@ Examples:
         help="Ollama model name (default: gemma3:1b)"
     )
     parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="Sampling temperature for eval runs (default: 0.0 for deterministic benchmarking)"
+    )
+    parser.add_argument(
         "--eval-prompt-version",
         default=None,
         help=(
             "Base belief-store prompt profile for WITH STORE evals "
             "(e.g., v5, v12). Defaults to EVAL_BASE_PROMPT_VERSION or v5."
+        ),
+    )
+    parser.add_argument(
+        "--dual-agent",
+        action="store_true",
+        help=(
+            "Run dual-agent conditions instead of standard conditions "
+            "(WITH STORE + WITH STORE+History, both using dual-agent reasoning)"
         ),
     )
 
@@ -308,20 +325,32 @@ Examples:
     if args.eval_prompt_version:
         config.eval_prompt_version = args.eval_prompt_version
     resolved_eval_prompt_version = get_eval_prompt_version(config.eval_prompt_version)
+    
+    eval_mode = "DUAL-AGENT" if args.dual_agent else "STANDARD"
     print(f"\n{'='*75}")
     print(f"Domain: {config.name} ({len(config.turns)} turns)")
     print(
         f"Model: {args.model} | Runs: {args.runs} | Workers: {args.workers} "
-        f"| Eval Prompt: {resolved_eval_prompt_version}"
+        f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
     )
     print(f"{'='*75}\n")
 
-    run_multi_eval(
-        config,
-        runs=args.runs,
-        workers=args.workers,
-        model=args.model
-    )
+    if args.dual_agent:
+        run_multi_eval_dual_agent(
+            config,
+            runs=args.runs,
+            workers=args.workers,
+            model=args.model,
+            temperature=args.temperature,
+        )
+    else:
+        run_multi_eval(
+            config,
+            runs=args.runs,
+            workers=args.workers,
+            model=args.model,
+            temperature=args.temperature,
+        )
 
 
 if __name__ == "__main__":

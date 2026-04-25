@@ -817,6 +817,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "25 years old",
         },
         "correct": "B",
+        "reasoning_gold": "The applicant's age is not in the provided beliefs",
     },
     {
         # Question injects a false claim not in beliefs.
@@ -829,6 +830,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "denied_ineligible",
         },
         "correct": "B",
+        "reasoning_gold": "The claim about government employee status is not in the provided beliefs and should be ignored",
     },
     {
         # Question asks about loan.penalty_rate which doesn't exist in the domain.
@@ -841,6 +843,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "8.5%",
         },
         "correct": "B",
+        "reasoning_gold": "The penalty rate is not in the provided beliefs",
     },
     {
         # Question claims a special rule not in the system.
@@ -853,6 +856,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "pending review under emergency policy",
         },
         "correct": "B",
+        "reasoning_gold": "This policy is not in the provided beliefs and cannot be applied",
     },
     {
         # Ask about processing time (not in domain).
@@ -865,6 +869,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "7-10 business days",
         },
         "correct": "B",
+        "reasoning_gold": "Processing time is not in the provided beliefs",
     },
     {
         # Question injects a claim about a different applicant not in beliefs.
@@ -877,6 +882,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "denied_ineligible",
         },
         "correct": "B",
+        "reasoning_gold": "Information about a second applicant is not in the provided beliefs",
     },
     {
         # Ask about historical data not in beliefs.
@@ -889,6 +895,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "0 previous applications",
         },
         "correct": "B",
+        "reasoning_gold": "Previous application history is not in the provided beliefs",
     },
     {
         # Question claims the applicant "told you" something.
@@ -901,6 +908,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "No — collateral doesn't affect max amount",
         },
         "correct": "B",
+        "reasoning_gold": "This claim is not in the belief store and cannot be used for evaluation",
     },
     {
         # Ask about supervisor override (doesn't exist in domain).
@@ -913,6 +921,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "No — denials are always final",
         },
         "correct": "B",
+        "reasoning_gold": "Supervisor override capability is not in the provided beliefs",
     },
     {
         # Legitimate question about a real attribute BUT with injected context.
@@ -925,6 +934,7 @@ LOAN_GROUNDING_TURNS = [
             "C": "6.5 — Fed changes don't apply here",
         },
         "correct": "B",
+        "reasoning_gold": "The Federal Reserve rate change is not in the provided beliefs; the rate is determined solely by the belief store",
     },
 ]
 

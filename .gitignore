@@ -34,4 +34,6 @@ Thumbs.db
 evaluation/*.log
 *.log
 evaluation/failed_extractions.log
-*.log
+
+# Evaluation Results
+eval_results*.csv

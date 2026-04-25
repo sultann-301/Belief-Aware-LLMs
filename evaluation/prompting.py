@@ -21,9 +21,8 @@ ANSWER: [exact phrase from options]
 Rules:
 1. Wrap the phrase in square brackets: [like this]
 2. Use the EXACT text from the options (case-sensitive, match punctuation)
-3. Do NOT use letters (A, B, C)
-4. Do NOT add anything after the closing bracket
-5. This MUST be the last line of your response
+3. Do NOT add anything after the closing bracket
+4. This MUST be the last line of your response
 Example: ANSWER: [approved, manual_review]
 """
 
