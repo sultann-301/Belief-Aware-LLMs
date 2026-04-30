@@ -504,7 +504,7 @@ SYSTEM_PROMPTS = {
 }
 
 # Default prompt (used when version is not specified)
-SYSTEM_PROMPT = SYSTEM_PROMPT_V5
+SYSTEM_PROMPT = SYSTEM_PROMPT_V12
 
 
 # ── Dual-Agent Prompts ───────────────────────────────────────────────

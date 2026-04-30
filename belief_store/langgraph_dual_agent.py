@@ -81,6 +81,7 @@ def agent1_reason(
     state: dict[str, Any],
     llm: LLMClient,
     system_prompt: str,
+    reasoner_model: str | None = None,
 ) -> dict[str, Any]:
     """Agent 1: Compress the belief state into a canonical claim."""
     relevant_beliefs = state.get("relevant_beliefs", "")
@@ -105,7 +106,7 @@ def agent1_reason(
     # Add current turn's prompt
     messages.append({"role": "user", "content": user_prompt})
     
-    response = llm.generate_with_history(messages, json_mode=True)
+    response = llm.generate_with_history(messages, model=reasoner_model, json_mode=True)
 
     parsed = _parse_json_object(response)
     if not parsed:
@@ -134,6 +135,7 @@ def agent2_decide(
     state: dict[str, Any],
     llm: LLMClient,
     system_prompt: str,
+    matcher_model: str | None = None,
 ) -> dict[str, Any]:
     """Agent 2: Validate Agent 1's label and confirm the correct MCQ option."""
     options = state.get("options", {})
@@ -149,7 +151,7 @@ def agent2_decide(
         "Return JSON only."
     )
 
-    response = llm.generate(system_prompt, user_prompt, json_mode=True).strip()
+    response = llm.generate(system_prompt, user_prompt, model=matcher_model, json_mode=True).strip()
     parsed = _parse_json_object(response)
 
     matched_option_label = ""
@@ -351,6 +353,8 @@ def build_dual_agent_graph(
     llm: LLMClient,
     reasoner_prompt_version: str | None = None,
     matcher_prompt_version: str | None = None,
+    reasoner_model: str | None = None,
+    matcher_model: str | None = None,
 ) -> Any:
     """Construct the dual-agent reasoning graph.
     
@@ -360,6 +364,10 @@ def build_dual_agent_graph(
             Defaults to DEFAULT_DUAL_AGENT_VERSIONS["reasoner"].
         matcher_prompt_version: Registry key for Agent 2 prompt.
             Defaults to DEFAULT_DUAL_AGENT_VERSIONS["matcher"].
+        reasoner_model: Optional model name override for reasoning agent.
+            If None, uses default model from llm client.
+        matcher_model: Optional model name override for matcher agent.
+            If None, uses default model from llm client.
     
     Returns:
         A compiled LangGraph state graph.
@@ -374,11 +382,11 @@ def build_dual_agent_graph(
     graph_builder = StateGraph(DualAgentState)
     graph_builder.add_node(
         "agent1",
-        lambda state: agent1_reason(_coerce_state_dict(state), llm, reasoner_prompt),
+        lambda state: agent1_reason(_coerce_state_dict(state), llm, reasoner_prompt, reasoner_model),
     )
     graph_builder.add_node(
         "agent2",
-        lambda state: agent2_decide(_coerce_state_dict(state), llm, matcher_prompt),
+        lambda state: agent2_decide(_coerce_state_dict(state), llm, matcher_prompt, matcher_model),
     )
     graph_builder.add_edge(START, "agent1")
     graph_builder.add_edge("agent1", "agent2")
@@ -400,6 +408,8 @@ def run_dual_agent(
     compiled_graph: Any | None = None,
     reasoner_prompt_version: str | None = None,
     matcher_prompt_version: str | None = None,
+    reasoner_model: str | None = None,
+    matcher_model: str | None = None,
 ) -> dict[str, Any]:
     """Run the dual-agent system on a single turn.
 
@@ -412,6 +422,8 @@ def run_dual_agent(
             If None, a new graph is compiled (slower for loops).
         reasoner_prompt_version: Registry key for Agent 1 prompt.
         matcher_prompt_version: Registry key for Agent 2 prompt.
+        reasoner_model: Optional model name override for reasoning agent.
+        matcher_model: Optional model name override for matcher agent.
 
     Returns:
         Dict with agent1_* and agent2_* fields, plus full_response.
@@ -423,6 +435,8 @@ def run_dual_agent(
             llm,
             reasoner_prompt_version=reasoner_prompt_version,
             matcher_prompt_version=matcher_prompt_version,
+            reasoner_model=reasoner_model,
+            matcher_model=matcher_model,
         )
 
     initial_state: DualAgentState = {

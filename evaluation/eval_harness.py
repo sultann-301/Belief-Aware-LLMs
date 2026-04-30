@@ -630,11 +630,16 @@ def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     return results
 
 
-def run_with_store_dual_agent(llm: OllamaClient, config: DomainConfig) -> list[dict]:
+def run_with_store_dual_agent(
+    llm: OllamaClient,
+    config: DomainConfig,
+    reasoner_model: str | None = None,
+    matcher_model: str | None = None,
+) -> list[dict]:
     """[4] WITH Store (Dual-Agent): Fresh store per turn, decoupled reasoning+decision, no chat history."""
     results = []
     # Pre-compile graph once for all turns
-    graph = build_dual_agent_graph(llm)
+    graph = build_dual_agent_graph(llm, reasoner_model=reasoner_model, matcher_model=matcher_model)
 
     for i, turn in enumerate(config.turns):
         store = _init_store(config)
@@ -682,11 +687,16 @@ def run_with_store_dual_agent(llm: OllamaClient, config: DomainConfig) -> list[d
     return results
 
 
-def run_with_store_with_history_dual_agent(llm: OllamaClient, config: DomainConfig) -> list[dict]:
+def run_with_store_with_history_dual_agent(
+    llm: OllamaClient,
+    config: DomainConfig,
+    reasoner_model: str | None = None,
+    matcher_model: str | None = None,
+) -> list[dict]:
     """[5] WITH Store + Chat History (Dual-Agent): Store-derived beliefs + conversational context, dual-agent reasoning."""
     results = []
     # Pre-compile graph once for all turns
-    graph = build_dual_agent_graph(llm)
+    graph = build_dual_agent_graph(llm, reasoner_model=reasoner_model, matcher_model=matcher_model)
 
     # For conversational: maintain one store and one chat history across all turns
     store: BeliefStore | None = _init_store(config) if config.is_conversational else None
@@ -933,6 +943,8 @@ def run_multi_eval_dual_agent(
     model: str = "gemma3:1b",
     temperature: float = 0.0,
     model_alias: str | None = None,
+    reasoner_model: str | None = None,
+    matcher_model: str | None = None,
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel.
     
@@ -941,8 +953,22 @@ def run_multi_eval_dual_agent(
       [2] WITH STORE + Chat History (Dual-Agent): Conversational, persistent store
     
     Provides summary statistics and exports results to CSV.
+    
+    Args:
+        config: Domain configuration.
+        runs: Number of evaluation runs.
+        workers: Number of parallel workers.
+        model: Default model for both agents (used if reasoner_model/matcher_model not provided).
+        temperature: Sampling temperature.
+        model_alias: Optional display name for the model.
+        reasoner_model: Optional override for reasoning agent model.
+        matcher_model: Optional override for matcher agent model.
     """
-    print(f"Connecting to Ollama ({model})...\n")
+    # Apply fallbacks: use --model if individual model args not provided
+    reasoner_model = reasoner_model or model
+    matcher_model = matcher_model or model
+    
+    print(f"Connecting to Ollama (Reasoner: {reasoner_model}, Matcher: {matcher_model})...\n")
     llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
 
@@ -960,8 +986,8 @@ def run_multi_eval_dual_agent(
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
-            future_to_task[pool.submit(run_with_store_dual_agent, llm, config)] = (idx, 0)
-            future_to_task[pool.submit(run_with_store_with_history_dual_agent, llm, config)] = (idx, 1)
+            future_to_task[pool.submit(run_with_store_dual_agent, llm, config, reasoner_model, matcher_model)] = (idx, 0)
+            future_to_task[pool.submit(run_with_store_with_history_dual_agent, llm, config, reasoner_model, matcher_model)] = (idx, 1)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
 
@@ -1039,6 +1065,8 @@ def run_multi_eval_dual_agent(
                 writer.writerow([
                     "Domain",
                     "Model",
+                    "Reasoner_Model",
+                    "Matcher_Model",
                     "Temp",
                     "Prompt_Ver",
                     "Runs",
@@ -1058,6 +1086,8 @@ def run_multi_eval_dual_agent(
                 writer.writerow([
                     config.name,
                     display_model,
+                    reasoner_model,
+                    matcher_model,
                     temperature,
                     prompt_ver,
                     runs,
@@ -1072,6 +1102,8 @@ def run_multi_eval_dual_agent(
                 writer.writerow([
                     config.name,
                     display_model,
+                    reasoner_model,
+                    matcher_model,
                     temperature,
                     prompt_ver,
                     runs,
@@ -1086,6 +1118,8 @@ def run_multi_eval_dual_agent(
                 writer.writerow([
                     config.name,
                     display_model,
+                    reasoner_model,
+                    matcher_model,
                     temperature,
                     prompt_ver,
                     runs,

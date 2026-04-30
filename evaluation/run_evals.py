@@ -46,10 +46,10 @@ from evaluation.thorncrester_extended_scenarios import (
     THORNCRESTER_3HOP_TURNS, THORNCRESTER_4HOP_TURNS, THORNCRESTER_BELIEF_MAINTENANCE_TURNS
 )
 from evaluation.belief_awareness_scenarios import (
-    LOAN_COUNTERFACTUAL_TURNS, LOAN_GROUNDING_TURNS,
-    ALIEN_COUNTERFACTUAL_TURNS, ALIEN_GROUNDING_TURNS,
-    CRIME_COUNTERFACTUAL_TURNS, CRIME_GROUNDING_TURNS,
-    THORNCRESTER_COUNTERFACTUAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
+    LOAN_ABSURD_TURNS, LOAN_ABSURD_TEMPORAL_TURNS, LOAN_GROUNDING_TURNS,
+    ALIEN_ABSURD_TURNS, ALIEN_ABSURD_TEMPORAL_TURNS, ALIEN_TRACE_SELECTION_TURNS, ALIEN_GROUNDING_TURNS,
+    CRIME_ABSURD_TURNS, CRIME_ABSURD_TEMPORAL_TURNS, CRIME_GROUNDING_TURNS,
+    THORNCRESTER_ABSURD_TURNS, THORNCRESTER_ABSURD_TEMPORAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
 )
 from evaluation.prompting import get_eval_prompt_version
 
@@ -197,19 +197,24 @@ DOMAIN_REGISTRY["alien_clinic_cf"] = DomainConfig(
 
 _BELIEF_AWARENESS_MAP = {
     "loan": {
-        "counterfactual": LOAN_COUNTERFACTUAL_TURNS,
+        "absurd": LOAN_ABSURD_TURNS,
+        "absurd_temporal": LOAN_ABSURD_TEMPORAL_TURNS,
         "grounding": LOAN_GROUNDING_TURNS,
     },
     "alien_clinic": {
-        "counterfactual": ALIEN_COUNTERFACTUAL_TURNS,
+        "absurd": ALIEN_ABSURD_TURNS,
+        "absurd_temporal": ALIEN_ABSURD_TEMPORAL_TURNS,
+        "trace_selection": ALIEN_TRACE_SELECTION_TURNS,
         "grounding": ALIEN_GROUNDING_TURNS,
     },
     "crime_scene": {
-        "counterfactual": CRIME_COUNTERFACTUAL_TURNS,
+        "absurd": CRIME_ABSURD_TURNS,
+        "absurd_temporal": CRIME_ABSURD_TEMPORAL_TURNS,
         "grounding": CRIME_GROUNDING_TURNS,
     },
     "thorncrester": {
-        "counterfactual": THORNCRESTER_COUNTERFACTUAL_TURNS,
+        "absurd": THORNCRESTER_ABSURD_TURNS,
+        "absurd_temporal": THORNCRESTER_ABSURD_TEMPORAL_TURNS,
         "grounding": THORNCRESTER_GROUNDING_TURNS,
     },
 }
@@ -217,7 +222,7 @@ _BELIEF_AWARENESS_MAP = {
 for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
     domain_config = _SUBSET_MAP[domain_name]
 
-    # Individual subsets: e.g. loan_counterfactual, loan_grounding
+    # Individual subsets: e.g. loan_absurd, loan_grounding
     for subset_name, turns in ba_subsets.items():
         full_name = f"{domain_name}_{subset_name}"
         DOMAIN_REGISTRY[full_name] = DomainConfig(
@@ -228,12 +233,12 @@ for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
             baseline_rules=domain_config["baseline_rules"],
             default_entities=domain_config["default_entities"],
             is_conversational=False,
-            accumulate_prior_beliefs=False,
+            accumulate_prior_beliefs=(subset_name in {"absurd_temporal", "trace_selection"}),
         )
 
     # Combined: e.g. loan_belief_awareness (20 turns)
     combined_name = f"{domain_name}_belief_awareness"
-    combined_turns = ba_subsets["counterfactual"] + ba_subsets["grounding"]
+    combined_turns = ba_subsets["absurd"] + ba_subsets["grounding"]
     DOMAIN_REGISTRY[combined_name] = DomainConfig(
         name=combined_name,
         setup_fn=domain_config["setup_fn"],
@@ -294,7 +299,17 @@ Examples:
     parser.add_argument(
         "--model",
         default="gemma3:1b",
-        help="Ollama model name (default: gemma3:1b)"
+        help="Ollama model name (default: gemma3:1b). Used for both agents if --reasoner-model and --matcher-model are not provided."
+    )
+    parser.add_argument(
+        "--reasoner-model",
+        default=None,
+        help="Ollama model for reasoning agent (overrides --model if provided)"
+    )
+    parser.add_argument(
+        "--matcher-model",
+        default=None,
+        help="Ollama model for matcher agent (overrides --model if provided)"
     )
     parser.add_argument(
         "--model-alias",
@@ -329,6 +344,10 @@ Examples:
     if args.runs is None:
         args.runs = 1 if args.temperature == 0.0 else 10
 
+    # Resolve model names: use individual flags if provided, otherwise fall back to --model
+    reasoner_model = args.reasoner_model or args.model
+    matcher_model = args.matcher_model or args.model
+
     config = DOMAIN_REGISTRY[args.domain]
     if args.eval_prompt_version:
         config.eval_prompt_version = args.eval_prompt_version
@@ -337,18 +356,24 @@ Examples:
     eval_mode = "DUAL-AGENT" if args.dual_agent else "STANDARD"
     
     domain_display_name = config.name
-    if "counterfactual" in config.name:
+    if "absurd" in config.name:
         domain_display_name += " (Belief tracking test)"
     elif "grounding" in config.name:
         domain_display_name += " (Closed-world assumption test)"
 
     print(f"\n{'='*75}")
     print(f"Domain: {domain_display_name} ({len(config.turns)} turns)")
-    display_model = f"{args.model} (alias: {args.model_alias})" if args.model_alias else args.model
-    print(
-        f"Model: {display_model} | Runs: {args.runs} | Workers: {args.workers} "
-        f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
-    )
+    if args.dual_agent:
+        print(
+            f"Reasoner Model: {reasoner_model} | Matcher Model: {matcher_model} | Runs: {args.runs} | Workers: {args.workers} "
+            f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
+        )
+    else:
+        display_model = f"{args.model} (alias: {args.model_alias})" if args.model_alias else args.model
+        print(
+            f"Model: {display_model} | Runs: {args.runs} | Workers: {args.workers} "
+            f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
+        )
     print(f"{'='*75}\n")
 
     if args.dual_agent:
@@ -359,6 +384,8 @@ Examples:
             model=args.model,
             temperature=args.temperature,
             model_alias=args.model_alias,
+            reasoner_model=reasoner_model,
+            matcher_model=matcher_model,
         )
     else:
         run_multi_eval(

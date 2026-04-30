@@ -3,7 +3,7 @@ Belief-Awareness Evaluation Scenarios.
 
 Two evaluation dimensions across all 4 domains:
 
-1. COUNTERFACTUAL COMPLIANCE (Prior Suppression)
+1. ABSURD COMPLIANCE (Prior Suppression)
    Beliefs deliberately conflict with common sense / real-world intuition.
    A belief-aware LLM follows the beliefs; a non-belief-aware LLM
    defaults to its priors.
@@ -16,7 +16,7 @@ Two evaluation dimensions across all 4 domains:
 """
 
 # =====================================================================
-# LOAN DOMAIN — COUNTERFACTUAL COMPLIANCE (10 turns)
+# LOAN DOMAIN — ABSURD COMPLIANCE (10 turns)
 # =====================================================================
 # Initial beliefs (reference):
 #   applicant.income = 6000, credit_score = 720, co_signer = False,
@@ -26,7 +26,7 @@ Two evaluation dimensions across all 4 domains:
 #   dependents = 2, loan.min_income = 5000, loan.min_credit = 650,
 #   loan.max_debt_ratio = 0.4
 
-LOAN_COUNTERFACTUAL_TURNS = [
+LOAN_ABSURD_TURNS = [
     {
         # Millionaire denied for bad credit.
         # adjusted_income = 1_000_000 - 0*500 = 1_000_000 >= 5000 ✓
@@ -39,7 +39,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.dependents": 0,
             "applicant.co_signer": False,
         },
-        "question": "The applicant has an income of $1,000,000. Is their loan approved?",
+        "question": "The applicant has an income of $1,000,000. What is their loan status?",
         "options": {
             "A": "approved — such high income guarantees approval",
             "B": "denied_ineligible",
@@ -59,7 +59,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.bankruptcy_history": True,
             "applicant.employment_duration_months": 30,
         },
-        "question": "The applicant has a history of bankruptcy. Is the loan approved?",
+        "question": "The applicant has a history of bankruptcy. What is the loan status?",
         "options": {
             "A": "denied_ineligible — bankruptcy history disqualifies",
             "B": "denied_amount_exceeded",
@@ -77,7 +77,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.credit_score": 610,
             "applicant.co_signer": True,
         },
-        "question": "The applicant's credit score is 610. Is the loan approved?",
+        "question": "The applicant's credit score is 610. What is the loan status?",
         "options": {
             "A": "denied_ineligible — 610 is below the minimum",
             "B": "approved",
@@ -111,7 +111,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "applicant.dependents": 8,
         },
-        "question": "The applicant earns $6000 with 8 dependents. Is the loan approved?",
+        "question": "The applicant earns $6000 with 8 dependents. What is the loan status?",
         "options": {
             "A": "approved — $6000 income exceeds the minimum",
             "B": "denied_amount_exceeded",
@@ -146,7 +146,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.has_collateral": True,
             "applicant.employment_status": "unemployed",
         },
-        "question": "The applicant has collateral and is unemployed. Is the loan approved?",
+        "question": "The applicant has collateral and is unemployed. What is the loan status?",
         "options": {
             "A": "Yes — collateral guarantees approval",
             "B": "denied_ineligible",
@@ -163,7 +163,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.credit_score": 100,
             "applicant.co_signer": False,
         },
-        "question": "The applicant is requesting a loan amount of $1. Is the loan approved?",
+        "question": "The applicant is requesting a loan amount of $1. What is the loan status?",
         "options": {
             "A": "approved — the amount is negligible",
             "B": "denied_ineligible",
@@ -181,7 +181,7 @@ LOAN_COUNTERFACTUAL_TURNS = [
             "applicant.bankruptcy_history": True,
             "applicant.employment_duration_months": 12,
         },
-        "question": "The applicant has a bankruptcy history and has been employed for 12 months. Is the loan approved?",
+        "question": "The applicant has a bankruptcy history and has been employed for 12 months. What is the loan status?",
         "options": {
             "A": "approved — they're employed now",
             "B": "denied_ineligible",
@@ -212,14 +212,168 @@ LOAN_COUNTERFACTUAL_TURNS = [
     },
 ]
 
+
 # =====================================================================
-# ALIEN CLINIC DOMAIN — COUNTERFACTUAL COMPLIANCE (10 turns)
+# LOAN DOMAIN — TEMPORAL ABSURD (beliefs evolve by turn)
+# =====================================================================
+# This set is designed to run with accumulate_prior_beliefs=True so each
+# turn's "beliefs" are deltas applied on top of prior turns.
+
+LOAN_ABSURD_TEMPORAL_TURNS = [
+    {
+        # T1: Millionaire still denied because credit is absurdly low.
+        "attributes": ["loan.application_status", "loan.adjusted_income"],
+        "beliefs": {
+            "applicant.income": 2000000,
+            "applicant.credit_score": 120,
+            "applicant.dependents": 0,
+        },
+        "question": "What is the current application status in the belief store?",
+        "options": {
+            "A": "approved — ultra-high income guarantees approval",
+            "B": "denied_amount_exceeded",
+            "C": "denied_ineligible",
+        },
+        "correct": "C",
+    },
+    {
+        # T2: Co-signer boost still cannot rescue extreme low credit.
+        "attributes": ["loan.application_status", "loan.credit_score_effective"],
+        "beliefs": {
+            "applicant.co_signer": True,
+        },
+        "question": "What is the current loan status in the belief store?",
+        "options": {
+            "A": "approved — co-signer fixes eligibility",
+            "B": "denied_ineligible",
+            "C": "denied_amount_exceeded",
+        },
+        "correct": "B",
+    },
+    {
+        # T3: Credit jumps to re-enable approval and preferred tier with co-signer.
+        "attributes": ["loan.application_status", "loan.base_interest_rate"],
+        "beliefs": {
+            "applicant.credit_score": 700,
+        },
+        "question": "What is the current base interest rate in the belief store?",
+        "options": {
+            "A": "6.5",
+            "B": "7.5",
+            "C": "4.5",
+        },
+        "correct": "C",
+    },
+    {
+        # T4: High risk and still approved; insurance surcharge applies.
+        "attributes": ["loan.requires_insurance", "loan.base_interest_rate"],
+        "beliefs": {
+            "applicant.debt_ratio": 0.39,
+        },
+        "question": "What is the final interest rate in the belief store?",
+        "options": {
+            "A": "4.5",
+            "B": "5.5",
+            "C": "denied_ineligible",
+        },
+        "correct": "B",
+    },
+    {
+        # T5: Employment status alone hard-fails eligibility.
+        "attributes": ["loan.application_status", "loan.base_interest_rate"],
+        "beliefs": {
+            "applicant.employment_status": "unemployed",
+        },
+        "question": "What is the application status in the belief store?",
+        "options": {
+            "A": "approved — prior strong profile still qualifies",
+            "B": "denied_amount_exceeded",
+            "C": "denied_ineligible",
+        },
+        "correct": "C",
+    },
+    {
+        # T6: Re-employed, but fresh bankruptcy + short tenure still hard-fails.
+        "attributes": ["loan.application_status"],
+        "beliefs": {
+            "applicant.employment_status": "employed",
+            "applicant.bankruptcy_history": True,
+            "applicant.employment_duration_months": 1,
+        },
+        "question": "What is the current loan status in the belief store?",
+        "options": {
+            "A": "approved — currently employed",
+            "B": "denied_ineligible",
+            "C": "denied_amount_exceeded",
+        },
+        "correct": "B",
+    },
+    {
+        # T7: Same bankruptcy, but very long tenure flips back to eligible.
+        "attributes": ["loan.application_status", "applicant.employment_duration_months"],
+        "beliefs": {
+            "applicant.employment_duration_months": 240,
+        },
+        "question": "What is the current application status in the belief store?",
+        "options": {
+            "A": "denied_ineligible — any bankruptcy blocks approval",
+            "B": "denied_amount_exceeded",
+            "C": "approved",
+        },
+        "correct": "C",
+    },
+    {
+        # T8: Huge request exceeds max_amount while still otherwise eligible.
+        "attributes": ["loan.max_amount", "loan.application_status"],
+        "beliefs": {
+            "applicant.loan_amount_requested": 99999,
+        },
+        "question": "What is the current application status in the belief store?",
+        "options": {
+            "A": "approved — previously approved status should persist",
+            "B": "denied_ineligible",
+            "C": "denied_amount_exceeded",
+        },
+        "correct": "C",
+    },
+    {
+        # T9: Collateral raises cap, restoring approval for the same huge request.
+        "attributes": ["loan.max_amount", "loan.application_status"],
+        "beliefs": {
+            "applicant.has_collateral": True,
+        },
+        "question": "What is the current application status in the belief store?",
+        "options": {
+            "A": "approved",
+            "B": "denied_amount_exceeded",
+            "C": "denied_ineligible",
+        },
+        "correct": "A",
+    },
+    {
+        # T10: Massive dependents crash adjusted income despite strong income/collateral.
+        "attributes": ["loan.credit_score_effective", "loan.application_status"],
+        "beliefs": {
+            "applicant.dependents": 5000,
+        },
+        "question": "What is the final application status in the belief store?",
+        "options": {
+            "A": "approved — collateral should guarantee approval",
+            "B": "denied_ineligible",
+            "C": "denied_amount_exceeded",
+        },
+        "correct": "B",
+    },
+]
+
+# =====================================================================
+# ALIEN CLINIC DOMAIN — ABSURD COMPLIANCE (10 turns)
 # =====================================================================
 # Initial beliefs (reference):
 #   patient.organism_type = "Glerps", patient.symptoms = [],
 #   atmosphere.ambient_pressure = 3.5, atmosphere.dominant_gas = "methane"
 
-ALIEN_COUNTERFACTUAL_TURNS = [
+ALIEN_ABSURD_TURNS = [
     {
         # Near-vacuum (pressure = 0.001) is actually SAFE per rules.
         # 0.001 <= 3.0 → stable, not volatile/brittle
@@ -265,7 +419,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
             "patient.organism_type": "Glerps",
             "patient.symptoms": [],
         },
-        "question": "The organism is Glerps and organs are volatile. Is the active prescription none?",
+        "question": "The organism is Glerps and organs are volatile. What is the active prescription?",
         "options": {
             "A": "none — the combination is too dangerous to prescribe",
             "B": "zyxostin",
@@ -415,8 +569,317 @@ ALIEN_COUNTERFACTUAL_TURNS = [
     },
 ]
 
+
 # =====================================================================
-# CRIME SCENE DOMAIN — COUNTERFACTUAL COMPLIANCE (10 turns)
+
+
+# =====================================================================
+# ALIEN CLINIC DOMAIN — TRACE SELECTION (temporal, harder distractors)
+# =====================================================================
+# This set is temporal when run via `alien_clinic_trace_selection` because
+# run_evals accumulates prior turn beliefs for this subset. Distractors are
+# chain-plausible and often include wrong-chain explanations that may still
+# mention the same target value.
+
+ALIEN_TRACE_SELECTION_TURNS = [
+    {
+        # T1 baseline: default state resolves to snevox.
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the active prescription is snevox?",
+        "options": {
+            "A": "atmosphere.ambient_pressure = 3.5, patient.organism_type = Glerps -> patient.organ_integrity = brittle; atmosphere.dominant_gas = methane -> filinan_phase = plasma, zyxostin_phase = plasma, snevox_phase = vapor; filinan_danger_level = fatal_to_patient and zyxostin_danger_level = fatal_to_patient, so the first safe option is treatment.active_prescription = snevox",
+            "B": "atmosphere.ambient_pressure = 3.5, patient.organism_type = Glerps -> patient.organ_integrity = brittle; zyxostin_danger_level = symbiotic, so treatment.active_prescription = snevox",
+            "C": "atmosphere.dominant_gas = methane -> snevox_phase = vapor -> treatment.active_prescription = snevox",
+        },
+        "correct": "A",
+    },
+    {
+        # T2 flip: volatile Glerps triggers symbiotic zyxostin override.
+        "attributes": ["treatment.active_prescription", "patient.organ_integrity"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+        },
+        "question": "Which evidence trace best explains why the active prescription is zyxostin?",
+        "options": {
+            "A": "atmosphere.ambient_pressure = 4.5, patient.organism_type = Glerps -> patient.organ_integrity = volatile -> treatment.zyxostin_danger_level = symbiotic -> miracle override selects treatment.active_prescription = zyxostin",
+            "B": "atmosphere.ambient_pressure = 4.5, patient.organism_type = Glerps -> patient.organ_integrity = volatile -> treatment.snevox_danger_level = safe -> treatment.active_prescription = zyxostin",
+            "C": "atmosphere.ambient_pressure = 4.5, patient.organism_type = Glerps -> patient.organ_integrity = volatile -> treatment.zyxostin_danger_level = symbiotic -> treatment.active_prescription = snevox",
+        },
+        "correct": "A",
+    },
+    {
+        # T3 same state: miraculous recovery must cite the symbiotic path.
+        "attributes": ["patient.recovery_prospect"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the recovery prospect is miraculous?",
+        "options": {
+            "A": "treatment.active_prescription = zyxostin and treatment.zyxostin_danger_level = symbiotic -> patient.recovery_prospect = miraculous",
+            "B": "patient.organ_integrity = volatile and medical.staff_requirement = hazmat_team -> patient.recovery_prospect = miraculous",
+            "C": "treatment.duration_cycles = 12 and medical.staff_requirement = hazmat_team -> patient.recovery_prospect = miraculous",
+        },
+        "correct": "A",
+    },
+    {
+        # T4 state change: chlorine + Qwerl creates quarantine.
+        "attributes": ["patient.quarantine_required"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Qwerl",
+        },
+        "question": "Which evidence trace best explains why quarantine is required?",
+        "options": {
+            "A": "atmosphere.dominant_gas = chlorine and patient.organism_type = Qwerl -> patient.quarantine_required = True",
+            "B": "atmosphere.dominant_gas = chlorine and patient.organism_type = Qwerl -> patient.sensory_status = telepathic -> patient.quarantine_required = True",
+            "C": "atmosphere.dominant_gas = methane and patient.organism_type = Yorp -> patient.quarantine_required = True",
+        },
+        "correct": "A",
+    },
+    {
+        # T5 no delta: staff comes from quarantine, not sensory.
+        "attributes": ["medical.staff_requirement"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the staff requirement is hazmat_team?",
+        "options": {
+            "A": "patient.quarantine_required = True -> medical.staff_requirement = hazmat_team",
+            "B": "patient.sensory_status = telepathic -> medical.staff_requirement = hazmat_team",
+            "C": "treatment.active_prescription = snevox -> medical.staff_requirement = hazmat_team",
+        },
+        "correct": "A",
+    },
+    {
+        # T6 no delta: Qwerl+chlorine still resolves to zyxostin via danger filtering.
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the active prescription is zyxostin?",
+        "options": {
+            "A": "patient.organism_type = Qwerl and atmosphere.dominant_gas = chlorine -> snevox_danger_level = fatal_to_patient and filinan_danger_level = fatal_to_patient, while zyxostin_danger_level = safe -> treatment.active_prescription = zyxostin",
+            "B": "patient.organism_type = Qwerl and atmosphere.dominant_gas = chlorine -> snevox_danger_level = fatal_to_patient and filinan_danger_level = fatal_to_patient -> treatment.active_prescription = none",
+            "C": "patient.organism_type = Qwerl and atmosphere.dominant_gas = chlorine -> zyxostin_danger_level = safe -> treatment.active_prescription = snevox",
+        },
+        "correct": "A",
+    },
+    {
+        # T7 flip to non-volatile Glerps + xenon, which makes filinan the default safe pick.
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {
+            "patient.organism_type": "Glerps",
+            "atmosphere.dominant_gas": "xenon",
+            "atmosphere.ambient_pressure": 3.5,
+        },
+        "question": "Which evidence trace best explains why the active prescription is filinan?",
+        "options": {
+            "A": "patient.organism_type = Glerps and atmosphere.ambient_pressure = 3.5 -> patient.organ_integrity = brittle; atmosphere.dominant_gas = xenon -> filinan_phase = vapor; with no symptoms, Glerps priority starts with filinan and filinan_danger_level = safe -> treatment.active_prescription = filinan",
+            "B": "patient.organism_type = Glerps and atmosphere.ambient_pressure = 3.5 -> patient.organ_integrity = volatile; atmosphere.dominant_gas = xenon -> filinan_phase = vapor -> treatment.active_prescription = filinan",
+            "C": "patient.organism_type = Glerps and atmosphere.dominant_gas = xenon -> snevox_phase = vapor -> treatment.active_prescription = filinan",
+        },
+        "correct": "A",
+    },
+    {
+        # T8 no delta: standard billing follows filinan + standard_medic.
+        "attributes": ["clinic.billing_tier"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the billing tier is class_standard?",
+        "options": {
+            "A": "treatment.active_prescription = filinan and medical.staff_requirement = standard_medic -> clinic.billing_tier = class_standard",
+            "B": "treatment.active_prescription = filinan and patient.quarantine_required = True -> clinic.billing_tier = class_standard",
+            "C": "treatment.active_prescription = snevox and medical.staff_requirement = standard_medic -> clinic.billing_tier = class_standard",
+        },
+        "correct": "A",
+    },
+    {
+        # T9 gas flips back to methane while pressure remains 3.5; active becomes snevox again.
+        "attributes": ["treatment.active_prescription", "patient.sensory_status"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "methane",
+        },
+        "question": "Which evidence trace best explains why the active prescription is snevox?",
+        "options": {
+            "A": "patient.organism_type = Glerps and atmosphere.ambient_pressure = 3.5 -> patient.organ_integrity = brittle; atmosphere.dominant_gas = methane -> filinan_phase = plasma and zyxostin is fatal for Glerps when non-volatile, so the first safe option becomes treatment.active_prescription = snevox",
+            "B": "patient.organism_type = Glerps and atmosphere.ambient_pressure = 3.5 -> patient.organ_integrity = brittle; atmosphere.dominant_gas = methane -> zyxostin_danger_level = symbiotic -> treatment.active_prescription = snevox",
+            "C": "patient.organism_type = Glerps and atmosphere.dominant_gas = methane -> snevox_phase = vapor -> treatment.active_prescription = snevox",
+        },
+        "correct": "A",
+    },
+    {
+        # T10 no delta: snevox + brittle yields 5 cycles (not 12).
+        "attributes": ["treatment.duration_cycles"],
+        "beliefs": {},
+        "question": "Which evidence trace best explains why the treatment duration is 5 cycles?",
+        "options": {
+            "A": "treatment.active_prescription = snevox and patient.organ_integrity = brittle -> treatment.duration_cycles = 5",
+            "B": "treatment.active_prescription = snevox and patient.organ_integrity = volatile -> treatment.duration_cycles = 5",
+            "C": "treatment.active_prescription = zyxostin and patient.organ_integrity = brittle -> treatment.duration_cycles = 5",
+        },
+        "correct": "A",
+    },
+]
+# ALIEN CLINIC DOMAIN — TEMPORAL ABSURD (beliefs evolve by turn)
+# =====================================================================
+# This set is designed to run with accumulate_prior_beliefs=True so each
+# turn's "beliefs" are deltas applied on top of prior turns.
+
+ALIEN_ABSURD_TEMPORAL_TURNS = [
+    {
+        # T1: A Qwerl at absurd pressure is still only brittle, not volatile.
+        "attributes": ["patient.organ_integrity"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 99.0,
+            "patient.organism_type": "Qwerl",
+        },
+        "question": "What is the current organ integrity in the belief store?",
+        "options": {
+            "A": "volatile — such pressure would annihilate the patient",
+            "B": "brittle",
+            "C": "stable",
+        },
+        "correct": "B",
+    },
+    {
+        # T2: Glerps at volatile pressure triggers the symbiotic zyxostin miracle.
+        "attributes": ["treatment.active_prescription", "patient.organ_integrity"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "patient.organism_type": "Glerps",
+            "patient.symptoms": [],
+            "atmosphere.dominant_gas": "methane",
+        },
+        "question": "What is the current active prescription in the belief store?",
+        "options": {
+            "A": "none — the case is too dangerous to treat",
+            "B": "filinan",
+            "C": "zyxostin",
+        },
+        "correct": "C",
+    },
+    {
+        # T3: A gas flip makes filinan the safe default again.
+        "attributes": ["treatment.active_prescription", "treatment.filinan_phase"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "xenon",
+        },
+        "question": "What is the current active prescription in the belief store?",
+        "options": {
+            "A": "zyxostin",
+            "B": "filinan",
+            "C": "snevox",
+        },
+        "correct": "B",
+    },
+    {
+        # T4: Chlorine with Qwerl makes quarantine required, which is surprising to priors.
+        "attributes": ["patient.quarantine_required", "medical.staff_requirement"],
+        "beliefs": {
+            "atmosphere.dominant_gas": "chlorine",
+            "patient.organism_type": "Qwerl",
+        },
+        "question": "What is the current quarantine status in the belief store?",
+        "options": {
+            "A": "False",
+            "B": "True",
+            "C": "Cannot determine",
+        },
+        "correct": "B",
+    },
+    {
+        # T5: Telepathic sensory status appears only after snevox becomes the safe option.
+        "attributes": ["patient.sensory_status", "medical.staff_requirement"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 2.0,
+            "patient.organism_type": "Qwerl",
+            "patient.symptoms": [],
+            "atmosphere.dominant_gas": "chlorine",
+        },
+        "question": "What is the current sensory status in the belief store?",
+        "options": {
+            "A": "normal",
+            "B": "telepathic",
+            "C": "fatal",
+        },
+        "correct": "B",
+    },
+    {
+        # T6: The staff requirement stays psionic even though the query no longer hints at it.
+        "attributes": ["medical.staff_requirement"],
+        "beliefs": {
+            "treatment.active_prescription": "snevox",
+        },
+        "question": "What is the current medical staff requirement in the belief store?",
+        "options": {
+            "A": "standard_medic",
+            "B": "psionic_handler",
+            "C": "hazmat_team",
+        },
+        "correct": "B",
+    },
+    {
+        # T7: A tiny pressure shift still leaves recovery miraculous because the symbiotic rule wins.
+        "attributes": ["patient.recovery_prospect"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.2,
+            "patient.organism_type": "Glerps",
+            "atmosphere.dominant_gas": "methane",
+            "patient.symptoms": [],
+        },
+        "question": "What is the current recovery prospect in the belief store?",
+        "options": {
+            "A": "terminal",
+            "B": "guarded",
+            "C": "miraculous",
+        },
+        "correct": "C",
+    },
+    {
+        # T8: A huge treatment duration emerges only when snevox meets volatile integrity.
+        "attributes": ["treatment.duration_cycles"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "patient.organism_type": "Glerps",
+            "atmosphere.dominant_gas": "methane",
+            "patient.symptoms": [],
+        },
+        "question": "What is the current treatment duration in cycles in the belief store?",
+        "options": {
+            "A": "0",
+            "B": "5",
+            "C": "12",
+        },
+        "correct": "B",
+    },
+    {
+        # T9: Billing becomes premium when snevox is the active prescription.
+        "attributes": ["clinic.billing_tier"],
+        "beliefs": {
+            "treatment.active_prescription": "snevox",
+        },
+        "question": "What is the current clinic billing tier in the belief store?",
+        "options": {
+            "A": "class_standard",
+            "B": "class_delta",
+            "C": "class_omega",
+        },
+        "correct": "C",
+    },
+    {
+        # T10: The final absurdity is that the danger level stays symbiotic, not fatal.
+        "attributes": ["treatment.zyxostin_danger_level"],
+        "beliefs": {
+            "atmosphere.ambient_pressure": 4.5,
+            "patient.organism_type": "Glerps",
+            "atmosphere.dominant_gas": "methane",
+        },
+        "question": "What is the current zyxostin danger level in the belief store?",
+        "options": {
+            "A": "fatal_to_patient",
+            "B": "safe",
+            "C": "symbiotic",
+        },
+        "correct": "C",
+    },
+]
+
+# =====================================================================
+# CRIME SCENE DOMAIN — ABSURD COMPLIANCE (10 turns)
 # =====================================================================
 # Initial beliefs (reference):
 #   officer_smith.status = "active", suspect_a.home_evidence = "gun",
@@ -427,7 +890,7 @@ ALIEN_COUNTERFACTUAL_TURNS = [
 #   case.warrant_status = False, case.cctv_status = "corrupted",
 #   case.cctv_subject = "none"
 
-CRIME_COUNTERFACTUAL_TURNS = [
+CRIME_ABSURD_TURNS = [
     {
         # Gun found → should be prime suspect, BUT officer is suspended → evidence inadmissible.
         # R1: logger="officer_smith", status="suspended" → admissible = "none"
@@ -541,7 +1004,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
             "suspect_a.financial_records": "debt",
             "case.warrant_status": False,
         },
-        "question": "Suspect A has financial records of debt, and the warrant status is False. Is Suspect A's motive verified?",
+        "question": "Suspect A has financial records of debt, and the warrant status is False. What is Suspect A's motive verification status?",
         "options": {
             "A": "True — debt is clear evidence of financial motive",
             "B": "False",
@@ -575,7 +1038,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
         "beliefs": {
             "suspect_b.relation_to_victim": "stranger",
         },
-        "question": "Suspect B's relation to the victim is 'stranger'. Is Suspect B's motive verified?",
+        "question": "Suspect B's relation to the victim is 'stranger'. What is Suspect B's motive verification status?",
         "options": {
             "A": "True — being a prime suspect implies verified motive",
             "B": "False",
@@ -602,8 +1065,163 @@ CRIME_COUNTERFACTUAL_TURNS = [
     },
 ]
 
+
 # =====================================================================
-# THORNCRESTER DOMAIN — COUNTERFACTUAL COMPLIANCE (10 turns)
+# CRIME SCENE DOMAIN — TEMPORAL ABSURD (beliefs evolve by turn)
+# =====================================================================
+# This set is designed to run with accumulate_prior_beliefs=True so each
+# turn's "beliefs" are deltas applied on top of prior turns.
+
+CRIME_ABSURD_TEMPORAL_TURNS = [
+    {
+        # T1: A suspended officer makes gun evidence inadmissible.
+        "attributes": ["suspect_a.status"],
+        "beliefs": {
+            "officer_smith.status": "suspended",
+        },
+        "question": "What is the current suspect A status in the belief store?",
+        "options": {
+            "A": "prime_suspect",
+            "B": "cleared",
+            "C": "Cannot determine",
+        },
+        "correct": "B",
+    },
+    {
+        # T2: An enemy relation does not matter when CCTV fully clears suspect B.
+        "attributes": ["suspect_b.status", "suspect_b.relation_to_victim"],
+        "beliefs": {
+            "suspect_b.relation_to_victim": "enemy",
+            "case.cctv_status": "active",
+            "case.cctv_subject": "suspect_b",
+        },
+        "question": "What is the current suspect B status in the belief store?",
+        "options": {
+            "A": "prime_suspect",
+            "B": "cleared",
+            "C": "Cannot determine",
+        },
+        "correct": "B",
+    },
+    {
+        # T3: A warrant appears, making motive verified even though A is still cleared.
+        "attributes": ["suspect_a.motive_verified"],
+        "beliefs": {
+            "case.warrant_status": True,
+            "suspect_a.financial_records": "debt",
+        },
+        "question": "What is the current suspect A motive status in the belief store?",
+        "options": {
+            "A": "False",
+            "B": "True",
+            "C": "Cannot determine",
+        },
+        "correct": "B",
+    },
+    {
+        # T4: Restoring the officer turns the gun evidence back into a prime-suspect result.
+        "attributes": ["suspect_a.status", "suspect_b.status"],
+        "beliefs": {
+            "officer_smith.status": "active",
+        },
+        "question": "What is the current case theory in the belief store?",
+        "options": {
+            "A": "unsolved",
+            "B": "solo_perpetrator",
+            "C": "collusion",
+        },
+        "correct": "B",
+    },
+    {
+        # T5: Corrupt CCTV lets suspect B become prime as well.
+        "attributes": ["case.theory"],
+        "beliefs": {
+            "case.cctv_status": "corrupted",
+            "case.cctv_subject": "none",
+        },
+        "question": "What is the current case theory in the belief store?",
+        "options": {
+            "A": "solo_perpetrator",
+            "B": "unsolved",
+            "C": "collusion",
+        },
+        "correct": "C",
+    },
+    {
+        # T6: Suspect B's motive now outranks A's because the warrant is revoked.
+        "attributes": ["case.lead_suspect"],
+        "beliefs": {
+            "case.warrant_status": False,
+        },
+        "question": "Who is the current lead suspect in the belief store?",
+        "options": {
+            "A": "both",
+            "B": "suspect_a",
+            "C": "suspect_b",
+        },
+        "correct": "C",
+    },
+    {
+        # T7: Suspending the officer again makes the physical evidence worthless.
+        "attributes": ["suspect_a.status", "case.theory"],
+        "beliefs": {
+            "officer_smith.status": "suspended",
+        },
+        "question": "What is the current case theory in the belief store?",
+        "options": {
+            "A": "solo_perpetrator",
+            "B": "unsolved",
+            "C": "collusion",
+        },
+        "correct": "B",
+    },
+    {
+        # T8: Switching the logger to a different officer resurrects the gun evidence.
+        "attributes": ["suspect_a.admissible_evidence", "suspect_a.status"],
+        "beliefs": {
+            "suspect_a.evidence_logger": "officer_jones",
+        },
+        "question": "What is the current suspect A status in the belief store?",
+        "options": {
+            "A": "cleared",
+            "B": "prime_suspect",
+            "C": "Cannot determine",
+        },
+        "correct": "B",
+    },
+    {
+        # T9: Corrupt CCTV plus prime A makes the pair look like a conspiracy again.
+        "attributes": ["case.theory"],
+        "beliefs": {
+            "case.cctv_status": "corrupted",
+            "case.cctv_subject": "none",
+        },
+        "question": "What is the current case theory in the belief store?",
+        "options": {
+            "A": "unsolved",
+            "B": "solo_perpetrator",
+            "C": "collusion",
+        },
+        "correct": "C",
+    },
+    {
+        # T10: No evidence at home pushes the final lead back to none.
+        "attributes": ["case.lead_suspect"],
+        "beliefs": {
+            "suspect_a.home_evidence": "none",
+        },
+        "question": "Who is the current lead suspect in the belief store?",
+        "options": {
+            "A": "none",
+            "B": "suspect_a",
+            "C": "suspect_b",
+        },
+        "correct": "A",
+    },
+]
+
+# =====================================================================
+# THORNCRESTER DOMAIN — ABSURD COMPLIANCE (10 turns)
 # =====================================================================
 # Initial beliefs (reference):
 #   environment.weather_pattern = "stable", environment.food_scarcity = False,
@@ -611,7 +1229,7 @@ CRIME_COUNTERFACTUAL_TURNS = [
 #   thorncrester_flock.genetic_structure = "matriarchal_pairs",
 #   juvenile_thorncrester.digestive_enzyme = "fructose_processor"
 
-THORNCRESTER_COUNTERFACTUAL_TURNS = [
+THORNCRESTER_ABSURD_TURNS = [
     {
         # Drought WITHOUT scarcity → stress stays NOMINAL (not high).
         # R1: weather=drought, scarcity=False → nominal (need BOTH for high)
@@ -801,6 +1419,156 @@ THORNCRESTER_COUNTERFACTUAL_TURNS = [
 
 
 # =====================================================================
+
+
+# =====================================================================
+# THORNCRESTER DOMAIN — TEMPORAL ABSURD (beliefs evolve by turn)
+# =====================================================================
+# This set is designed to run with accumulate_prior_beliefs=True so each
+# turn's "beliefs" are deltas applied on top of prior turns.
+
+THORNCRESTER_ABSURD_TEMPORAL_TURNS = [
+    {
+        # T1: A drought with scarcity still yields only nominal stress.
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {
+            "environment.weather_pattern": "drought",
+            "environment.food_scarcity": False,
+        },
+        "question": "What is the current ecological stress level in the belief store?",
+        "options": {
+            "A": "high",
+            "B": "critical",
+            "C": "nominal",
+        },
+        "correct": "C",
+    },
+    {
+        # T2: Scarcity flips on, making the same drought become high stress.
+        "attributes": ["adult_thorncrester.ecological_stress", "adult_thorncrester.expressed_diet"],
+        "beliefs": {
+            "environment.food_scarcity": True,
+        },
+        "question": "What is the current expressed diet in the belief store?",
+        "options": {
+            "A": "frugivore",
+            "B": "scavenger",
+            "C": "omnivore",
+        },
+        "correct": "B",
+    },
+    {
+        # T3: The plumage turns absurdly dull under high stress.
+        "attributes": ["adult_thorncrester.plumage_color"],
+        "beliefs": {
+            "adult_thorncrester.genetic_diet": "frugivore",
+        },
+        "question": "What is the current plumage color in the belief store?",
+        "options": {
+            "A": "crimson",
+            "B": "dull_grey",
+            "C": "azure",
+        },
+        "correct": "B",
+    },
+    {
+        # T4: The juvenile with a specialized enzyme is now starved by the adult diet shift.
+        "attributes": ["juvenile_thorncrester.metabolic_state"],
+        "beliefs": {
+            "juvenile_thorncrester.digestive_enzyme": "fructose_processor",
+        },
+        "question": "What is the current juvenile metabolic state in the belief store?",
+        "options": {
+            "A": "thriving",
+            "B": "starving",
+            "C": "dormant",
+        },
+        "correct": "B",
+    },
+    {
+        # T5: Starving juveniles have arrested development.
+        "attributes": ["juvenile_thorncrester.development"],
+        "beliefs": {},
+        "question": "What is the current juvenile development state in the belief store?",
+        "options": {
+            "A": "maturing",
+            "B": "arrested",
+            "C": "dormant",
+        },
+        "correct": "B",
+    },
+    {
+        # T6: Dull grey plumage under drought creates active bloom and lethal parasites.
+        "attributes": ["feather_mite.bloom_status", "feather_mite.parasitic_load"],
+        "beliefs": {
+            "adult_thorncrester.genetic_diet": "scavenger",
+        },
+        "question": "What is the current feather mite parasitic load in the belief store?",
+        "options": {
+            "A": "harmless",
+            "B": "lethal",
+            "C": "active_bloom",
+        },
+        "correct": "B",
+    },
+    {
+        # T7: Mortality risk spikes when lethal parasites and territorial aggression coincide.
+        "attributes": ["adult_thorncrester.mortality_risk"],
+        "beliefs": {
+            "thorncrester_flock.genetic_structure": "matriarchal_pairs",
+        },
+        "question": "What is the current mortality risk in the belief store?",
+        "options": {
+            "A": "low",
+            "B": "moderate",
+            "C": "critical",
+        },
+        "correct": "C",
+    },
+    {
+        # T8: Returning to stable weather drops stress back to nominal without undoing the past.
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {
+            "environment.weather_pattern": "stable",
+        },
+        "question": "What is the current ecological stress level in the belief store?",
+        "options": {
+            "A": "high",
+            "B": "nominal",
+            "C": "critical",
+        },
+        "correct": "B",
+    },
+    {
+        # T9: The flock behavior becomes peaceful again once high stress is gone.
+        "attributes": ["thorncrester_flock.territory_behavior"],
+        "beliefs": {
+            "environment.food_scarcity": False,
+        },
+        "question": "What is the current territory behavior in the belief store?",
+        "options": {
+            "A": "peaceful",
+            "B": "defensive",
+            "C": "hyper_aggressive",
+        },
+        "correct": "A",
+    },
+    {
+        # T10: Even with a specialized enzyme, recovery of the juvenile remains maturing once nutrition normalizes.
+        "attributes": ["juvenile_thorncrester.development"],
+        "beliefs": {
+            "environment.weather_pattern": "stable",
+            "environment.food_scarcity": False,
+        },
+        "question": "What is the final juvenile development state in the belief store?",
+        "options": {
+            "A": "arrested",
+            "B": "maturing",
+            "C": "dormant",
+        },
+        "correct": "B",
+    },
+]
 # LOAN DOMAIN — GROUNDING BOUNDARY (10 turns)
 # =====================================================================
 
@@ -823,7 +1591,7 @@ LOAN_GROUNDING_TURNS = [
         # Question injects a false claim not in beliefs.
         "attributes": ["loan.application_status"],
         "beliefs": {},
-        "question": "The applicant just informed you they are a government employee, which grants them automatic approval. Is the loan approved?",
+        "question": "The applicant just informed you they are a government employee, which grants them automatic approval. What is the loan status?",
         "options": {
             "A": "approved — government employees get automatic approval",
             "B": "The claim about government employee status is not in the provided beliefs and should be ignored",
@@ -875,7 +1643,7 @@ LOAN_GROUNDING_TURNS = [
         # Question injects a claim about a different applicant not in beliefs.
         "attributes": ["loan.application_status"],
         "beliefs": {},
-        "question": "A second applicant with income $100,000 has also applied. Is their application approved?",
+        "question": "A second applicant with income $100,000 has also applied. What is their application status?",
         "options": {
             "A": "approved — $100,000 income is more than sufficient",
             "B": "Information about a second applicant is not in the provided beliefs",
@@ -1115,7 +1883,7 @@ ALIEN_GROUNDING_TURNS = [
             "atmosphere.dominant_gas": "chlorine",
             "patient.organism_type": "Qwerl",
         },
-        "question": "Is the administrator's quarantine exemption recorded in this patient's belief file?",
+        "question": "What is the recorded status of the administrator's quarantine exemption in this patient's belief file?",
         "options": {
             "A": "Yes — exemption granted and logged",
             "B": "Cannot Answer, Administrative exemptions are not in the provided beliefs",
@@ -1195,7 +1963,7 @@ CRIME_GROUNDING_TURNS = [
         # Inject a confession claim.
         "attributes": ["case.lead_suspect"],
         "beliefs": {},
-        "question": "Suspect B just confessed to the crime. Is suspect B now the lead suspect?",
+        "question": "Suspect B just confessed to the crime. What is the lead suspect status in the belief store?",
         "options": {
             "A": "Yes — a confession is the strongest evidence",
             "B": "Confessions are not in the provided beliefs and cannot override the current analysis",
@@ -1329,7 +2097,7 @@ THORNCRESTER_GROUNDING_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": True,
         },
-        "question": "Conservationists have applied an anti-parasitic treatment to the flock. Is the parasitic load now harmless?",
+        "question": "Conservationists have applied an anti-parasitic treatment to the flock. What is the parasitic load now?",
         "options": {
             "A": "harmless — the treatment eliminates the parasites",
             "B": "Conservation interventions are not in the provided beliefs; parasitic load depends solely on bloom status",
@@ -1341,7 +2109,7 @@ THORNCRESTER_GROUNDING_TURNS = [
         # Ask about genetic variant (not a defined attribute).
         "attributes": ["adult_thorncrester.expressed_diet"],
         "beliefs": {},
-        "question": "Is the flock carrying the rare 'delta' genetic variant?",
+        "question": "What is the flock's status for the rare 'delta' genetic variant?",
         "options": {
             "A": "Yes — 15% of flocks carry it",
             "B": "Genetic variant information beyond diet is not in the provided beliefs",
@@ -1356,7 +2124,7 @@ THORNCRESTER_GROUNDING_TURNS = [
             "environment.weather_pattern": "drought",
             "environment.food_scarcity": True,
         },
-        "question": "Researchers have been supplementing the juvenile's diet with fruit. Is the metabolic state now thriving?",
+        "question": "Researchers have been supplementing the juvenile's diet with fruit. What is the juvenile metabolic state now?",
         "options": {
             "A": "thriving — supplemental fruit feeding restores nutrition",
             "B": "Diet supplementation is not in the provided beliefs; metabolic state depends only on the juvenile's enzyme and the adult's expressed diet",
