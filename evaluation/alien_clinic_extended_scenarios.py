@@ -613,74 +613,75 @@ ALIEN_4HOP_TURNS = [
 # Tests that different dependency chains are orthogonal.
 # =====================================================================
 ALIEN_BELIEF_MAINTENANCE_TURNS = [
-    {   # Query: organ_integrity with just pressure
+    {   # T1: baseline integrity
         "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.ambient_pressure": 2.0},
-        "question": "At 2.0 pressure, what is the organ integrity?",
-        "options": {"A": "brittle", "B": "volatile", "C": "stable"},
-        "correct": "C"  # 2.0 -> stable
+        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.organism_type": "Glerps"},
+        "question": "At 2.0 atmospheres, what is the organ integrity of a Glerps patient?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "B"  # stable
     },
-    {   # Add symptoms (unrelated input) -> organ_integrity should stay same
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.symptoms": ["fever"]},
-        "question": "After adding symptoms, what is organ integrity?",
-        "options": {"A": "stable", "B": "brittle", "C": "volatile"},
-        "correct": "A"  # Maintained: symptoms don't affect organ_integrity
-    },
-    {   # Query: active_prescription with just pressure
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.organism_type": "Glerps", "patient.symptoms": []},
-        "question": "At 2.0 pressure, what prescription is active?",
-        "options": {"A": "snevox", "B": "filinan", "C": "zyxostin"},
-        "correct": "B"  # Glerps default: filinan
-    },
-    {   # Add organism type (different input) -> pressure-derived integral should stay same
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.ambient_pressure": 2.0, "patient.organism_type": "Yorp"},
-        "question": "With Yorp organism type added, what is organ integrity?",
-        "options": {"A": "brittle", "B": "volatile", "C": "stable"},
-        "correct": "C"  # Maintained: 2.0 pressure is stable regardless of organism
-    },
-    {   # Query: zyxostin_phase with just gas
+    {   # T2: gas delta -> phase (independent of pressure)
         "attributes": ["treatment.zyxostin_phase"],
         "beliefs": {"atmosphere.dominant_gas": "xenon"},
-        "question": "In xenon atmosphere, what is the zyxostin phase?",
-        "options": {"A": "crystalline", "B": "plasma", "C": "vapor"},
-        "correct": "A"  # xenon -> crystalline
+        "question": "With xenon as the dominant gas, what is the phase of zyxostin?",
+        "options": {"A": "crystalline", "B": "plasma", "C": "liquid"},
+        "correct": "A"  # crystalline
     },
-    {   # Add pressure (different input) -> phase should stay same
+    {   # T3: symptoms added -> prescription accumulation
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {"patient.symptoms": []},
+        "question": "With no symptoms reported for this Glerps patient, what is the prescribed treatment?",
+        "options": {"A": "snevox", "B": "zyxostin", "C": "filinan"},
+        "correct": "C"  # filinan is safe and highest priority for Glerps no symptoms
+    },
+    {   # T4: symptom change -> prescription shift
+        "attributes": ["treatment.active_prescription"],
+        "beliefs": {"patient.symptoms": ["fever"]},
+        "question": "Patient develops a fever. What does the prescription change to?",
+        "options": {"A": "zyxostin", "B": "snevox", "C": "none"},
+        "correct": "B"  # zyxostin explodes (Glerps), so snevox is first safe priority
+    },
+    {   # T5: no delta -> sensory status (derived from T4 prescription)
+        "attributes": ["patient.sensory_status"],
+        "beliefs": {},
+        "question": "Given the current snevox prescription, what is the patient's sensory status?",
+        "options": {"A": "telepathic", "B": "normal", "C": "blinded"},
+        "correct": "A"  # snevox -> telepathic
+    },
+    {   # T6: pressure spike -> integrity change
+        "attributes": ["patient.organ_integrity"],
+        "beliefs": {"atmosphere.ambient_pressure": 4.5},
+        "question": "Pressure spikes to 4.5. What is the Glerps patient's organ integrity now?",
+        "options": {"A": "stable", "B": "brittle", "C": "volatile"},
+        "correct": "C"  # volatile (>4.0 for Glerps)
+    },
+    {   # T7: no delta -> zyxostin phase persistence
         "attributes": ["treatment.zyxostin_phase"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "atmosphere.ambient_pressure": 3.5},
-        "question": "After adding pressure, what is zyxostin phase?",
+        "beliefs": {},
+        "question": "Despite the pressure spike, what remains the phase of zyxostin in xenon gas?",
         "options": {"A": "plasma", "B": "crystalline", "C": "vapor"},
-        "correct": "B"  # Maintained: phase depends on gas only, not pressure
+        "correct": "B"  # crystalline (persistence from T2)
     },
-    {   # Query: sensory_status from prescription
-        "attributes": ["patient.sensory_status"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        "question": "For this case, what is the sensory status?",
-        "options": {"A": "telepathic", "B": "blind", "C": "normal"},
-        "correct": "C"  # Only snevox -> telepathic
+    {   # T8: organism change -> integrity shift
+        "attributes": ["patient.organ_integrity"],
+        "beliefs": {"patient.organism_type": "Yorp"},
+        "question": "The patient is actually a Yorp. At 4.5 atmospheres, what is their organ integrity?",
+        "options": {"A": "brittle", "B": "stable", "C": "volatile"},
+        "correct": "A"  # brittle (4.5 > 3.0, but only >5.0 is volatile for Yorp)
     },
-    {   # Add organism info (different chain) -> sensory should unchanged
-        "attributes": ["patient.sensory_status"],
-        "beliefs": {"patient.organism_type": "Glerps", "patient.symptoms": [], "atmosphere.dominant_gas": "methane"},
-        "question": "With the same case details, what is the sensory status?",
-        "options": {"A": "normal", "B": "telepathic", "C": "blind"},
-        "correct": "A"  # Maintained: sensory depends on prescription only
-    },
-    {   # Query: quarantine_required with gas+organism
+    {   # T9: no delta -> quarantine check (independence)
         "attributes": ["patient.quarantine_required"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Yorp"},
-        "question": "Xenon + Yorp: is quarantine required?",
+        "beliefs": {},
+        "question": "Is quarantine required for this Yorp in xenon gas?",
+        "options": {"A": "Yes", "B": "No", "C": "Maybe"},
+        "correct": "B"  # False (quarantine only for chlorine+Qwerl or methane+Yorp)
+    },
+    {   # T10: gas change -> quarantine trigger
+        "attributes": ["patient.quarantine_required"],
+        "beliefs": {"atmosphere.dominant_gas": "methane"},
+        "question": "Gas shifts to methane. Is quarantine required for the Yorp patient now?",
         "options": {"A": "True", "B": "False", "C": "Pending"},
-        "correct": "B"  # Xenon+Yorp doesn't trigger quarantine
-    },
-    {   # Add symptoms + pressure (different inputs) -> quarantine should stay false
-        "attributes": ["patient.quarantine_required"],
-        "beliefs": {"atmosphere.dominant_gas": "xenon", "patient.organism_type": "Yorp", "patient.symptoms": ["fever"], "atmosphere.ambient_pressure": 4.0},
-        "question": "With symptoms and pressure added, is quarantine still required?",
-        "options": {"A": "True", "B": "Changed", "C": "False"},
-        "correct": "C"  # Maintained: quarantine depends on gas+organism pair only
+        "correct": "A"  # True (methane + Yorp)
     }
 ]
+

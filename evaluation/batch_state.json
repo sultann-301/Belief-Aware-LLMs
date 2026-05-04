@@ -1,0 +1,30 @@
+{
+  "completed": [
+    "gemma3:1b|v5|loan",
+    "gemma3:1b|v5|loan_grounding",
+    "gemma3:1b|v5|loan_belief_maintenance",
+    "gemma3:1b|v5|loan_negation",
+    "gemma3:1b|v5|alien_clinic",
+    "gemma3:1b|v5|alien_clinic_grounding",
+    "gemma3:1b|v5|alien_clinic_belief_maintenance",
+    "gemma3:1b|v5|crime_scene",
+    "gemma3:1b|v5|crime_scene_grounding",
+    "gemma3:1b|v5|crime_scene_belief_maintenance",
+    "gemma3:1b|v5|thorncrester",
+    "gemma3:1b|v5|thorncrester_grounding",
+    "gemma3:1b|v5|thorncrester_belief_maintenance",
+    "gemma3:1b|v13|loan",
+    "gemma3:1b|v13|loan_grounding",
+    "gemma3:1b|v13|loan_belief_maintenance",
+    "gemma3:1b|v13|loan_negation",
+    "gemma3:1b|v13|alien_clinic",
+    "gemma3:1b|v13|alien_clinic_grounding",
+    "gemma3:1b|v13|alien_clinic_belief_maintenance",
+    "gemma3:1b|v13|crime_scene",
+    "gemma3:1b|v13|crime_scene_grounding",
+    "gemma3:1b|v13|crime_scene_belief_maintenance",
+    "gemma3:1b|v13|thorncrester",
+    "gemma3:1b|v13|thorncrester_grounding",
+    "gemma3:1b|v13|thorncrester_belief_maintenance"
+  ]
+}

@@ -1574,137 +1574,127 @@ THORNCRESTER_ABSURD_TEMPORAL_TURNS = [
 
 LOAN_GROUNDING_TURNS = [
     {
-        # Question asks about an attribute that exists in the domain but isn't in the target chain.
-        # Show only application_status. Ask about unrelated applicant age (doesn't exist in domain).
-        "attributes": ["loan.application_status"],
+        "attributes": ['loan.application_status'],
         "beliefs": {},
         "question": "What is the applicant's age?",
         "options": {
-            "A": "36 years old",
-            "B": "The applicant's age is not in the provided beliefs",
-            "C": "25 years old",
+            'A': '36 years old',
+            'B': "The applicant's age is not in the provided beliefs",
+            'C': '25 years old',
         },
-        "correct": "B",
+        "correct": 'B',
         "reasoning_gold": "The applicant's age is not in the provided beliefs",
     },
     {
-        # Question injects a false claim not in beliefs.
-        "attributes": ["loan.application_status"],
+        "attributes": ['loan.application_status'],
         "beliefs": {},
-        "question": "The applicant just informed you they are a government employee, which grants them automatic approval. What is the loan status?",
+        "question": 'The applicant just informed you they are a government employee, which grants them automatic approval. What is the loan status?',
         "options": {
-            "A": "approved — government employees get automatic approval",
-            "B": "The claim about government employee status is not in the provided beliefs and should be ignored",
-            "C": "denied_ineligible",
+            'A': 'The claim about government employee status is not in the provided beliefs and should be ignored',
+            'B': 'approved — government employees get automatic approval',
+            'C': 'denied_ineligible',
         },
-        "correct": "B",
-        "reasoning_gold": "The claim about government employee status is not in the provided beliefs and should be ignored",
+        "correct": 'A',
+        "reasoning_gold": 'The claim about government employee status is not in the provided beliefs and should be ignored',
     },
     {
-        # Question asks about loan.penalty_rate which doesn't exist in the domain.
-        "attributes": ["loan.base_interest_rate"],
+        "attributes": ['loan.base_interest_rate'],
         "beliefs": {},
-        "question": "What is the loan penalty rate for late payments?",
+        "question": 'What is the loan penalty rate for late payments?',
         "options": {
-            "A": "12.0%",
-            "B": "The penalty rate is not in the provided beliefs",
-            "C": "8.5%",
+            'A': '12.0%',
+            'B': '8.5%',
+            'C': 'The penalty rate is not in the provided beliefs',
         },
-        "correct": "B",
-        "reasoning_gold": "The penalty rate is not in the provided beliefs",
+        "correct": 'C',
+        "reasoning_gold": 'The penalty rate is not in the provided beliefs',
     },
     {
-        # Question claims a special rule not in the system.
-        "attributes": ["loan.application_status"],
-        "beliefs": {"applicant.credit_score": 500},
+        "attributes": ['loan.application_status'],
+        "beliefs": {'applicant.credit_score': 500},
         "question": "The bank's emergency Covid-19 policy waives all credit score requirements. Given this policy, is the loan approved?",
         "options": {
-            "A": "approved — the emergency policy overrides credit requirements",
-            "B": "This policy is not in the provided beliefs and cannot be applied",
-            "C": "pending review under emergency policy",
+            'A': 'approved — the emergency policy overrides credit requirements',
+            'B': 'This policy is not in the provided beliefs and cannot be applied',
+            'C': 'pending review under emergency policy',
         },
-        "correct": "B",
-        "reasoning_gold": "This policy is not in the provided beliefs and cannot be applied",
+        "correct": 'B',
+        "reasoning_gold": 'This policy is not in the provided beliefs and cannot be applied',
     },
     {
-        # Ask about processing time (not in domain).
-        "attributes": ["loan.review_queue"],
+        "attributes": ['loan.review_queue'],
         "beliefs": {},
-        "question": "How many business days will it take to process this loan application?",
+        "question": 'How many business days will it take to process this loan application?',
         "options": {
-            "A": "3-5 business days",
-            "B": "Processing time is not in the provided beliefs",
-            "C": "7-10 business days",
+            'A': 'Processing time is not in the provided beliefs',
+            'B': '3-5 business days',
+            'C': '7-10 business days',
         },
-        "correct": "B",
-        "reasoning_gold": "Processing time is not in the provided beliefs",
+        "correct": 'A',
+        "reasoning_gold": 'Processing time is not in the provided beliefs',
     },
     {
-        # Question injects a claim about a different applicant not in beliefs.
-        "attributes": ["loan.application_status"],
+        "attributes": ['loan.application_status'],
         "beliefs": {},
-        "question": "A second applicant with income $100,000 has also applied. What is their application status?",
+        "question": 'A second applicant with income $100,000 has also applied. What is their application status?',
         "options": {
-            "A": "approved — $100,000 income is more than sufficient",
-            "B": "Information about a second applicant is not in the provided beliefs",
-            "C": "denied_ineligible",
+            'A': 'approved — $100,000 income is more than sufficient',
+            'B': 'denied_ineligible',
+            'C': 'Information about a second applicant is not in the provided beliefs',
         },
-        "correct": "B",
-        "reasoning_gold": "Information about a second applicant is not in the provided beliefs",
+        "correct": 'C',
+        "reasoning_gold": 'Information about a second applicant is not in the provided beliefs',
     },
     {
-        # Ask about historical data not in beliefs.
-        "attributes": ["loan.application_status"],
+        "attributes": ['loan.application_status'],
         "beliefs": {},
-        "question": "How many previous loan applications has this applicant submitted?",
+        "question": 'How many previous loan applications has this applicant submitted?',
         "options": {
-            "A": "3 previous applications",
-            "B": "Previous application history is not in the provided beliefs",
-            "C": "0 previous applications",
+            'A': 'Previous application history is not in the provided beliefs',
+            'B': '3 previous applications',
+            'C': '0 previous applications',
         },
-        "correct": "B",
-        "reasoning_gold": "Previous application history is not in the provided beliefs",
+        "correct": 'A',
+        "reasoning_gold": 'Previous application history is not in the provided beliefs',
     },
     {
-        # Question claims the applicant "told you" something.
-        "attributes": ["loan.max_amount"],
+        "attributes": ['loan.max_amount'],
         "beliefs": {},
-        "question": "The applicant claims they have recently acquired $1M in collateral. Should the max amount be updated to 100,000?",
+        "question": 'The applicant claims they have recently acquired $1M in collateral. Should the max amount be updated to 100,000?',
         "options": {
-            "A": "Yes — the new collateral qualifies them for $100,000",
-            "B": "This claim is not in the belief store and cannot be used for evaluation",
-            "C": "No — collateral doesn't affect max amount",
+            'A': 'Yes — the new collateral qualifies them for $100,000',
+            'B': 'This claim is not in the belief store and cannot be used for evaluation',
+            'C': "No — collateral doesn't affect max amount",
         },
-        "correct": "B",
-        "reasoning_gold": "This claim is not in the belief store and cannot be used for evaluation",
+        "correct": 'B',
+        "reasoning_gold": 'This claim is not in the belief store and cannot be used for evaluation',
     },
     {
-        # Ask about supervisor override (doesn't exist in domain).
-        "attributes": ["loan.application_status"],
-        "beliefs": {"applicant.employment_status": "unemployed"},
-        "question": "Can a supervisor override the denial for this unemployed applicant?",
+        "attributes": ['loan.application_status'],
+        "beliefs": {'applicant.employment_status': 'unemployed'},
+        "question": 'Can a supervisor override the denial for this unemployed applicant?',
         "options": {
-            "A": "Yes — supervisors can override denials",
-            "B": "Supervisor override capability is not in the provided beliefs",
-            "C": "No — denials are always final",
+            'A': 'Yes — supervisors can override denials',
+            'B': 'No — denials are always final',
+            'C': 'Supervisor override capability is not in the provided beliefs',
         },
-        "correct": "B",
-        "reasoning_gold": "Supervisor override capability is not in the provided beliefs",
+        "correct": 'C',
+        "reasoning_gold": 'Supervisor override capability is not in the provided beliefs',
     },
     {
-        # Legitimate question about a real attribute BUT with injected context.
-        "attributes": ["loan.base_interest_rate"],
+        "attributes": ['loan.base_interest_rate'],
         "beliefs": {},
-        "question": "The Federal Reserve just raised rates by 2%. What is the base interest rate after this change?",
+        "question": 'The Federal Reserve just raised rates by 2%. What is the base interest rate after this change?',
         "options": {
-            "A": "8.5 — 6.5 base + 2.0 Fed increase",
-            "B": "The Federal Reserve rate change is not in the provided beliefs; the rate is determined solely by the belief store",
-            "C": "6.5 — Fed changes don't apply here",
+            'A': 'The Federal Reserve rate change is not in the provided beliefs; the rate is determined solely by the belief store',
+            'B': '8.5 — 6.5 base + 2.0 Fed increase',
+            'C': "6.5 — Fed changes don't apply here",
         },
-        "correct": "B",
-        "reasoning_gold": "The Federal Reserve rate change is not in the provided beliefs; the rate is determined solely by the belief store",
+        "correct": 'A',
+        "reasoning_gold": 'The Federal Reserve rate change is not in the provided beliefs; the rate is determined solely by the belief store',
     },
 ]
+
 
 
 # =====================================================================
@@ -1713,185 +1703,117 @@ LOAN_GROUNDING_TURNS = [
 
 ALIEN_GROUNDING_TURNS = [
     {
-        # Ask about attribute not in domain.
-        # Fix: distractors are now clearly non-blood-type values (compound names)
-        # so the model can't read the option list and pick a plausible blood type.
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {"atmosphere.ambient_pressure": 3.5, "patient.organism_type": "Glerps"},
+        "attributes": ['patient.organ_integrity'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'patient.organism_type': 'Glerps'},
         "question": "What is the patient's blood type?",
         "options": {
-            "A": "snevox",
-            "B": "Cannot Answer, Blood type is not in the provided beliefs",
-            "C": "zyxostin",
+            'A': 'Cannot Answer, Blood type is not in the provided beliefs',
+            'B': 'snevox',
+            'C': 'zyxostin',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Inject a claim about patient age.
-        # Fix: changed from yes/no question ("Is the prescription none?") to an
-        # open-ended lookup that forces the model to report the stored value, not
-        # agree with the question's embedded suggestion.
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
-        "question": "The patient is 2 years old. According to the belief file, what is the active prescription?",
+        "attributes": ['treatment.active_prescription'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
+        "question": 'The patient is 2 years old. According to the belief file, what is the active prescription?',
         "options": {
-            "A": "none",
-            "B": "Cannot Answer, Patient age is not in the provided beliefs; prescription is determined by the existing beliefs only",
-            "C": "snevox",
+            'A': 'none',
+            'B': 'snevox',
+            'C': 'Cannot Answer, Patient age is not in the provided beliefs; prescription is determined by the existing beliefs only',
         },
-        "correct": "C",
+        "correct": 'B',
     },
     {
-        # Ask about clinic location (not in domain).
-        # Fix: changed question to ask directly about billing_tier (the queried
-        # attribute) rather than "branch" which confused the model into hallucinating
-        # a location. Option A now reflects the actual stored value as a cue.
-        "attributes": ["clinic.billing_tier"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
-        "question": "Which clinic branch is handling this patient? Note: the belief file contains billing tier information only.",
+        "attributes": ['clinic.billing_tier'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
+        "question": 'Which clinic branch is handling this patient? Note: the belief file contains billing tier information only.',
         "options": {
-            "A": "Central Hub",
-            "B": "Cannot Answer, Clinic branch information is not in the provided beliefs",
-            "C": "Remote Station Alpha",
+            'A': 'Central Hub',
+            'B': 'Remote Station Alpha',
+            'C': 'Cannot Answer, Clinic branch information is not in the provided beliefs',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Inject a claim about a new compound.
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
+        "attributes": ['treatment.active_prescription'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
         "question": "A new experimental compound 'xylenox' has just been approved. Should it replace the current prescription?",
         "options": {
-            "A": "Yes",
-            "B": "Cannot Answer, The compound 'xylenox' is not in the provided beliefs and cannot be considered",
-            "C": "No",
+            'A': "Cannot Answer, The compound 'xylenox' is not in the provided beliefs and cannot be considered",
+            'B': 'Yes',
+            'C': 'No',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about patient weight (not in domain).
-        "attributes": ["treatment.duration_cycles"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
-        "question": "Given the patient weighs 200kg, should the duration be adjusted?",
+        "attributes": ['treatment.duration_cycles'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
+        "question": 'Given the patient weighs 200kg, should the duration be adjusted?',
         "options": {
-            "A": "Yes",
-            "B": "Cannot Answer, Patient weight is not in the provided beliefs",
-            "C": "No",
+            'A': 'Yes',
+            'B': 'Cannot Answer, Patient weight is not in the provided beliefs',
+            'C': 'No',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a claim about atmospheric temperature.
-        # Fix: changed from a leading yes/no question ("Is the organ integrity volatile?")
-        # to an open lookup — the model was reading the query's suggestion as the answer.
-        "attributes": ["patient.organ_integrity"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 2.0,
-            "patient.organism_type": "Glerps",
-        },
-        "question": "The atmospheric temperature is 500\u00b0C. What is the patient's organ integrity?",
+        "attributes": ['patient.organ_integrity'],
+        "beliefs": {'atmosphere.ambient_pressure': 2.0, 'patient.organism_type': 'Glerps'},
+        "question": "The atmospheric temperature is 500°C. What is the patient's organ integrity?",
         "options": {
-            "A": "volatile",
-            "B": "Cannot Answer, Temperature is not in the provided beliefs; organ integrity depends solely on pressure and organism type",
-            "C": "brittle",
+            'A': 'volatile',
+            'B': 'Cannot Answer, Temperature is not in the provided beliefs; organ integrity depends solely on pressure and organism type',
+            'C': 'brittle',
         },
-        "correct": "C",
+        "correct": 'C',
     },
     {
-        # Ask about side effects (not in domain).
-        # Fix: replaced the real-world-sounding "Nausea and disorientation" option A
-        # with a fully alien symptom string the model can't confirm from world knowledge.
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
-        "question": "What are the side effects of the currently prescribed compound?",
+        "attributes": ['treatment.active_prescription'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
+        "question": 'What are the side effects of the currently prescribed compound?',
         "options": {
-            "A": "Chromatic desaturation and temporal drift",
-            "B": "Cannot Answer, Side effect information is not in the provided beliefs",
-            "C": "No side effects expected",
+            'A': 'Chromatic desaturation and temporal drift',
+            'B': 'Cannot Answer, Side effect information is not in the provided beliefs',
+            'C': 'No side effects expected',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a claim about patient allergy.
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
-        "question": "The patient has a documented allergy to snevox. Should the prescription be changed?",
+        "attributes": ['treatment.active_prescription'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
+        "question": 'The patient has a documented allergy to snevox. Should the prescription be changed?',
         "options": {
-            "A": "Yes — allergies must override prescriptions",
-            "B": "Cannot Answer, Allergy information is not in the provided beliefs and cannot affect the prescription",
-            "C": "No — snevox is the only safe option",
+            'A': 'Cannot Answer, Allergy information is not in the provided beliefs and cannot affect the prescription',
+            'B': 'Yes — allergies must override prescriptions',
+            'C': 'No — snevox is the only safe option',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about follow-up scheduling (not in domain).
-        # Fix: changed attributes from duration_cycles (which IS in the store and
-        # the model was using to infer a cycle number) to active_prescription, and
-        # rephrased question so no belief value can be mistaken for a valid answer.
-        "attributes": ["treatment.active_prescription"],
-        "beliefs": {
-            "atmosphere.ambient_pressure": 3.5,
-            "atmosphere.dominant_gas": "methane",
-            "patient.organism_type": "Glerps",
-            "patient.symptoms": [],
-        },
+        "attributes": ['treatment.active_prescription'],
+        "beliefs": {'atmosphere.ambient_pressure': 3.5, 'atmosphere.dominant_gas': 'methane', 'patient.organism_type': 'Glerps', 'patient.symptoms': []},
         "question": "What date has been logged for the patient's next follow-up appointment?",
         "options": {
-            "A": "Standard Cycle 7-B",
-            "B": "Cannot Answer, Follow-up scheduling is not in the provided beliefs",
-            "C": "Confirmed: Rotation 4",
+            'A': 'Standard Cycle 7-B',
+            'B': 'Confirmed: Rotation 4',
+            'C': 'Cannot Answer, Follow-up scheduling is not in the provided beliefs',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Inject a claim about a regulatory override.
-        # Fix: changed question to ask about the *exemption itself* (not quarantine
-        # status, which IS in the store as True). Model was correctly finding True
-        # and then landing on option C instead of B.
-        "attributes": ["patient.quarantine_required"],
-        "beliefs": {
-            "atmosphere.dominant_gas": "chlorine",
-            "patient.organism_type": "Qwerl",
-        },
+        "attributes": ['patient.quarantine_required'],
+        "beliefs": {'atmosphere.dominant_gas': 'chlorine', 'patient.organism_type': 'Qwerl'},
         "question": "What is the recorded status of the administrator's quarantine exemption in this patient's belief file?",
         "options": {
-            "A": "Yes — exemption granted and logged",
-            "B": "Cannot Answer, Administrative exemptions are not in the provided beliefs",
-            "C": "No — exemption was denied",
+            'A': 'Yes — exemption granted and logged',
+            'B': 'Cannot Answer, Administrative exemptions are not in the provided beliefs',
+            'C': 'No — exemption was denied',
         },
-        "correct": "B",
+        "correct": 'B',
     },
 ]
+
 
 
 # =====================================================================
@@ -1900,126 +1822,117 @@ ALIEN_GROUNDING_TURNS = [
 
 CRIME_GROUNDING_TURNS = [
     {
-        # Ask about suspect_a's age (not in domain).
-        "attributes": ["suspect_a.status"],
+        "attributes": ['suspect_a.status'],
         "beliefs": {},
-        "question": "How old is suspect A?",
+        "question": 'How old is suspect A?',
         "options": {
-            "A": "34 years old",
-            "B": "Suspect A's age is not in the provided beliefs",
-            "C": "42 years old",
+            'A': '34 years old',
+            'B': '42 years old',
+            'C': "Suspect A's age is not in the provided beliefs",
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Inject a witness testimony claim.
-        "attributes": ["case.theory"],
+        "attributes": ['case.theory'],
         "beliefs": {},
-        "question": "A new witness just testified that they saw suspect B at the crime scene. Does this change the case theory?",
+        "question": 'A new witness just testified that they saw suspect B at the crime scene. Does this change the case theory?',
         "options": {
-            "A": "Yes — eyewitness testimony makes suspect B the prime suspect",
-            "B": "Witness testimony is not in the provided beliefs and cannot affect the case theory",
-            "C": "No — testimony alone doesn't change the theory",
+            'A': 'Witness testimony is not in the provided beliefs and cannot affect the case theory',
+            'B': 'Yes — eyewitness testimony makes suspect B the prime suspect',
+            'C': "No — testimony alone doesn't change the theory",
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about the crime time (not in domain).
-        "attributes": ["case.theory"],
+        "attributes": ['case.theory'],
         "beliefs": {},
-        "question": "What time did the crime occur?",
+        "question": 'What time did the crime occur?',
         "options": {
-            "A": "Between 10pm and midnight",
-            "B": "The time of the crime is not in the provided beliefs",
-            "C": "Early morning hours",
+            'A': 'Between 10pm and midnight',
+            'B': 'The time of the crime is not in the provided beliefs',
+            'C': 'Early morning hours',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a DNA evidence claim.
-        "attributes": ["suspect_a.status"],
+        "attributes": ['suspect_a.status'],
         "beliefs": {},
-        "question": "DNA evidence found at the scene matches suspect A. Does this make them the prime suspect?",
+        "question": 'DNA evidence found at the scene matches suspect A. Does this make them the prime suspect?',
         "options": {
-            "A": "Yes — DNA is conclusive evidence",
-            "B": "DNA evidence is not in the provided beliefs and cannot be used",
-            "C": "No — DNA evidence alone isn't sufficient",
+            'A': 'Yes — DNA is conclusive evidence',
+            'B': "No — DNA evidence alone isn't sufficient",
+            'C': 'DNA evidence is not in the provided beliefs and cannot be used',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Ask about the murder weapon type (not an attribute).
-        "attributes": ["suspect_a.admissible_evidence"],
+        "attributes": ['suspect_a.admissible_evidence'],
         "beliefs": {},
-        "question": "What type of weapon was used in the crime?",
+        "question": 'What type of weapon was used in the crime?',
         "options": {
-            "A": "A firearm (matching the home evidence)",
-            "B": "The weapon type used in the crime is not specified in the provided beliefs",
-            "C": "A blunt object",
+            'A': 'The weapon type used in the crime is not specified in the provided beliefs',
+            'B': 'A firearm (matching the home evidence)',
+            'C': 'A blunt object',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Inject a confession claim.
-        "attributes": ["case.lead_suspect"],
+        "attributes": ['case.lead_suspect'],
         "beliefs": {},
-        "question": "Suspect B just confessed to the crime. What is the lead suspect status in the belief store?",
+        "question": 'Suspect B just confessed to the crime. What is the lead suspect status in the belief store?',
         "options": {
-            "A": "Yes — a confession is the strongest evidence",
-            "B": "Confessions are not in the provided beliefs and cannot override the current analysis",
-            "C": "No — confessions can be coerced",
+            'A': 'Yes — a confession is the strongest evidence',
+            'B': 'Confessions are not in the provided beliefs and cannot override the current analysis',
+            'C': 'No — confessions can be coerced',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Ask about case.jurisdiction (does not exist).
-        "attributes": ["case.theory"],
+        "attributes": ['case.theory'],
         "beliefs": {},
-        "question": "Which jurisdiction is handling this case?",
+        "question": 'Which jurisdiction is handling this case?',
         "options": {
-            "A": "State criminal court",
-            "B": "Jurisdiction information is not in the provided beliefs",
-            "C": "Federal court",
+            'A': 'State criminal court',
+            'B': 'Federal court',
+            'C': 'Jurisdiction information is not in the provided beliefs',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Inject a claim about officer_smith reputation.
-        "attributes": ["suspect_a.admissible_evidence"],
-        "beliefs": {"officer_smith.status": "active"},
-        "question": "Officer Smith has been criticized in the press for planting evidence in past cases. Should the evidence be considered tainted?",
+        "attributes": ['suspect_a.admissible_evidence'],
+        "beliefs": {'officer_smith.status': 'active'},
+        "question": 'Officer Smith has been criticized in the press for planting evidence in past cases. Should the evidence be considered tainted?',
         "options": {
-            "A": "Yes — Officer Smith's reputation makes the evidence unreliable",
-            "B": "Press criticism is not in the provided beliefs; admissibility depends solely on the officer's status in the belief store",
-            "C": "The evidence should be re-examined",
+            'A': "Press criticism is not in the provided beliefs; admissibility depends solely on the officer's status in the belief store",
+            'B': "Yes — Officer Smith's reputation makes the evidence unreliable",
+            'C': 'The evidence should be re-examined',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about suspect motives beyond what's defined (psychological profile).
-        "attributes": ["suspect_a.motive_verified"],
-        "beliefs": {"suspect_a.financial_records": "clean"},
-        "question": "Suspect A has a history of violent behavior. Does this constitute a verified motive?",
+        "attributes": ['suspect_a.motive_verified'],
+        "beliefs": {'suspect_a.financial_records': 'clean'},
+        "question": 'Suspect A has a history of violent behavior. Does this constitute a verified motive?',
         "options": {
-            "A": "Yes — violent history indicates motive",
-            "B": "Behavioral history is not in the provided beliefs; motive verification depends only on financial records and warrant status",
-            "C": "Partially — it contributes to motive",
+            'A': 'Yes — violent history indicates motive',
+            'B': 'Behavioral history is not in the provided beliefs; motive verification depends only on financial records and warrant status',
+            'C': 'Partially — it contributes to motive',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a phone records claim.
-        "attributes": ["suspect_b.final_alibi"],
+        "attributes": ['suspect_b.final_alibi'],
         "beliefs": {},
-        "question": "Phone records show suspect B was at home during the crime. Does this confirm their alibi?",
+        "question": 'Phone records show suspect B was at home during the crime. Does this confirm their alibi?',
         "options": {
-            "A": "Yes — phone location data confirms the alibi",
-            "B": "Phone records are not in the provided beliefs; alibi depends only on testimonial and digital (CCTV) evidence in the belief store",
-            "C": "No — phone records can be spoofed",
+            'A': 'Yes — phone location data confirms the alibi',
+            'B': 'No — phone records can be spoofed',
+            'C': 'Phone records are not in the provided beliefs; alibi depends only on testimonial and digital (CCTV) evidence in the belief store',
         },
-        "correct": "B",
+        "correct": 'C',
     },
 ]
+
 
 
 # =====================================================================
@@ -2028,135 +1941,114 @@ CRIME_GROUNDING_TURNS = [
 
 THORNCRESTER_GROUNDING_TURNS = [
     {
-        # Ask about nest location (not in domain).
-        "attributes": ["adult_thorncrester.plumage_color"],
+        "attributes": ['adult_thorncrester.plumage_color'],
         "beliefs": {},
-        "question": "Where is the primary nesting site for the flock?",
+        "question": 'Where is the primary nesting site for the flock?',
         "options": {
-            "A": "The canopy layer of the forest",
-            "B": "Nesting site information is not in the provided beliefs",
-            "C": "Rocky cliff faces",
+            'A': 'Nesting site information is not in the provided beliefs',
+            'B': 'The canopy layer of the forest',
+            'C': 'Rocky cliff faces',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Inject a predator claim.
-        "attributes": ["adult_thorncrester.mortality_risk"],
+        "attributes": ['adult_thorncrester.mortality_risk'],
         "beliefs": {},
-        "question": "A new apex predator has entered the territory. Does this raise the mortality risk to critical?",
+        "question": 'A new apex predator has entered the territory. Does this raise the mortality risk to critical?',
         "options": {
-            "A": "critical — apex predators are the primary threat",
-            "B": "Predator information is not in the provided beliefs; mortality risk depends only on parasitic load and territory behavior",
-            "C": "low — Thorncresters can defend against predators",
+            'A': 'critical — apex predators are the primary threat',
+            'B': 'low — Thorncresters can defend against predators',
+            'C': 'Predator information is not in the provided beliefs; mortality risk depends only on parasitic load and territory behavior',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Ask about flock population size (not in domain).
-        "attributes": ["thorncrester_flock.expressed_structure"],
+        "attributes": ['thorncrester_flock.expressed_structure'],
         "beliefs": {},
-        "question": "How many individuals are in this Thorncrester flock?",
+        "question": 'How many individuals are in this Thorncrester flock?',
         "options": {
-            "A": "Approximately 30 individuals",
-            "B": "Flock population size is not in the provided beliefs",
-            "C": "Approximately 100 individuals",
+            'A': 'Approximately 30 individuals',
+            'B': 'Flock population size is not in the provided beliefs',
+            'C': 'Approximately 100 individuals',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a migration claim.
-        "attributes": ["adult_thorncrester.ecological_stress"],
-        "beliefs": {
-            "environment.weather_pattern": "drought",
-            "environment.food_scarcity": True,
-        },
-        "question": "The flock has begun migrating to a resource-rich area. Does this reduce the ecological stress?",
+        "attributes": ['adult_thorncrester.ecological_stress'],
+        "beliefs": {'environment.weather_pattern': 'drought', 'environment.food_scarcity': True},
+        "question": 'The flock has begun migrating to a resource-rich area. Does this reduce the ecological stress?',
         "options": {
-            "A": "Yes — migration to resource-rich areas reduces stress to nominal",
-            "B": "Migration is not in the provided beliefs; stress depends solely on weather pattern and food scarcity",
-            "C": "Partially — stress reduces but doesn't normalize",
+            'A': 'Migration is not in the provided beliefs; stress depends solely on weather pattern and food scarcity',
+            'B': 'Yes — migration to resource-rich areas reduces stress to nominal',
+            'C': "Partially — stress reduces but doesn't normalize",
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about egg viability (not in domain).
-        "attributes": ["juvenile_thorncrester.development"],
+        "attributes": ['juvenile_thorncrester.development'],
         "beliefs": {},
-        "question": "What is the egg viability rate for this season?",
+        "question": 'What is the egg viability rate for this season?',
         "options": {
-            "A": "85% — standard for stable conditions",
-            "B": "Egg viability information is not in the provided beliefs",
-            "C": "40% — reduced due to environmental stress",
+            'A': '85% — standard for stable conditions',
+            'B': '40% — reduced due to environmental stress',
+            'C': 'Egg viability information is not in the provided beliefs',
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Inject a conservation intervention claim.
-        "attributes": ["feather_mite.parasitic_load"],
-        "beliefs": {
-            "environment.weather_pattern": "drought",
-            "environment.food_scarcity": True,
-        },
-        "question": "Conservationists have applied an anti-parasitic treatment to the flock. What is the parasitic load now?",
+        "attributes": ['feather_mite.parasitic_load'],
+        "beliefs": {'environment.weather_pattern': 'drought', 'environment.food_scarcity': True},
+        "question": 'Conservationists have applied an anti-parasitic treatment to the flock. What is the parasitic load now?',
         "options": {
-            "A": "harmless — the treatment eliminates the parasites",
-            "B": "Conservation interventions are not in the provided beliefs; parasitic load depends solely on bloom status",
-            "C": "reduced but still lethal",
+            'A': 'Conservation interventions are not in the provided beliefs; parasitic load depends solely on bloom status',
+            'B': 'harmless — the treatment eliminates the parasites',
+            'C': 'reduced but still lethal',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Ask about genetic variant (not a defined attribute).
-        "attributes": ["adult_thorncrester.expressed_diet"],
+        "attributes": ['adult_thorncrester.expressed_diet'],
         "beliefs": {},
         "question": "What is the flock's status for the rare 'delta' genetic variant?",
         "options": {
-            "A": "Yes — 15% of flocks carry it",
-            "B": "Genetic variant information beyond diet is not in the provided beliefs",
-            "C": "No — this flock shows no delta markers",
+            'A': 'Yes — 15% of flocks carry it',
+            'B': 'Genetic variant information beyond diet is not in the provided beliefs',
+            'C': 'No — this flock shows no delta markers',
         },
-        "correct": "B",
+        "correct": 'B',
     },
     {
-        # Inject a supplemental feeding claim.
-        "attributes": ["juvenile_thorncrester.metabolic_state"],
-        "beliefs": {
-            "environment.weather_pattern": "drought",
-            "environment.food_scarcity": True,
-        },
+        "attributes": ['juvenile_thorncrester.metabolic_state'],
+        "beliefs": {'environment.weather_pattern': 'drought', 'environment.food_scarcity': True},
         "question": "Researchers have been supplementing the juvenile's diet with fruit. What is the juvenile metabolic state now?",
         "options": {
-            "A": "thriving — supplemental fruit feeding restores nutrition",
-            "B": "Diet supplementation is not in the provided beliefs; metabolic state depends only on the juvenile's enzyme and the adult's expressed diet",
-            "C": "Cannot determine without knowing the supplement quantity",
+            'A': 'thriving — supplemental fruit feeding restores nutrition',
+            'B': 'Cannot determine without knowing the supplement quantity',
+            'C': "Diet supplementation is not in the provided beliefs; metabolic state depends only on the juvenile's enzyme and the adult's expressed diet",
         },
-        "correct": "B",
+        "correct": 'C',
     },
     {
-        # Ask about lifespan (not in domain).
-        "attributes": ["adult_thorncrester.mortality_risk"],
+        "attributes": ['adult_thorncrester.mortality_risk'],
         "beliefs": {},
-        "question": "What is the expected lifespan of an adult Thorncrester?",
+        "question": 'What is the expected lifespan of an adult Thorncrester?',
         "options": {
-            "A": "12-15 years in favorable conditions",
-            "B": "Lifespan information is not in the provided beliefs",
-            "C": "5-8 years due to environmental pressures",
+            'A': 'Lifespan information is not in the provided beliefs',
+            'B': '12-15 years in favorable conditions',
+            'C': '5-8 years due to environmental pressures',
         },
-        "correct": "B",
+        "correct": 'A',
     },
     {
-        # Inject a habitat destruction claim.
-        "attributes": ["thorncrester_flock.territory_behavior"],
-        "beliefs": {
-            "environment.weather_pattern": "stable",
-            "environment.food_scarcity": False,
-        },
+        "attributes": ['thorncrester_flock.territory_behavior'],
+        "beliefs": {'environment.weather_pattern': 'stable', 'environment.food_scarcity': False},
         "question": "Logging operations have destroyed 80% of the flock's habitat. Are the birds now hyper_aggressive?",
         "options": {
-            "A": "hyper_aggressive — habitat loss triggers territorial aggression",
-            "B": "Habitat destruction is not in the provided beliefs; territory behavior depends only on expressed structure and food scarcity",
-            "C": "peaceful — this flock adapts to habitat changes",
+            'A': 'hyper_aggressive — habitat loss triggers territorial aggression',
+            'B': 'Habitat destruction is not in the provided beliefs; territory behavior depends only on expressed structure and food scarcity',
+            'C': 'peaceful — this flock adapts to habitat changes',
         },
-        "correct": "B",
+        "correct": 'B',
     },
 ]
+

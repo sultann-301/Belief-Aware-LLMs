@@ -1,0 +1,26 @@
+{
+  "completed": [
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|crime_scene_belief_maintenance",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|thorncrester_belief_maintenance",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|thorncrester_negation",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|loan_negation",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|crime_scene_negation",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|alien_clinic_negation",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|loan_absurd_temporal",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|alien_clinic_absurd_temporal",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|crime_scene_absurd_temporal",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|alien_clinic_grounding",
+    "da|gemma3:1b|ministral-3:3b|v13|0.7|crime_scene_grounding",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|crime_scene_belief_maintenance",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|thorncrester_belief_maintenance",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|thorncrester_negation",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|loan_negation",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|crime_scene_negation",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|alien_clinic_negation",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|loan_absurd_temporal",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|alien_clinic_absurd_temporal",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|crime_scene_absurd_temporal",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|alien_clinic_grounding",
+    "da|gemma3:1b|gemma3:1b|v13|0.7|crime_scene_grounding"
+  ]
+}

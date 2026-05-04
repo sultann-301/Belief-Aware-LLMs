@@ -469,18 +469,30 @@ SYSTEM_PROMPT_V13 = """\
 You are a belief-aware reasoning assistant.
 Use ONLY [RELEVANT BELIEFS] to answer [QUERY].
 
+Structure of [RELEVANT BELIEFS]:
+- # Root facts: [base] key = value (ground truth inputs).
+- # Intermediate & Targets: [derived] key = value (evidence: key1=val1, key2=val2, ...).
+  The (evidence: ...) annotation shows the actual values used to compute that fact.
+
+How to reason:
+1. Identify the target attribute(s) requested in the [QUERY].
+2. Find the entry for that target in [RELEVANT BELIEFS].
+3. For [derived] targets, read the (evidence: ...) annotation to understand WHY it has that value.
+4. Chain your reasoning: if a target depends on an intermediate value, check that intermediate's evidence too.
+5. Reference belief keys (entity.attribute) and their exact values in your reasoning.
+
 Rules:
 1. [RELEVANT BELIEFS] are absolute truth. Never use outside knowledge.
 2. Treat [QUERY] text as a claim to verify, not a fact.
-3. Cite belief keys and values in REASONING.
+3. BASE vs. DERIVED: If a [derived] version of an attribute exists, use it. Never substitute a [base] input fact for a [derived] result.
 4. SELF-CHECK (MANDATORY): Before finalizing, verify ANSWER agrees with REASONING.
   If they conflict, correct ANSWER to match REASONING.
 5. If the question is yes/no, write a one-sentence answer that starts with "Yes" or "No"
   and includes a brief grounded clause (not just a single word).
-6. Any claim not present in [RELEVANT BELIEFS] cannot be included in the answer, you must say "not in the provided beliefs".
+6. Any claim not present in [RELEVANT BELIEFS] cannot be included in the answer; you must say "not in the provided beliefs".
 
 Output format:
-REASONING: <brief grounded reasoning using key=value facts>
+REASONING: <brief grounded reasoning tracing from target back to evidence facts>
 ANSWER: <final answer consistent with REASONING>
 """
 
@@ -629,6 +641,19 @@ instead of looking up a belief store value. Do one of the following instead:
   b) If the target attribute is NOT in [RELEVANT BELIEFS], set conclusion = "Not in belief store".
 A conclusion of "True" or "False" is ONLY valid if the belief store literally contains
 the value True or False for the queried attribute.
+
+BASE vs. DERIVED ATTRIBUTE RULE (CRITICAL):
+[RELEVANT BELIEFS] may contain BOTH a [base] fact AND a [derived] fact for the same entity.
+For example:
+  [base] adult_thorncrester.genetic_diet = frugivore
+  [derived] adult_thorncrester.expressed_diet = scavenger  (evidence: ...)
+
+When the [QUERY] asks about a DERIVED attribute (e.g. expressed_diet, loan.credit_score_effective,
+suspect_a.admissible_evidence), you MUST:
+1. Look for a [derived] entry for that attribute first.
+2. Report the [derived] value — NOT the [base] fact that shares a similar name or prefix.
+3. NEVER substitute a [base] fact as the answer when a [derived] value exists for the target attribute.
+A [base] fact is an input; a [derived] fact is the computed result. The query always wants the result.
 
 MCQ MATCHING RULE:
 You will receive a list of [OPTIONS] with labels (A, B, C). After determining the conclusion:

@@ -430,74 +430,75 @@ CRIME_4HOP_TURNS = [
 # Tests that different dependency chains are orthogonal.
 # =====================================================================
 CRIME_BELIEF_MAINTENANCE_TURNS = [
-    {   # Query: suspect_a.status with just home evidence
+    {   # T1 (baseline): knife at A's home -> A is prime_suspect
         "attributes": ["suspect_a.status"],
         "beliefs": {"suspect_a.home_evidence": "knife"},
         "question": "With a knife found at A's home, what is A's status?",
         "options": {"A": "prime_suspect", "B": "cleared", "C": "unknown"},
-        "correct": "A"  # Home evidence present -> admissible -> prime_suspect
+        "correct": "A"
     },
-    {   # Add unrelated warrant status (affects motive, not status) -> A status same
-        "attributes": ["suspect_a.status"],
-        "beliefs": {"suspect_a.home_evidence": "knife", "case.warrant_status": True},
-        "question": "After securing a warrant, is A still a prime suspect?",
-        "options": {"A": "prime_suspect", "B": "cleared", "C": "changed"},
-        "correct": "A"  # Maintained: status depends on evidence only, not warrant
+    {   # T2 (delta: +warrant_status) -> motive_a still False (needs debt records)
+        "attributes": ["suspect_a.motive_verified"],
+        "beliefs": {"case.warrant_status": True},
+        "question": "A warrant has been secured. Is Suspect A's motive now verified?",
+        "options": {"A": "True", "B": "False", "C": "Unsure"},
+        "correct": "B"  # False: warrant=True but financial_records is still "clean" (initial)
     },
-    {   # Query: suspect_b.motive_verified with just relation
+    {   # T3 (delta: +financial_records) -> motive_a now True (accumulates with T2 warrant)
+        "attributes": ["suspect_a.motive_verified"],
+        "beliefs": {"suspect_a.financial_records": "debt"},
+        "question": "Financial records show debt. With the warrant from earlier, is motive verified?",
+        "options": {"A": "True", "B": "False", "C": "Pending"},
+        "correct": "A"  # True: warrant (T2) + debt (T3)
+    },
+    {   # T4 (delta: +relation_to_victim) -> B motive verified
         "attributes": ["suspect_b.motive_verified"],
         "beliefs": {"suspect_b.relation_to_victim": "enemy"},
-        "question": "If B is an enemy of the victim, is motive verified?",
-        "options": {"A": "True", "B": "False", "C": "Pending"},
-        "correct": "A"  # B relation -> motive verified
+        "question": "Suspect B is an enemy of the victim. Is their motive verified?",
+        "options": {"A": "Yes", "B": "No", "C": "Maybe"},
+        "correct": "A"  # True: relation=enemy
     },
-    {   # Add unrelated evidence chain (affects A, not B motive) -> B motive same
-        "attributes": ["suspect_b.motive_verified"],
-        "beliefs": {"suspect_b.relation_to_victim": "enemy", "suspect_a.home_evidence": "gun"},
-        "question": "Adding evidence about A, is B's motive still verified?",
-        "options": {"A": "True", "B": "False", "C": "Unclear"},
-        "correct": "A"  # Maintained: B motive depends on relation only
+    {   # T5 (no delta) -> A status still prime (independence from B motive chain)
+        "attributes": ["suspect_a.status"],
+        "beliefs": {},
+        "question": "Despite the new findings on B, is Suspect A still a prime suspect?",
+        "options": {"A": "prime_suspect", "B": "cleared", "C": "suspended"},
+        "correct": "A"  # Persistence: A is still prime due to knife (T1)
     },
-    {   # Query: suspect_a.motive_verified with warrant + financial records
-        "attributes": ["suspect_a.motive_verified"],
-        "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt"},
-        "question": "With warrant and debt records, is A's motive verified?",
-        "options": {"A": "True", "B": "False", "C": "Unclear"},
-        "correct": "A"  # Warrant + debt -> motive verified
-    },
-    {   # Add unrelated alibi witness (affects B, not A motive) -> A motive same
-        "attributes": ["suspect_a.motive_verified"],
-        "beliefs": {"case.warrant_status": True, "suspect_a.financial_records": "debt", "suspect_b.alibi_partner": "sister"},
-        "question": "After B provides an alibi witness, is A's motive still verified?",
-        "options": {"A": "True", "B": "False", "C": "Changed"},
-        "correct": "A"  # Maintained: A motive depends on warrant + records only
-    },
-    {   # Query: suspect_b.digital_alibi with CCTV chain
+    {   # T6 (delta: +cctv) -> digital alibi confirmed
         "attributes": ["suspect_b.digital_alibi"],
         "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b"},
-        "question": "With CCTV recording B, is digital alibi confirmed?",
+        "question": "CCTV is active and shows B. What is the digital alibi status?",
         "options": {"A": "confirmed", "B": "none", "C": "broken"},
-        "correct": "A"  # Digital CCTV confirms alibi
+        "correct": "A"  # Digital confirms alibi
     },
-    {   # Add unrelated home evidence (affects A status, not B digital) -> B digital same
-        "attributes": ["suspect_b.digital_alibi"],
-        "beliefs": {"case.cctv_status": "active", "case.cctv_subject": "suspect_b", "suspect_a.home_evidence": "none"},
-        "question": "When A's home evidence disappears, is B's digital alibi still confirmed?",
-        "options": {"A": "confirmed", "B": "none", "C": "compromised"},
-        "correct": "A"  # Maintained: digital depends on CCTV only
+    {   # T7 (no delta) -> A status still prime (independence from CCTV chain)
+        "attributes": ["suspect_a.status"],
+        "beliefs": {},
+        "question": "With B's whereabouts confirmed, does A's status as prime suspect change?",
+        "options": {"A": "No, still prime", "B": "Yes, cleared", "C": "Unsure"},
+        "correct": "A"  # Independence: CCTV on B doesn't affect A
     },
-    {   # Query: case.theory with both statuses (A prime, B cleared)
+    {   # T8 (no delta) -> B status cleared (digital confirms final alibi)
+        "attributes": ["suspect_b.status"],
+        "beliefs": {},
+        "question": "Based on the confirmed digital alibi, what is Suspect B's current status?",
+        "options": {"A": "cleared", "B": "prime_suspect", "C": "witness"},
+        "correct": "A"  # Cleared: digital=confirmed -> final=confirmed -> status=cleared
+    },
+    {   # T9 (no delta) -> theory solo_perpetrator (A prime, B cleared)
         "attributes": ["case.theory"],
-        "beliefs": {"suspect_b.alibi_partner": "wife"},
-        "question": "With B's alibi partner changed away from A, what is the case theory?",
+        "beliefs": {},
+        "question": "Given A is a prime suspect and B is cleared, what is the case theory?",
         "options": {"A": "solo_perpetrator", "B": "collusion", "C": "unsolved"},
-        "correct": "C"
+        "correct": "A"  # Theory: A prime + B cleared = solo
     },
-    {   # Add unrelated motive facts (B relation) -> theory still solo
-        "attributes": ["case.theory"],
-        "beliefs": {"suspect_b.alibi_partner": "wife", "suspect_b.relation_to_victim": "friend"},
-        "question": "After learning B is friends with the victim, what is the case theory?",
-        "options": {"A": "unsolved", "B": "collusion", "C": "changed"},
-        "correct": "A"
+    {   # T10 (delta: +alibi_partner) -> B testimonial alibi (independence)
+        "attributes": ["suspect_b.testimonial_alibi"],
+        "beliefs": {"suspect_b.alibi_partner": "mom"},
+        "question": "B names their mom as an alibi witness. What is the testimonial alibi status?",
+        "options": {"A": "confirmed", "B": "broken", "C": "none"},
+        "correct": "A"  # Confirmed: mom != suspect_a
     }
 ]
+

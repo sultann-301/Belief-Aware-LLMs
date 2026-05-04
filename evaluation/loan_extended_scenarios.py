@@ -409,118 +409,75 @@ LOAN_4HOP_TURNS = [
 #           that is NOT affected by that new belief. The answer should remain
 #           the same across turns, demonstrating belief maintenance.
 LOAN_BELIEF_MAINTENANCE_TURNS = [
-    {   # Add co_signer -> deduce credit_score_effective
+    {   # T1 (baseline): co-signer added
         "attributes": ["loan.credit_score_effective"],
         "beliefs": {"applicant.co_signer": True},
-        "question": "With a co-signer, what is the effective credit score?",
-        "options": {"A": "720", "B": "770", "C": "650"},  # 720 + 50 = 770
-        "correct": "B"
-    },
-    {   # Add bankruptcy_history -> query fixed attribute (credit_score unchanged)
-        "attributes": ["applicant.credit_score"],
-        "beliefs": {"applicant.credit_score": 720, "applicant.bankruptcy_history": True},
-        "question": "Despite bankruptcy history, what is the applicant's original credit score?",
-        "options": {"A": "720", "B": "680", "C": "500"},
-        "correct": "A"  # Maintained: credit_score is base fact
-    },
-    {   # Add employment_duration_months -> query fixed income
-        "attributes": ["applicant.income"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5
-        },
-        "question": "With short employment duration, what is the applicant's income?",
-        "options": {"A": "6000", "B": "5000", "C": "7000"},
-        "correct": "A"  # Maintained: income is base fact
-    },
-    {   # Add employment_status change -> query prior credit-related value
-        "attributes": ["loan.credit_score_effective"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed"
-        },
-        "question": "With employment confirmed, what is the effective credit score (with co-signer)?",
+        "question": "With a co-signer added, what is the effective credit score?",
         "options": {"A": "720", "B": "770", "C": "650"},
-        "correct": "B"  # Maintained from Turn 1: still 770 (720 + 50 for co_signer)
+        "correct": "B"  # 720 + 50 = 770
     },
-    {   # Add debt_ratio -> query employment_status (unaffected)
-        "attributes": ["applicant.employment_status"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25
-        },
-        "question": "Despite higher debt ratio, what is the employment status?",
-        "options": {"A": "employed", "B": "unemployed", "C": "furloughed"},
-        "correct": "A"  # Maintained: employment_status is base fact
-    },
-    {   # Add dependents -> query income (unaffected by dependents count)
-        "attributes": ["applicant.income"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
-            "applicant.dependents": 3
-        },
-        "question": "With 3 dependents, what is the base applicant income?",
-        "options": {"A": "6000", "B": "5000", "C": "4500"},
-        "correct": "A"  # Maintained: income is base fact (adjusted_income would change)
-    },
-    {   # Add has_collateral -> query unchanged credit score
+    {   # T2 (delta: +bankruptcy_history) -> raw credit_score persistence
         "attributes": ["applicant.credit_score"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
-            "applicant.dependents": 3, "applicant.has_collateral": True
-        },
-        "question": "After securing collateral, what remains the applicant's credit score?",
-        "options": {"A": "720", "B": "770", "C": "680"},
-        "correct": "A"  # Maintained: base fact, collateral doesn't change it
+        "beliefs": {"applicant.bankruptcy_history": True},
+        "question": "A bankruptcy history is reported. Does the applicant's raw credit score change?",
+        "options": {"A": "720", "B": "680", "C": "500"},
+        "correct": "A"  # Persistence: raw score remains 720
     },
-    {   # Add loan_amount_requested -> query maintained credit_score_effective
-        "attributes": ["loan.credit_score_effective"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.co_signer": True,
-            "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
-            "applicant.dependents": 3, "applicant.has_collateral": True,
-            "applicant.loan_amount_requested": 25000
-        },
-        "question": "Requesting 25k loan, what is the effective credit score?",
-        "options": {"A": "720", "B": "770", "C": "800"},
-        "correct": "B"  # Maintained: still 770 (720 + 50 for co_signer)
+    {   # T3 (delta: +short_employment) -> income persistence
+        "attributes": ["applicant.income"],
+        "beliefs": {"applicant.employment_duration_months": 5},
+        "question": "The applicant has only been employed for 5 months. What is their monthly income?",
+        "options": {"A": "6000", "B": "5000", "C": "4500"},
+        "correct": "A"  # Persistence: income remains 6000
     },
-    {   # Add another base fact -> query a derived value from earlier
-        "attributes": ["loan.adjusted_income"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.co_signer": True,
-            "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
-            "applicant.dependents": 3, "applicant.has_collateral": True,
-            "applicant.loan_amount_requested": 25000,
-            "applicant.income": 6000
-        },
-        "question": "With income and dependents accumulated, what is adjusted income?",
-        "options": {"A": "6000", "B": "4500", "C": "5500"},
-        "correct": "B"  # Calculated: 6000 - (3 * 500) = 4500
+    {   # T4 (delta: +unemployed) -> prequalified check (fails due to unemployment)
+        "attributes": ["loan.applicant_prequalified"],
+        "beliefs": {"applicant.employment_status": "unemployed"},
+        "question": "The applicant becomes unemployed. Are they still prequalified for the loan?",
+        "options": {"A": "True", "B": "False", "C": "Unsure"},
+        "correct": "B"  # False: unemployed always fails prequalification
     },
-    {   # Verify employment_status is still maintained despite all changes
+    {   # T5 (delta: +debt_ratio) -> employment persistence
         "attributes": ["applicant.employment_status"],
-        "beliefs": {
-            "applicant.credit_score": 720, "applicant.co_signer": True,
-            "applicant.bankruptcy_history": True,
-            "applicant.employment_duration_months": 5,
-            "applicant.employment_status": "employed", "applicant.debt_ratio": 0.25,
-            "applicant.dependents": 3, "applicant.has_collateral": True,
-            "applicant.loan_amount_requested": 25000,
-            "applicant.income": 6000
-        },
-        "question": "After all updates, what is the employment status?",
-        "options": {"A": "employed", "B": "unemployed", "C": "unknown"},
-        "correct": "A"  # Fully maintained from Turn 4 onward
+        "beliefs": {"applicant.debt_ratio": 0.25},
+        "question": "The debt ratio increases to 0.25. What is the current employment status?",
+        "options": {"A": "unemployed", "B": "employed", "C": "furloughed"},
+        "correct": "A"  # Persistence: still unemployed from T4
+    },
+    {   # T6 (delta: +dependents) -> income persistence
+        "attributes": ["applicant.income"],
+        "beliefs": {"applicant.dependents": 3},
+        "question": "The applicant now has 3 dependents. What is their base monthly income?",
+        "options": {"A": "6000", "B": "4500", "C": "5500"},
+        "correct": "A"  # Persistence: base income still 6000
+    },
+    {   # T7 (delta: +has_collateral) -> credit score persistence
+        "attributes": ["applicant.credit_score"],
+        "beliefs": {"applicant.has_collateral": True},
+        "question": "Collateral is secured. What is the applicant's raw credit score?",
+        "options": {"A": "720", "B": "770", "C": "800"},
+        "correct": "A"  # Persistence: still 720
+    },
+    {   # T8 (delta: +income) -> adjusted income accumulation
+        "attributes": ["loan.adjusted_income"],
+        "beliefs": {"applicant.income": 10000},
+        "question": "Income increases to 10000. With 3 dependents from earlier, what is the adjusted income?",
+        "options": {"A": "10000", "B": "8500", "C": "9500"},
+        "correct": "B"  # 10000 - (3 * 500) = 8500
+    },
+    {   # T9 (delta: +employed) -> prequalified check (fails due to short employment + bankruptcy)
+        "attributes": ["loan.applicant_prequalified"],
+        "beliefs": {"applicant.employment_status": "employed"},
+        "question": "The applicant is now employed again. With a bankruptcy history and short duration (5 months), are they prequalified?",
+        "options": {"A": "True", "B": "False", "C": "Pending"},
+        "correct": "B"  # False: bankruptcy + <24 months duration = False
+    },
+    {   # T10 (delta: +long_employment) -> prequalified check (passes now)
+        "attributes": ["loan.applicant_prequalified"],
+        "beliefs": {"applicant.employment_duration_months": 36},
+        "question": "Employment duration reaches 36 months. Given all prior facts, are they now prequalified?",
+        "options": {"A": "True", "B": "False", "C": "Unsure"},
+        "correct": "A"  # True: duration >= 24, all other factors pass
     }
 ]
+

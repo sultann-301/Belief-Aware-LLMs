@@ -899,7 +899,7 @@ def run_multi_eval(
             writer = csv.writer(f)
             if not file_exists:
                 writer.writerow([
-                    "Domain", "Model", "Temp", "Prompt_Ver", "Runs", "Summary_Metric",
+                    "Timestamp", "Domain", "Model", "Temp", "Prompt_Ver", "Runs", "Summary_Metric",
                     "With_Store", "Store_History", "No_Store"
                 ])
 
@@ -908,8 +908,9 @@ def run_multi_eval(
             avg0 = (sum(scores[0]) / n) / n_turns if n_turns > 0 else 0
             avg1 = (sum(scores[1]) / n) / n_turns if n_turns > 0 else 0
             avg2 = (sum(scores[2]) / n) / n_turns if n_turns > 0 else 0
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             writer.writerow([
-                config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
                 f"{avg0:.4f}", f"{avg1:.4f}", f"{avg2:.4f}"
             ])
 
@@ -918,7 +919,7 @@ def run_multi_eval(
             var1 = statistics.variance(scores[1]) if n > 1 else 0.0
             var2 = statistics.variance(scores[2]) if n > 1 else 0.0
             writer.writerow([
-                config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
                 f"{var0:.4f}", f"{var1:.4f}", f"{var2:.4f}"
             ])
 
@@ -927,7 +928,7 @@ def run_multi_eval(
             std1 = statistics.stdev(scores[1]) if n > 1 else 0.0
             std2 = statistics.stdev(scores[2]) if n > 1 else 0.0
             writer.writerow([
-                config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
                 f"{std0:.4f}", f"{std1:.4f}", f"{std2:.4f}"
             ])
 
@@ -1063,6 +1064,7 @@ def run_multi_eval_dual_agent(
             writer = csv.writer(f)
             if not file_exists:
                 writer.writerow([
+                    "Timestamp",
                     "Domain",
                     "Model",
                     "Reasoner_Model",
@@ -1077,6 +1079,7 @@ def run_multi_eval_dual_agent(
                 ])
 
             display_model = model_alias or model
+            timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             for metric_key, metric_family in (
                 ("binding", "Binding"),
                 ("end_to_end", "End_to_End"),
@@ -1084,6 +1087,7 @@ def run_multi_eval_dual_agent(
                 avg0 = sum(metric_scores[0][metric_key]) / n if n > 0 else 0.0
                 avg1 = sum(metric_scores[1][metric_key]) / n if n > 0 else 0.0
                 writer.writerow([
+                    timestamp,
                     config.name,
                     display_model,
                     reasoner_model,
@@ -1100,6 +1104,7 @@ def run_multi_eval_dual_agent(
                 var0 = statistics.variance(metric_scores[0][metric_key]) if n > 1 else 0.0
                 var1 = statistics.variance(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
+                    timestamp,
                     config.name,
                     display_model,
                     reasoner_model,
@@ -1116,6 +1121,7 @@ def run_multi_eval_dual_agent(
                 std0 = statistics.stdev(metric_scores[0][metric_key]) if n > 1 else 0.0
                 std1 = statistics.stdev(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
+                    timestamp,
                     config.name,
                     display_model,
                     reasoner_model,

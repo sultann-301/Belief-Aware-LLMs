@@ -429,74 +429,75 @@ THORNCRESTER_4HOP_TURNS = [
 # should not affect derived attributes. Tests that belief queries are orthogonal.
 # =====================================================================
 THORNCRESTER_BELIEF_MAINTENANCE_TURNS = [
-    {   # Query 1: Stress (baseline)
+    {   # T1: baseline stress
         "attributes": ["adult_thorncrester.ecological_stress"],
         "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
-        "question": "In a stable environment with no scarcity, what is the ecological stress?",
+        "question": "In a stable environment with no food scarcity, what is the ecological stress level?",
         "options": {"A": "high", "B": "nominal", "C": "critical"},
         "correct": "B"  # nominal
     },
-    {   # Query 2: Plumage (independent path from stress)
+    {   # T2: no delta -> plumage color from baseline
         "attributes": ["adult_thorncrester.plumage_color"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
-        "question": "With no stress, what is the plumage color?",
-        "options": {"A": "dull_grey", "B": "crimson", "C": "azure"},
-        "correct": "B"  # crimson (stress -> nom -> frugivore -> crimson)
+        "beliefs": {},
+        "question": "Given the current stress levels, what is the plumage color of the adult birds?",
+        "options": {"A": "crimson", "B": "dull_grey", "C": "azure"},
+        "correct": "A"  # crimson
     },
-    {   # Query 3: Territory behavior (independent branch)
-        "attributes": ["thorncrester_flock.territory_behavior"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False},
-        "question": "With stable weather and no scarcity, what territory behavior emerges?",
-        "options": {"A": "hyper_aggressive", "B": "peaceful", "C": "defensive"},
-        "correct": "B"  # peaceful (stress=nom -> matriarchal -> peaceful)
-    },
-    {   # Query 4: Add genetic diet variation, requery stress (should be independent)
+    {   # T3: diet delta -> stress independence
         "attributes": ["adult_thorncrester.ecological_stress"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger"},
-        "question": "With genetic diet changed but weather stable, what is stress?",
-        "options": {"A": "high", "B": "nominal", "C": "variable"},
-        "correct": "B"  # Maintained: stress depends on weather+scarcity, not genetic_diet
+        "beliefs": {"adult_thorncrester.genetic_diet": "scavenger"},
+        "question": "If the genetic diet is scavenger but weather is stable, what is the stress level?",
+        "options": {"A": "high", "B": "nominal", "C": "moderate"},
+        "correct": "B"  # nominal
     },
-    {   # Query 5: Add flock structure variation, requery stress (still independent)
+    {   # T4: structure delta -> stress independence
         "attributes": ["adult_thorncrester.ecological_stress"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm"},
-        "question": "Despite structure variation, what is ecological stress?",
-        "options": {"A": "high", "B": "nominal", "C": "unknown"},
-        "correct": "B"  # Maintained: still nominal (weather+scarcity are stable)
+        "beliefs": {"thorncrester_flock.genetic_structure": "survival_swarm"},
+        "question": "Does changing the flock's genetic structure to survival_swarm affect the ecological stress?",
+        "options": {"A": "Yes, increases", "B": "No, stays nominal", "C": "Yes, decreases"},
+        "correct": "B"  # nominal
     },
-    {   # Query 6: Query mortality in stable conditions (should be low)
-        "attributes": ["adult_thorncrester.mortality_risk"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm"},
-        "question": "In stability despite structural changes, what mortality risk?",
-        "options": {"A": "critical", "B": "low", "C": "moderate"},
-        "correct": "B"  # low (stress=nom -> exp_struct=swarm (no override), food=no -> territory=peaceful, mites=dormant -> load=harmless -> low)
+    {   # T5: weather change -> stress (no scarcity yet)
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {"environment.weather_pattern": "drought"},
+        "question": "A drought begins. Since food scarcity is still false, what is the stress level?",
+        "options": {"A": "nominal", "B": "high", "C": "critical"},
+        "correct": "A"  # nominal (needs BOTH drought AND scarcity for high stress)
     },
-    {   # Query 7: Add juvenile enzyme info, requery mortality (independent)
-        "attributes": ["adult_thorncrester.mortality_risk"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "scavenger", "thorncrester_flock.genetic_structure": "survival_swarm", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
-        "question": "With juvenile enzyme added to beliefs, what mortality risk?",
-        "options": {"A": "critical", "B": "low", "C": "high"},
-        "correct": "B"  # Maintained: mortality independent from juvenile enzyme
+    {   # T6: scarcity added -> stress accumulation
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {"environment.food_scarcity": True},
+        "question": "Now food scarcity is reported alongside the drought. What is the stress level?",
+        "options": {"A": "nominal", "B": "high", "C": "critical"},
+        "correct": "B"  # high (drought + scarcity)
     },
-    {   # Query 8: Query juvenile development (separate attribute, stable conditions)
-        "attributes": ["juvenile_thorncrester.development"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
-        "question": "With frugivore diet and fructose juveniles, what development?",
-        "options": {"A": "arrested", "B": "maturing", "C": "stunted"},
-        "correct": "B"  # maturing (frugivore matches enzyme)
+    {   # T7: no delta -> expressed diet from high stress
+        "attributes": ["adult_thorncrester.expressed_diet"],
+        "beliefs": {},
+        "question": "With high ecological stress, what is the flock's current expressed diet?",
+        "options": {"A": "frugivore", "B": "insectivore", "C": "scavenger"},
+        "correct": "C"  # scavenger (high stress override)
     },
-    {   # Query 9: Keep prior beliefs, query parasitic load (independent from juvenile dev)
-        "attributes": ["feather_mite.parasitic_load"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor"},
-        "question": "With stable weather, what is the parasitic load?",
-        "options": {"A": "lethal", "B": "harmless", "C": "moderate"},
-        "correct": "B"  # harmless (weather=stable -> plumage=crimson, no dull_grey -> no bloom -> dormant -> harmless)
+    {   # T8: no delta -> plumage change from diet
+        "attributes": ["adult_thorncrester.plumage_color"],
+        "beliefs": {},
+        "question": "Based on the scavenger diet, what color is the plumage?",
+        "options": {"A": "dull_grey", "B": "crimson", "C": "white"},
+        "correct": "A"  # dull_grey
     },
-    {   # Query 10: Final maintenance - requery mortality with all prior beliefs (ultimate test)
-        "attributes": ["adult_thorncrester.mortality_risk"],
-        "beliefs": {"environment.weather_pattern": "stable", "environment.food_scarcity": False, "adult_thorncrester.genetic_diet": "frugivore", "juvenile_thorncrester.digestive_enzyme": "fructose_processor", "thorncrester_flock.genetic_structure": "matriarchal_pairs"},
-        "question": "With all stable baseline beliefs, what mortality risk holds?",
-        "options": {"A": "critical", "B": "low", "C": "variable"},
-        "correct": "B"  # Fully maintained: low (peaceful territory + harmless load = low)
+    {   # T9: genetic diet shift -> expressed diet persistence
+        "attributes": ["adult_thorncrester.expressed_diet"],
+        "beliefs": {"adult_thorncrester.genetic_diet": "frugivore"},
+        "question": "The flock's genetic diet shifts back to frugivore. Under high stress, what is the expressed diet?",
+        "options": {"A": "frugivore", "B": "scavenger", "C": "mixed"},
+        "correct": "B"  # scavenger (high stress still overrides genetic)
+    },
+    {   # T10: scarcity removed -> stress reversion
+        "attributes": ["adult_thorncrester.ecological_stress"],
+        "beliefs": {"environment.food_scarcity": False},
+        "question": "Food scarcity ends while the drought continues. What is the ecological stress now?",
+        "options": {"A": "nominal", "B": "high", "C": "low"},
+        "correct": "A"  # nominal (reversion)
     }
 ]
+

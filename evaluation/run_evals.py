@@ -45,6 +45,12 @@ from evaluation.thorncrester_extended_scenarios import (
     THORNCRESTER_NEGATION_TURNS, THORNCRESTER_1HOP_TURNS, THORNCRESTER_2HOP_TURNS,
     THORNCRESTER_3HOP_TURNS, THORNCRESTER_4HOP_TURNS, THORNCRESTER_BELIEF_MAINTENANCE_TURNS
 )
+from evaluation.hard_scenarios import (
+    LOAN_HARD_TURNS,
+    ALIEN_HARD_TURNS,
+    CRIME_HARD_TURNS,
+    THORNCRESTER_HARD_TURNS,
+)
 from evaluation.belief_awareness_scenarios import (
     LOAN_ABSURD_TURNS, LOAN_ABSURD_TEMPORAL_TURNS, LOAN_GROUNDING_TURNS,
     ALIEN_ABSURD_TURNS, ALIEN_ABSURD_TEMPORAL_TURNS, ALIEN_TRACE_SELECTION_TURNS, ALIEN_GROUNDING_TURNS,
@@ -136,6 +142,13 @@ _BASIC_TURNS_MAP = {
     "thorncrester": THORNCRESTER_TURNS,
 }
 
+_HARD_TURNS_MAP = {
+    "loan": LOAN_HARD_TURNS,
+    "alien_clinic": ALIEN_HARD_TURNS,
+    "crime_scene": CRIME_HARD_TURNS,
+    "thorncrester": THORNCRESTER_HARD_TURNS,
+}
+
 for domain_name, domain_config in _SUBSET_MAP.items():
     # Full basic domain (5 turns)
     DOMAIN_REGISTRY[domain_name] = DomainConfig(
@@ -178,6 +191,17 @@ for domain_name, domain_config in _SUBSET_MAP.items():
             # Beliefs accumulate, but queries ask about UNAFFECTED attributes
             accumulate_prior_beliefs=(subset_name == "belief_maintenance"),
         )
+
+    DOMAIN_REGISTRY[f"{domain_name}_hard"] = DomainConfig(
+        name=f"{domain_name}_hard",
+        setup_fn=domain_config["setup_fn"],
+        initial_beliefs=domain_config["initial_beliefs"],
+        turns=_HARD_TURNS_MAP[domain_name],
+        baseline_rules=domain_config["baseline_rules"],
+        default_entities=domain_config["default_entities"],
+        is_conversational=False,
+        accumulate_prior_beliefs=False,
+    )
 
 # Special alternate belief state for alien_clinic counterfactual
 DOMAIN_REGISTRY["alien_clinic_cf"] = DomainConfig(
