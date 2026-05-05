@@ -858,7 +858,7 @@ def run_with_store_with_history_dual_agent(
 # ────────────────────────────────────────────────────────────────────
 
 def run_single_eval(config: DomainConfig, model: str = "gemma3:1b", temperature: float = 0.0) -> None:
-    """Run single evaluation: all 3 conditions, print results table."""
+    """Run single evaluation: Store vs No Store, print results table."""
     print(f"Connecting to Ollama ({model}) with temperature {temperature}...\n")
     llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
@@ -871,14 +871,7 @@ def run_single_eval(config: DomainConfig, model: str = "gemma3:1b", temperature:
 
     print()
     print("=" * 75)
-    print("[2] WITH Store + Chat History")
-    print("=" * 75)
-    with_history = run_with_store_with_history(llm, config)
-    score_with_history = sum(r["hit"] for r in with_history)
-
-    print()
-    print("=" * 75)
-    print("[3] NO Store (Baseline: rules + chat history only)")
+    print("[2] NO Store (Baseline: rules + chat history only)")
     print("=" * 75)
     no_store = run_without_store(llm, config)
     score_no_store = sum(r["hit"] for r in no_store)
@@ -889,19 +882,17 @@ def run_single_eval(config: DomainConfig, model: str = "gemma3:1b", temperature:
     print("RESULTS SUMMARY")
     print("=" * 75)
     print()
-    print(f"  {'Turn':<6} {'[1] Store':<18} {'[2] +History':<18} {'[3] NO Store':<18}")
-    print(f"  {'─'*6} {'─'*18} {'─'*18} {'─'*18}")
-    for r1, r2, r3 in zip(with_store, with_history, no_store):
+    print(f"  {'Turn':<6} {'[1] Store':<18} {'[2] NO Store':<18}")
+    print(f"  {'─'*6} {'─'*18} {'─'*18}")
+    for r1, r2 in zip(with_store, no_store):
         t = r1["turn"]
         s1 = "✓" if r1["hit"] else f"✗ ({r1['answer']})"
         s2 = "✓" if r2["hit"] else f"✗ ({r2['answer']})"
-        s3 = "✓" if r3["hit"] else f"✗ ({r3['answer']})"
-        print(f"  {t:<6} {s1:<18} {s2:<18} {s3:<18}")
+        print(f"  {t:<6} {s1:<18} {s2:<18}")
 
     print()
-    print(f"  [1] WITH STORE:             {score_with}/{n_turns}  ({score_with * 100 // n_turns}%)")
-    print(f"  [2] WITH STORE (+History):  {score_with_history}/{n_turns}  ({score_with_history * 100 // n_turns}%)")
-    print(f"  [3] NO STORE:               {score_no_store}/{n_turns}  ({score_no_store * 100 // n_turns}%)")
+    print(f"  [1] WITH STORE:  {score_with}/{n_turns}  ({score_with * 100 // n_turns}%)")
+    print(f"  [2] NO STORE:    {score_no_store}/{n_turns}  ({score_no_store * 100 // n_turns}%)")
     print()
 
 
@@ -918,27 +909,25 @@ def run_multi_eval(
     llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
 
-    print(f"Launching {runs} runs ({runs * 3} total tasks) in pool of {workers} workers\n", flush=True)
+    print(f"Launching {runs} runs ({runs * 2} total tasks) in pool of {workers} workers\n", flush=True)
     start = time.time()
 
-    scores: list[list[int]] = [[], [], []]
-    f1_macro_scores: list[list[float]] = [[], [], []]
+    scores: list[list[int]] = [[], []]
+    f1_macro_scores: list[list[float]] = [[], []]
     f1_class_scores: list[dict[str, list[float]]] = [
         {},
         {},
-        {},
     ]
-    hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(3)]
+    hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(2)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
             future_to_task[pool.submit(run_with_store, llm, config)] = (idx, 0)
-            future_to_task[pool.submit(run_with_store_with_history, llm, config)] = (idx, 1)
-            future_to_task[pool.submit(run_without_store, llm, config)] = (idx, 2)
+            future_to_task[pool.submit(run_without_store, llm, config)] = (idx, 1)
 
-        run_results: dict[int, list[int | None]] = {i + 1: [None, None, None] for i in range(runs)}
+        run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
 
         for future in concurrent.futures.as_completed(future_to_task):
             run_idx, condition_idx = future_to_task[future]
@@ -958,8 +947,8 @@ def run_multi_eval(
             scores[condition_idx].append(hits)
 
             if all(v is not None for v in run_results[run_idx]):
-                s1, s2, s3 = run_results[run_idx]
-                print(f"✓ Run {run_idx:>2}: [1] {s1}/{n_turns} | [2] {s2}/{n_turns} | [3] {s3}/{n_turns}", flush=True)
+                s1, s2 = run_results[run_idx]
+                print(f"✓ Run {run_idx:>2}: [1] {s1}/{n_turns} | [2] {s2}/{n_turns}", flush=True)
 
     elapsed = time.time() - start
     n = len(scores[0])
@@ -970,8 +959,7 @@ def run_multi_eval(
 
     condition_labels = [
         "[1] WITH STORE            ",
-        "[2] WITH STORE (+History) ",
-        "[3] NO STORE              ",
+        "[2] NO STORE              ",
     ]
 
     for idx, (label, sc) in enumerate(zip(condition_labels, scores)):
@@ -988,14 +976,13 @@ def run_multi_eval(
         print(f"    Macro F1 | Avg: {f1_avg:.4f} | Var: {f1_var:.6f} | StdDev: {f1_std:.4f}")
 
     print("\n  PER-TURN ACCURACY:")
-    print(f"    {'Turn':<4} | {'[1]':<24} | {'[2]':<24} | {'[3]':<24}")
-    print(f"    {'─'*4} | {'─'*24} | {'─'*24} | {'─'*24}")
+    print(f"    {'Turn':<4} | {'[1]':<24} | {'[2]':<24}")
+    print(f"    {'─'*4} | {'─'*24} | {'─'*24}")
     for t in range(n_turns):
-        acc1, acc2, acc3 = hits_per_turn[0][t], hits_per_turn[1][t], hits_per_turn[2][t]
+        acc1, acc2 = hits_per_turn[0][t], hits_per_turn[1][t]
         s1 = f"{acc1:>2}/{n} ({acc1 * 100 // n:>3}%)"
         s2 = f"{acc2:>2}/{n} ({acc2 * 100 // n:>3}%)"
-        s3 = f"{acc3:>2}/{n} ({acc3 * 100 // n:>3}%)"
-        print(f"    {t+1:>4} | {s1:<24} | {s2:<24} | {s3:<24}")
+        print(f"    {t+1:>4} | {s1:<24} | {s2:<24}")
 
     print("\n  WORST PER-CLASS F1 (LOWEST 5 AVERAGE):")
     for idx, label in enumerate(condition_labels):
@@ -1040,69 +1027,61 @@ def run_multi_eval(
             # Accuracy per domain
             display_model = model_alias or model
             avg0 = (sum(scores[0]) / n) / n_turns if n_turns > 0 else 0
-            avg1 = (sum(scores[1]) / n) / n_turns if n_turns > 0 else 0
-            avg2 = (sum(scores[2]) / n) / n_turns if n_turns > 0 else 0
+            avg2 = (sum(scores[1]) / n) / n_turns if n_turns > 0 else 0
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
-                f"{avg0:.4f}", f"{avg1:.4f}", f"{avg2:.4f}", ""
+                f"{avg0:.4f}", "", f"{avg2:.4f}", ""
             ])
 
             # Variance in raw score
             var0 = statistics.variance(scores[0]) if n > 1 else 0.0
-            var1 = statistics.variance(scores[1]) if n > 1 else 0.0
-            var2 = statistics.variance(scores[2]) if n > 1 else 0.0
+            var2 = statistics.variance(scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
-                f"{var0:.4f}", f"{var1:.4f}", f"{var2:.4f}", ""
+                f"{var0:.4f}", "", f"{var2:.4f}", ""
             ])
 
             # StdDev in raw score
             std0 = statistics.stdev(scores[0]) if n > 1 else 0.0
-            std1 = statistics.stdev(scores[1]) if n > 1 else 0.0
-            std2 = statistics.stdev(scores[2]) if n > 1 else 0.0
+            std2 = statistics.stdev(scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
-                f"{std0:.4f}", f"{std1:.4f}", f"{std2:.4f}", ""
+                f"{std0:.4f}", "", f"{std2:.4f}", ""
             ])
 
             # Macro F1
             f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
-            f1_avg1 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
-            f1_avg2 = sum(f1_macro_scores[2]) / n if n > 0 else 0.0
+            f1_avg2 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Macro",
-                f"{f1_avg0:.4f}", f"{f1_avg1:.4f}", f"{f1_avg2:.4f}", ""
+                f"{f1_avg0:.4f}", "", f"{f1_avg2:.4f}", ""
             ])
 
             f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_var1 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
-            f1_var2 = statistics.variance(f1_macro_scores[2]) if n > 1 else 0.0
+            f1_var2 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_F1_Macro",
-                f"{f1_var0:.6f}", f"{f1_var1:.6f}", f"{f1_var2:.6f}", ""
+                f"{f1_var0:.6f}", "", f"{f1_var2:.6f}", ""
             ])
 
             f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_std1 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
-            f1_std2 = statistics.stdev(f1_macro_scores[2]) if n > 1 else 0.0
+            f1_std2 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_F1_Macro",
-                f"{f1_std0:.6f}", f"{f1_std1:.6f}", f"{f1_std2:.6f}", ""
+                f"{f1_std0:.6f}", "", f"{f1_std2:.6f}", ""
             ])
 
             # Per-class F1 (mean across runs)
             class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
             for class_label in class_labels:
                 c0 = f1_class_scores[0].get(class_label, [])
-                c1 = f1_class_scores[1].get(class_label, [])
-                c2 = f1_class_scores[2].get(class_label, [])
+                c2 = f1_class_scores[1].get(class_label, [])
                 avg_c0 = sum(c0) / len(c0) if c0 else 0.0
-                avg_c1 = sum(c1) / len(c1) if c1 else 0.0
                 avg_c2 = sum(c2) / len(c2) if c2 else 0.0
                 writer.writerow([
                     timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Class",
-                    f"{avg_c0:.4f}", f"{avg_c1:.4f}", f"{avg_c2:.4f}", class_label
+                    f"{avg_c0:.4f}", "", f"{avg_c2:.4f}", class_label
                 ])
 
         print(f"Results exported to {csv_filename}")
@@ -1122,9 +1101,8 @@ def run_multi_eval_dual_agent(
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel.
     
-    Tests:
-      [1] WITH STORE (Dual-Agent): Stateless, fresh store per turn
-      [2] WITH STORE + Chat History (Dual-Agent): Conversational, persistent store
+        Tests:
+            [1] WITH STORE (Dual-Agent): Stateless, fresh store per turn
     
     Provides summary statistics and exports results to CSV.
     
@@ -1146,29 +1124,26 @@ def run_multi_eval_dual_agent(
     llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
 
-    print(f"Launching {runs} runs ({runs * 2} total tasks) with DUAL-AGENT in pool of {workers} workers\n", flush=True)
+    print(f"Launching {runs} runs ({runs * 1} total tasks) with DUAL-AGENT in pool of {workers} workers\n", flush=True)
     start = time.time()
 
-    scores: list[list[int]] = [[], []]  # End-to-end raw hits for run-level trace
+    scores: list[list[int]] = [[]]  # End-to-end raw hits for run-level trace
     metric_scores: list[dict[str, list[float]]] = [
         {"binding": [], "end_to_end": []},
-        {"binding": [], "end_to_end": []},
     ]
-    f1_macro_scores: list[list[float]] = [[], []]
+    f1_macro_scores: list[list[float]] = [[]]
     f1_class_scores: list[dict[str, list[float]]] = [
         {},
-        {},
     ]
-    hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(2)]
+    hits_per_turn: list[list[int]] = [[0] * n_turns]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
             future_to_task[pool.submit(run_with_store_dual_agent, llm, config, reasoner_model, matcher_model)] = (idx, 0)
-            future_to_task[pool.submit(run_with_store_with_history_dual_agent, llm, config, reasoner_model, matcher_model)] = (idx, 1)
 
-        run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
+        run_results: dict[int, list[int | None]] = {i + 1: [None] for i in range(runs)}
 
         for future in concurrent.futures.as_completed(future_to_task):
             run_idx, condition_idx = future_to_task[future]
@@ -1196,8 +1171,8 @@ def run_multi_eval_dual_agent(
                 f1_class_scores[condition_idx].setdefault(label, []).append(score)
 
             if all(v is not None for v in run_results[run_idx]):
-                s1, s2 = run_results[run_idx]
-                print(f"✓ Run {run_idx:>2}: [1 DA] {s1}/{n_turns} | [2 DA] {s2}/{n_turns}", flush=True)
+                (s1,) = run_results[run_idx]
+                print(f"✓ Run {run_idx:>2}: [1 DA] {s1}/{n_turns}", flush=True)
 
     elapsed = time.time() - start
     n = len(scores[0])
@@ -1208,7 +1183,6 @@ def run_multi_eval_dual_agent(
 
     condition_labels = [
         "[1] WITH STORE (Dual-Agent)            ",
-        "[2] WITH STORE +History (Dual-Agent)   ",
     ]
 
     for idx, label in enumerate(condition_labels):
@@ -1233,13 +1207,12 @@ def run_multi_eval_dual_agent(
         print(f"    - End-to-End raw hits: [{raw_hits}]")
 
     print("\n  PER-TURN ACCURACY:")
-    print(f"    {'Turn':<4} | {'[1 DA]':<24} | {'[2 DA]':<24}")
-    print(f"    {'─'*4} | {'─'*24} | {'─'*24}")
+    print(f"    {'Turn':<4} | {'[1 DA]':<24}")
+    print(f"    {'─'*4} | {'─'*24}")
     for t in range(n_turns):
-        acc1, acc2 = hits_per_turn[0][t], hits_per_turn[1][t]
+        acc1 = hits_per_turn[0][t]
         s1 = f"{acc1:>2}/{n} ({acc1 * 100 // n:>3}%)"
-        s2 = f"{acc2:>2}/{n} ({acc2 * 100 // n:>3}%)"
-        print(f"    {t+1:>4} | {s1:<24} | {s2:<24}")
+        print(f"    {t+1:>4} | {s1:<24}")
 
     print("\n  WORST PER-CLASS F1 (END-TO-END, LOWEST 5 AVERAGE):")
     for idx, label in enumerate(condition_labels):
@@ -1290,7 +1263,6 @@ def run_multi_eval_dual_agent(
                 ("end_to_end", "End_to_End"),
             ):
                 avg0 = sum(metric_scores[0][metric_key]) / n if n > 0 else 0.0
-                avg1 = sum(metric_scores[1][metric_key]) / n if n > 0 else 0.0
                 writer.writerow([
                     timestamp,
                     config.name,
@@ -1303,12 +1275,11 @@ def run_multi_eval_dual_agent(
                     metric_family,
                     "Average_Accuracy",
                     f"{avg0:.4f}",
-                    f"{avg1:.4f}",
+                    "",
                     "",
                 ])
 
                 var0 = statistics.variance(metric_scores[0][metric_key]) if n > 1 else 0.0
-                var1 = statistics.variance(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
                     timestamp,
                     config.name,
@@ -1321,12 +1292,11 @@ def run_multi_eval_dual_agent(
                     metric_family,
                     "Variance_Accuracy",
                     f"{var0:.6f}",
-                    f"{var1:.6f}",
+                    "",
                     "",
                 ])
 
                 std0 = statistics.stdev(metric_scores[0][metric_key]) if n > 1 else 0.0
-                std1 = statistics.stdev(metric_scores[1][metric_key]) if n > 1 else 0.0
                 writer.writerow([
                     timestamp,
                     config.name,
@@ -1339,13 +1309,12 @@ def run_multi_eval_dual_agent(
                     metric_family,
                     "Standard_Deviation_Accuracy",
                     f"{std0:.6f}",
-                    f"{std1:.6f}",
+                    "",
                     "",
                 ])
 
             # Macro F1 (End-to-End only)
             f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
-            f1_avg1 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
             writer.writerow([
                 timestamp,
                 config.name,
@@ -1358,12 +1327,11 @@ def run_multi_eval_dual_agent(
                 "End_to_End",
                 "Average_F1_Macro",
                 f"{f1_avg0:.4f}",
-                f"{f1_avg1:.4f}",
+                "",
                 "",
             ])
 
             f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_var1 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp,
                 config.name,
@@ -1376,12 +1344,11 @@ def run_multi_eval_dual_agent(
                 "End_to_End",
                 "Variance_F1_Macro",
                 f"{f1_var0:.6f}",
-                f"{f1_var1:.6f}",
+                "",
                 "",
             ])
 
             f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_std1 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
             writer.writerow([
                 timestamp,
                 config.name,
@@ -1394,7 +1361,7 @@ def run_multi_eval_dual_agent(
                 "End_to_End",
                 "StdDev_F1_Macro",
                 f"{f1_std0:.6f}",
-                f"{f1_std1:.6f}",
+                "",
                 "",
             ])
 
@@ -1402,9 +1369,7 @@ def run_multi_eval_dual_agent(
             class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
             for class_label in class_labels:
                 c0 = f1_class_scores[0].get(class_label, [])
-                c1 = f1_class_scores[1].get(class_label, [])
                 avg_c0 = sum(c0) / len(c0) if c0 else 0.0
-                avg_c1 = sum(c1) / len(c1) if c1 else 0.0
                 writer.writerow([
                     timestamp,
                     config.name,
@@ -1417,7 +1382,7 @@ def run_multi_eval_dual_agent(
                     "End_to_End",
                     "Average_F1_Class",
                     f"{avg_c0:.4f}",
-                    f"{avg_c1:.4f}",
+                    "",
                     class_label,
                 ])
 
