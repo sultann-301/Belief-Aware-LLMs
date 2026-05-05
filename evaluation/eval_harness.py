@@ -492,6 +492,99 @@ def _process_result(
     return result
 
 
+def _ensure_csv_header(csv_filename: str, header: list[str]) -> None:
+    """Ensure CSV has the expected header; upgrade if a new trailing column was added."""
+    if not os.path.isfile(csv_filename):
+        return
+
+    try:
+        with open(csv_filename, newline="", encoding="utf-8") as f:
+            rows = list(csv.reader(f))
+    except Exception:
+        return
+
+    if not rows:
+        return
+
+    existing_header = rows[0]
+    if existing_header == header:
+        return
+
+    if existing_header == header[: len(existing_header)]:
+        new_rows = [header]
+        pad_len = len(header)
+        for row in rows[1:]:
+            if len(row) < pad_len:
+                row = row + [""] * (pad_len - len(row))
+            new_rows.append(row)
+
+        with open(csv_filename, "w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerows(new_rows)
+
+
+def _resolve_gold_phrase(turn: dict[str, Any]) -> str:
+    options = turn.get("options", {})
+    correct_label = turn.get("correct")
+    if correct_label in options:
+        return options[correct_label]
+    return str(correct_label) if correct_label is not None else ""
+
+
+def _resolve_pred_phrase(turn: dict[str, Any], answer_label: str | None) -> str:
+    if answer_label is None:
+        return "NO_ANSWER"
+
+    options = turn.get("options", {})
+    if answer_label in options:
+        return options[answer_label]
+    return "NO_ANSWER"
+
+
+def _collect_class_labels(config: DomainConfig) -> list[str]:
+    labels: set[str] = set()
+    for turn in config.turns:
+        options = turn.get("options", {})
+        labels.update(str(v) for v in options.values())
+
+    labels.add("NO_ANSWER")
+    return sorted(labels)
+
+
+def _compute_f1_metrics(
+    config: DomainConfig,
+    results: list[dict[str, Any]],
+) -> tuple[float, dict[str, float]]:
+    """Compute per-class and macro F1 using option phrases + NO_ANSWER."""
+    class_labels = _collect_class_labels(config)
+    counts = {label: {"tp": 0, "fp": 0, "fn": 0} for label in class_labels}
+
+    for turn, res in zip(config.turns, results):
+        gold = _resolve_gold_phrase(turn)
+        pred = _resolve_pred_phrase(turn, res.get("answer"))
+
+        for label in class_labels:
+            if pred == label and gold == label:
+                counts[label]["tp"] += 1
+            elif pred == label and gold != label:
+                counts[label]["fp"] += 1
+            elif pred != label and gold == label:
+                counts[label]["fn"] += 1
+
+    per_class_f1: dict[str, float] = {}
+    for label, c in counts.items():
+        denom = 2 * c["tp"] + c["fp"] + c["fn"]
+        if denom > 0:
+            per_class_f1[label] = (2 * c["tp"]) / denom
+
+    if per_class_f1:
+        macro_f1 = sum(per_class_f1.values()) / len(per_class_f1)
+    else:
+        macro_f1 = 0.0
+
+    return macro_f1, per_class_f1
+
+
 # ────────────────────────────────────────────────────────────────────
 # Evaluation Conditions
 # ────────────────────────────────────────────────────────────────────
@@ -829,6 +922,12 @@ def run_multi_eval(
     start = time.time()
 
     scores: list[list[int]] = [[], [], []]
+    f1_macro_scores: list[list[float]] = [[], [], []]
+    f1_class_scores: list[dict[str, list[float]]] = [
+        {},
+        {},
+        {},
+    ]
     hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(3)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
@@ -845,6 +944,11 @@ def run_multi_eval(
             run_idx, condition_idx = future_to_task[future]
             res = future.result()
             hits = sum(r["hit"] for r in res)
+
+            macro_f1, per_class_f1 = _compute_f1_metrics(config, res)
+            f1_macro_scores[condition_idx].append(macro_f1)
+            for label, score in per_class_f1.items():
+                f1_class_scores[condition_idx].setdefault(label, []).append(score)
 
             for r in res:
                 if r["hit"]:
@@ -870,12 +974,18 @@ def run_multi_eval(
         "[3] NO STORE              ",
     ]
 
-    for label, sc in zip(condition_labels, scores):
+    for idx, (label, sc) in enumerate(zip(condition_labels, scores)):
         avg = sum(sc) / n
         var = statistics.variance(sc) if n > 1 else 0.0
         std = statistics.stdev(sc) if n > 1 else 0.0
         sc_str = ", ".join(str(x) for x in sc)
         print(f"  {label} | Avg: {avg:.2f}/{n_turns} | Var: {var:.2f} | StdDev: {std:.2f} | Scores: [{sc_str}]")
+
+        f1_sc = f1_macro_scores[idx]
+        f1_avg = sum(f1_sc) / n if n > 0 else 0.0
+        f1_var = statistics.variance(f1_sc) if n > 1 else 0.0
+        f1_std = statistics.stdev(f1_sc) if n > 1 else 0.0
+        print(f"    Macro F1 | Avg: {f1_avg:.4f} | Var: {f1_var:.6f} | StdDev: {f1_std:.4f}")
 
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1]':<24} | {'[2]':<24} | {'[3]':<24}")
@@ -887,6 +997,19 @@ def run_multi_eval(
         s3 = f"{acc3:>2}/{n} ({acc3 * 100 // n:>3}%)"
         print(f"    {t+1:>4} | {s1:<24} | {s2:<24} | {s3:<24}")
 
+    print("\n  WORST PER-CLASS F1 (LOWEST 5 AVERAGE):")
+    for idx, label in enumerate(condition_labels):
+        class_means = {
+            k: (sum(v) / len(v))
+            for k, v in f1_class_scores[idx].items()
+            if v
+        }
+        worst = sorted(class_means.items(), key=lambda item: item[1])[:5]
+        if worst:
+            print(f"    {label}")
+            for class_label, score in worst:
+                print(f"      {class_label}: {score:.4f}")
+
     print("=" * 80)
     print(f"Total wall-clock time: {elapsed:.1f}s\n")
 
@@ -894,14 +1017,25 @@ def run_multi_eval(
     csv_filename = "eval_results.csv"
     file_exists = os.path.isfile(csv_filename)
     prompt_ver = get_eval_prompt_version(config.eval_prompt_version)
+    header = [
+        "Timestamp",
+        "Domain",
+        "Model",
+        "Temp",
+        "Prompt_Ver",
+        "Runs",
+        "Summary_Metric",
+        "With_Store",
+        "Store_History",
+        "No_Store",
+        "Class_Label",
+    ]
     try:
+        _ensure_csv_header(csv_filename, header)
         with open(csv_filename, "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             if not file_exists:
-                writer.writerow([
-                    "Timestamp", "Domain", "Model", "Temp", "Prompt_Ver", "Runs", "Summary_Metric",
-                    "With_Store", "Store_History", "No_Store"
-                ])
+                writer.writerow(header)
 
             # Accuracy per domain
             display_model = model_alias or model
@@ -911,7 +1045,7 @@ def run_multi_eval(
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
-                f"{avg0:.4f}", f"{avg1:.4f}", f"{avg2:.4f}"
+                f"{avg0:.4f}", f"{avg1:.4f}", f"{avg2:.4f}", ""
             ])
 
             # Variance in raw score
@@ -920,7 +1054,7 @@ def run_multi_eval(
             var2 = statistics.variance(scores[2]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
-                f"{var0:.4f}", f"{var1:.4f}", f"{var2:.4f}"
+                f"{var0:.4f}", f"{var1:.4f}", f"{var2:.4f}", ""
             ])
 
             # StdDev in raw score
@@ -929,8 +1063,47 @@ def run_multi_eval(
             std2 = statistics.stdev(scores[2]) if n > 1 else 0.0
             writer.writerow([
                 timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
-                f"{std0:.4f}", f"{std1:.4f}", f"{std2:.4f}"
+                f"{std0:.4f}", f"{std1:.4f}", f"{std2:.4f}", ""
             ])
+
+            # Macro F1
+            f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
+            f1_avg1 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
+            f1_avg2 = sum(f1_macro_scores[2]) / n if n > 0 else 0.0
+            writer.writerow([
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Macro",
+                f"{f1_avg0:.4f}", f"{f1_avg1:.4f}", f"{f1_avg2:.4f}", ""
+            ])
+
+            f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
+            f1_var1 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
+            f1_var2 = statistics.variance(f1_macro_scores[2]) if n > 1 else 0.0
+            writer.writerow([
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_F1_Macro",
+                f"{f1_var0:.6f}", f"{f1_var1:.6f}", f"{f1_var2:.6f}", ""
+            ])
+
+            f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
+            f1_std1 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
+            f1_std2 = statistics.stdev(f1_macro_scores[2]) if n > 1 else 0.0
+            writer.writerow([
+                timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_F1_Macro",
+                f"{f1_std0:.6f}", f"{f1_std1:.6f}", f"{f1_std2:.6f}", ""
+            ])
+
+            # Per-class F1 (mean across runs)
+            class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
+            for class_label in class_labels:
+                c0 = f1_class_scores[0].get(class_label, [])
+                c1 = f1_class_scores[1].get(class_label, [])
+                c2 = f1_class_scores[2].get(class_label, [])
+                avg_c0 = sum(c0) / len(c0) if c0 else 0.0
+                avg_c1 = sum(c1) / len(c1) if c1 else 0.0
+                avg_c2 = sum(c2) / len(c2) if c2 else 0.0
+                writer.writerow([
+                    timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Class",
+                    f"{avg_c0:.4f}", f"{avg_c1:.4f}", f"{avg_c2:.4f}", class_label
+                ])
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:
@@ -981,6 +1154,11 @@ def run_multi_eval_dual_agent(
         {"binding": [], "end_to_end": []},
         {"binding": [], "end_to_end": []},
     ]
+    f1_macro_scores: list[list[float]] = [[], []]
+    f1_class_scores: list[dict[str, list[float]]] = [
+        {},
+        {},
+    ]
     hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(2)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
@@ -1012,6 +1190,11 @@ def run_multi_eval_dual_agent(
             metric_scores[condition_idx]["end_to_end"].append(end_to_end_ratio)
             metric_scores[condition_idx]["binding"].append(binding_ratio)
 
+            macro_f1, per_class_f1 = _compute_f1_metrics(config, res)
+            f1_macro_scores[condition_idx].append(macro_f1)
+            for label, score in per_class_f1.items():
+                f1_class_scores[condition_idx].setdefault(label, []).append(score)
+
             if all(v is not None for v in run_results[run_idx]):
                 s1, s2 = run_results[run_idx]
                 print(f"✓ Run {run_idx:>2}: [1 DA] {s1}/{n_turns} | [2 DA] {s2}/{n_turns}", flush=True)
@@ -1040,6 +1223,12 @@ def run_multi_eval_dual_agent(
             std = statistics.stdev(sc) if n > 1 else 0.0
             print(f"    - {metric_label:<10} Avg: {avg:.4f} | Var: {var:.6f} | StdDev: {std:.4f}")
 
+        f1_sc = f1_macro_scores[idx]
+        f1_avg = sum(f1_sc) / n if n > 0 else 0.0
+        f1_var = statistics.variance(f1_sc) if n > 1 else 0.0
+        f1_std = statistics.stdev(f1_sc) if n > 1 else 0.0
+        print(f"    - Macro F1 (End-to-End) Avg: {f1_avg:.4f} | Var: {f1_var:.6f} | StdDev: {f1_std:.4f}")
+
         raw_hits = ", ".join(str(x) for x in scores[idx])
         print(f"    - End-to-End raw hits: [{raw_hits}]")
 
@@ -1052,6 +1241,19 @@ def run_multi_eval_dual_agent(
         s2 = f"{acc2:>2}/{n} ({acc2 * 100 // n:>3}%)"
         print(f"    {t+1:>4} | {s1:<24} | {s2:<24}")
 
+    print("\n  WORST PER-CLASS F1 (END-TO-END, LOWEST 5 AVERAGE):")
+    for idx, label in enumerate(condition_labels):
+        class_means = {
+            k: (sum(v) / len(v))
+            for k, v in f1_class_scores[idx].items()
+            if v
+        }
+        worst = sorted(class_means.items(), key=lambda item: item[1])[:5]
+        if worst:
+            print(f"    {label}")
+            for class_label, score in worst:
+                print(f"      {class_label}: {score:.4f}")
+
     print("=" * 80)
     print(f"Total wall-clock time: {elapsed:.1f}s\n")
 
@@ -1059,24 +1261,27 @@ def run_multi_eval_dual_agent(
     csv_filename = "eval_results_dual_agent.csv"
     file_exists = os.path.isfile(csv_filename)
     prompt_ver = get_eval_prompt_version(config.eval_prompt_version)
+    header = [
+        "Timestamp",
+        "Domain",
+        "Model",
+        "Reasoner_Model",
+        "Matcher_Model",
+        "Temp",
+        "Prompt_Ver",
+        "Runs",
+        "Metric_Family",
+        "Summary_Metric",
+        "Dual_Agent_Store",
+        "Dual_Agent_Store_History",
+        "Class_Label",
+    ]
     try:
+        _ensure_csv_header(csv_filename, header)
         with open(csv_filename, "a", newline="", encoding="utf-8") as f:
             writer = csv.writer(f)
             if not file_exists:
-                writer.writerow([
-                    "Timestamp",
-                    "Domain",
-                    "Model",
-                    "Reasoner_Model",
-                    "Matcher_Model",
-                    "Temp",
-                    "Prompt_Ver",
-                    "Runs",
-                    "Metric_Family",
-                    "Summary_Metric",
-                    "Dual_Agent_Store",
-                    "Dual_Agent_Store_History",
-                ])
+                writer.writerow(header)
 
             display_model = model_alias or model
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
@@ -1099,6 +1304,7 @@ def run_multi_eval_dual_agent(
                     "Average_Accuracy",
                     f"{avg0:.4f}",
                     f"{avg1:.4f}",
+                    "",
                 ])
 
                 var0 = statistics.variance(metric_scores[0][metric_key]) if n > 1 else 0.0
@@ -1116,6 +1322,7 @@ def run_multi_eval_dual_agent(
                     "Variance_Accuracy",
                     f"{var0:.6f}",
                     f"{var1:.6f}",
+                    "",
                 ])
 
                 std0 = statistics.stdev(metric_scores[0][metric_key]) if n > 1 else 0.0
@@ -1133,6 +1340,85 @@ def run_multi_eval_dual_agent(
                     "Standard_Deviation_Accuracy",
                     f"{std0:.6f}",
                     f"{std1:.6f}",
+                    "",
+                ])
+
+            # Macro F1 (End-to-End only)
+            f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
+            f1_avg1 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
+            writer.writerow([
+                timestamp,
+                config.name,
+                display_model,
+                reasoner_model,
+                matcher_model,
+                temperature,
+                prompt_ver,
+                runs,
+                "End_to_End",
+                "Average_F1_Macro",
+                f"{f1_avg0:.4f}",
+                f"{f1_avg1:.4f}",
+                "",
+            ])
+
+            f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
+            f1_var1 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
+            writer.writerow([
+                timestamp,
+                config.name,
+                display_model,
+                reasoner_model,
+                matcher_model,
+                temperature,
+                prompt_ver,
+                runs,
+                "End_to_End",
+                "Variance_F1_Macro",
+                f"{f1_var0:.6f}",
+                f"{f1_var1:.6f}",
+                "",
+            ])
+
+            f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
+            f1_std1 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
+            writer.writerow([
+                timestamp,
+                config.name,
+                display_model,
+                reasoner_model,
+                matcher_model,
+                temperature,
+                prompt_ver,
+                runs,
+                "End_to_End",
+                "StdDev_F1_Macro",
+                f"{f1_std0:.6f}",
+                f"{f1_std1:.6f}",
+                "",
+            ])
+
+            # Per-class F1 (End-to-End, mean across runs)
+            class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
+            for class_label in class_labels:
+                c0 = f1_class_scores[0].get(class_label, [])
+                c1 = f1_class_scores[1].get(class_label, [])
+                avg_c0 = sum(c0) / len(c0) if c0 else 0.0
+                avg_c1 = sum(c1) / len(c1) if c1 else 0.0
+                writer.writerow([
+                    timestamp,
+                    config.name,
+                    display_model,
+                    reasoner_model,
+                    matcher_model,
+                    temperature,
+                    prompt_ver,
+                    runs,
+                    "End_to_End",
+                    "Average_F1_Class",
+                    f"{avg_c0:.4f}",
+                    f"{avg_c1:.4f}",
+                    class_label,
                 ])
 
         print(f"Results exported to {csv_filename}")

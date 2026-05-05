@@ -35,6 +35,7 @@
     "std|hoangquan456/qwen3-nothink:4b|v13|0.7|loan_absurd_temporal",
     "std|hoangquan456/qwen3-nothink:4b|v13|0.7|alien_clinic_absurd_temporal",
     "std|hoangquan456/qwen3-nothink:4b|v13|0.7|crime_scene_absurd_temporal",
-    "std|hoangquan456/qwen3-nothink:4b|v13|0.7|thorncrester_absurd_temporal"
+    "std|hoangquan456/qwen3-nothink:4b|v13|0.7|thorncrester_absurd_temporal",
+    "std|ministral-3:3b|v13|0.7|loan_grounding"
   ]
 }

@@ -10,12 +10,13 @@ import sys
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "dual-agent"  # Change to "standard" for single-model batch
+MODE = "standard"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
     "ministral-3:3b",
-    "hoangquan456/qwen3-nothink:4b"
+    "hoangquan456/qwen3-nothink:4b",
+    "llama3.2:1b",
 
 
     # "ministral:latest",
@@ -39,20 +40,10 @@ TEMPERATURES = [0.7]  # Set to [0.0, 0.7] to test both deterministic and stochas
 
 # Domains to iterate through
 DOMAINS = [
-    "crime_scene_belief_maintenance",
-    "thorncrester_belief_maintenance",
-    "thorncrester_negation",
-    "loan_negation",
-    "crime_scene_negation",
-    "alien_clinic_negation",
-    "loan_absurd_temporal",
-    "alien_clinic_absurd_temporal",
-    "crime_scene_absurd_temporal",
-    "thorncrester_absurd_temporal"
     "loan_grounding",
+    "thorncrester_grounding",
     "alien_clinic_grounding",
     "crime_scene_grounding",
-    "thorncrester_grounding"
 ]
 
 RUNS_PER_CONFIG = 10
