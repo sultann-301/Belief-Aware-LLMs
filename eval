@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Shortcut for: python3 evaluation/run_evals.py [args...]
+#
+# Usage:
+#   ./eval --domain loan --runs 2
+#   ./eval --domain alien_clinic_grounding --dual-agent
+#   ./eval --help
+
+exec python3 "$(dirname "$0")/evaluation/run_evals.py" "$@"

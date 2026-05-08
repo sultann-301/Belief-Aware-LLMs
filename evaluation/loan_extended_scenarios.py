@@ -416,19 +416,21 @@ LOAN_BELIEF_MAINTENANCE_TURNS = [
         "options": {"A": "720", "B": "770", "C": "650"},
         "correct": "B"  # 720 + 50 = 770
     },
-    {   # T2 (delta: +bankruptcy_history) -> raw credit_score persistence
-        "attributes": ["applicant.credit_score"],
+    {   # T2 (delta: +bankruptcy_history) → adjusted_income persistence
+        # bankruptcy_history does NOT feed into adjusted_income (which depends on income, dependents)
+        "attributes": ["loan.adjusted_income"],
         "beliefs": {"applicant.bankruptcy_history": True},
-        "question": "A bankruptcy history is reported. Does the applicant's raw credit score change?",
-        "options": {"A": "720", "B": "680", "C": "500"},
-        "correct": "A"  # Persistence: raw score remains 720
+        "question": "A bankruptcy history is reported. Does the adjusted income change?",
+        "options": {"A": "5000", "B": "4500", "C": "6000"},
+        "correct": "A"  # Persistence: adjusted_income = 6000 - (2*500) = 5000
     },
-    {   # T3 (delta: +short_employment) -> income persistence
-        "attributes": ["applicant.income"],
+    {   # T3 (delta: +short_employment) → high_risk_flag persistence
+        # employment_duration_months does NOT feed into high_risk_flag (which depends on debt_ratio)
+        "attributes": ["loan.high_risk_flag"],
         "beliefs": {"applicant.employment_duration_months": 5},
-        "question": "The applicant has only been employed for 5 months. What is their monthly income?",
-        "options": {"A": "6000", "B": "5000", "C": "4500"},
-        "correct": "A"  # Persistence: income remains 6000
+        "question": "The applicant has only been employed for 5 months. Does the high risk flag change?",
+        "options": {"A": "True", "B": "False", "C": "None"},
+        "correct": "B"  # Persistence: debt_ratio is 0.20 < 0.30, still False
     },
     {   # T4 (delta: +unemployed) -> prequalified check (fails due to unemployment)
         "attributes": ["loan.applicant_prequalified"],
@@ -437,26 +439,29 @@ LOAN_BELIEF_MAINTENANCE_TURNS = [
         "options": {"A": "True", "B": "False", "C": "Unsure"},
         "correct": "B"  # False: unemployed always fails prequalification
     },
-    {   # T5 (delta: +debt_ratio) -> employment persistence
-        "attributes": ["applicant.employment_status"],
+    {   # T5 (delta: +debt_ratio) → credit_score_effective persistence
+        # debt_ratio does NOT feed into credit_score_effective (which depends on credit_score, co_signer)
+        "attributes": ["loan.credit_score_effective"],
         "beliefs": {"applicant.debt_ratio": 0.25},
-        "question": "The debt ratio increases to 0.25. What is the current employment status?",
-        "options": {"A": "unemployed", "B": "employed", "C": "furloughed"},
-        "correct": "A"  # Persistence: still unemployed from T4
+        "question": "The debt ratio changes to 0.25. What is the effective credit score now?",
+        "options": {"A": "770", "B": "720", "C": "670"},
+        "correct": "A"  # Persistence: co_signer=True from T1, so 720+50=770 still
     },
-    {   # T6 (delta: +dependents) -> income persistence
-        "attributes": ["applicant.income"],
+    {   # T6 (delta: +dependents) → high_risk_flag persistence
+        # dependents does NOT feed into high_risk_flag (which depends only on debt_ratio)
+        "attributes": ["loan.high_risk_flag"],
         "beliefs": {"applicant.dependents": 3},
-        "question": "The applicant now has 3 dependents. What is their base monthly income?",
-        "options": {"A": "6000", "B": "4500", "C": "5500"},
-        "correct": "A"  # Persistence: base income still 6000
+        "question": "The applicant now has 3 dependents. Does the high risk flag change?",
+        "options": {"A": "True", "B": "False", "C": "Unknown"},
+        "correct": "B"  # Persistence: debt_ratio is 0.25 < 0.30, still False
     },
-    {   # T7 (delta: +has_collateral) -> credit score persistence
-        "attributes": ["applicant.credit_score"],
+    {   # T7 (delta: +has_collateral) → credit_score_effective persistence
+        # has_collateral does NOT feed into credit_score_effective
+        "attributes": ["loan.credit_score_effective"],
         "beliefs": {"applicant.has_collateral": True},
-        "question": "Collateral is secured. What is the applicant's raw credit score?",
-        "options": {"A": "720", "B": "770", "C": "800"},
-        "correct": "A"  # Persistence: still 720
+        "question": "Collateral is secured. Does the effective credit score change?",
+        "options": {"A": "770", "B": "720", "C": "800"},
+        "correct": "A"  # Persistence: still 720+50=770
     },
     {   # T8 (delta: +income) -> adjusted income accumulation
         "attributes": ["loan.adjusted_income"],

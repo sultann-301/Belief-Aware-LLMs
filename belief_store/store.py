@@ -428,6 +428,47 @@ class BeliefStore:
         for attr in attributes:
             self._resolve_key(attr)
 
+    def get_canonical_evidence_keys(
+        self, attributes: list[str], max_depth: int = 2,
+    ) -> set[str]:
+        """Return belief keys in the causal subgraph for *attributes*.
+
+        Walks the dependency graph backward from the target attributes up to
+        *max_depth* hops.  The target attributes themselves are excluded —
+        only their upstream inputs are returned.
+
+        Depth guide:
+          - 1: direct rule inputs only
+          - 2: inputs + their inputs (default — covers main reasoning chain)
+          - 3: matches HopWalker prompt depth (near-full closure for most domains)
+        """
+        from collections import deque
+
+        attr_set = set(attributes)
+        visited: set[str] = set()
+        queue: deque[tuple[str, int]] = deque()
+
+        # Seed with depth 0 = the target attributes themselves
+        for attr in attributes:
+            queue.append((attr, 0))
+
+        while queue:
+            key, depth = queue.popleft()
+            if key in visited:
+                continue
+            visited.add(key)
+
+            if depth >= max_depth:
+                continue  # include this key but don't recurse further
+
+            rule = self.rule_index.get(key)
+            if rule:
+                for inp in rule["inputs"]:
+                    queue.append((inp, depth + 1))
+
+        # Exclude the target attributes — they're the conclusion, not evidence
+        return visited - attr_set
+
     def format_revision_log(self, since_index: int = 0) -> str:
         """Format the revision log from ``since_index`` onward."""
         lines: list[str] = []

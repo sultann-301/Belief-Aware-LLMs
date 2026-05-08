@@ -10,7 +10,7 @@ import os
 
 from belief_store.prompts import SYSTEM_PROMPTS
 
-DEFAULT_EVAL_PROMPT_VERSION = "v5"
+DEFAULT_EVAL_PROMPT_VERSION = "v15"
 
 _EVAL_SYSTEM_PROMPT_SUFFIX = """\
 
@@ -18,12 +18,25 @@ ANSWER FORMAT:
 For multiple-choice questions, you MUST format your final answer exactly as:
 ANSWER: [exact phrase from options]
 
+CONFIDENCE FORMAT:
+Rate your confidence in YOUR SPECIFIC ANSWER above on a scale of 0 to 1.
+Include this on its own line, BEFORE the ANSWER line:
+CONFIDENCE: <number between 0 and 1>
+
+IMPORTANT: Your confidence must reflect how sure you are that [YOUR CHOSEN ANSWER] is correct
+based on the beliefs/rules provided. Do NOT output a generic number.
+
 Rules:
 1. Wrap the phrase in square brackets: [like this]
 2. Use the EXACT text from the options (case-sensitive, match punctuation)
 3. Do NOT add anything after the closing bracket
-4. This MUST be the last line of your response
-Example: ANSWER: [approved, manual_review]
+4. The ANSWER line MUST be the last line of your response
+5. The CONFIDENCE line must appear immediately before the ANSWER line
+6. CONFIDENCE must be tied to your reasoning, not a random number
+Example: 
+  Based on the rules, I'm quite sure the answer is [approved, manual_review]
+  CONFIDENCE: 0.85
+  ANSWER: [approved, manual_review]
 """
 
 BASELINE_SYSTEM_PROMPT = """\
@@ -31,9 +44,17 @@ You are a reasoning assistant evaluating facts over a conversation.
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
 First, output your reasoning starting with REASONING:
-IMPORTANT: For multiple-choice questions, you MUST end your response with
-the word ANSWER: followed by the EXACT phrase from the options (without brackets).
-Do not write anything after the phrase.
+
+IMPORTANT: For multiple-choice questions, you MUST end your response with:
+1. A CONFIDENCE line (between 0 and 1) reflecting how sure you are of YOUR CHOSEN ANSWER
+2. An ANSWER line with the EXACT phrase from the options (without extra text)
+3. The CONFIDENCE and ANSWER lines must be consecutive, with CONFIDENCE first
+
+Your confidence must be tied to your reasoning, not arbitrary.
+Example:
+  Based on my analysis, I believe the answer is [option text]
+  CONFIDENCE: 0.8
+  ANSWER: [option text]
 """
 
 
@@ -66,6 +87,7 @@ def build_store_prompt(beliefs_text: str, question: str) -> str:
     if beliefs_text:
         parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
     parts.append(f"[QUERY]\n{question}")
+    parts.append("Your confidence: CONFIDENCE: <0 to 1>")
     parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 
@@ -78,6 +100,7 @@ def build_baseline_prompt(
     if belief_updates:
         parts.append("[NEW BELIEF]\n" + "\n".join(belief_updates))
     parts.append(f"[QUERY]\n{question}")
+    parts.append("Your confidence: CONFIDENCE: <0 to 1>")
     parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 

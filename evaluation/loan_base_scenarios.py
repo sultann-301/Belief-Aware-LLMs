@@ -46,51 +46,51 @@ base_scenarios = [
         "base_q": "Is it false that the applicant's adjusted income is exactly 5000?"
     },
 
-    # TYPE: BELIEF MAINTENANCE
+    # TYPE: BELIEF MAINTENANCE (derived attributes)
     {
         "type": "belief_maintenance",
-        "attributes": ["applicant.employment_status"],
+        "attributes": ["loan.adjusted_income"],
         "beliefs": {"applicant.credit_score": 500},
-        "target_attribute": "applicant.employment_status",
-        "correct_value": "employed",
-        "distractors": ["unemployed", "furloughed"],
-        "base_q": "After the credit score drop, what is the applicant's employment_status?"
+        "target_attribute": "loan.adjusted_income",
+        "correct_value": "5000",
+        "distractors": ["4500", "6000"],
+        "base_q": "After the credit score drop, does the adjusted income change?"
     },
     {
         "type": "belief_maintenance",
-        "attributes": ["applicant.co_signer"],
+        "attributes": ["loan.high_risk_flag"],
         "beliefs": {"applicant.dependents": 4},
-        "target_attribute": "applicant.co_signer",
+        "target_attribute": "loan.high_risk_flag",
         "correct_value": "False",
-        "distractors": ["True", "Unknown"],
-        "base_q": "Following the addition of a dependent, what is the applicant's co_signer status?"
+        "distractors": ["True", "None"],
+        "base_q": "Following the addition of a dependent, does the high risk flag change?"
     },
     {
         "type": "belief_maintenance",
-        "attributes": ["applicant.debt_ratio"],
+        "attributes": ["loan.credit_score_effective"],
         "beliefs": {"applicant.loan_amount_requested": 25000},
-        "target_attribute": "applicant.debt_ratio",
-        "correct_value": "0.2",
-        "distractors": ["0.3", "0.4"],
-        "base_q": "When the loan amount requested increases, what happens to the applicant's debt_ratio?"
+        "target_attribute": "loan.credit_score_effective",
+        "correct_value": "720",
+        "distractors": ["770", "650"],
+        "base_q": "When the loan amount requested increases, does the effective credit score change?"
     },
     {
         "type": "belief_maintenance",
-        "attributes": ["applicant.bankruptcy_history"],
+        "attributes": ["loan.adjusted_income"],
         "beliefs": {"applicant.income": 10000},
-        "target_attribute": "applicant.bankruptcy_history",
+        "target_attribute": "loan.adjusted_income",
+        "correct_value": "9000",
+        "distractors": ["10000", "8500"],
+        "base_q": "If the applicant's income rises to 10000, what is the adjusted income?"
+    },
+    {
+        "type": "belief_maintenance",
+        "attributes": ["loan.high_risk_flag"],
+        "beliefs": {"applicant.has_collateral": True},
+        "target_attribute": "loan.high_risk_flag",
         "correct_value": "False",
         "distractors": ["True", "Unknown"],
-        "base_q": "If the applicant's income rises, does the bankruptcy_history change?"
-    },
-    {
-        "type": "belief_maintenance",
-        "attributes": ["applicant.employment_duration_months"],
-        "beliefs": {"applicant.has_collateral": True},
-        "target_attribute": "applicant.employment_duration_months",
-        "correct_value": "36",
-        "distractors": ["24", "12"],
-        "base_q": "After applying for collateral, does the applicant's employment_duration_months change?"
+        "base_q": "After applying for collateral, does the high risk flag change?"
     },
 
     # TYPE: BELIEF UPDATE (1-HOP)

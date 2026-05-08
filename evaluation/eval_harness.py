@@ -13,6 +13,7 @@ Provides:
 from __future__ import annotations
 
 import csv
+import math
 import os
 import re
 import sys
@@ -170,6 +171,18 @@ def _extract_last_answer_line(response: str) -> str | None:
     """Return the content of the last ANSWER: line if present."""
     answer_lines = re.findall(r"(?im)\banswer\s*:\s*(.+?)\s*$", response)
     return answer_lines[-1] if answer_lines else None
+
+
+def _extract_confidence_score(response: str) -> float | None:
+    """Extract the last CONFIDENCE: line as a float between 0 and 1."""
+    matches = re.findall(r"(?im)^\s*confidence\s*:\s*([01](?:\.\d+)?)\s*$", response)
+    if not matches:
+        return None
+    try:
+        value = float(matches[-1])
+    except ValueError:
+        return None
+    return max(0.0, min(1.0, value))
 
 
 def _canonicalize_answer_line(response: str, exact_phrase: str) -> str:
@@ -455,6 +468,7 @@ def _process_result(
 ) -> dict:
     """Extract answer with confidence tracking, log if needed, and return result dict."""
     extraction_result = extract_answer_with_confidence(response, turn.get("options", {}))
+    confidence_score = _extract_confidence_score(response)
     
     if extraction_result is None:
         answer = None
@@ -479,6 +493,7 @@ def _process_result(
         "turn": turn_idx,
         "answer": answer,
         "confidence": confidence,
+        "confidence_score": confidence_score,
         "extraction_method": extraction_method,
         "correct": correct,
         "hit": hit,
@@ -490,6 +505,54 @@ def _process_result(
         result.update(extra_fields)
 
     return result
+
+
+def _compute_calibration_metrics(
+    confidences: list[float],
+    hits: list[bool],
+    bins: int = 10,
+) -> dict[str, float]:
+    """Compute ECE, Brier, and log loss for binary correctness."""
+    if not confidences or len(confidences) != len(hits):
+        return {}
+
+    n = len(confidences)
+    eps = 1e-15
+    brier = 0.0
+    logloss = 0.0
+
+    bin_totals = [0] * bins
+    bin_conf = [0.0] * bins
+    bin_acc = [0.0] * bins
+
+    for p, hit in zip(confidences, hits):
+        y = 1.0 if hit else 0.0
+        brier += (p - y) ** 2
+
+        p_clamped = min(1.0 - eps, max(eps, p))
+        logloss += -(y * math.log(p_clamped) + (1.0 - y) * math.log(1.0 - p_clamped))
+
+        idx = min(int(p * bins), bins - 1)
+        bin_totals[idx] += 1
+        bin_conf[idx] += p
+        bin_acc[idx] += y
+
+    brier /= n
+    logloss /= n
+
+    ece = 0.0
+    for count, conf_sum, acc_sum in zip(bin_totals, bin_conf, bin_acc):
+        if count == 0:
+            continue
+        avg_conf = conf_sum / count
+        avg_acc = acc_sum / count
+        ece += abs(avg_acc - avg_conf) * (count / n)
+
+    return {
+        "calib_ece": ece,
+        "calib_brier": brier,
+        "calib_logloss": logloss,
+    }
 
 
 def _ensure_csv_header(csv_filename: str, header: list[str]) -> None:
@@ -541,48 +604,101 @@ def _resolve_pred_phrase(turn: dict[str, Any], answer_label: str | None) -> str:
     return "NO_ANSWER"
 
 
-def _collect_class_labels(config: DomainConfig) -> list[str]:
-    labels: set[str] = set()
-    for turn in config.turns:
-        options = turn.get("options", {})
-        labels.update(str(v) for v in options.values())
 
-    labels.add("NO_ANSWER")
-    return sorted(labels)
+# ────────────────────────────────────────────────────────────────────
+# Evidence-Based Reasoning Metrics
+# ────────────────────────────────────────────────────────────────────
+
+_BELIEF_KEY_RE = re.compile(r'\b([a-z][a-z0-9_]*\.[a-z][a-z0-9_]*)\b')
 
 
-def _compute_f1_metrics(
-    config: DomainConfig,
-    results: list[dict[str, Any]],
-) -> tuple[float, dict[str, float]]:
-    """Compute per-class and macro F1 using option phrases + NO_ANSWER."""
-    class_labels = _collect_class_labels(config)
-    counts = {label: {"tp": 0, "fp": 0, "fn": 0} for label in class_labels}
+def _extract_evidence_keys_from_response(
+    response: str, known_keys: set[str],
+) -> set[str]:
+    """Extract belief-store keys referenced in model response text.
 
-    for turn, res in zip(config.turns, results):
-        gold = _resolve_gold_phrase(turn)
-        pred = _resolve_pred_phrase(turn, res.get("answer"))
+    Matches ``entity.attribute`` patterns (e.g. ``applicant.credit_score``)
+    and filters to keys that actually exist in the store.
+    """
+    candidates = set(_BELIEF_KEY_RE.findall(response.lower()))
+    return candidates & known_keys
 
-        for label in class_labels:
-            if pred == label and gold == label:
-                counts[label]["tp"] += 1
-            elif pred == label and gold != label:
-                counts[label]["fp"] += 1
-            elif pred != label and gold == label:
-                counts[label]["fn"] += 1
 
-    per_class_f1: dict[str, float] = {}
-    for label, c in counts.items():
-        denom = 2 * c["tp"] + c["fp"] + c["fn"]
-        if denom > 0:
-            per_class_f1[label] = (2 * c["tp"]) / denom
+def _compute_reasoning_metrics(
+    canonical: set[str], cited: set[str],
+) -> dict[str, float]:
+    """Compute precision / recall / F1 over evidence key sets."""
+    if not canonical:
+        return {
+            "evidence_precision": 0.0,
+            "evidence_recall": 0.0,
+            "evidence_f1": 0.0,
+            "evidence_cited_count": 0.0,
+            "evidence_canonical_count": 0.0,
+        }
 
-    if per_class_f1:
-        macro_f1 = sum(per_class_f1.values()) / len(per_class_f1)
+    true_positives = len(canonical & cited)
+    precision = true_positives / len(cited) if cited else 0.0
+    recall = true_positives / len(canonical)
+
+    if precision + recall > 0:
+        f1 = 2 * precision * recall / (precision + recall)
     else:
-        macro_f1 = 0.0
+        f1 = 0.0
 
-    return macro_f1, per_class_f1
+    return {
+        "evidence_precision": precision,
+        "evidence_recall": recall,
+        "evidence_f1": f1,
+        "evidence_cited_count": float(len(cited)),
+        "evidence_canonical_count": float(len(canonical)),
+    }
+
+
+def _get_reasoning_metrics(
+    store: BeliefStore,
+    filter_spec: list[str],
+    is_attr: bool,
+    response: str,
+    cited_keys_override: set[str] | None = None,
+) -> dict[str, float]:
+    """Compute reasoning metrics for a single turn.
+
+    Args:
+        store: The resolved BeliefStore for this turn.
+        filter_spec: Target attributes (or entities) for this turn.
+        is_attr: True if filter_spec contains attribute-level keys.
+        response: Model response text (used for single-agent extraction).
+        cited_keys_override: If provided, use these as the model's cited
+            keys instead of extracting from response (for dual-agent).
+    """
+    if not is_attr:
+        # Entity-level turns don't have specific target attributes.
+        return {}
+
+    canonical = store.get_canonical_evidence_keys(filter_spec)
+    if not canonical:
+        return {}
+
+    if cited_keys_override is not None:
+        cited = cited_keys_override
+    else:
+        # Use both rule_index (computed rules) and beliefs (input hypotheses)
+        # store.beliefs contains explicitly set/resolved values, rule_index has computed rules.
+        # Together they cover both input assumptions and derived facts.
+        known_keys = (set(store.rule_index.keys()) | set(store.beliefs.keys())) - store.removed
+        cited = _extract_evidence_keys_from_response(response, known_keys)
+
+    # DEBUG: Temporary logging to diagnose zero evidence metrics
+    import sys
+    raw_matches = set(_BELIEF_KEY_RE.findall(response.lower()))
+    print(f"  [DEBUG] filter_spec={filter_spec}", file=sys.stderr)
+    print(f"  [DEBUG] canonical={sorted(canonical)}", file=sys.stderr)
+    print(f"  [DEBUG] raw regex matches={sorted(raw_matches)}", file=sys.stderr)
+    print(f"  [DEBUG] cited (intersected w/ known)={sorted(cited)}", file=sys.stderr)
+    print(f"  [DEBUG] response snippet={response[:200]!r}", file=sys.stderr)
+
+    return _compute_reasoning_metrics(canonical, cited)
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -618,7 +734,10 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
 
         raw_response = llm.generate(eval_system_prompt, prompt)
         response = _enforce_exact_phrase_output(turn, raw_response)
-        results.append(_process_result("WITH STORE", i + 1, turn, response))
+
+        reasoning = _get_reasoning_metrics(store, filter_spec, is_attr, raw_response)
+        results.append(_process_result("WITH STORE", i + 1, turn, response,
+                                       extra_fields=reasoning or None))
 
     return results
 
@@ -676,7 +795,9 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
         response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
-        results.append(_process_result("WITH STORE (+History)", i + 1, turn, response))
+        reasoning = _get_reasoning_metrics(current_store, filter_spec, is_attr, raw_response)
+        results.append(_process_result("WITH STORE (+History)", i + 1, turn, response,
+                                       extra_fields=reasoning or None))
 
     return results
 
@@ -767,6 +888,14 @@ def run_with_store_dual_agent(
         # Enforce exact phrase output format for compatibility with extraction logic
         response = _enforce_exact_phrase_output(turn, response)
         split_metrics = _compute_dual_agent_metrics(turn, dual_agent_result)
+
+        cited_override = set(dual_agent_result.get("agent1_evidence_keys", []))
+        reasoning = _get_reasoning_metrics(
+            store, filter_spec, is_attr, response,
+            cited_keys_override=cited_override,
+        )
+        split_metrics.update(reasoning)
+
         results.append(
             _process_result(
                 "WITH STORE (Dual-Agent)",
@@ -840,6 +969,14 @@ def run_with_store_with_history_dual_agent(
             messages.append({"role": "assistant", "content": response})
 
         split_metrics = _compute_dual_agent_metrics(turn, dual_agent_result)
+
+        cited_override = set(dual_agent_result.get("agent1_evidence_keys", []))
+        reasoning = _get_reasoning_metrics(
+            current_store, filter_spec, is_attr, response,
+            cited_keys_override=cited_override,
+        )
+        split_metrics.update(reasoning)
+
         results.append(
             _process_result(
                 "WITH STORE +History (Dual-Agent)",
@@ -901,7 +1038,7 @@ def run_multi_eval(
     runs: int = 10,
     workers: int = 4,
     model: str = "gemma3:1b",
-    temperature: float = 0.0,
+    temperature: float = 0.7,
     model_alias: str | None = None,
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
@@ -913,12 +1050,19 @@ def run_multi_eval(
     start = time.time()
 
     scores: list[list[int]] = [[], []]
-    f1_macro_scores: list[list[float]] = [[], []]
-    f1_class_scores: list[dict[str, list[float]]] = [
-        {},
-        {},
-    ]
     hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(2)]
+    calibration_scores: list[dict[str, list[float]]] = [
+        {"calib_ece": [], "calib_brier": [], "calib_logloss": []},
+        {"calib_ece": [], "calib_brier": [], "calib_logloss": []},
+    ]
+    # Reasoning evidence metrics (WITH STORE only — index 0)
+    reasoning_scores: dict[str, list[float]] = {
+        "evidence_precision": [],
+        "evidence_recall": [],
+        "evidence_f1": [],
+        "evidence_cited_count": [],
+        "evidence_canonical_count": [],
+    }
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
@@ -934,10 +1078,6 @@ def run_multi_eval(
             res = future.result()
             hits = sum(r["hit"] for r in res)
 
-            macro_f1, per_class_f1 = _compute_f1_metrics(config, res)
-            f1_macro_scores[condition_idx].append(macro_f1)
-            for label, score in per_class_f1.items():
-                f1_class_scores[condition_idx].setdefault(label, []).append(score)
 
             for r in res:
                 if r["hit"]:
@@ -945,6 +1085,22 @@ def run_multi_eval(
 
             run_results[run_idx][condition_idx] = hits
             scores[condition_idx].append(hits)
+
+            confidences = [r["confidence_score"] for r in res if r.get("confidence_score") is not None]
+            conf_hits = [r["hit"] for r in res if r.get("confidence_score") is not None]
+            if confidences:
+                calib = _compute_calibration_metrics(confidences, conf_hits)
+                if calib:
+                    for key in calibration_scores[condition_idx]:
+                        calibration_scores[condition_idx][key].append(calib[key])
+
+            # Reasoning metrics (WITH STORE only)
+            if condition_idx == 0:
+                scored = [r for r in res if "evidence_f1" in r]
+                if scored:
+                    for metric_key in reasoning_scores:
+                        avg_val = sum(r[metric_key] for r in scored) / len(scored)
+                        reasoning_scores[metric_key].append(avg_val)
 
             if all(v is not None for v in run_results[run_idx]):
                 s1, s2 = run_results[run_idx]
@@ -969,11 +1125,29 @@ def run_multi_eval(
         sc_str = ", ".join(str(x) for x in sc)
         print(f"  {label} | Avg: {avg:.2f}/{n_turns} | Var: {var:.2f} | StdDev: {std:.2f} | Scores: [{sc_str}]")
 
-        f1_sc = f1_macro_scores[idx]
-        f1_avg = sum(f1_sc) / n if n > 0 else 0.0
-        f1_var = statistics.variance(f1_sc) if n > 1 else 0.0
-        f1_std = statistics.stdev(f1_sc) if n > 1 else 0.0
-        print(f"    Macro F1 | Avg: {f1_avg:.4f} | Var: {f1_var:.6f} | StdDev: {f1_std:.4f}")
+        calib = calibration_scores[idx]
+        if calib["calib_ece"]:
+            ece_avg = sum(calib["calib_ece"]) / len(calib["calib_ece"])
+            brier_avg = sum(calib["calib_brier"]) / len(calib["calib_brier"])
+            ll_avg = sum(calib["calib_logloss"]) / len(calib["calib_logloss"])
+            print(f"    Calibration | ECE: {ece_avg:.4f} | Brier: {brier_avg:.4f} | LogLoss: {ll_avg:.4f}")
+
+    # Reasoning evidence metrics (WITH STORE only)
+    if reasoning_scores["evidence_f1"]:
+        print("\n  REASONING EVIDENCE METRICS (WITH STORE only):")
+        for metric_key, metric_label in (
+            ("evidence_precision", "Precision"),
+            ("evidence_recall", "Recall"),
+            ("evidence_f1", "F1"),
+            ("evidence_cited_count", "Cited Keys"),
+            ("evidence_canonical_count", "Canonical Keys"),
+        ):
+            sc = reasoning_scores[metric_key]
+            r_n = len(sc)
+            r_avg = sum(sc) / r_n if r_n > 0 else 0.0
+            r_var = statistics.variance(sc) if r_n > 1 else 0.0
+            r_std = statistics.stdev(sc) if r_n > 1 else 0.0
+            print(f"    Evidence {metric_label:<10} | Avg: {r_avg:.4f} | Var: {r_var:.6f} | StdDev: {r_std:.4f}")
 
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1]':<24} | {'[2]':<24}")
@@ -984,18 +1158,7 @@ def run_multi_eval(
         s2 = f"{acc2:>2}/{n} ({acc2 * 100 // n:>3}%)"
         print(f"    {t+1:>4} | {s1:<24} | {s2:<24}")
 
-    print("\n  WORST PER-CLASS F1 (LOWEST 5 AVERAGE):")
-    for idx, label in enumerate(condition_labels):
-        class_means = {
-            k: (sum(v) / len(v))
-            for k, v in f1_class_scores[idx].items()
-            if v
-        }
-        worst = sorted(class_means.items(), key=lambda item: item[1])[:5]
-        if worst:
-            print(f"    {label}")
-            for class_label, score in worst:
-                print(f"      {class_label}: {score:.4f}")
+
 
     print("=" * 80)
     print(f"Total wall-clock time: {elapsed:.1f}s\n")
@@ -1050,39 +1213,50 @@ def run_multi_eval(
                 f"{std0:.4f}", "", f"{std2:.4f}", ""
             ])
 
-            # Macro F1
-            f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
-            f1_avg2 = sum(f1_macro_scores[1]) / n if n > 0 else 0.0
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Macro",
-                f"{f1_avg0:.4f}", "", f"{f1_avg2:.4f}", ""
-            ])
-
-            f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_var2 = statistics.variance(f1_macro_scores[1]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_F1_Macro",
-                f"{f1_var0:.6f}", "", f"{f1_var2:.6f}", ""
-            ])
-
-            f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
-            f1_std2 = statistics.stdev(f1_macro_scores[1]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_F1_Macro",
-                f"{f1_std0:.6f}", "", f"{f1_std2:.6f}", ""
-            ])
-
-            # Per-class F1 (mean across runs)
-            class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
-            for class_label in class_labels:
-                c0 = f1_class_scores[0].get(class_label, [])
-                c2 = f1_class_scores[1].get(class_label, [])
-                avg_c0 = sum(c0) / len(c0) if c0 else 0.0
-                avg_c2 = sum(c2) / len(c2) if c2 else 0.0
+            # Calibration metrics (if available)
+            for metric_key, csv_metric in (
+                ("calib_ece", "Average_Calibration_ECE"),
+                ("calib_brier", "Average_Calibration_Brier"),
+                ("calib_logloss", "Average_Calibration_LogLoss"),
+            ):
+                sc0 = calibration_scores[0][metric_key]
+                sc1 = calibration_scores[1][metric_key]
+                if not sc0 and not sc1:
+                    continue
+                avg_c0 = sum(sc0) / len(sc0) if sc0 else 0.0
+                avg_c1 = sum(sc1) / len(sc1) if sc1 else 0.0
                 writer.writerow([
-                    timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_F1_Class",
-                    f"{avg_c0:.4f}", "", f"{avg_c2:.4f}", class_label
+                    timestamp,
+                    config.name,
+                    display_model,
+                    temperature,
+                    prompt_ver,
+                    runs,
+                    csv_metric,
+                    f"{avg_c0:.4f}",
+                    "",
+                    f"{avg_c1:.4f}",
+                    "",
                 ])
+
+
+
+            # Reasoning evidence metrics (WITH STORE only)
+            for metric_key, csv_metric in (
+                ("evidence_precision", "Average_Evidence_Precision"),
+                ("evidence_recall", "Average_Evidence_Recall"),
+                ("evidence_f1", "Average_Evidence_F1"),
+                ("evidence_cited_count", "Average_Evidence_Cited_Keys"),
+                ("evidence_canonical_count", "Average_Evidence_Canonical_Keys"),
+            ):
+                sc = reasoning_scores[metric_key]
+                r_avg = sum(sc) / len(sc) if sc else 0.0
+                writer.writerow([
+                    timestamp, config.name, display_model, temperature, prompt_ver, runs, csv_metric,
+                    f"{r_avg:.4f}", "", "", ""
+                ])
+
+
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:
@@ -1131,11 +1305,16 @@ def run_multi_eval_dual_agent(
     metric_scores: list[dict[str, list[float]]] = [
         {"binding": [], "end_to_end": []},
     ]
-    f1_macro_scores: list[list[float]] = [[]]
-    f1_class_scores: list[dict[str, list[float]]] = [
-        {},
-    ]
+
     hits_per_turn: list[list[int]] = [[0] * n_turns]
+    # Reasoning evidence metrics
+    reasoning_scores: dict[str, list[float]] = {
+        "evidence_precision": [],
+        "evidence_recall": [],
+        "evidence_f1": [],
+        "evidence_cited_count": [],
+        "evidence_canonical_count": [],
+    }
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
@@ -1165,10 +1344,14 @@ def run_multi_eval_dual_agent(
             metric_scores[condition_idx]["end_to_end"].append(end_to_end_ratio)
             metric_scores[condition_idx]["binding"].append(binding_ratio)
 
-            macro_f1, per_class_f1 = _compute_f1_metrics(config, res)
-            f1_macro_scores[condition_idx].append(macro_f1)
-            for label, score in per_class_f1.items():
-                f1_class_scores[condition_idx].setdefault(label, []).append(score)
+
+
+            # Reasoning evidence metrics
+            scored = [r for r in res if "evidence_f1" in r]
+            if scored:
+                for metric_key in reasoning_scores:
+                    avg_val = sum(r[metric_key] for r in scored) / len(scored)
+                    reasoning_scores[metric_key].append(avg_val)
 
             if all(v is not None for v in run_results[run_idx]):
                 (s1,) = run_results[run_idx]
@@ -1197,14 +1380,27 @@ def run_multi_eval_dual_agent(
             std = statistics.stdev(sc) if n > 1 else 0.0
             print(f"    - {metric_label:<10} Avg: {avg:.4f} | Var: {var:.6f} | StdDev: {std:.4f}")
 
-        f1_sc = f1_macro_scores[idx]
-        f1_avg = sum(f1_sc) / n if n > 0 else 0.0
-        f1_var = statistics.variance(f1_sc) if n > 1 else 0.0
-        f1_std = statistics.stdev(f1_sc) if n > 1 else 0.0
-        print(f"    - Macro F1 (End-to-End) Avg: {f1_avg:.4f} | Var: {f1_var:.6f} | StdDev: {f1_std:.4f}")
+
 
         raw_hits = ", ".join(str(x) for x in scores[idx])
         print(f"    - End-to-End raw hits: [{raw_hits}]")
+
+    # Reasoning evidence metrics
+    if reasoning_scores["evidence_f1"]:
+        print("\n  REASONING EVIDENCE METRICS:")
+        for metric_key, metric_label in (
+            ("evidence_precision", "Precision"),
+            ("evidence_recall", "Recall"),
+            ("evidence_f1", "F1"),
+            ("evidence_cited_count", "Cited Keys"),
+            ("evidence_canonical_count", "Canonical Keys"),
+        ):
+            sc = reasoning_scores[metric_key]
+            r_n = len(sc)
+            r_avg = sum(sc) / r_n if r_n > 0 else 0.0
+            r_var = statistics.variance(sc) if r_n > 1 else 0.0
+            r_std = statistics.stdev(sc) if r_n > 1 else 0.0
+            print(f"    Evidence {metric_label:<10} | Avg: {r_avg:.4f} | Var: {r_var:.6f} | StdDev: {r_std:.4f}")
 
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1 DA]':<24}")
@@ -1214,18 +1410,7 @@ def run_multi_eval_dual_agent(
         s1 = f"{acc1:>2}/{n} ({acc1 * 100 // n:>3}%)"
         print(f"    {t+1:>4} | {s1:<24}")
 
-    print("\n  WORST PER-CLASS F1 (END-TO-END, LOWEST 5 AVERAGE):")
-    for idx, label in enumerate(condition_labels):
-        class_means = {
-            k: (sum(v) / len(v))
-            for k, v in f1_class_scores[idx].items()
-            if v
-        }
-        worst = sorted(class_means.items(), key=lambda item: item[1])[:5]
-        if worst:
-            print(f"    {label}")
-            for class_label, score in worst:
-                print(f"      {class_label}: {score:.4f}")
+
 
     print("=" * 80)
     print(f"Total wall-clock time: {elapsed:.1f}s\n")
@@ -1313,63 +1498,18 @@ def run_multi_eval_dual_agent(
                     "",
                 ])
 
-            # Macro F1 (End-to-End only)
-            f1_avg0 = sum(f1_macro_scores[0]) / n if n > 0 else 0.0
-            writer.writerow([
-                timestamp,
-                config.name,
-                display_model,
-                reasoner_model,
-                matcher_model,
-                temperature,
-                prompt_ver,
-                runs,
-                "End_to_End",
-                "Average_F1_Macro",
-                f"{f1_avg0:.4f}",
-                "",
-                "",
-            ])
 
-            f1_var0 = statistics.variance(f1_macro_scores[0]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp,
-                config.name,
-                display_model,
-                reasoner_model,
-                matcher_model,
-                temperature,
-                prompt_ver,
-                runs,
-                "End_to_End",
-                "Variance_F1_Macro",
-                f"{f1_var0:.6f}",
-                "",
-                "",
-            ])
 
-            f1_std0 = statistics.stdev(f1_macro_scores[0]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp,
-                config.name,
-                display_model,
-                reasoner_model,
-                matcher_model,
-                temperature,
-                prompt_ver,
-                runs,
-                "End_to_End",
-                "StdDev_F1_Macro",
-                f"{f1_std0:.6f}",
-                "",
-                "",
-            ])
-
-            # Per-class F1 (End-to-End, mean across runs)
-            class_labels = sorted(set().union(*[set(d.keys()) for d in f1_class_scores]))
-            for class_label in class_labels:
-                c0 = f1_class_scores[0].get(class_label, [])
-                avg_c0 = sum(c0) / len(c0) if c0 else 0.0
+            # Reasoning evidence metrics
+            for metric_key, csv_metric in (
+                ("evidence_precision", "Average_Evidence_Precision"),
+                ("evidence_recall", "Average_Evidence_Recall"),
+                ("evidence_f1", "Average_Evidence_F1"),
+                ("evidence_cited_count", "Average_Evidence_Cited_Keys"),
+                ("evidence_canonical_count", "Average_Evidence_Canonical_Keys"),
+            ):
+                sc = reasoning_scores[metric_key]
+                r_avg = sum(sc) / len(sc) if sc else 0.0
                 writer.writerow([
                     timestamp,
                     config.name,
@@ -1379,12 +1519,14 @@ def run_multi_eval_dual_agent(
                     temperature,
                     prompt_ver,
                     runs,
-                    "End_to_End",
-                    "Average_F1_Class",
-                    f"{avg_c0:.4f}",
+                    "Reasoning",
+                    csv_metric,
+                    f"{r_avg:.4f}",
                     "",
-                    class_label,
+                    "",
                 ])
+
+
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:

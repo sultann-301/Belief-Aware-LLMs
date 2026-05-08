@@ -14,10 +14,9 @@ MODE = "standard"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
+    "llama3.2:1b",
     "ministral-3:3b",
     "hoangquan456/qwen3-nothink:4b",
-    "llama3.2:1b",
-
 
     # "ministral:latest",
 ]
@@ -33,17 +32,17 @@ MATCHER_MODELS = [
 ]
 
 # Prompt versions to compare
-PROMPTS = ["v13"]
+PROMPTS = ["v15"]
 
 # Temperature(s) to test
 TEMPERATURES = [0.7]  # Set to [0.0, 0.7] to test both deterministic and stochastic
 
 # Domains to iterate through
 DOMAINS = [
-    "loan_grounding",
-    "thorncrester_grounding",
-    "alien_clinic_grounding",
-    "crime_scene_grounding",
+    "loan_belief_maintenance",
+    "alien_clinic_belief_maintenance",
+    "thorncrester_belief_maintenance",
+    "crime_scene_belief_maintenance",
 ]
 
 RUNS_PER_CONFIG = 10
