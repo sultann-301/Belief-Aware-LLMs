@@ -31,6 +31,18 @@ class OllamaClient:
         self.think = think
         self.temperature = temperature
 
+    def _options(self) -> dict[str, object]:
+        """Generation defaults that reduce repetition and runaway loops."""
+        return {
+            "temperature": self.temperature,
+            "num_predict": 1024,
+            "num_ctx": 8192,
+            "repeat_penalty": 1.15,
+            "repeat_last_n": 128,
+            "top_k": 40,
+            "top_p": 0.9,
+        }
+
     def generate(self, system_prompt: str, user_prompt: str, model: str | None = None, json_mode: bool = False) -> str:
         response = self._client.chat(
             model=model or self.model,
@@ -40,11 +52,7 @@ class OllamaClient:
             ],
             format="json" if json_mode else None,
             think=False,
-            options={
-                "temperature": self.temperature,
-                "num_predict": 5000,
-                "num_ctx": 8192,
-            },
+            options=self._options(),
         )
         return response.message.content
 
@@ -55,10 +63,6 @@ class OllamaClient:
             messages=messages,
             format="json" if json_mode else None,
             think=False,
-            options={
-                "temperature": self.temperature,
-                "num_predict": 5000,
-                "num_ctx": 8192,
-            },
+            options=self._options(),
         )
         return response.message.content

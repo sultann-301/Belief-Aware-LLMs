@@ -1,7 +1,0 @@
-Domain,Model,Reasoner_Model,Matcher_Model,Temp,Prompt_Ver,Runs,Metric_Family,Summary_Metric,Dual_Agent_Store,Dual_Agent_Store_History
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,Binding,Average_Accuracy,0.9000,0.8000
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,Binding,Variance_Accuracy,0.000000,0.000000
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,Binding,Standard_Deviation_Accuracy,0.000000,0.000000
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,End_to_End,Average_Accuracy,1.0000,0.9000
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,End_to_End,Variance_Accuracy,0.000000,0.000000
-thorncrester,gemma3:1b,gemma3:1b,ministral-3:3b,0.0,v5,1,End_to_End,Standard_Deviation_Accuracy,0.000000,0.000000

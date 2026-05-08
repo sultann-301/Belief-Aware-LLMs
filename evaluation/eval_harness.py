@@ -689,14 +689,6 @@ def _get_reasoning_metrics(
         known_keys = (set(store.rule_index.keys()) | set(store.beliefs.keys())) - store.removed
         cited = _extract_evidence_keys_from_response(response, known_keys)
 
-    # DEBUG: Temporary logging to diagnose zero evidence metrics
-    import sys
-    raw_matches = set(_BELIEF_KEY_RE.findall(response.lower()))
-    print(f"  [DEBUG] filter_spec={filter_spec}", file=sys.stderr)
-    print(f"  [DEBUG] canonical={sorted(canonical)}", file=sys.stderr)
-    print(f"  [DEBUG] raw regex matches={sorted(raw_matches)}", file=sys.stderr)
-    print(f"  [DEBUG] cited (intersected w/ known)={sorted(cited)}", file=sys.stderr)
-    print(f"  [DEBUG] response snippet={response[:200]!r}", file=sys.stderr)
 
     return _compute_reasoning_metrics(canonical, cited)
 
@@ -844,6 +836,19 @@ def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
     return results
 
 
+def _run_standard_eval_task(
+    condition: int,
+    config: DomainConfig,
+    model: str,
+    temperature: float,
+) -> list[dict]:
+    """Run one standard eval task with its own Ollama client instance."""
+    llm = OllamaClient(model=model, temperature=temperature)
+    if condition == 0:
+        return run_with_store(llm, config)
+    return run_without_store(llm, config)
+
+
 def run_with_store_dual_agent(
     llm: OllamaClient,
     config: DomainConfig,
@@ -907,6 +912,18 @@ def run_with_store_dual_agent(
         )
 
     return results
+
+
+def _run_dual_agent_eval_task(
+    config: DomainConfig,
+    model: str,
+    temperature: float,
+    reasoner_model: str,
+    matcher_model: str,
+) -> list[dict]:
+    """Run one dual-agent eval task with its own Ollama client instance."""
+    llm = OllamaClient(model=model, temperature=temperature)
+    return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model)
 
 
 def run_with_store_with_history_dual_agent(
@@ -1043,7 +1060,6 @@ def run_multi_eval(
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
-    llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
 
     print(f"Launching {runs} runs ({runs * 2} total tasks) in pool of {workers} workers\n", flush=True)
@@ -1068,8 +1084,12 @@ def run_multi_eval(
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
-            future_to_task[pool.submit(run_with_store, llm, config)] = (idx, 0)
-            future_to_task[pool.submit(run_without_store, llm, config)] = (idx, 1)
+            future_to_task[
+                pool.submit(_run_standard_eval_task, 0, config, model, temperature)
+            ] = (idx, 0)
+            future_to_task[
+                pool.submit(_run_standard_eval_task, 1, config, model, temperature)
+            ] = (idx, 1)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
 
@@ -1295,7 +1315,6 @@ def run_multi_eval_dual_agent(
     matcher_model = matcher_model or model
     
     print(f"Connecting to Ollama (Reasoner: {reasoner_model}, Matcher: {matcher_model})...\n")
-    llm = OllamaClient(model=model, temperature=temperature)
     n_turns = len(config.turns)
 
     print(f"Launching {runs} runs ({runs * 1} total tasks) with DUAL-AGENT in pool of {workers} workers\n", flush=True)
@@ -1320,7 +1339,16 @@ def run_multi_eval_dual_agent(
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
-            future_to_task[pool.submit(run_with_store_dual_agent, llm, config, reasoner_model, matcher_model)] = (idx, 0)
+            future_to_task[
+                pool.submit(
+                    _run_dual_agent_eval_task,
+                    config,
+                    model,
+                    temperature,
+                    reasoner_model,
+                    matcher_model,
+                )
+            ] = (idx, 0)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None] for i in range(runs)}
 

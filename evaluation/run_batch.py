@@ -14,9 +14,7 @@ MODE = "standard"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
-    "llama3.2:1b",
-    "ministral-3:3b",
-    "hoangquan456/qwen3-nothink:4b",
+    "gemma4:e2b",
 
     # "ministral:latest",
 ]

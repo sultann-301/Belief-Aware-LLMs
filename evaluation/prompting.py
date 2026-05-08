@@ -11,6 +11,7 @@ import os
 from belief_store.prompts import SYSTEM_PROMPTS
 
 DEFAULT_EVAL_PROMPT_VERSION = "v15"
+DEFAULT_BASELINE_PROMPT_VERSION = "v2"
 
 _EVAL_SYSTEM_PROMPT_SUFFIX = """\
 
@@ -18,28 +19,16 @@ ANSWER FORMAT:
 For multiple-choice questions, you MUST format your final answer exactly as:
 ANSWER: [exact phrase from options]
 
-CONFIDENCE FORMAT:
-Rate your confidence in YOUR SPECIFIC ANSWER above on a scale of 0 to 1.
-Include this on its own line, BEFORE the ANSWER line:
-CONFIDENCE: <number between 0 and 1>
-
-IMPORTANT: Your confidence must reflect how sure you are that [YOUR CHOSEN ANSWER] is correct
-based on the beliefs/rules provided. Do NOT output a generic number.
 
 Rules:
 1. Wrap the phrase in square brackets: [like this]
 2. Use the EXACT text from the options (case-sensitive, match punctuation)
 3. Do NOT add anything after the closing bracket
 4. The ANSWER line MUST be the last line of your response
-5. The CONFIDENCE line must appear immediately before the ANSWER line
-6. CONFIDENCE must be tied to your reasoning, not a random number
-Example: 
-  Based on the rules, I'm quite sure the answer is [approved, manual_review]
-  CONFIDENCE: 0.85
-  ANSWER: [approved, manual_review]
 """
 
-BASELINE_SYSTEM_PROMPT = """\
+_BASELINE_SYSTEM_PROMPT_V1 = """\
+
 You are a reasoning assistant evaluating facts over a conversation.
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
@@ -56,6 +45,49 @@ Example:
   CONFIDENCE: 0.8
   ANSWER: [option text]
 """
+
+
+_BASELINE_SYSTEM_PROMPT_V2 = """\
+
+You are a reasoning assistant evaluating facts over a conversation.
+You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
+
+Do not provide a reasoning block.
+
+For every answer, first list the exact belief keys that support your answer, then give confidence, then the answer.
+
+IMPORTANT: For multiple-choice questions, you MUST end your response with:
+1. A CITED KEYS line containing only the exact belief keys used to support YOUR CHOSEN ANSWER
+2. A CONFIDENCE line (between 0 and 1) reflecting how sure you are of YOUR CHOSEN ANSWER
+3. An ANSWER line with the EXACT phrase from the options (without extra text)
+4. The CITED KEYS, CONFIDENCE, and ANSWER lines must be consecutive, with CITED KEYS first
+
+Your cited keys must be tied to your answer, not arbitrary.
+Example:
+    CITED KEYS: [applicant.credit_score, loan.min_credit]
+    CONFIDENCE: 0.8
+    ANSWER: [option text]
+"""
+
+
+def get_baseline_prompt_version(prompt_version: str | None = None) -> str:
+    """Resolve baseline prompt version from explicit input or environment."""
+    return prompt_version or os.getenv("EVAL_BASELINE_PROMPT_VERSION", DEFAULT_BASELINE_PROMPT_VERSION)
+
+
+def build_baseline_system_prompt(prompt_version: str | None = None) -> str:
+    """Build full system prompt used by baseline runs."""
+    version = get_baseline_prompt_version(prompt_version)
+    if version == "v1":
+        return _BASELINE_SYSTEM_PROMPT_V1
+    if version == "v2":
+        return _BASELINE_SYSTEM_PROMPT_V2
+
+    available = ", ".join(["v1", "v2"])
+    raise ValueError(f"Unknown baseline prompt version: {version}. Available versions: {available}")
+
+
+BASELINE_SYSTEM_PROMPT = build_baseline_system_prompt()
 
 
 def get_eval_prompt_version(prompt_version: str | None = None) -> str:
