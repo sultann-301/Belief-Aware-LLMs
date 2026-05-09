@@ -14,8 +14,10 @@ MODE = "standard"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
+    "gemma3:1b",
+    "llama3.2:1b",
+    "ministral-3:3b",
     "gemma4:e2b",
-
     # "ministral:latest",
 ]
 
@@ -23,28 +25,55 @@ MODELS = [
 REASONER_MODELS = [
     "gemma3:1b",
 ]
-COOLDOWN_SECONDS = 330
+COOLDOWN_SECONDS = 30
 MATCHER_MODELS = [
-    # "ministral-3:3b",
-    "gemma3:1b",  # Uncomment to test same-model baseline
+   "gemma3:1b",
+
 ]
 
 # Prompt versions to compare
-PROMPTS = ["v15"]
+PROMPTS = ["v15", "v16"]
 
 # Temperature(s) to test
-TEMPERATURES = [0.7]  # Set to [0.0, 0.7] to test both deterministic and stochastic
+TEMPERATURES = [0.0]  # Set to [0.0, 0.7] to test both deterministic and stochastic
 
 # Domains to iterate through
 DOMAINS = [
-    "loan_belief_maintenance",
-    "alien_clinic_belief_maintenance",
-    "thorncrester_belief_maintenance",
-    "crime_scene_belief_maintenance",
+    # 1. Prior Suppression (Core Thesis)
+    "loan_absurd", "alien_clinic_absurd", "crime_scene_absurd", "thorncrester_absurd",
+    
+    # 2. Hallucination Resistance (Core Thesis)
+    "loan_grounding", "alien_clinic_grounding", "crime_scene_grounding", "thorncrester_grounding",
+    
+    # 3. Temporal Tracking (Supporting)
+    "loan_absurd_temporal", "alien_clinic_absurd_temporal", "crime_scene_absurd_temporal", "thorncrester_absurd_temporal",
+    
+    # 4. Context Stability (Supporting)
+    "loan_belief_maintenance", "alien_clinic_belief_maintenance", "crime_scene_belief_maintenance", "thorncrester_belief_maintenance",
+    
+    # 5. Reasoning Depth (Supporting)
+    "loan_2hop", "alien_clinic_2hop", "crime_scene_2hop", "thorncrester_2hop",
+    "loan_3hop", "alien_clinic_3hop", "crime_scene_3hop", "thorncrester_3hop",
+    
+    # 6. Transparency (Unique)
+    "alien_clinic_trace_selection",
+    
+    # 7. Stress Testing (Hard Belief Revision)
+    "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
 ]
 
-RUNS_PER_CONFIG = 10
-WORKERS = 4
+RUNS_PER_CONFIG = 1
+WORKERS = 3
+FAST_EVAL = False
+OLLAMA_NUM_PREDICT = None
+OLLAMA_NUM_CTX = None
+OLLAMA_REPEAT_PENALTY = None
+OLLAMA_REPEAT_LAST_N = None
+OLLAMA_TOP_K = None
+OLLAMA_TOP_P = None
+OLLAMA_KEEP_ALIVE = None
+CACHE_ENABLED = False
+CACHE_DIR = ".cache/ollama_eval"
 
 def print_progress(current, total):
     """Prints a simple ASCII progress bar."""
@@ -126,6 +155,24 @@ def run_standard_batch(state):
             "--workers", str(WORKERS),
             "--temperature", str(temperature)
         ]
+        if FAST_EVAL:
+            cmd.append("--fast-eval")
+        if OLLAMA_NUM_PREDICT is not None:
+            cmd += ["--num-predict", str(OLLAMA_NUM_PREDICT)]
+        if OLLAMA_NUM_CTX is not None:
+            cmd += ["--num-ctx", str(OLLAMA_NUM_CTX)]
+        if OLLAMA_REPEAT_PENALTY is not None:
+            cmd += ["--repeat-penalty", str(OLLAMA_REPEAT_PENALTY)]
+        if OLLAMA_REPEAT_LAST_N is not None:
+            cmd += ["--repeat-last-n", str(OLLAMA_REPEAT_LAST_N)]
+        if OLLAMA_TOP_K is not None:
+            cmd += ["--top-k", str(OLLAMA_TOP_K)]
+        if OLLAMA_TOP_P is not None:
+            cmd += ["--top-p", str(OLLAMA_TOP_P)]
+        if OLLAMA_KEEP_ALIVE is not None:
+            cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
+        if CACHE_ENABLED:
+            cmd += ["--cache", "--cache-dir", CACHE_DIR]
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -136,7 +183,7 @@ def run_standard_batch(state):
                 save_state(state)
                 
                 log("Cooldown: Sleeping for 300 seconds (5 mins)...")
-                for remaining in range(300, 0, -1):
+                for remaining in range(COOLDOWN_SECONDS, 0, -1):
                     sys.stdout.write(f"\rCooling down... {remaining}s remaining   ")
                     sys.stdout.flush()
                     time.sleep(1)
@@ -191,6 +238,24 @@ def run_dual_agent_batch(state):
             "--workers", str(WORKERS),
             "--temperature", str(temperature)
         ]
+        if FAST_EVAL:
+            cmd.append("--fast-eval")
+        if OLLAMA_NUM_PREDICT is not None:
+            cmd += ["--num-predict", str(OLLAMA_NUM_PREDICT)]
+        if OLLAMA_NUM_CTX is not None:
+            cmd += ["--num-ctx", str(OLLAMA_NUM_CTX)]
+        if OLLAMA_REPEAT_PENALTY is not None:
+            cmd += ["--repeat-penalty", str(OLLAMA_REPEAT_PENALTY)]
+        if OLLAMA_REPEAT_LAST_N is not None:
+            cmd += ["--repeat-last-n", str(OLLAMA_REPEAT_LAST_N)]
+        if OLLAMA_TOP_K is not None:
+            cmd += ["--top-k", str(OLLAMA_TOP_K)]
+        if OLLAMA_TOP_P is not None:
+            cmd += ["--top-p", str(OLLAMA_TOP_P)]
+        if OLLAMA_KEEP_ALIVE is not None:
+            cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
+        if CACHE_ENABLED:
+            cmd += ["--cache", "--cache-dir", CACHE_DIR]
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)

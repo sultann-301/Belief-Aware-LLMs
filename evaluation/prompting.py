@@ -35,14 +35,10 @@ You will receive [NEW BELIEF] updates. You MUST remember all previous facts acro
 First, output your reasoning starting with REASONING:
 
 IMPORTANT: For multiple-choice questions, you MUST end your response with:
-1. A CONFIDENCE line (between 0 and 1) reflecting how sure you are of YOUR CHOSEN ANSWER
-2. An ANSWER line with the EXACT phrase from the options (without extra text)
-3. The CONFIDENCE and ANSWER lines must be consecutive, with CONFIDENCE first
-
-Your confidence must be tied to your reasoning, not arbitrary.
+1. An ANSWER line with the EXACT phrase from the options (without extra text)
+2. The ANSWER line must be the last line of your response
 Example:
   Based on my analysis, I believe the answer is [option text]
-  CONFIDENCE: 0.8
   ANSWER: [option text]
 """
 
@@ -54,18 +50,16 @@ You will receive [NEW BELIEF] updates. You MUST remember all previous facts acro
 
 Do not provide a reasoning block.
 
-For every answer, first list the exact belief keys that support your answer, then give confidence, then the answer.
+For every answer, first list the exact belief keys that support your answer, then give the answer.
 
 IMPORTANT: For multiple-choice questions, you MUST end your response with:
 1. A CITED KEYS line containing only the exact belief keys used to support YOUR CHOSEN ANSWER
-2. A CONFIDENCE line (between 0 and 1) reflecting how sure you are of YOUR CHOSEN ANSWER
-3. An ANSWER line with the EXACT phrase from the options (without extra text)
-4. The CITED KEYS, CONFIDENCE, and ANSWER lines must be consecutive, with CITED KEYS first
+2. An ANSWER line with the EXACT phrase from the options (without extra text)
+3. The CITED KEYS and ANSWER lines must be consecutive, with CITED KEYS first
 
 Your cited keys must be tied to your answer, not arbitrary.
 Example:
     CITED KEYS: [applicant.credit_score, loan.min_credit]
-    CONFIDENCE: 0.8
     ANSWER: [option text]
 """
 
@@ -119,7 +113,6 @@ def build_store_prompt(beliefs_text: str, question: str) -> str:
     if beliefs_text:
         parts.append("[RELEVANT BELIEFS]\n" + beliefs_text)
     parts.append(f"[QUERY]\n{question}")
-    parts.append("Your confidence: CONFIDENCE: <0 to 1>")
     parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 
@@ -132,7 +125,6 @@ def build_baseline_prompt(
     if belief_updates:
         parts.append("[NEW BELIEF]\n" + "\n".join(belief_updates))
     parts.append(f"[QUERY]\n{question}")
-    parts.append("Your confidence: CONFIDENCE: <0 to 1>")
     parts.append("Your final answer: ANSWER: [exact phrase]")
     return "\n\n".join(parts)
 

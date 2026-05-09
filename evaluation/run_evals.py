@@ -200,7 +200,7 @@ for domain_name, domain_config in _SUBSET_MAP.items():
         baseline_rules=domain_config["baseline_rules"],
         default_entities=domain_config["default_entities"],
         is_conversational=False,
-        accumulate_prior_beliefs=False,
+        accumulate_prior_beliefs=True,
     )
 
 # Special alternate belief state for alien_clinic counterfactual
@@ -347,6 +347,67 @@ Examples:
         help="Sampling temperature for eval runs (default: 0.0 for deterministic benchmarking)"
     )
     parser.add_argument(
+        "--num-predict",
+        type=int,
+        default=None,
+        help="Override Ollama num_predict (max output tokens)."
+    )
+    parser.add_argument(
+        "--num-ctx",
+        type=int,
+        default=None,
+        help="Override Ollama num_ctx (context window)."
+    )
+    parser.add_argument(
+        "--repeat-penalty",
+        type=float,
+        default=None,
+        help="Override Ollama repeat_penalty."
+    )
+    parser.add_argument(
+        "--repeat-last-n",
+        type=int,
+        default=None,
+        help="Override Ollama repeat_last_n."
+    )
+    parser.add_argument(
+        "--top-k",
+        type=int,
+        default=None,
+        help="Override Ollama top_k."
+    )
+    parser.add_argument(
+        "--top-p",
+        type=float,
+        default=None,
+        help="Override Ollama top_p."
+    )
+    parser.add_argument(
+        "--keep-alive",
+        default=None,
+        help="Set Ollama keep_alive (e.g., 10m) to reduce cold starts."
+    )
+    parser.add_argument(
+        "--cache",
+        action="store_true",
+        help="Enable deterministic response cache for repeated prompts."
+    )
+    parser.add_argument(
+        "--cache-dir",
+        default=".cache/ollama_eval",
+        help="Directory for response cache (default: .cache/ollama_eval)."
+    )
+    parser.add_argument(
+        "--cache-namespace",
+        default=None,
+        help="Cache namespace name (default: derived from model + prompt)."
+    )
+    parser.add_argument(
+        "--fast-eval",
+        action="store_true",
+        help="Apply speed-focused defaults (lower num_predict and num_ctx) unless overridden."
+    )
+    parser.add_argument(
         "--eval-prompt-version",
         default=None,
         help=(
@@ -368,6 +429,12 @@ Examples:
     if args.runs is None:
         args.runs = 1 if args.temperature == 0.0 else 10
 
+    if args.fast_eval:
+        if args.num_predict is None:
+            args.num_predict = 256
+        if args.num_ctx is None:
+            args.num_ctx = 2048
+
     # Resolve model names: use individual flags if provided, otherwise fall back to --model
     reasoner_model = args.reasoner_model or args.model
     matcher_model = args.matcher_model or args.model
@@ -376,6 +443,21 @@ Examples:
     if args.eval_prompt_version:
         config.eval_prompt_version = args.eval_prompt_version
     resolved_eval_prompt_version = get_eval_prompt_version(config.eval_prompt_version)
+
+    ollama_options = {
+        "num_predict": args.num_predict,
+        "num_ctx": args.num_ctx,
+        "repeat_penalty": args.repeat_penalty,
+        "repeat_last_n": args.repeat_last_n,
+        "top_k": args.top_k,
+        "top_p": args.top_p,
+        "keep_alive": args.keep_alive,
+    }
+    ollama_options = {k: v for k, v in ollama_options.items() if v is not None}
+
+    cache_namespace = args.cache_namespace
+    if cache_namespace is None:
+        cache_namespace = f"{args.model}_{resolved_eval_prompt_version}"
     
     eval_mode = "DUAL-AGENT" if args.dual_agent else "STANDARD"
     
@@ -410,6 +492,10 @@ Examples:
             model_alias=args.model_alias,
             reasoner_model=reasoner_model,
             matcher_model=matcher_model,
+            ollama_options=ollama_options,
+            cache_dir=args.cache_dir,
+            cache_enabled=args.cache,
+            cache_namespace=cache_namespace,
         )
     else:
         run_multi_eval(
@@ -419,6 +505,10 @@ Examples:
             model=args.model,
             temperature=args.temperature,
             model_alias=args.model_alias,
+            ollama_options=ollama_options,
+            cache_dir=args.cache_dir,
+            cache_enabled=args.cache,
+            cache_namespace=cache_namespace,
         )
 
 

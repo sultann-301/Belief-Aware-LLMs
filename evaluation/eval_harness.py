@@ -13,16 +13,16 @@ Provides:
 from __future__ import annotations
 
 import csv
-import math
 import os
 import re
 import sys
 import time
+from collections import Counter
 from difflib import SequenceMatcher
 import concurrent.futures
 import statistics
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any, Callable, cast
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
@@ -171,18 +171,6 @@ def _extract_last_answer_line(response: str) -> str | None:
     """Return the content of the last ANSWER: line if present."""
     answer_lines = re.findall(r"(?im)\banswer\s*:\s*(.+?)\s*$", response)
     return answer_lines[-1] if answer_lines else None
-
-
-def _extract_confidence_score(response: str) -> float | None:
-    """Extract the last CONFIDENCE: line as a float between 0 and 1."""
-    matches = re.findall(r"(?im)^\s*confidence\s*:\s*([01](?:\.\d+)?)\s*$", response)
-    if not matches:
-        return None
-    try:
-        value = float(matches[-1])
-    except ValueError:
-        return None
-    return max(0.0, min(1.0, value))
 
 
 def _canonicalize_answer_line(response: str, exact_phrase: str) -> str:
@@ -455,6 +443,36 @@ def _resolve_eval_system_prompt(config: DomainConfig) -> str:
     return build_eval_system_prompt(prompt_version=config.eval_prompt_version)
 
 
+def _build_cache_path(cache_dir: str | None, namespace: str) -> str | None:
+    if not cache_dir:
+        return None
+    safe = re.sub(r"[^A-Za-z0-9._-]", "_", namespace)
+    return os.path.join(cache_dir, f"{safe}.sqlite")
+
+
+def _create_ollama_client(
+    model: str,
+    temperature: float,
+    ollama_options: dict[str, object] | None,
+    cache_path: str | None,
+    cache_enabled: bool,
+) -> OllamaClient:
+    options = ollama_options or {}
+    return OllamaClient(
+        model=model,
+        temperature=temperature,
+        cache_enabled=cache_enabled,
+        cache_path=cache_path,
+        num_predict=cast(int | None, options.get("num_predict")),
+        num_ctx=cast(int | None, options.get("num_ctx")),
+        repeat_penalty=cast(float | None, options.get("repeat_penalty")),
+        repeat_last_n=cast(int | None, options.get("repeat_last_n")),
+        top_k=cast(int | None, options.get("top_k")),
+        top_p=cast(float | None, options.get("top_p")),
+        keep_alive=cast(str | int | None, options.get("keep_alive")),
+    )
+
+
 # ────────────────────────────────────────────────────────────────────
 # Result Processing
 # ────────────────────────────────────────────────────────────────────
@@ -466,9 +484,8 @@ def _process_result(
     response: str,
     extra_fields: dict[str, Any] | None = None,
 ) -> dict:
-    """Extract answer with confidence tracking, log if needed, and return result dict."""
+    """Extract answer with extraction-quality tracking, log if needed, and return result dict."""
     extraction_result = extract_answer_with_confidence(response, turn.get("options", {}))
-    confidence_score = _extract_confidence_score(response)
     
     if extraction_result is None:
         answer = None
@@ -493,7 +510,6 @@ def _process_result(
         "turn": turn_idx,
         "answer": answer,
         "confidence": confidence,
-        "confidence_score": confidence_score,
         "extraction_method": extraction_method,
         "correct": correct,
         "hit": hit,
@@ -505,56 +521,6 @@ def _process_result(
         result.update(extra_fields)
 
     return result
-
-
-def _compute_calibration_metrics(
-    confidences: list[float],
-    hits: list[bool],
-    bins: int = 10,
-) -> dict[str, float]:
-    """Compute ECE, Brier, and log loss for binary correctness."""
-    if not confidences or len(confidences) != len(hits):
-        return {}
-
-    n = len(confidences)
-    eps = 1e-15
-    brier = 0.0
-    logloss = 0.0
-
-    bin_totals = [0] * bins
-    bin_conf = [0.0] * bins
-    bin_acc = [0.0] * bins
-
-    for p, hit in zip(confidences, hits):
-        y = 1.0 if hit else 0.0
-        brier += (p - y) ** 2
-
-        p_clamped = min(1.0 - eps, max(eps, p))
-        logloss += -(y * math.log(p_clamped) + (1.0 - y) * math.log(1.0 - p_clamped))
-
-        idx = min(int(p * bins), bins - 1)
-        bin_totals[idx] += 1
-        bin_conf[idx] += p
-        bin_acc[idx] += y
-
-    brier /= n
-    logloss /= n
-
-    ece = 0.0
-    for count, conf_sum, acc_sum in zip(bin_totals, bin_conf, bin_acc):
-        if count == 0:
-            continue
-        avg_conf = conf_sum / count
-        avg_acc = acc_sum / count
-        ece += abs(avg_acc - avg_conf) * (count / n)
-
-    return {
-        "calib_ece": ece,
-        "calib_brier": brier,
-        "calib_logloss": logloss,
-    }
-
-
 def _ensure_csv_header(csv_filename: str, header: list[str]) -> None:
     """Ensure CSV has the expected header; upgrade if a new trailing column was added."""
     if not os.path.isfile(csv_filename):
@@ -655,14 +621,41 @@ def _compute_reasoning_metrics(
     }
 
 
+def _compute_retrieval_fidelity(
+    beliefs_text: str,
+    canonical: set[str],
+    known_keys: set[str],
+) -> dict[str, float]:
+    """Compute BCR (Belief Coverage Rate) and SBIR (Spurious Belief Injection Rate).
+
+    BCR:  fraction of canonical keys that appear in the serialised beliefs text.
+          BCR < 1.0 means the retrieval pipeline dropped required beliefs.
+    SBIR: fraction of injected keys that are NOT in the canonical set.
+          High SBIR means noise is being added to the prompt.
+    """
+    if not canonical:
+        return {}
+    injected = set(_BELIEF_KEY_RE.findall(beliefs_text.lower())) & known_keys
+    true_positives = len(canonical & injected)
+    bcr  = true_positives / len(canonical) if canonical else 1.0
+    sbir = (len(injected) - true_positives) / len(injected) if injected else 0.0
+    return {
+        "bcr": bcr,
+        "sbir": sbir,
+        "retrieval_injected_count": float(len(injected)),
+        "retrieval_canonical_count": float(len(canonical)),
+    }
+
+
 def _get_reasoning_metrics(
     store: BeliefStore,
     filter_spec: list[str],
     is_attr: bool,
     response: str,
     cited_keys_override: set[str] | None = None,
+    beliefs_text: str = "",
 ) -> dict[str, float]:
-    """Compute reasoning metrics for a single turn.
+    """Compute reasoning and retrieval metrics for a single turn.
 
     Args:
         store: The resolved BeliefStore for this turn.
@@ -671,6 +664,8 @@ def _get_reasoning_metrics(
         response: Model response text (used for single-agent extraction).
         cited_keys_override: If provided, use these as the model's cited
             keys instead of extracting from response (for dual-agent).
+        beliefs_text: The serialised beliefs string sent to the model.
+            When provided, BCR and SBIR retrieval metrics are computed.
     """
     if not is_attr:
         # Entity-level turns don't have specific target attributes.
@@ -680,17 +675,24 @@ def _get_reasoning_metrics(
     if not canonical:
         return {}
 
+    known_keys = (set(store.rule_index.keys()) | set(store.beliefs.keys())) - store.removed
+
     if cited_keys_override is not None:
         cited = cited_keys_override
     else:
         # Use both rule_index (computed rules) and beliefs (input hypotheses)
         # store.beliefs contains explicitly set/resolved values, rule_index has computed rules.
         # Together they cover both input assumptions and derived facts.
-        known_keys = (set(store.rule_index.keys()) | set(store.beliefs.keys())) - store.removed
         cited = _extract_evidence_keys_from_response(response, known_keys)
 
+    metrics = _compute_reasoning_metrics(canonical, cited)
 
-    return _compute_reasoning_metrics(canonical, cited)
+    # Retrieval fidelity (BCR / SBIR) — only when beliefs_text is available
+    if beliefs_text:
+        retrieval = _compute_retrieval_fidelity(beliefs_text, canonical, known_keys)
+        metrics.update(retrieval)
+
+    return metrics
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -727,7 +729,8 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
         raw_response = llm.generate(eval_system_prompt, prompt)
         response = _enforce_exact_phrase_output(turn, raw_response)
 
-        reasoning = _get_reasoning_metrics(store, filter_spec, is_attr, raw_response)
+        reasoning = _get_reasoning_metrics(store, filter_spec, is_attr, raw_response,
+                                           beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE", i + 1, turn, response,
                                        extra_fields=reasoning or None))
 
@@ -787,7 +790,8 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
         response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
-        reasoning = _get_reasoning_metrics(current_store, filter_spec, is_attr, raw_response)
+        reasoning = _get_reasoning_metrics(current_store, filter_spec, is_attr, raw_response,
+                                           beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE (+History)", i + 1, turn, response,
                                        extra_fields=reasoning or None))
 
@@ -841,9 +845,12 @@ def _run_standard_eval_task(
     config: DomainConfig,
     model: str,
     temperature: float,
+    ollama_options: dict[str, object] | None,
+    cache_path: str | None,
+    cache_enabled: bool,
 ) -> list[dict]:
     """Run one standard eval task with its own Ollama client instance."""
-    llm = OllamaClient(model=model, temperature=temperature)
+    llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
     if condition == 0:
         return run_with_store(llm, config)
     return run_without_store(llm, config)
@@ -898,6 +905,7 @@ def run_with_store_dual_agent(
         reasoning = _get_reasoning_metrics(
             store, filter_spec, is_attr, response,
             cited_keys_override=cited_override,
+            beliefs_text=beliefs_text,
         )
         split_metrics.update(reasoning)
 
@@ -920,9 +928,12 @@ def _run_dual_agent_eval_task(
     temperature: float,
     reasoner_model: str,
     matcher_model: str,
+    ollama_options: dict[str, object] | None,
+    cache_path: str | None,
+    cache_enabled: bool,
 ) -> list[dict]:
     """Run one dual-agent eval task with its own Ollama client instance."""
-    llm = OllamaClient(model=model, temperature=temperature)
+    llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
     return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model)
 
 
@@ -991,6 +1002,7 @@ def run_with_store_with_history_dual_agent(
         reasoning = _get_reasoning_metrics(
             current_store, filter_spec, is_attr, response,
             cited_keys_override=cited_override,
+            beliefs_text=beliefs_text,
         )
         split_metrics.update(reasoning)
 
@@ -1057,20 +1069,22 @@ def run_multi_eval(
     model: str = "gemma3:1b",
     temperature: float = 0.7,
     model_alias: str | None = None,
+    ollama_options: dict[str, object] | None = None,
+    cache_dir: str | None = None,
+    cache_enabled: bool = False,
+    cache_namespace: str = "eval",
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
     n_turns = len(config.turns)
+
+    cache_path = _build_cache_path(cache_dir, cache_namespace)
 
     print(f"Launching {runs} runs ({runs * 2} total tasks) in pool of {workers} workers\n", flush=True)
     start = time.time()
 
     scores: list[list[int]] = [[], []]
     hits_per_turn: list[list[int]] = [[0] * n_turns for _ in range(2)]
-    calibration_scores: list[dict[str, list[float]]] = [
-        {"calib_ece": [], "calib_brier": [], "calib_logloss": []},
-        {"calib_ece": [], "calib_brier": [], "calib_logloss": []},
-    ]
     # Reasoning evidence metrics (WITH STORE only — index 0)
     reasoning_scores: dict[str, list[float]] = {
         "evidence_precision": [],
@@ -1079,16 +1093,42 @@ def run_multi_eval(
         "evidence_cited_count": [],
         "evidence_canonical_count": [],
     }
+    # ── New metric trackers ───────────────────────────────────────────────
+    # answers_per_turn[cond][turn] = list of answers across runs (for AFR / DS)
+    answers_per_turn: list[list[list]] = [[[] for _ in range(n_turns)] for _ in range(2)]
+    efr_counts: list[list[int]] = [[], []]        # extraction failures per run, per cond
+    emds: list[Counter] = [Counter(), Counter()]  # extraction method distribution
+    tpca_correct: list[list[int]] = [[], []]      # word counts for correct responses
+    tpca_wrong: list[list[int]] = [[], []]        # word counts for wrong responses
+    retrieval_scores: dict[str, list[float]] = {"bcr": [], "sbir": []}  # WITH STORE only
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
             idx = i + 1
             future_to_task[
-                pool.submit(_run_standard_eval_task, 0, config, model, temperature)
+                pool.submit(
+                    _run_standard_eval_task,
+                    0,
+                    config,
+                    model,
+                    temperature,
+                    ollama_options,
+                    cache_path,
+                    cache_enabled,
+                )
             ] = (idx, 0)
             future_to_task[
-                pool.submit(_run_standard_eval_task, 1, config, model, temperature)
+                pool.submit(
+                    _run_standard_eval_task,
+                    1,
+                    config,
+                    model,
+                    temperature,
+                    ollama_options,
+                    cache_path,
+                    cache_enabled,
+                )
             ] = (idx, 1)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
@@ -1098,29 +1138,40 @@ def run_multi_eval(
             res = future.result()
             hits = sum(r["hit"] for r in res)
 
-
             for r in res:
+                t_idx = r["turn"] - 1
                 if r["hit"]:
-                    hits_per_turn[condition_idx][r["turn"] - 1] += 1
+                    hits_per_turn[condition_idx][t_idx] += 1
+                # AFR / DS: record each answer per turn
+                answers_per_turn[condition_idx][t_idx].append(r.get("answer"))
+                # TPCA: response word count split by correctness
+                resp_len = len((r.get("response") or "").split())
+                (tpca_correct if r["hit"] else tpca_wrong)[condition_idx].append(resp_len)
+                # EMD: track extraction method
+                method = r.get("extraction_method")
+                if method:
+                    emds[condition_idx][method] += 1
+
+            # EFR: extraction failures this run
+            efr_counts[condition_idx].append(sum(1 for r in res if r.get("answer") is None))
 
             run_results[run_idx][condition_idx] = hits
             scores[condition_idx].append(hits)
 
-            confidences = [r["confidence_score"] for r in res if r.get("confidence_score") is not None]
-            conf_hits = [r["hit"] for r in res if r.get("confidence_score") is not None]
-            if confidences:
-                calib = _compute_calibration_metrics(confidences, conf_hits)
-                if calib:
-                    for key in calibration_scores[condition_idx]:
-                        calibration_scores[condition_idx][key].append(calib[key])
-
-            # Reasoning metrics (WITH STORE only)
+            # Reasoning + retrieval metrics (WITH STORE only)
             if condition_idx == 0:
                 scored = [r for r in res if "evidence_f1" in r]
                 if scored:
                     for metric_key in reasoning_scores:
                         avg_val = sum(r[metric_key] for r in scored) / len(scored)
                         reasoning_scores[metric_key].append(avg_val)
+                # BCR / SBIR
+                bcr_vals = [r["bcr"] for r in res if "bcr" in r]
+                sbir_vals = [r["sbir"] for r in res if "sbir" in r]
+                if bcr_vals:
+                    retrieval_scores["bcr"].append(sum(bcr_vals) / len(bcr_vals))
+                if sbir_vals:
+                    retrieval_scores["sbir"].append(sum(sbir_vals) / len(sbir_vals))
 
             if all(v is not None for v in run_results[run_idx]):
                 s1, s2 = run_results[run_idx]
@@ -1128,6 +1179,33 @@ def run_multi_eval(
 
     elapsed = time.time() - start
     n = len(scores[0])
+    wct_per_turn = elapsed / (runs * n_turns) if runs * n_turns > 0 else 0.0
+
+    # ── AFR and DS ────────────────────────────────────────────────────────
+    def _compute_afr_ds(ans_matrix: list[list]) -> tuple[float, float]:
+        afr_vals, consistent = [], 0
+        for turn_answers in ans_matrix:
+            ta = [a for a in turn_answers if a is not None]
+            if not ta:
+                continue
+            mode_count = Counter(ta).most_common(1)[0][1]
+            afr_vals.append((len(ta) - mode_count) / len(ta))
+            if len(set(ta)) == 1:
+                consistent += 1
+        mean_afr = sum(afr_vals) / len(afr_vals) if afr_vals else 0.0
+        ds = consistent / len(ans_matrix) if ans_matrix else 0.0
+        return mean_afr, ds
+
+    afr_ds = [_compute_afr_ds(answers_per_turn[c]) for c in range(2)]
+
+    # ── PTC Variance ──────────────────────────────────────────────────────
+    def _ptc_variance(hits_vec: list[int], n_runs: int) -> float:
+        if n_runs < 2 or not hits_vec:
+            return 0.0
+        rates = [h / n_runs for h in hits_vec]
+        return statistics.variance(rates) if len(rates) > 1 else 0.0
+
+    ptc_var = [_ptc_variance(hits_per_turn[c], n) for c in range(2)]
 
     print("\n" + "=" * 80)
     print(f"SUMMARY OVER {n} RUNS")
@@ -1145,12 +1223,23 @@ def run_multi_eval(
         sc_str = ", ".join(str(x) for x in sc)
         print(f"  {label} | Avg: {avg:.2f}/{n_turns} | Var: {var:.2f} | StdDev: {std:.2f} | Scores: [{sc_str}]")
 
-        calib = calibration_scores[idx]
-        if calib["calib_ece"]:
-            ece_avg = sum(calib["calib_ece"]) / len(calib["calib_ece"])
-            brier_avg = sum(calib["calib_brier"]) / len(calib["calib_brier"])
-            ll_avg = sum(calib["calib_logloss"]) / len(calib["calib_logloss"])
-            print(f"    Calibration | ECE: {ece_avg:.4f} | Brier: {brier_avg:.4f} | LogLoss: {ll_avg:.4f}")
+        efr_list = efr_counts[idx]
+        efr_avg = (sum(efr_list) / len(efr_list) / n_turns) if efr_list and n_turns else 0.0
+        print(f"    EFR (Extraction Failure Rate)   | {efr_avg:.4f}")
+        mean_afr, ds_score = afr_ds[idx]
+        ds_note = " ← only meaningful at temp=0" if temperature != 0.0 else ""
+        print(f"    AFR (Answer Flip Rate)          | {mean_afr:.4f}")
+        print(f"    DS  (Determinism Score)         | {ds_score:.4f}{ds_note}")
+        print(f"    PTC Variance (per-turn consist) | {ptc_var[idx]:.6f}")
+        c_avg = sum(tpca_correct[idx]) / len(tpca_correct[idx]) if tpca_correct[idx] else 0.0
+        w_avg = sum(tpca_wrong[idx]) / len(tpca_wrong[idx]) if tpca_wrong[idx] else 0.0
+        print(f"    TPCA Correct / Wrong (words)    | {c_avg:.1f} / {w_avg:.1f}")
+        total_extracted = sum(emds[idx].values())
+        if total_extracted:
+            emd_str = "  ".join(
+                f"{m}={cnt/total_extracted*100:.1f}%" for m, cnt in emds[idx].most_common(5)
+            )
+            print(f"    EMD (Extraction Method Dist)    | {emd_str}")
 
     # Reasoning evidence metrics (WITH STORE only)
     if reasoning_scores["evidence_f1"]:
@@ -1169,6 +1258,13 @@ def run_multi_eval(
             r_std = statistics.stdev(sc) if r_n > 1 else 0.0
             print(f"    Evidence {metric_label:<10} | Avg: {r_avg:.4f} | Var: {r_var:.6f} | StdDev: {r_std:.4f}")
 
+    if retrieval_scores["bcr"]:
+        print("\n  RETRIEVAL FIDELITY (WITH STORE only):")
+        for key, label in (("bcr", "BCR  (Belief Coverage Rate)  "), ("sbir", "SBIR (Spurious Injection Rate)")):
+            sc = retrieval_scores[key]
+            r_avg = sum(sc) / len(sc) if sc else 0.0
+            print(f"    {label} | Avg: {r_avg:.4f}")
+
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1]':<24} | {'[2]':<24}")
     print(f"    {'─'*4} | {'─'*24} | {'─'*24}")
@@ -1181,9 +1277,9 @@ def run_multi_eval(
 
 
     print("=" * 80)
-    print(f"Total wall-clock time: {elapsed:.1f}s\n")
+    print(f"Total wall-clock time: {elapsed:.1f}s  |  WCT/turn: {wct_per_turn:.3f}s\n")
 
-    # Export results to CSV
+    # ── CSV Export ────────────────────────────────────────────────────────
     csv_filename = "eval_results.csv"
     file_exists = os.path.isfile(csv_filename)
     prompt_ver = get_eval_prompt_version(config.eval_prompt_version)
@@ -1207,61 +1303,65 @@ def run_multi_eval(
             if not file_exists:
                 writer.writerow(header)
 
-            # Accuracy per domain
             display_model = model_alias or model
             avg0 = (sum(scores[0]) / n) / n_turns if n_turns > 0 else 0
             avg2 = (sum(scores[1]) / n) / n_turns if n_turns > 0 else 0
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Average_Accuracy",
-                f"{avg0:.4f}", "", f"{avg2:.4f}", ""
-            ])
 
-            # Variance in raw score
-            var0 = statistics.variance(scores[0]) if n > 1 else 0.0
-            var2 = statistics.variance(scores[1]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "Variance_Raw_Score",
-                f"{var0:.4f}", "", f"{var2:.4f}", ""
-            ])
-
-            # StdDev in raw score
-            std0 = statistics.stdev(scores[0]) if n > 1 else 0.0
-            std2 = statistics.stdev(scores[1]) if n > 1 else 0.0
-            writer.writerow([
-                timestamp, config.name, display_model, temperature, prompt_ver, runs, "StdDev_Raw_Score",
-                f"{std0:.4f}", "", f"{std2:.4f}", ""
-            ])
-
-            # Calibration metrics (if available)
-            for metric_key, csv_metric in (
-                ("calib_ece", "Average_Calibration_ECE"),
-                ("calib_brier", "Average_Calibration_Brier"),
-                ("calib_logloss", "Average_Calibration_LogLoss"),
-            ):
-                sc0 = calibration_scores[0][metric_key]
-                sc1 = calibration_scores[1][metric_key]
-                if not sc0 and not sc1:
-                    continue
-                avg_c0 = sum(sc0) / len(sc0) if sc0 else 0.0
-                avg_c1 = sum(sc1) / len(sc1) if sc1 else 0.0
+            def _row(metric: str, v0: str, v2: str = "") -> None:
                 writer.writerow([
-                    timestamp,
-                    config.name,
-                    display_model,
-                    temperature,
-                    prompt_ver,
-                    runs,
-                    csv_metric,
-                    f"{avg_c0:.4f}",
-                    "",
-                    f"{avg_c1:.4f}",
-                    "",
+                    timestamp, config.name, display_model, temperature, prompt_ver, runs,
+                    metric, v0, "", v2, "",
                 ])
 
+            # ── Core accuracy ─────────────────────────────────────────────
+            _row("Average_Accuracy", f"{avg0:.4f}", f"{avg2:.4f}")
 
+            var0 = statistics.variance(scores[0]) if n > 1 else 0.0
+            var2 = statistics.variance(scores[1]) if n > 1 else 0.0
+            _row("Variance_Raw_Score", f"{var0:.4f}", f"{var2:.4f}")
 
-            # Reasoning evidence metrics (WITH STORE only)
+            std0 = statistics.stdev(scores[0]) if n > 1 else 0.0
+            std2 = statistics.stdev(scores[1]) if n > 1 else 0.0
+            _row("StdDev_Raw_Score", f"{std0:.4f}", f"{std2:.4f}")
+
+            # ── EFR ───────────────────────────────────────────────────────
+            efr0 = (sum(efr_counts[0]) / len(efr_counts[0]) / n_turns) if efr_counts[0] and n_turns else 0.0
+            efr2 = (sum(efr_counts[1]) / len(efr_counts[1]) / n_turns) if efr_counts[1] and n_turns else 0.0
+            _row("EFR_Extraction_Failure_Rate", f"{efr0:.4f}", f"{efr2:.4f}")
+
+            # ── AFR / DS ──────────────────────────────────────────────────
+            afr0, ds0 = afr_ds[0]
+            afr2, ds2 = afr_ds[1]
+            _row("AFR_Answer_Flip_Rate", f"{afr0:.4f}", f"{afr2:.4f}")
+            _row("DS_Determinism_Score", f"{ds0:.4f}", f"{ds2:.4f}")
+
+            # ── PTC Variance ──────────────────────────────────────────────
+            _row("PTC_Variance_PerTurn_Consistency", f"{ptc_var[0]:.6f}", f"{ptc_var[1]:.6f}")
+
+            # ── WCT ───────────────────────────────────────────────────────
+            _row("WCT_WallClock_PerTurn_Seconds", f"{wct_per_turn:.4f}")
+
+            # ── TPCA ──────────────────────────────────────────────────────
+            c0 = sum(tpca_correct[0]) / len(tpca_correct[0]) if tpca_correct[0] else 0.0
+            w0 = sum(tpca_wrong[0]) / len(tpca_wrong[0]) if tpca_wrong[0] else 0.0
+            c2 = sum(tpca_correct[1]) / len(tpca_correct[1]) if tpca_correct[1] else 0.0
+            w2 = sum(tpca_wrong[1]) / len(tpca_wrong[1]) if tpca_wrong[1] else 0.0
+            _row("TPCA_Words_Correct", f"{c0:.1f}", f"{c2:.1f}")
+            _row("TPCA_Words_Wrong", f"{w0:.1f}", f"{w2:.1f}")
+
+            # ── EMD — one row per method per condition ────────────────────
+            for cond_idx, cond_label in ((0, "WithStore"), (1, "NoStore")):
+                total = sum(emds[cond_idx].values())
+                if total:
+                    for method, cnt in emds[cond_idx].most_common(5):
+                        writer.writerow([
+                            timestamp, config.name, display_model, temperature, prompt_ver, runs,
+                            f"EMD_{cond_label}_{method}",
+                            f"{cnt/total:.4f}", "", "", "",
+                        ])
+
+            # ── Reasoning evidence (WITH STORE only) ──────────────────────
             for metric_key, csv_metric in (
                 ("evidence_precision", "Average_Evidence_Precision"),
                 ("evidence_recall", "Average_Evidence_Recall"),
@@ -1271,12 +1371,16 @@ def run_multi_eval(
             ):
                 sc = reasoning_scores[metric_key]
                 r_avg = sum(sc) / len(sc) if sc else 0.0
-                writer.writerow([
-                    timestamp, config.name, display_model, temperature, prompt_ver, runs, csv_metric,
-                    f"{r_avg:.4f}", "", "", ""
-                ])
+                _row(csv_metric, f"{r_avg:.4f}")
 
-
+            # ── BCR / SBIR (WITH STORE only) ──────────────────────────────
+            for key, csv_name in (
+                ("bcr", "Average_BCR_BeliefCoverage"),
+                ("sbir", "Average_SBIR_SpuriousInjection"),
+            ):
+                sc = retrieval_scores[key]
+                r_avg = sum(sc) / len(sc) if sc else 0.0
+                _row(csv_name, f"{r_avg:.4f}")
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:
@@ -1292,6 +1396,10 @@ def run_multi_eval_dual_agent(
     model_alias: str | None = None,
     reasoner_model: str | None = None,
     matcher_model: str | None = None,
+    ollama_options: dict[str, object] | None = None,
+    cache_dir: str | None = None,
+    cache_enabled: bool = False,
+    cache_namespace: str = "eval",
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel.
     
@@ -1317,6 +1425,8 @@ def run_multi_eval_dual_agent(
     print(f"Connecting to Ollama (Reasoner: {reasoner_model}, Matcher: {matcher_model})...\n")
     n_turns = len(config.turns)
 
+    cache_path = _build_cache_path(cache_dir, cache_namespace)
+
     print(f"Launching {runs} runs ({runs * 1} total tasks) with DUAL-AGENT in pool of {workers} workers\n", flush=True)
     start = time.time()
 
@@ -1334,6 +1444,13 @@ def run_multi_eval_dual_agent(
         "evidence_cited_count": [],
         "evidence_canonical_count": [],
     }
+    # ── New metric trackers ───────────────────────────────────────────────
+    answers_per_turn_da: list[list] = [[] for _ in range(n_turns)]
+    efr_counts_da: list[int] = []
+    emds_da: Counter = Counter()
+    tpca_correct_da: list[int] = []
+    tpca_wrong_da: list[int] = []
+    retrieval_scores_da: dict[str, list[float]] = {"bcr": [], "sbir": []}
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
@@ -1347,6 +1464,9 @@ def run_multi_eval_dual_agent(
                     temperature,
                     reasoner_model,
                     matcher_model,
+                    ollama_options,
+                    cache_path,
+                    cache_enabled,
                 )
             ] = (idx, 0)
 
@@ -1363,8 +1483,20 @@ def run_multi_eval_dual_agent(
             binding_ratio = (binding_hits / binding_total) if binding_total else 0.0
 
             for r in res:
+                t_idx = r["turn"] - 1
                 if r.get("end_to_end_correct", False):
-                    hits_per_turn[condition_idx][r["turn"] - 1] += 1
+                    hits_per_turn[condition_idx][t_idx] += 1
+                # AFR / DS
+                answers_per_turn_da[t_idx].append(r.get("answer"))
+                # TPCA
+                resp_len = len((r.get("response") or "").split())
+                (tpca_correct_da if r.get("end_to_end_correct", False) else tpca_wrong_da).append(resp_len)
+                # EMD
+                method = r.get("extraction_method")
+                if method:
+                    emds_da[method] += 1
+
+            efr_counts_da.append(sum(1 for r in res if r.get("answer") is None))
 
             run_results[run_idx][condition_idx] = end_to_end_hits
             scores[condition_idx].append(end_to_end_hits)
@@ -1372,14 +1504,19 @@ def run_multi_eval_dual_agent(
             metric_scores[condition_idx]["end_to_end"].append(end_to_end_ratio)
             metric_scores[condition_idx]["binding"].append(binding_ratio)
 
-
-
-            # Reasoning evidence metrics
+            # Reasoning evidence + retrieval metrics
             scored = [r for r in res if "evidence_f1" in r]
             if scored:
                 for metric_key in reasoning_scores:
                     avg_val = sum(r[metric_key] for r in scored) / len(scored)
                     reasoning_scores[metric_key].append(avg_val)
+
+            bcr_vals = [r["bcr"] for r in res if "bcr" in r]
+            sbir_vals = [r["sbir"] for r in res if "sbir" in r]
+            if bcr_vals:
+                retrieval_scores_da["bcr"].append(sum(bcr_vals) / len(bcr_vals))
+            if sbir_vals:
+                retrieval_scores_da["sbir"].append(sum(sbir_vals) / len(sbir_vals))
 
             if all(v is not None for v in run_results[run_idx]):
                 (s1,) = run_results[run_idx]
@@ -1387,6 +1524,24 @@ def run_multi_eval_dual_agent(
 
     elapsed = time.time() - start
     n = len(scores[0])
+    wct_per_turn_da = elapsed / (runs * n_turns) if runs * n_turns > 0 else 0.0
+
+    # AFR / DS for dual agent (computed here so available for both print and CSV)
+    afr_da_vals, consistent_da = [], 0
+    for turn_answers in answers_per_turn_da:
+        ta = [a for a in turn_answers if a is not None]
+        if not ta:
+            continue
+        mode_count = Counter(ta).most_common(1)[0][1]
+        afr_da_vals.append((len(ta) - mode_count) / len(ta))
+        if len(set(ta)) == 1:
+            consistent_da += 1
+    mean_afr_da = sum(afr_da_vals) / len(afr_da_vals) if afr_da_vals else 0.0
+    ds_da = consistent_da / len(answers_per_turn_da) if answers_per_turn_da else 0.0
+    efr_da = (sum(efr_counts_da) / len(efr_counts_da) / n_turns) if efr_counts_da and n_turns else 0.0
+    c_da = sum(tpca_correct_da) / len(tpca_correct_da) if tpca_correct_da else 0.0
+    w_da = sum(tpca_wrong_da) / len(tpca_wrong_da) if tpca_wrong_da else 0.0
+    total_da = sum(emds_da.values())
 
     print("\n" + "=" * 80)
     print(f"SUMMARY OVER {n} RUNS (DUAL-AGENT)")
@@ -1408,10 +1563,17 @@ def run_multi_eval_dual_agent(
             std = statistics.stdev(sc) if n > 1 else 0.0
             print(f"    - {metric_label:<10} Avg: {avg:.4f} | Var: {var:.6f} | StdDev: {std:.4f}")
 
-
-
         raw_hits = ", ".join(str(x) for x in scores[idx])
         print(f"    - End-to-End raw hits: [{raw_hits}]")
+
+        ds_note = " ← only meaningful at temp=0" if temperature != 0.0 else ""
+        print(f"    EFR (Extraction Failure Rate)   | {efr_da:.4f}")
+        print(f"    AFR (Answer Flip Rate)          | {mean_afr_da:.4f}")
+        print(f"    DS  (Determinism Score)         | {ds_da:.4f}{ds_note}")
+        print(f"    TPCA Correct / Wrong (words)    | {c_da:.1f} / {w_da:.1f}")
+        if total_da:
+            emd_str = "  ".join(f"{m}={cnt/total_da*100:.1f}%" for m, cnt in emds_da.most_common(5))
+            print(f"    EMD (Extraction Method Dist)    | {emd_str}")
 
     # Reasoning evidence metrics
     if reasoning_scores["evidence_f1"]:
@@ -1430,6 +1592,13 @@ def run_multi_eval_dual_agent(
             r_std = statistics.stdev(sc) if r_n > 1 else 0.0
             print(f"    Evidence {metric_label:<10} | Avg: {r_avg:.4f} | Var: {r_var:.6f} | StdDev: {r_std:.4f}")
 
+    if retrieval_scores_da["bcr"]:
+        print("\n  RETRIEVAL FIDELITY:")
+        for key, label in (("bcr", "BCR  (Belief Coverage Rate)  "), ("sbir", "SBIR (Spurious Injection Rate)")):
+            sc = retrieval_scores_da[key]
+            r_avg = sum(sc) / len(sc) if sc else 0.0
+            print(f"    {label} | Avg: {r_avg:.4f}")
+
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1 DA]':<24}")
     print(f"    {'─'*4} | {'─'*24}")
@@ -1438,12 +1607,10 @@ def run_multi_eval_dual_agent(
         s1 = f"{acc1:>2}/{n} ({acc1 * 100 // n:>3}%)"
         print(f"    {t+1:>4} | {s1:<24}")
 
-
-
     print("=" * 80)
-    print(f"Total wall-clock time: {elapsed:.1f}s\n")
+    print(f"Total wall-clock time: {elapsed:.1f}s  |  WCT/turn: {wct_per_turn_da:.3f}s\n")
 
-    # Export results to CSV
+    # ── CSV Export ────────────────────────────────────────────────────────
     csv_filename = "eval_results_dual_agent.csv"
     file_exists = os.path.isfile(csv_filename)
     prompt_ver = get_eval_prompt_version(config.eval_prompt_version)
@@ -1471,62 +1638,35 @@ def run_multi_eval_dual_agent(
 
             display_model = model_alias or model
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+
+            def _da_row(family: str, metric: str, value: str) -> None:
+                writer.writerow([
+                    timestamp, config.name, display_model,
+                    reasoner_model, matcher_model,
+                    temperature, prompt_ver, runs,
+                    family, metric, value, "", "",
+                ])
+
             for metric_key, metric_family in (
                 ("binding", "Binding"),
                 ("end_to_end", "End_to_End"),
             ):
                 avg0 = sum(metric_scores[0][metric_key]) / n if n > 0 else 0.0
-                writer.writerow([
-                    timestamp,
-                    config.name,
-                    display_model,
-                    reasoner_model,
-                    matcher_model,
-                    temperature,
-                    prompt_ver,
-                    runs,
-                    metric_family,
-                    "Average_Accuracy",
-                    f"{avg0:.4f}",
-                    "",
-                    "",
-                ])
-
+                _da_row(metric_family, "Average_Accuracy", f"{avg0:.4f}")
                 var0 = statistics.variance(metric_scores[0][metric_key]) if n > 1 else 0.0
-                writer.writerow([
-                    timestamp,
-                    config.name,
-                    display_model,
-                    reasoner_model,
-                    matcher_model,
-                    temperature,
-                    prompt_ver,
-                    runs,
-                    metric_family,
-                    "Variance_Accuracy",
-                    f"{var0:.6f}",
-                    "",
-                    "",
-                ])
-
+                _da_row(metric_family, "Variance_Accuracy", f"{var0:.6f}")
                 std0 = statistics.stdev(metric_scores[0][metric_key]) if n > 1 else 0.0
-                writer.writerow([
-                    timestamp,
-                    config.name,
-                    display_model,
-                    reasoner_model,
-                    matcher_model,
-                    temperature,
-                    prompt_ver,
-                    runs,
-                    metric_family,
-                    "Standard_Deviation_Accuracy",
-                    f"{std0:.6f}",
-                    "",
-                    "",
-                ])
+                _da_row(metric_family, "Standard_Deviation_Accuracy", f"{std0:.6f}")
 
-
+            # ── New metrics ───────────────────────────────────────────────
+            _da_row("Efficiency", "WCT_WallClock_PerTurn_Seconds", f"{wct_per_turn_da:.4f}")
+            _da_row("Stability", "EFR_Extraction_Failure_Rate", f"{efr_da:.4f}")
+            _da_row("Stability", "AFR_Answer_Flip_Rate", f"{mean_afr_da:.4f}")
+            _da_row("Stability", "DS_Determinism_Score", f"{ds_da:.4f}")
+            _da_row("Efficiency", "TPCA_Words_Correct", f"{c_da:.1f}")
+            _da_row("Efficiency", "TPCA_Words_Wrong", f"{w_da:.1f}")
+            for method, cnt in emds_da.most_common(5):
+                _da_row("Extraction", f"EMD_{method}", f"{cnt/total_da:.4f}" if total_da else "0.0")
 
             # Reasoning evidence metrics
             for metric_key, csv_metric in (
@@ -1538,23 +1678,16 @@ def run_multi_eval_dual_agent(
             ):
                 sc = reasoning_scores[metric_key]
                 r_avg = sum(sc) / len(sc) if sc else 0.0
-                writer.writerow([
-                    timestamp,
-                    config.name,
-                    display_model,
-                    reasoner_model,
-                    matcher_model,
-                    temperature,
-                    prompt_ver,
-                    runs,
-                    "Reasoning",
-                    csv_metric,
-                    f"{r_avg:.4f}",
-                    "",
-                    "",
-                ])
+                _da_row("Reasoning", csv_metric, f"{r_avg:.4f}")
 
-
+            # BCR / SBIR
+            for key, csv_name in (
+                ("bcr", "Average_BCR_BeliefCoverage"),
+                ("sbir", "Average_SBIR_SpuriousInjection"),
+            ):
+                sc = retrieval_scores_da[key]
+                r_avg = sum(sc) / len(sc) if sc else 0.0
+                _da_row("Retrieval", csv_name, f"{r_avg:.4f}")
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:
