@@ -423,6 +423,11 @@ Examples:
             "(WITH STORE + WITH STORE+History, both using dual-agent reasoning)"
         ),
     )
+    parser.add_argument(
+        "--shuffle-options",
+        action="store_true",
+        help="Randomize MCQ option order (A, B, C) for every run to detect position bias."
+    )
 
     args = parser.parse_args()
 
@@ -496,6 +501,7 @@ Examples:
             cache_dir=args.cache_dir,
             cache_enabled=args.cache,
             cache_namespace=cache_namespace,
+            shuffle_options=args.shuffle_options,
         )
     else:
         run_multi_eval(
@@ -509,6 +515,7 @@ Examples:
             cache_dir=args.cache_dir,
             cache_enabled=args.cache,
             cache_namespace=cache_namespace,
+            shuffle_options=args.shuffle_options,
         )
 
 

@@ -431,7 +431,7 @@ class BeliefStore:
     def get_canonical_evidence_keys(
         self, attributes: list[str], max_depth: int = 2,
     ) -> set[str]:
-        """Return belief keys in the causal subgraph for *attributes*.
+        """Return belief keys in the subgraph for *attributes*.
 
         Walks the dependency graph backward from the target attributes up to
         *max_depth* hops.  The target attributes themselves are excluded —

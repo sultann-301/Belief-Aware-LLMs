@@ -355,6 +355,219 @@ def extract_answer(response: str, options: dict[str, str]) -> str | None:
     return None
 
 
+# ────────────────────────────────────────────────────────────────────
+# Logprob-Based Confidence & Calibration Metrics
+# ────────────────────────────────────────────────────────────────────
+
+import math
+
+
+def extract_answer_logprob_confidence(
+    logprobs_data: list[dict] | None, 
+    response_text: str,
+    extracted_answer_phrase: str | None = None
+) -> dict:
+    """Extract model confidence from logprobs for the answer phrase tokens.
+
+    Locates the tokens corresponding to the bracketed answer phrase
+    (between ``[`` and ``]`` after the last ``ANSWER:`` marker) and
+    computes confidence metrics from their logprobs.
+
+    Returns a dict with:
+        mean_answer_logprob: average logprob across answer phrase tokens
+        mean_answer_prob:    exp(mean_answer_logprob) — the "confidence" [0, 1]
+        min_answer_prob:     weakest-link token probability
+        commitment_prob:     probability of the first answer token
+    All values are None if logprobs are unavailable or answer phrase
+    cannot be located.
+    """
+    empty = {
+        "mean_answer_prob": None,
+        "decision_prob": None,
+        "min_answer_prob": None,
+        "first_token_prob": None,
+    }
+
+    if not logprobs_data:
+        return empty
+
+    # Reconstruct token stream and locate the last ANSWER: [...] span.
+    # We search from the end of the token stream because the answer line
+    # is always at the end of the response.
+
+    # Locate the anchor (the last mention of "Answer:")
+    tokens = [entry.get("token", "") for entry in logprobs_data]
+    cumulative = "".join(tokens)
+
+    # Locate the anchor (the last mention of "Answer:")
+    anchor_idx = -1
+    for m in re.finditer(r"(?i)\banswer\s*:", cumulative):
+        anchor_idx = m.end()
+    
+    # If no "Answer:" found, anchor to the last ~50 chars to avoid reasoning leakage
+    if anchor_idx == -1:
+        anchor_idx = max(0, len(cumulative) - 50)
+
+    search_range = cumulative[anchor_idx:]
+
+    # Strategy 1: Brackets within the anchor range
+    bracket_open = search_range.find("[")
+    start_idx = -1
+    end_idx = -1
+    
+    if bracket_open != -1:
+        bracket_close = search_range.find("]", bracket_open + 1)
+        if bracket_close != -1:
+            start_idx = anchor_idx + bracket_open + 1
+            end_idx = anchor_idx + bracket_close
+
+    # Strategy 2: Phrase fallback within the anchor range
+    if start_idx == -1 and extracted_answer_phrase:
+        phrase_pos = search_range.find(extracted_answer_phrase)
+        if phrase_pos != -1:
+            start_idx = anchor_idx + phrase_pos
+            end_idx = start_idx + len(extracted_answer_phrase)
+
+    if start_idx == -1 or end_idx == -1:
+        return empty
+    # Map character positions back to token indices using an overlap check
+    # we want tokens that fall (at least partially) between bracket_open and bracket_close
+    char_pos = 0
+    answer_token_indices = []
+    for i, tok in enumerate(tokens):
+        tok_start = char_pos
+        tok_end = char_pos + len(tok)
+
+        # Token is part of the answer if it overlaps with (start_idx, end_idx)
+        overlap_start = max(tok_start, start_idx)
+        overlap_end = min(tok_end, end_idx)
+        
+        if overlap_start < overlap_end:
+            answer_token_indices.append(i)
+        
+        char_pos = tok_end
+    if not answer_token_indices:
+        return empty
+
+    if not answer_token_indices:
+        return empty
+
+    # 1. Heuristic: Mean probability across the phrase (Fluency proxy)
+    answer_logprobs = [
+        logprobs_data[i]["logprob"]
+        for i in answer_token_indices
+        if "logprob" in logprobs_data[i]
+    ]
+    mean_lp = sum(answer_logprobs) / len(answer_logprobs) if answer_logprobs else None
+    
+    # 2. Decision Certainty: Minimum Relative Probability across the phrase (Choice proxy)
+    # This identifies the "bottleneck" or most uncertain branching point.
+    decision_prob = None
+    relative_probs = []
+    
+    if answer_token_indices:
+        for idx in answer_token_indices:
+            token_data = logprobs_data[idx]
+            token_str = token_data.get("token", "").strip()
+            
+            # Gap 2 Fix: Filter out noise (punctuation, brackets, whitespace)
+            # We only care about the decision certainty of meaningful content
+            if not token_str or token_str in "[](){}:=,._-":
+                continue
+
+            if "top_logprobs" in token_data and token_data["top_logprobs"]:
+                denom = sum(math.exp(tp["logprob"]) for tp in token_data["top_logprobs"])
+                chosen_prob = math.exp(token_data["logprob"])
+                
+                if denom > 0:
+                    relative_probs.append(chosen_prob / denom)
+        
+        # Gap 5 Fix: Use a composite of Min (Decision) and Mean (Fluency)
+        # Min represents the hardest branching point; Mean represents overall shakiness.
+        if relative_probs:
+            min_rel = min(relative_probs)
+            mean_rel = sum(relative_probs) / len(relative_probs)
+            
+            # Composite Score: 80% weight on the hardest decision, 20% on overall consistency
+            decision_prob = (0.8 * min_rel) + (0.2 * mean_rel)
+
+    return {
+        "mean_answer_prob": math.exp(mean_lp) if mean_lp is not None else None,
+        "decision_prob": decision_prob,
+        "min_answer_prob": math.exp(min(answer_logprobs)) if answer_logprobs else None,
+        "first_token_prob": math.exp(answer_logprobs[0]) if answer_logprobs else None,
+    }
+
+
+def brier_score(predictions: list[tuple[float, int]]) -> float:
+    """Brier Score: mean squared error between predicted probability and outcome.
+
+    Args:
+        predictions: list of (p_model, outcome) where p_model ∈ [0, 1] is the
+            model's confidence and outcome ∈ {0, 1} is the actual correctness.
+
+    Returns:
+        Brier score ∈ [0, 1]. Lower is better.
+        0.0 = perfect calibration. 0.25 = random baseline (always predicting 0.5).
+    """
+    if not predictions:
+        return 0.0
+    return sum((p - o) ** 2 for p, o in predictions) / len(predictions)
+
+
+def log_loss_score(predictions: list[tuple[float, int]], eps: float = 1e-15) -> float:
+    """Log Loss (cross-entropy): penalizes confident wrong predictions heavily.
+
+    Args:
+        predictions: list of (p_model, outcome).
+        eps: clipping epsilon to avoid log(0).
+
+    Returns:
+        Mean negative log-likelihood. Lower is better.
+    """
+    if not predictions:
+        return 0.0
+    total = 0.0
+    for p, o in predictions:
+        p = max(eps, min(1 - eps, p))
+        total += -(o * math.log(p) + (1 - o) * math.log(1 - p))
+    return total / len(predictions)
+
+
+def expected_calibration_error(predictions: list[tuple[float, int]], n_bins: int = 10) -> float:
+    """Expected Calibration Error (ECE).
+
+    Weights the absolute difference between confidence and accuracy in each bin
+    by the number of samples in that bin.
+
+    Args:
+        predictions: list of (p_model, outcome).
+        n_bins: number of confidence bins (e.g. 10 bins of size 0.1).
+
+    Returns:
+        ECE value [0, 1]. Lower is better.
+    """
+    if not predictions:
+        return 0.0
+
+    bins = [[] for _ in range(n_bins)]
+    for p, o in predictions:
+        idx = min(int(p * n_bins), n_bins - 1)
+        bins[idx].append((p, o))
+
+    ece = 0.0
+    total_n = len(predictions)
+    for bin_items in bins:
+        if not bin_items:
+            continue
+        bin_n = len(bin_items)
+        bin_acc = sum(o for _, o in bin_items) / bin_n
+        bin_conf = sum(p for p, _ in bin_items) / bin_n
+        ece += (bin_n / total_n) * abs(bin_acc - bin_conf)
+
+    return ece
+
+
 def log_none_answer(condition: str, turn: int, response: str) -> None:
     """Log failures to extract an answer from the LLM response."""
     log_file = os.path.join(os.path.dirname(__file__), "failed_extractions.log")
@@ -483,6 +696,7 @@ def _process_result(
     turn: dict,
     response: str,
     extra_fields: dict[str, Any] | None = None,
+    logprobs_data: list[dict] | None = None,
 ) -> dict:
     """Extract answer with extraction-quality tracking, log if needed, and return result dict."""
     extraction_result = extract_answer_with_confidence(response, turn.get("options", {}))
@@ -503,8 +717,29 @@ def _process_result(
     if answer is not None and not hit:
         log_incorrect_answer(condition, turn_idx, turn["question"], answer, correct, response)
 
+    # Confidence scores (Logprob-based)
+    # We pass the extracted answer phrase as a hint to help locate tokens 
+    # even if brackets were missing in the raw output.
+    extracted_phrase = None
+    if extraction_result and "answer" in extraction_result:
+        label = extraction_result["answer"]
+        extracted_phrase = turn.get("options", {}).get(label)
+
+    logprob_conf = extract_answer_logprob_confidence(logprobs_data, response, extracted_phrase)
+
+    # We use 'decision_prob' as the primary calibration signal for Brier/ECE
+    # because it represents certainty relative to competitors (Decision Certainty)
+    p_model = logprob_conf.get("decision_prob")
+
+    lp_label = ""
+    if p_model is not None:
+        lp_label = f" [p_dec={p_model:.3f}]"
+    elif logprob_conf.get("mean_answer_prob") is not None:
+        # Fallback to mean if top_logprobs was missing (unlikely in this setup)
+        lp_label = f" [p_avg={logprob_conf['mean_answer_prob']:.3f}]"
+
     confidence_label = f" ({confidence})" if confidence else ""
-    print(f"  Turn {turn_idx}: LLM={answer}{confidence_label}  correct={correct}  {'✓' if hit else '✗'}", flush=True)
+    print(f"  Turn {turn_idx}: LLM={answer}{confidence_label}{lp_label}  correct={correct}  {'✓' if hit else '✗'}", flush=True)
 
     result = {
         "turn": turn_idx,
@@ -515,6 +750,9 @@ def _process_result(
         "hit": hit,
         "end_to_end_correct": hit,
         "response": response,
+        "mean_answer_prob": logprob_conf.get("mean_answer_prob"),
+        "decision_prob": logprob_conf.get("decision_prob"),
+        "min_answer_prob": logprob_conf.get("min_answer_prob"),
     }
 
     if extra_fields:
@@ -699,12 +937,13 @@ def _get_reasoning_metrics(
 # Evaluation Conditions
 # ────────────────────────────────────────────────────────────────────
 
-def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
+def run_with_store(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
     """[1] WITH Store (Stateless): Fresh store per turn, no chat history."""
     results = []
     eval_system_prompt = _resolve_eval_system_prompt(config)
+    t_list = turns if turns is not None else config.turns
 
-    for i, turn in enumerate(config.turns):
+    for i, turn in enumerate(t_list):
         store = _init_store(config)
 
         # Accumulate prior turn beliefs if configured
@@ -726,20 +965,22 @@ def run_with_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
         question = _format_question(turn)
         prompt = _build_store_prompt(beliefs_text, question)
 
-        raw_response = llm.generate(eval_system_prompt, prompt)
+        raw_response, logprobs_data = llm.generate_with_logprobs(eval_system_prompt, prompt)
         response = _enforce_exact_phrase_output(turn, raw_response)
 
         reasoning = _get_reasoning_metrics(store, filter_spec, is_attr, raw_response,
                                            beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE", i + 1, turn, response,
-                                       extra_fields=reasoning or None))
+                                       extra_fields=reasoning or None,
+                                       logprobs_data=logprobs_data))
 
     return results
 
 
-def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list[dict]:
+def run_with_store_with_history(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
     """[2] WITH Store + Chat History: Store-derived beliefs + conversational context."""
     results = []
+    t_list = turns if turns is not None else config.turns
     eval_system_prompt = _resolve_eval_system_prompt(config)
     
     # Base messages tracking
@@ -786,26 +1027,28 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig) -> list
             messages = base_messages.copy()
 
         messages.append({"role": "user", "content": prompt})
-        raw_response = llm.generate_with_history(messages)
+        raw_response, logprobs_data = llm.generate_with_history_and_logprobs(messages)
         response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
         reasoning = _get_reasoning_metrics(current_store, filter_spec, is_attr, raw_response,
                                            beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE (+History)", i + 1, turn, response,
-                                       extra_fields=reasoning or None))
+                                       extra_fields=reasoning or None,
+                                       logprobs_data=logprobs_data))
 
     return results
 
 
-def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
+def run_without_store(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
     """[3] NO Store (Baseline): Rules + chat history only, no explicit belief tracking."""
     results = []
+    t_list = turns if turns is not None else config.turns
     base_messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
     messages = base_messages.copy()
     initial_belief_lines = [f"{k} = {v}" for k, v in config.initial_beliefs.items()]
 
-    for i, turn in enumerate(config.turns):
+    for i, turn in enumerate(t_list):
         if config.is_conversational:
             # Conversational mode: relying on chat history for prior context
             if i == 0:
@@ -831,11 +1074,12 @@ def run_without_store(llm: OllamaClient, config: DomainConfig) -> list[dict]:
         prompt = _build_baseline_prompt(config.baseline_rules, belief_lines, question)
 
         messages.append({"role": "user", "content": prompt})
-        raw_response = llm.generate_with_history(messages)
+        raw_response, logprobs_data = llm.generate_with_history_and_logprobs(messages)
         response = _enforce_exact_phrase_output(turn, raw_response)
         messages.append({"role": "assistant", "content": response})
 
-        results.append(_process_result("NO STORE", i + 1, turn, response))
+        results.append(_process_result("NO STORE", i + 1, turn, response,
+                                       logprobs_data=logprobs_data))
 
     return results
 
@@ -848,12 +1092,14 @@ def _run_standard_eval_task(
     ollama_options: dict[str, object] | None,
     cache_path: str | None,
     cache_enabled: bool,
+    turns: list[dict] | None = None,
 ) -> list[dict]:
     """Run one standard eval task with its own Ollama client instance."""
     llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
+    t_list = turns if turns is not None else config.turns
     if condition == 0:
-        return run_with_store(llm, config)
-    return run_without_store(llm, config)
+        return run_with_store(llm, config, turns=t_list)
+    return run_without_store(llm, config, turns=t_list)
 
 
 def run_with_store_dual_agent(
@@ -861,13 +1107,15 @@ def run_with_store_dual_agent(
     config: DomainConfig,
     reasoner_model: str | None = None,
     matcher_model: str | None = None,
+    turns: list[dict] | None = None,
 ) -> list[dict]:
     """[4] WITH Store (Dual-Agent): Fresh store per turn, decoupled reasoning+decision, no chat history."""
     results = []
+    t_list = turns if turns is not None else config.turns
     # Pre-compile graph once for all turns
     graph = build_dual_agent_graph(llm, reasoner_model=reasoner_model, matcher_model=matcher_model)
 
-    for i, turn in enumerate(config.turns):
+    for i, turn in enumerate(t_list):
         store = _init_store(config)
 
         # Accumulate prior turn beliefs if configured
@@ -931,10 +1179,12 @@ def _run_dual_agent_eval_task(
     ollama_options: dict[str, object] | None,
     cache_path: str | None,
     cache_enabled: bool,
+    turns: list[dict] | None = None,
 ) -> list[dict]:
     """Run one dual-agent eval task with its own Ollama client instance."""
     llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
-    return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model)
+    t_list = turns if turns is not None else config.turns
+    return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model, turns=t_list)
 
 
 def run_with_store_with_history_dual_agent(
@@ -952,7 +1202,8 @@ def run_with_store_with_history_dual_agent(
     store: BeliefStore | None = _init_store(config) if config.is_conversational else None
     messages: list[dict[str, str]] = []
 
-    for i, turn in enumerate(config.turns):
+    t_list = turns if turns is not None else config.turns
+    for i, turn in enumerate(t_list):
         # Store management (same logic as run_with_store_with_history)
         if config.is_conversational:
             assert store is not None
@@ -1073,6 +1324,7 @@ def run_multi_eval(
     cache_dir: str | None = None,
     cache_enabled: bool = False,
     cache_namespace: str = "eval",
+    shuffle_options: bool = False,
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
@@ -1101,35 +1353,55 @@ def run_multi_eval(
     tpca_correct: list[list[int]] = [[], []]      # word counts for correct responses
     tpca_wrong: list[list[int]] = [[], []]        # word counts for wrong responses
     retrieval_scores: dict[str, list[float]] = {"bcr": [], "sbir": []}  # WITH STORE only
+    # Calibration: calibration_preds[cond] = list of (mean_answer_prob, outcome_int)
+    calibration_preds: list[list[tuple[float, int]]] = [[] for _ in range(2)]
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
+    import random
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
+        future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
-            idx = i + 1
+            run_idx = i + 1
+            
+            # Prepare turns (potentially shuffled) for this run
+            run_turns = config.turns
+            if shuffle_options:
+                run_turns = []
+                for turn in config.turns:
+                    t_copy = turn.copy()
+                    if "options" in t_copy:
+                        labels = list(t_copy["options"].keys())
+                        phrases = list(t_copy["options"].values())
+                        correct_phrase = t_copy["options"].get(t_copy["correct"])
+                        
+                        # Shuffle phrases
+                        random.shuffle(phrases)
+                        new_options = dict(zip(labels, phrases))
+                        
+                        # Find new correct label
+                        new_correct = next(l for l, p in new_options.items() if p == correct_phrase)
+                        
+                        t_copy["options"] = new_options
+                        t_copy["correct"] = new_correct
+                    run_turns.append(t_copy)
+
+            # [1] WITH STORE
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    0,
-                    config,
-                    model,
-                    temperature,
-                    ollama_options,
-                    cache_path,
-                    cache_enabled,
+                    0, config, model, temperature, ollama_options, cache_path, cache_enabled, run_turns
                 )
-            ] = (idx, 0)
+            ] = (run_idx, 0)
+            
+            # [2] NO STORE
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    1,
-                    config,
-                    model,
-                    temperature,
-                    ollama_options,
-                    cache_path,
-                    cache_enabled,
+                    1, config, model, temperature, ollama_options, cache_path, cache_enabled, run_turns
                 )
-            ] = (idx, 1)
+            ] = (run_idx, 1)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None, None] for i in range(runs)}
 
@@ -1151,6 +1423,12 @@ def run_multi_eval(
                 method = r.get("extraction_method")
                 if method:
                     emds[condition_idx][method] += 1
+                
+                # Calibration: Collect (p, o) pairs. 
+                # We prioritize 'decision_prob' for academic calibration metrics.
+                p_val = r.get("decision_prob") or r.get("mean_answer_prob")
+                if p_val is not None:
+                    calibration_preds[condition_idx].append((p_val, 1 if r["hit"] else 0))
 
             # EFR: extraction failures this run
             efr_counts[condition_idx].append(sum(1 for r in res if r.get("answer") is None))
@@ -1240,6 +1518,16 @@ def run_multi_eval(
                 f"{m}={cnt/total_extracted*100:.1f}%" for m, cnt in emds[idx].most_common(5)
             )
             print(f"    EMD (Extraction Method Dist)    | {emd_str}")
+        
+        # Calibration Metrics
+        preds = calibration_preds[idx]
+        if preds:
+            bs = brier_score(preds)
+            ll = log_loss_score(preds)
+            ece = expected_calibration_error(preds)
+            print(f"    Brier Score (Calibration)       | {bs:.4f} (lower is better)")
+            print(f"    Log Loss (Uncertainty)          | {ll:.4f}")
+            print(f"    ECE (Exp. Calibration Error)    | {ece:.4f}")
 
     # Reasoning evidence metrics (WITH STORE only)
     if reasoning_scores["evidence_f1"]:
@@ -1350,6 +1638,19 @@ def run_multi_eval(
             _row("TPCA_Words_Correct", f"{c0:.1f}", f"{c2:.1f}")
             _row("TPCA_Words_Wrong", f"{w0:.1f}", f"{w2:.1f}")
 
+            # ── Calibration ───────────────────────────────────────────────
+            bs0 = brier_score(calibration_preds[0]) if calibration_preds[0] else ""
+            bs2 = brier_score(calibration_preds[1]) if calibration_preds[1] else ""
+            _row("Summary_Metric_Brier_Score", f"{bs0}", f"{bs2}")
+
+            ll0 = log_loss_score(calibration_preds[0]) if calibration_preds[0] else ""
+            ll2 = log_loss_score(calibration_preds[1]) if calibration_preds[1] else ""
+            _row("Summary_Metric_Log_Loss", f"{ll0}", f"{ll2}")
+
+            ece0 = expected_calibration_error(calibration_preds[0]) if calibration_preds[0] else ""
+            ece2 = expected_calibration_error(calibration_preds[1]) if calibration_preds[1] else ""
+            _row("Summary_Metric_ECE", f"{ece0}", f"{ece2}")
+
             # ── EMD — one row per method per condition ────────────────────
             for cond_idx, cond_label in ((0, "WithStore"), (1, "NoStore")):
                 total = sum(emds[cond_idx].values())
@@ -1455,20 +1756,33 @@ def run_multi_eval_dual_agent(
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
-            idx = i + 1
+            run_idx = i + 1
+            
+            # Prepare turns (potentially shuffled)
+            run_turns = config.turns
+            if shuffle_options:
+                run_turns = []
+                for turn in config.turns:
+                    t_copy = turn.copy()
+                    if "options" in t_copy:
+                        labels = list(t_copy["options"].keys())
+                        phrases = list(t_copy["options"].values())
+                        correct_phrase = t_copy["options"].get(t_copy["correct"])
+                        random.shuffle(phrases)
+                        new_options = dict(zip(labels, phrases))
+                        new_correct = next(l for l, p in new_options.items() if p == correct_phrase)
+                        t_copy["options"] = new_options
+                        t_copy["correct"] = new_correct
+                    run_turns.append(t_copy)
+
+            # Single condition in current DA setup (WITH STORE)
             future_to_task[
                 pool.submit(
                     _run_dual_agent_eval_task,
-                    config,
-                    model,
-                    temperature,
-                    reasoner_model,
-                    matcher_model,
-                    ollama_options,
-                    cache_path,
-                    cache_enabled,
+                    config, model, temperature, reasoner_model, matcher_model,
+                    ollama_options, cache_path, cache_enabled, run_turns
                 )
-            ] = (idx, 0)
+            ] = (run_idx, 0)
 
         run_results: dict[int, list[int | None]] = {i + 1: [None] for i in range(runs)}
 

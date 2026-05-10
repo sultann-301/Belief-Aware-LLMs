@@ -15,6 +15,30 @@ Rate (AFR), Determinism Score (DS), and Extraction Failure Rate (EFR).
 
 ## Currently Implemented Metrics
 
+### Calibration & Uncertainty Metrics
+
+The evaluation pipeline obtains the model’s predicted answer and a confidence score derived from the model’s output probabilities. Each prediction is paired with a binary correctness label ($o = 1$ if correct, $o = 0$ if wrong), and we then compute accuracy, Brier score, and expected calibration error (ECE) over the full set of examples. Accuracy measures answer correctness, while Brier score and ECE measure whether the model’s confidence is aligned with correctness.
+
+#### Brier Score
+
+**What it is:** The average of $(p - o)^2$ over all items, where $p$ is the model's confidence and $o$ is the actual correctness.
+
+**What it tells you:** Measures the "mean squared error" of the model's self-assessment. A lower score indicates the model's confidence is more predictive of its actual success.
+
+#### Log Loss
+
+**What it is:** The mean negative log-likelihood of the outcomes given the model's probabilities.
+
+**What it tells you:** Penalizes "confident wrong" answers heavily. If the model is 99% sure but incorrect, Log Loss will be very high.
+
+#### Expected Calibration Error (ECE)
+
+**What it is:** Predictions are grouped into bins by confidence, and we compare the average confidence in each bin to the actual accuracy of that bin.
+
+**What it tells you:** The "gold standard" for calibration. It tells you exactly how much the model's probability deviates from its true accuracy rate on average.
+
+---
+
 ### Accuracy
 
 **What it is:** Fraction of turns where the model's extracted answer matches the correct answer label.
@@ -601,4 +625,7 @@ proportional to its cost).
 | **DABS**    | Dual-Agent Benefit Score       | Does the 2-agent system beat single-agent?           | Comparative         |
 | **TPCA**    | Tokens Per Correct Answer      | Are wrong answers longer? (verbosity = confusion)    | Efficiency          |
 | **WCT**     | Wall-Clock Time Per Turn       | Overhead cost of the store pipeline per query        | Efficiency          |
+| **BS**      | Brier Score                    | Mean squared error of predicted probability          | Calibration         |
+| **LL**      | Log Loss                       | Penalty for confident wrong answers                  | Calibration         |
+| **ECE**     | Expected Calibration Error     | Bin-weighted deviation of confidence from accuracy   | Calibration         |
 | **BBR**     | Belief Binding Rate            | Does Agent 1 (reasoner) reach the right conclusion?  | Existing            |

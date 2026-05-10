@@ -21,6 +21,10 @@ class LLMClient(Protocol):
 
     def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None, json_mode: bool = False) -> str: ...
 
+    def generate_with_logprobs(self, system_prompt: str, user_prompt: str, model: str | None = None) -> tuple[str, list | None]: ...
+
+    def generate_with_history_and_logprobs(self, messages: list[dict[str, str]], model: str | None = None) -> tuple[str, list | None]: ...
+
 
 class OllamaClient:
     """Wrapper around the ``ollama`` Python library."""
@@ -106,6 +110,49 @@ class OllamaClient:
             self._cache.set(cache_key, content)
         return content
 
+    def generate_with_logprobs(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: str | None = None,
+    ) -> tuple[str, list | None]:
+        """Generate a response and return (content, logprobs_list).
+
+        logprobs_list is a list of dicts with keys: token, logprob, top_logprobs.
+        Returns (content, None) if logprobs are not available.
+        """
+        options = self._options()
+        chat_kwargs = {
+            "model": model or self.model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "think": False,
+            "options": options,
+            "logprobs": True,
+            "top_logprobs": 3,
+        }
+        if self.keep_alive is not None:
+            chat_kwargs["keep_alive"] = self.keep_alive
+        response = self._client.chat(**chat_kwargs)
+        content = response.message.content
+        raw_logprobs = getattr(response, "logprobs", None)
+        logprobs_list = None
+        if raw_logprobs:
+            logprobs_list = [
+                {
+                    "token": lp.token,
+                    "logprob": lp.logprob,
+                    "top_logprobs": [
+                        {"token": t.token, "logprob": t.logprob}
+                        for t in (lp.top_logprobs or [])
+                    ],
+                }
+                for lp in raw_logprobs
+            ]
+        return content, logprobs_list
+
     def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None, json_mode: bool = False) -> str:
         """Call LLM with an explicit list of conversation messages."""
         options = self._options()
@@ -138,6 +185,41 @@ class OllamaClient:
         if self._cache is not None and cache_key is not None:
             self._cache.set(cache_key, content)
         return content
+
+    def generate_with_history_and_logprobs(
+        self,
+        messages: list[dict[str, str]],
+        model: str | None = None,
+    ) -> tuple[str, list | None]:
+        """Call LLM with conversation history and return (content, logprobs_list)."""
+        options = self._options()
+        chat_kwargs = {
+            "model": model or self.model,
+            "messages": messages,
+            "think": False,
+            "options": options,
+            "logprobs": True,
+            "top_logprobs": 3,
+        }
+        if self.keep_alive is not None:
+            chat_kwargs["keep_alive"] = self.keep_alive
+        response = self._client.chat(**chat_kwargs)
+        content = response.message.content
+        raw_logprobs = getattr(response, "logprobs", None)
+        logprobs_list = None
+        if raw_logprobs:
+            logprobs_list = [
+                {
+                    "token": lp.token,
+                    "logprob": lp.logprob,
+                    "top_logprobs": [
+                        {"token": t.token, "logprob": t.logprob}
+                        for t in (lp.top_logprobs or [])
+                    ],
+                }
+                for lp in raw_logprobs
+            ]
+        return content, logprobs_list
 
 
 _CACHE_INIT_LOCKS: dict[str, threading.Lock] = {}
