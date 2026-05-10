@@ -10,7 +10,7 @@ import sys
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "standard"  # Change to "standard" for single-model batch
+MODE = "dual-agent"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
@@ -21,13 +21,24 @@ MODELS = [
     # "ministral:latest",
 ]
 
+
+# ministral-3:3b                   
+# qwen3.5:0.8b                       
+# llama3.2:1b                      
+# hoangquan456/qwen3-nothink:4b    
+# gpt-oss:120b-cloud               
+# gemma3:1b                        
+# qwen3:4b                         
 # DUAL-AGENT MODE: Separate reasoner and matcher models
 REASONER_MODELS = [
-    "gemma3:1b",
+    "llama3.2:1b",
+    "hoangquan456/qwen3-nothink:4b",
 ]
 COOLDOWN_SECONDS = 30
 MATCHER_MODELS = [
    "gemma3:1b",
+   "ministral-3:3b",
+   "hoangquan456/qwen3-nothink:4b",
 
 ]
 
@@ -59,7 +70,7 @@ DOMAINS = [
     "alien_clinic_trace_selection",
     
     # 7. Stress Testing (Hard Belief Revision)
-    "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
+    # "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
 ]
 
 RUNS_PER_CONFIG = 1
