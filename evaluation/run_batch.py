@@ -10,15 +10,16 @@ import sys
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "dual-agent"  # Change to "standard" for single-model batch
+MODE = "standard"  # Change to "standard" for single-model batch
 
 # STANDARD MODE: Single model configuration
 MODELS = [
-    "gemma3:1b",
-    "llama3.2:1b",
-    "ministral-3:3b",
-    "gemma4:e2b",
+    # "gemma3:1b",
+    "llama3.2:1b"
+    # "ministral-3:3b",
+    # "gemma4:e2b",
     # "ministral:latest",
+    # "hoangquan456/qwen3-nothink:4b"
 ]
 
 
@@ -43,7 +44,7 @@ MATCHER_MODELS = [
 ]
 
 # Prompt versions to compare
-PROMPTS = ["v15", "v16"]
+PROMPTS = ["v16"]
 
 # Temperature(s) to test
 TEMPERATURES = [0.0]  # Set to [0.0, 0.7] to test both deterministic and stochastic
@@ -51,10 +52,10 @@ TEMPERATURES = [0.0]  # Set to [0.0, 0.7] to test both deterministic and stochas
 # Domains to iterate through
 DOMAINS = [
     # 1. Prior Suppression (Core Thesis)
-    "loan_absurd", "alien_clinic_absurd", "crime_scene_absurd", "thorncrester_absurd",
+    # "loan_absurd", "alien_clinic_absurd", "crime_scene_absurd", "thorncrester_absurd",
     
     # 2. Hallucination Resistance (Core Thesis)
-    "loan_grounding", "alien_clinic_grounding", "crime_scene_grounding", "thorncrester_grounding",
+    # "loan_grounding", "alien_clinic_grounding", "crime_scene_grounding", "thorncrester_grounding",
     
     # 3. Temporal Tracking (Supporting)
     "loan_absurd_temporal", "alien_clinic_absurd_temporal", "crime_scene_absurd_temporal", "thorncrester_absurd_temporal",
@@ -63,11 +64,11 @@ DOMAINS = [
     "loan_belief_maintenance", "alien_clinic_belief_maintenance", "crime_scene_belief_maintenance", "thorncrester_belief_maintenance",
     
     # 5. Reasoning Depth (Supporting)
-    "loan_2hop", "alien_clinic_2hop", "crime_scene_2hop", "thorncrester_2hop",
-    "loan_3hop", "alien_clinic_3hop", "crime_scene_3hop", "thorncrester_3hop",
+    # "loan_2hop", "alien_clinic_2hop", "crime_scene_2hop", "thorncrester_2hop",
+    # "loan_3hop", "alien_clinic_3hop", "crime_scene_3hop", "thorncrester_3hop",
     
     # 6. Transparency (Unique)
-    "alien_clinic_trace_selection",
+    # "alien_clinic_trace_selection",
     
     # 7. Stress Testing (Hard Belief Revision)
     # "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
