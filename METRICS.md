@@ -37,6 +37,12 @@ The evaluation pipeline obtains the model’s predicted answer and a confidence 
 
 **What it tells you:** The "gold standard" for calibration. It tells you exactly how much the model's probability deviates from its true accuracy rate on average.
 
+#### Macro Calibration Error (MacroCE)
+
+**What it is:** A balanced version of the calibration error. It calculates the mean absolute error for correct predictions ($ICE_{pos}$) and incorrect predictions ($ICE_{neg}$) separately, then averages them: `0.5 * (ICE_pos + ICE_neg)`.
+
+**What it tells you:** Prevents calibration results from being dominated by high accuracy. If a model is 99% accurate, standard ECE mostly reflects correct cases. MacroCE forces an equal look at how "arrogant" the model is when it is wrong versus how "timid" it is when it is right.
+
 ---
 
 ### Accuracy

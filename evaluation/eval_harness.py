@@ -567,6 +567,35 @@ def expected_calibration_error(predictions: list[tuple[float, int]], n_bins: int
 
     return ece
 
+def macro_calibration_error(predictions: list[tuple[float, int]]) -> float:
+    """Macro-average Calibration Error (MacroCE).
+    
+    Calculates separate calibration errors for correct (Positive) and incorrect (Negative)
+    predictions, then averages them. This ensures that calibration on errors is 
+    weighted equally with calibration on correct answers, regardless of accuracy.
+    
+    Formula:
+      ICE_pos = mean(1 - conf) for all correct predictions
+      ICE_neg = mean(conf - 0) for all incorrect predictions
+      MacroCE = 0.5 * (ICE_pos + ICE_neg)
+    """
+    if not predictions:
+        return 0.0
+
+    pos_scores = [p for p, o in predictions if o == 1]
+    neg_scores = [p for p, o in predictions if o == 0]
+
+    ice_pos = sum(1.0 - p for p in pos_scores) / len(pos_scores) if pos_scores else 0.0
+    ice_neg = sum(p for p in neg_scores) / len(neg_scores) if neg_scores else 0.0
+
+    if not pos_scores:
+        return ice_neg
+    if not neg_scores:
+        return ice_pos
+
+    return 0.5 * (ice_pos + ice_neg)
+
+
 
 def log_none_answer(condition: str, turn: int, response: str) -> None:
     """Log failures to extract an answer from the LLM response."""
@@ -1528,6 +1557,8 @@ def run_multi_eval(
             print(f"    Brier Score (Calibration)       | {bs:.4f} (lower is better)")
             print(f"    Log Loss (Uncertainty)          | {ll:.4f}")
             print(f"    ECE (Exp. Calibration Error)    | {ece:.4f}")
+            mce = macro_calibration_error(preds)
+            print(f"    MacroCE (Macro Calib. Error)    | {mce:.4f}")
 
     # Reasoning evidence metrics (WITH STORE only)
     if reasoning_scores["evidence_f1"]:
@@ -1650,6 +1681,10 @@ def run_multi_eval(
             ece0 = expected_calibration_error(calibration_preds[0]) if calibration_preds[0] else ""
             ece2 = expected_calibration_error(calibration_preds[1]) if calibration_preds[1] else ""
             _row("Summary_Metric_ECE", f"{ece0}", f"{ece2}")
+
+            mce0 = macro_calibration_error(calibration_preds[0]) if calibration_preds[0] else ""
+            mce2 = macro_calibration_error(calibration_preds[1]) if calibration_preds[1] else ""
+            _row("Summary_Metric_MacroCE", f"{mce0}", f"{mce2}")
 
             # ── EMD — one row per method per condition ────────────────────
             for cond_idx, cond_label in ((0, "WithStore"), (1, "NoStore")):
