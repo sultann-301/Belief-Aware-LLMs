@@ -11,6 +11,8 @@ Architecture:
 """
 
 import argparse
+import random
+import importlib
 from sys import path
 from os.path import join, dirname
 
@@ -132,6 +134,67 @@ _SUBSET_MAP = {
 # Build Evaluation Registry
 # ────────────────────────────────────────────────────────────────────
 
+def seed_paraphrased_turns(domain_name: str, subset_name: str, original_turns: list[dict]) -> list[dict]:
+    """Randomly replaces the text of each turn with one of the paraphrased versions (if available)."""
+    PREFIX_MAP = {
+        "loan": "LOAN",
+        "alien_clinic": "ALIEN",
+        "crime_scene": "CRIME",
+        "thorncrester": "THORNCRESTER"
+    }
+    
+    prefix = PREFIX_MAP.get(domain_name)
+    if not prefix:
+        return original_turns
+        
+    try:
+        module_name = f"evaluation.{domain_name}_paraphrased_scenarios"
+        para_module = importlib.import_module(module_name)
+    except ImportError:
+        return original_turns
+
+    subset_upper = subset_name.upper()
+    
+    para_lists = []
+    for i in range(1, 4):
+        var_name = f"{prefix}_{subset_upper}_PARA_{i}"
+        if hasattr(para_module, var_name):
+            para_lists.append(getattr(para_module, var_name))
+            
+    if not para_lists:
+        return original_turns
+        
+    seeded_turns = []
+    for i, orig_turn in enumerate(original_turns):
+        options = [orig_turn]
+        for p_list in para_lists:
+            if i < len(p_list):
+                options.append(p_list[i])
+        
+        chosen = random.choice(options)
+        seeded_turns.append(chosen)
+        
+    return seeded_turns
+
+def make_subset_seed_fn(d_name, s_name, orig_turns):
+    return lambda: seed_paraphrased_turns(d_name, s_name, orig_turns)
+
+def make_extended_seed_fn(d_name, subsets_dict):
+    def _seed():
+        seeded = []
+        for s_name, t_list in subsets_dict.items():
+            seeded.extend(seed_paraphrased_turns(d_name, s_name, t_list))
+        return seeded
+    return _seed
+
+def make_ba_seed_fn(d_name, subsets_dict):
+    def _seed():
+        seeded = []
+        seeded.extend(seed_paraphrased_turns(d_name, "absurd", subsets_dict["absurd"]))
+        seeded.extend(seed_paraphrased_turns(d_name, "grounding", subsets_dict["grounding"]))
+        return seeded
+    return _seed
+
 DOMAIN_REGISTRY = {}
 
 # Map of base domain names to their basic turns
@@ -148,6 +211,7 @@ _HARD_TURNS_MAP = {
     "crime_scene": CRIME_HARD_TURNS,
     "thorncrester": THORNCRESTER_HARD_TURNS,
 }
+
 
 for domain_name, domain_config in _SUBSET_MAP.items():
     # Full basic domain (5 turns)
@@ -174,6 +238,7 @@ for domain_name, domain_config in _SUBSET_MAP.items():
         default_entities=domain_config["default_entities"],
         is_conversational=False,
         accumulate_prior_beliefs=True,
+        seed_fn=make_extended_seed_fn(domain_name, domain_config["subsets"]),
     )
 
     # Individual subsets (e.g., loan_negation, loan_1hop, etc.)
@@ -190,6 +255,7 @@ for domain_name, domain_config in _SUBSET_MAP.items():
             # NOTE: belief_maintenance tests accumulation + retrieval of old beliefs
             # Beliefs accumulate, but queries ask about UNAFFECTED attributes
             accumulate_prior_beliefs=(subset_name == "belief_maintenance"),
+            seed_fn=make_subset_seed_fn(domain_name, subset_name, turns),
         )
 
     DOMAIN_REGISTRY[f"{domain_name}_hard"] = DomainConfig(
@@ -201,6 +267,7 @@ for domain_name, domain_config in _SUBSET_MAP.items():
         default_entities=domain_config["default_entities"],
         is_conversational=False,
         accumulate_prior_beliefs=True,
+        seed_fn=make_subset_seed_fn(domain_name, "hard", _HARD_TURNS_MAP[domain_name]),
     )
 
 # Special alternate belief state for alien_clinic counterfactual
@@ -258,6 +325,7 @@ for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
             default_entities=domain_config["default_entities"],
             is_conversational=False,
             accumulate_prior_beliefs=(subset_name in {"absurd_temporal", "trace_selection"}),
+            seed_fn=make_subset_seed_fn(domain_name, subset_name, turns),
         )
 
     # Combined: e.g. loan_belief_awareness (20 turns)
@@ -272,6 +340,7 @@ for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
         default_entities=domain_config["default_entities"],
         is_conversational=False,
         accumulate_prior_beliefs=False,
+        seed_fn=make_ba_seed_fn(domain_name, ba_subsets),
     )
 
 

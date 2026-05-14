@@ -68,6 +68,7 @@ class OllamaClient:
             "repeat_last_n": self.repeat_last_n if self.repeat_last_n is not None else 128,
             "top_k": self.top_k if self.top_k is not None else 40,
             "top_p": self.top_p if self.top_p is not None else 0.9,
+            "think": self.think,
         }
 
     def _cache_key(self, payload: dict[str, object]) -> str:
@@ -99,8 +100,8 @@ class OllamaClient:
                 {"role": "user", "content": user_prompt},
             ],
             "format": "json" if json_mode else None,
-            "think": False,
             "options": options,
+            "think": False,
         }
         if self.keep_alive is not None:
             chat_kwargs["keep_alive"] = self.keep_alive
@@ -128,8 +129,8 @@ class OllamaClient:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt},
             ],
-            "think": False,
             "options": options,
+            "think": False,
             "logprobs": True,
             "top_logprobs": 3,
         }
@@ -175,8 +176,8 @@ class OllamaClient:
             "model": model or self.model,
             "messages": messages,
             "format": "json" if json_mode else None,
-            "think": False,
             "options": options,
+            "think": False,
         }
         if self.keep_alive is not None:
             chat_kwargs["keep_alive"] = self.keep_alive
@@ -196,8 +197,8 @@ class OllamaClient:
         chat_kwargs = {
             "model": model or self.model,
             "messages": messages,
-            "think": False,
             "options": options,
+            "think": False,
             "logprobs": True,
             "top_logprobs": 3,
         }

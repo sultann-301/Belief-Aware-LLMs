@@ -78,6 +78,7 @@ class DomainConfig:
     default_entities: str = "applicant, loan"
     is_conversational: bool = True
     accumulate_prior_beliefs: bool = False
+    seed_fn: Callable[[], list[dict]] | None = None
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -534,7 +535,7 @@ def log_loss_score(predictions: list[tuple[float, int]], eps: float = 1e-15) -> 
     return total / len(predictions)
 
 
-def expected_calibration_error(predictions: list[tuple[float, int]], n_bins: int = 10) -> float:
+def expected_calibration_error(predictions: list[tuple[float, int]], n_bins: int = 3) -> float:
     """Expected Calibration Error (ECE).
 
     Weights the absolute difference between confidence and accuracy in each bin
@@ -1394,11 +1395,11 @@ def run_multi_eval(
         for i in range(runs):
             run_idx = i + 1
             
-            # Prepare turns (potentially shuffled) for this run
-            run_turns = config.turns
+            # Prepare turns (potentially seeded/shuffled) for this run
+            run_turns = config.seed_fn() if config.seed_fn else config.turns
             if shuffle_options:
-                run_turns = []
-                for turn in config.turns:
+                shuffled_turns = []
+                for turn in run_turns:
                     t_copy = turn.copy()
                     if "options" in t_copy:
                         labels = list(t_copy["options"].keys())
@@ -1414,7 +1415,8 @@ def run_multi_eval(
                         
                         t_copy["options"] = new_options
                         t_copy["correct"] = new_correct
-                    run_turns.append(t_copy)
+                    shuffled_turns.append(t_copy)
+                run_turns = shuffled_turns
 
             # [1] WITH STORE
             future_to_task[
@@ -1736,6 +1738,7 @@ def run_multi_eval_dual_agent(
     cache_dir: str | None = None,
     cache_enabled: bool = False,
     cache_namespace: str = "eval",
+    shuffle_options: bool = False,
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel.
     
@@ -1793,11 +1796,11 @@ def run_multi_eval_dual_agent(
         for i in range(runs):
             run_idx = i + 1
             
-            # Prepare turns (potentially shuffled)
-            run_turns = config.turns
+            # Prepare turns (potentially seeded/shuffled)
+            run_turns = config.seed_fn() if config.seed_fn else config.turns
             if shuffle_options:
-                run_turns = []
-                for turn in config.turns:
+                shuffled_turns = []
+                for turn in run_turns:
                     t_copy = turn.copy()
                     if "options" in t_copy:
                         labels = list(t_copy["options"].keys())
@@ -1808,7 +1811,8 @@ def run_multi_eval_dual_agent(
                         new_correct = next(l for l, p in new_options.items() if p == correct_phrase)
                         t_copy["options"] = new_options
                         t_copy["correct"] = new_correct
-                    run_turns.append(t_copy)
+                    shuffled_turns.append(t_copy)
+                run_turns = shuffled_turns
 
             # Single condition in current DA setup (WITH STORE)
             future_to_task[
