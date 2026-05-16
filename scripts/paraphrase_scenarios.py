@@ -66,7 +66,7 @@ def format_turn(turn, new_question):
 
 def process_domain(domain, subsets, out_dir):
     print(f"\\n[START] Processing Domain: {domain}")
-    client = OllamaClient(model="gemma3:1b", temperature=0.7, num_predict=150)
+    client = OllamaClient(model="gemma4:e2b", temperature=0.7, num_predict=150)
     
     system_prompt = (
         "You are an expert NLP paraphraser. "
@@ -146,7 +146,7 @@ def main():
     out_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "evaluation")
     
     # Process all 4 domains concurrently
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         futures = []
         for domain, subsets in TARGETS.items():
             futures.append(executor.submit(process_domain, domain, subsets, out_dir))

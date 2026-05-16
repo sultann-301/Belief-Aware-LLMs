@@ -10,59 +10,61 @@ ALIEN_BELIEF_MAINTENANCE_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'Determine the organ integrity level at 2.0 atmospheres for a '
-                    'Glerps patient?',
+        'question': 'What is the organ integrity status for a Glerps patient at '
+                    '2.0 atmospheres?',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'B'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'What is the phase of zyxostin when xenon is the primary gas?',
+        'question': 'Given that xenon is the predominant gas, what is the phase of '
+                    'zyxostin?',
         'options': {'A': 'crystalline', 'B': 'plasma', 'C': 'liquid'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': []},
-        'question': 'Given the absence of symptoms, the treatment plan should be '
-                    'determined without considering any specific Glerps patient '
-                    'details.',
+        'question': 'What is the prescribed treatment for this Glerps patient who '
+                    'has reported no symptoms?',
         'options': {'A': 'snevox', 'B': 'zyxostin', 'C': 'filinan'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': ['fever']},
-        'question': 'The prescription for the patient with a fever is adjusted.',
+        'question': 'If a patient has a fever, how should the prescription be '
+                    'modified?',
         'options': {'A': 'zyxostin', 'B': 'snevox', 'C': 'none'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status'],
         'beliefs': {},
-        'question': 'Describe the patient’s sensory experience in relation to '
-                    'their current prescription.',
+        'question': "What is the patient's sensory status based on the current "
+                    'snevox prescription?',
         'options': {'A': 'telepathic', 'B': 'normal', 'C': 'blinded'},
         'correct': 'A'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': 'Analyze the patient’s organ integrity based on pressure '
-                    'readings of 4.5.',
+        'question': 'With the pressure spiking to 4.5, what is the current state '
+                    "of the Glerps patient's organ integrity?",
         'options': {'A': 'stable', 'B': 'brittle', 'C': 'volatile'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {},
-        'question': 'What is the zyxostin phase at a xenon gas pressure spike?',
+        'question': 'What is the phase of zyxostin in xenon gas despite the '
+                    'pressure increase?',
         'options': {'A': 'plasma', 'B': 'crystalline', 'C': 'vapor'},
         'correct': 'B'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'patient.organism_type': 'Yorp'},
-        'question': 'The patient’s condition is linked to a Yorp status, and at '
-                    '4.5 atmospheres, what is their organ health?',
+        'question': 'Given that the patient is a Yorp, what is their organ '
+                    'integrity at 4.5 atmospheres?',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'A'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {},
-        'question': 'Does quarantine apply to Yorp events involving xenon gas?',
+        'question': 'Does this Yorp need to be quarantined in xenon gas?',
         'options': {'A': 'Yes', 'B': 'No', 'C': 'Maybe'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {'atmosphere.dominant_gas': 'methane'},
-        'question': 'Considering the patient’s condition, is quarantine still '
-                    'necessary for Yorp?',
+        'question': 'Since the gas has shifted to methane, is quarantine necessary '
+                    'for the Yorp patient?',
         'options': {'A': 'True', 'B': 'False', 'C': 'Pending'},
         'correct': 'A'}
 ]
@@ -74,61 +76,61 @@ ALIEN_BELIEF_MAINTENANCE_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the organ health assessment at 2 atmospheres for a '
-                    'Glerps patient?',
+        'question': 'Determine the organ integrity of a Glerps patient when the '
+                    'pressure is 2.0 atmospheres.',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'B'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'The phase of zyxostin under the influence of xenon gas?',
+        'question': 'What is the phase of zyxostin when xenon is the dominant gas?',
         'options': {'A': 'crystalline', 'B': 'plasma', 'C': 'liquid'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': []},
-        'question': 'Considering the lack of reported symptoms, the treatment '
-                    'strategy should be formulated without referencing any '
-                    'individual patient profile.',
+        'question': 'Since this Glerps patient has no reported symptoms, what is '
+                    'the prescribed treatment?',
         'options': {'A': 'snevox', 'B': 'zyxostin', 'C': 'filinan'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': ['fever']},
-        'question': 'Given the patient’s fever, a change in the prescription is '
-                    'necessary.',
+        'question': 'What is the necessary change in prescription when a patient '
+                    'develops a fever?',
         'options': {'A': 'zyxostin', 'B': 'snevox', 'C': 'none'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status'],
         'beliefs': {},
-        'question': 'What is the patient’s sensory perception concerning their '
-                    'prescribed medication?',
+        'question': 'Considering the present snevox prescription, what is the '
+                    "patient's sensory condition?",
         'options': {'A': 'telepathic', 'B': 'normal', 'C': 'blinded'},
         'correct': 'A'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': "Determine the current condition of the patient's organs, "
-                    'considering the pressure level of 4.5.',
+        'question': 'Given the pressure has risen to 4.5, what is the status of '
+                    "the Glerps patient's organ integrity?",
         'options': {'A': 'stable', 'B': 'brittle', 'C': 'volatile'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {},
-        'question': 'The phase of zyxostin under xenon gas pressure is what?',
+        'question': 'Despite the pressure spike, what phase does zyxostin maintain '
+                    'in xenon?',
         'options': {'A': 'plasma', 'B': 'crystalline', 'C': 'vapor'},
         'correct': 'B'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'patient.organism_type': 'Yorp'},
-        'question': 'Considering the patient’s Yorp status, and the pressure level '
-                    'of 4.5 atmospheres, what is their organ integrity?',
+        'question': 'What is the organ integrity of a Yorp when subjected to 4.5 '
+                    'atmospheres?',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'A'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {},
-        'question': 'Can quarantine regulations cover Yorp events utilizing xenon '
+        'question': 'Is quarantine necessary for this Yorp when exposed to xenon '
                     'gas?',
         'options': {'A': 'Yes', 'B': 'No', 'C': 'Maybe'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {'atmosphere.dominant_gas': 'methane'},
-        'question': 'Given the patient’s situation, is quarantine a mandatory step '
-                    'for Yorp?',
+        'question': 'Given the gas shift to methane, does the Yorp patient require '
+                    'quarantine?',
         'options': {'A': 'True', 'B': 'False', 'C': 'Pending'},
         'correct': 'A'}
 ]
@@ -140,63 +142,61 @@ ALIEN_BELIEF_MAINTENANCE_PARA_3 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'How does the organ integrity of a Glerps patient vary at 2 '
-                    'atmospheres?',
+        'question': 'What is the condition of the organs in a Glerps patient under '
+                    '2.0 atmospheres?',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'B'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': "Describe the phase of zyxostin in relation to xenon gas's "
-                    'presence?',
+        'question': 'Considering xenon as the main gas, what phase does zyxostin '
+                    'exist in?',
         'options': {'A': 'crystalline', 'B': 'plasma', 'C': 'liquid'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': []},
-        'question': 'Since no symptoms have been observed, the treatment approach '
-                    'should be standardized for this patient, irrespective of any '
-                    'specific Glerps characteristics.',
+        'question': 'Given the absence of reported symptoms in this Glerps '
+                    'patient, what treatment has been prescribed?',
         'options': {'A': 'snevox', 'B': 'zyxostin', 'C': 'filinan'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription'],
         'beliefs': {'patient.symptoms': ['fever']},
-        'question': 'A shift in the patient’s medication is required due to a '
-                    'fever diagnosis.',
+        'question': 'How does the prescription need to be altered following the '
+                    'onset of a fever?',
         'options': {'A': 'zyxostin', 'B': 'snevox', 'C': 'none'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status'],
         'beliefs': {},
-        'question': 'Can you detail the patient’s sensory response to the current '
-                    'medication regimen?',
+        'question': 'Based on the current snevox prescription, what can be '
+                    "determined about the patient's sensory status?",
         'options': {'A': 'telepathic', 'B': 'normal', 'C': 'blinded'},
         'correct': 'A'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': "Provide a report detailing the patient's organ health, "
-                    'specifically focusing on the pressure reading of 4.5.',
+        'question': 'What is the organ integrity of the Glerps patient now, '
+                    'considering the pressure has increased to 4.5?',
         'options': {'A': 'stable', 'B': 'brittle', 'C': 'volatile'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_phase'],
         'beliefs': {},
-        'question': 'Describe the zyxostin behavior in xenon gas considering the '
-                    'pressure spike.',
+        'question': 'Considering the pressure spike, what is the phase of zyxostin '
+                    'when it is in xenon gas?',
         'options': {'A': 'plasma', 'B': 'crystalline', 'C': 'vapor'},
         'correct': 'B'},
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {'patient.organism_type': 'Yorp'},
-        'question': 'Given the patient’s Yorp affiliation and atmospheric pressure '
-                    'of 4.5 atmospheres, what is their organ integrity assessment?',
+        'question': 'At 4.5 atmospheres, what is the state of organ integrity for '
+                    'the patient who is a Yorp?',
         'options': {'A': 'brittle', 'B': 'stable', 'C': 'volatile'},
         'correct': 'A'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {},
-        'question': 'Is there a quarantine requirement for Yorp involving xenon '
-                    'gas?',
+        'question': 'What is the requirement for quarantining this Yorp in xenon?',
         'options': {'A': 'Yes', 'B': 'No', 'C': 'Maybe'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {'atmosphere.dominant_gas': 'methane'},
-        'question': 'What is the current quarantine protocol for Yorp patients, '
-                    'considering the gas shift?',
+        'question': 'With the gas now being methane, is quarantine mandated for '
+                    'the patient named Yorp?',
         'options': {'A': 'True', 'B': 'False', 'C': 'Pending'},
         'correct': 'A'}
 ]
@@ -208,8 +208,8 @@ ALIEN_ABSURD_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 0.001,
                        'patient.organism_type': 'Glerps'},
-        'question': 'Determine the organ integrity based on the ambient pressure '
-                    'of 0.001.',
+        'question': 'Given an ambient pressure of 0.001, what is the state of the '
+                    'organ integrity?',
         'options': {   'A': 'volatile — near-vacuum is extremely dangerous',
                        'B': 'brittle',
                        'C': 'stable'},
@@ -217,8 +217,8 @@ ALIEN_ABSURD_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': "What is the Qwerl's organ integrity based on the ambient "
-                    'pressure of 99.0?',
+        'question': 'Given an ambient pressure of 99.0, what is the integrity of '
+                    "Qwerl's organ?",
         'options': {   'A': 'volatile — such extreme pressure must be worst '
                             'outcome',
                        'B': 'brittle',
@@ -231,8 +231,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Describe the active prescription for Glerps, considering '
-                    'their volatile organs.',
+        'question': 'Given that the organism is Glerps and its organs are '
+                    'volatile, what is the active prescription?',
         'options': {   'A': 'none — the combination is too dangerous to prescribe',
                        'B': 'zyxostin',
                        'C': 'filinan'},
@@ -244,7 +244,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "What is the likelihood of recovery for this patient's organs?",
+        'question': "Given the volatility of the patient's organs, what is the "
+                    'outlook for recovery?',
         'options': {   'A': 'terminal — the situation is catastrophic',
                        'B': 'guarded',
                        'C': 'miraculous'},
@@ -252,8 +253,8 @@ ALIEN_ABSURD_PARA_1 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the current quarantine status regarding chlorine gas '
-                    'in the atmosphere?',
+        'question': 'What is the recorded quarantine status given that the '
+                    'atmosphere contains chlorine gas?',
         'options': {   'A': 'True — chlorine is a hazardous gas requiring '
                             'quarantine',
                        'B': 'False',
@@ -264,9 +265,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Determine the medical personnel needed in a xenon atmosphere '
-                    'under pressure 3.5, considering the potential for fragile '
-                    'tissues?',
+        'question': 'What is the medical staff requirement in a xenon atmosphere '
+                    'at a pressure of 3.5 with brittle organs?',
         'options': {   'A': 'hazmat_team — the atmosphere and organ damage demand '
                             'it',
                        'B': 'psionic_handler',
@@ -279,9 +279,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'The patient’s perception of reality is influenced by thought '
-                    'processes, indicating a potential connection between their '
-                    'mind and external stimuli.',
+        'question': "What is the implication of the patient's telepathic sensory "
+                    'status?',
         'options': {   'A': 'A critical adverse reaction',
                        'B': 'The expected outcome of the current prescription',
                        'C': 'Cannot determine'},
@@ -293,8 +292,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Please specify the billing tier for patients with brittle '
-                    'organs under xenon atmospheric conditions.',
+        'question': 'What is the clinic billing tier for a patient with brittle '
+                    'organs in a xenon atmosphere?',
         'options': {   'A': 'class_omega — brittle organs and exotic atmosphere '
                             'require premium billing',
                        'B': 'class_delta',
@@ -304,8 +303,8 @@ ALIEN_ABSURD_PARA_1 = [
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps'},
-        'question': 'Analyze the potential danger levels associated with Glerps '
-                    'and zyxostin when considering volatile integrity.',
+        'question': 'What is the danger level for zyxostin when glerps and '
+                    'zyxostin are at volatile integrity?',
         'options': {   'A': 'fatal_to_patient — explosive + volatile is the worst '
                             'possible scenario',
                        'B': 'safe',
@@ -316,8 +315,8 @@ ALIEN_ABSURD_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What is the recommended treatment duration for volatile '
-                    'organs, considering cycles?',
+        'question': 'What is the duration of treatment in cycles for organs that '
+                    'are volatile?',
         'options': {   'A': '12 — volatile organs always require maximum treatment',
                        'B': '5',
                        'C': '0'},
@@ -331,8 +330,8 @@ ALIEN_ABSURD_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 0.001,
                        'patient.organism_type': 'Glerps'},
-        'question': 'Calculate the organ integrity considering the ambient '
-                    'pressure of 0.001.',
+        'question': 'If the ambient pressure is 0.001, what can be determined '
+                    "about the organ's integrity?",
         'options': {   'A': 'volatile — near-vacuum is extremely dangerous',
                        'B': 'brittle',
                        'C': 'stable'},
@@ -340,8 +339,8 @@ ALIEN_ABSURD_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': "What is the Qwerl's organ integrity based on the ambient "
-                    'pressure of 99.0?',
+        'question': "What is the state of Qwerl's organ integrity when the ambient "
+                    'pressure is 99.0?',
         'options': {   'A': 'volatile — such extreme pressure must be worst '
                             'outcome',
                        'B': 'brittle',
@@ -354,8 +353,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "What is the prescription's effect when used by a Glerp, given "
-                    'their tendency to release volatile substances?',
+        'question': 'What is the active prescription when the organism is Glerps '
+                    'and the organs are volatile?',
         'options': {   'A': 'none — the combination is too dangerous to prescribe',
                        'B': 'zyxostin',
                        'C': 'filinan'},
@@ -367,8 +366,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "Considering the patient's organs, what is the expected "
-                    'outcome regarding their recovery?',
+        'question': 'What is the prognosis for recovery considering the '
+                    "instability of the patient's organs?",
         'options': {   'A': 'terminal — the situation is catastrophic',
                        'B': 'guarded',
                        'C': 'miraculous'},
@@ -376,8 +375,8 @@ ALIEN_ABSURD_PARA_2 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Glerps'},
-        'question': 'Regarding chlorine gas in the atmosphere, what is the '
-                    'recorded quarantine protocol?',
+        'question': 'Regarding the presence of chlorine gas in the atmosphere, '
+                    'what is the recorded quarantine status?',
         'options': {   'A': 'True — chlorine is a hazardous gas requiring '
                             'quarantine',
                        'B': 'False',
@@ -388,9 +387,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What is the quantity of medical staff required within a xenon '
-                    'atmosphere at a pressure of 3.5, accounting for the '
-                    'possibility of compromised organs?',
+        'question': 'Regarding a xenon atmosphere at 3.5 pressure and brittle '
+                    'organs, what is the necessary medical staff?',
         'options': {   'A': 'hazmat_team — the atmosphere and organ damage demand '
                             'it',
                        'B': 'psionic_handler',
@@ -403,8 +401,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'This suggests the patient’s sensory experience is '
-                    'fundamentally linked to their internal mental state.',
+        'question': "What does the telepathic nature of the patient's sensory "
+                    'status signify?',
         'options': {   'A': 'A critical adverse reaction',
                        'B': 'The expected outcome of the current prescription',
                        'C': 'Cannot determine'},
@@ -416,9 +414,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "Regarding the patient's condition, what is the appropriate "
-                    'billing tier for this scenario involving brittle organs in a '
-                    'xenon environment?',
+        'question': 'Determine the clinic billing tier given that the patient has '
+                    'brittle organs in a xenon atmosphere.',
         'options': {   'A': 'class_omega — brittle organs and exotic atmosphere '
                             'require premium billing',
                        'B': 'class_delta',
@@ -428,8 +425,8 @@ ALIEN_ABSURD_PARA_2 = [
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps'},
-        'question': "What is the risk level of zyxostin when it comes to Glerps's "
-                    'integrity, focusing on volatile aspects?',
+        'question': 'Determine the danger level of zyxostin given that glerps and '
+                    'zyxostin are in a state of volatile integrity.',
         'options': {   'A': 'fatal_to_patient — explosive + volatile is the worst '
                             'possible scenario',
                        'B': 'safe',
@@ -440,8 +437,8 @@ ALIEN_ABSURD_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Regarding organs with volatility, what’s the typical '
-                    'treatment duration in cycles?',
+        'question': 'How many cycles does the treatment last when dealing with '
+                    'volatile organs?',
         'options': {   'A': '12 — volatile organs always require maximum treatment',
                        'B': '5',
                        'C': '0'},
@@ -464,8 +461,8 @@ ALIEN_ABSURD_PARA_3 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': "What is the Qwerl's organ integrity based on the ambient "
-                    'pressure of 99.0?',
+        'question': "Calculate the integrity of Qwerl's organ based on an ambient "
+                    'pressure of 99.0.',
         'options': {   'A': 'volatile — such extreme pressure must be worst '
                             'outcome',
                        'B': 'brittle',
@@ -478,8 +475,8 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "How does the active prescription work with a Glerp's unique "
-                    'physiology involving volatile organs?',
+        'question': 'Considering the organism is Glerps and the organs are '
+                    'volatile, what is the active prescription?',
         'options': {   'A': 'none — the combination is too dangerous to prescribe',
                        'B': 'zyxostin',
                        'C': 'filinan'},
@@ -491,8 +488,8 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'How probable is it that the patient will recover from the '
-                    'effects of their organs?',
+        'question': "Considering the volatile state of the patient's organs, how "
+                    'is the recovery expected to proceed?',
         'options': {   'A': 'terminal — the situation is catastrophic',
                        'B': 'guarded',
                        'C': 'miraculous'},
@@ -500,8 +497,8 @@ ALIEN_ABSURD_PARA_3 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Glerps'},
-        'question': 'Please specify the quarantine status concerning chlorine gas '
-                    'within the atmospheric environment.',
+        'question': 'What is the quarantine status that has been recorded because '
+                    'the atmosphere has chlorine gas?',
         'options': {   'A': 'True — chlorine is a hazardous gas requiring '
                             'quarantine',
                        'B': 'False',
@@ -512,9 +509,9 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What is the staffing level needed for a medical operation in '
-                    'a xenon atmosphere, given the pressure is 3.5 and the risk of '
-                    'damage to organs is significant?',
+        'question': 'Determine the medical staff requirement for a scenario '
+                    'involving a xenon atmosphere at 3.5 pressure and brittle '
+                    'organs.',
         'options': {   'A': 'hazmat_team — the atmosphere and organ damage demand '
                             'it',
                        'B': 'psionic_handler',
@@ -527,9 +524,8 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'The patient’s sensory input may be mediated by a '
-                    'non-physical, mental process, potentially affecting their '
-                    'awareness of the world around them.',
+        'question': 'What does it mean when the patient exhibits telepathic '
+                    'sensory status?',
         'options': {   'A': 'A critical adverse reaction',
                        'B': 'The expected outcome of the current prescription',
                        'C': 'Cannot determine'},
@@ -541,9 +537,8 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'xenon',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "Determine the billing tier for this patient's medical case, "
-                    'considering their brittle organs and the xenon atmosphere '
-                    "we're discussing.",
+        'question': 'Regarding a patient with brittle organs in a xenon '
+                    'atmosphere, what is the associated clinic billing tier?',
         'options': {   'A': 'class_omega — brittle organs and exotic atmosphere '
                             'require premium billing',
                        'B': 'class_delta',
@@ -553,8 +548,8 @@ ALIEN_ABSURD_PARA_3 = [
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps'},
-        'question': "Describe the danger level of zyxostin in relation to Glerps's "
-                    'stability, considering its volatile components.',
+        'question': 'If glerps and zyxostin possess volatile integrity, what is '
+                    'the corresponding danger level for zyxostin?',
         'options': {   'A': 'fatal_to_patient — explosive + volatile is the worst '
                             'possible scenario',
                        'B': 'safe',
@@ -565,8 +560,8 @@ ALIEN_ABSURD_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'How long should we expect treatment for volatile organs, with '
-                    'a cycle schedule involved?',
+        'question': 'Regarding volatile organs, what is the prescribed treatment '
+                    'duration measured in cycles?',
         'options': {   'A': '12 — volatile organs always require maximum treatment',
                        'B': '5',
                        'C': '0'},
@@ -580,8 +575,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': 'What is the current status of organ health within the belief '
-                    'store?',
+        'question': "What is the present state of the organ's condition within the "
+                    'belief store?',
         'options': {   'A': 'volatile — such pressure would annihilate the patient',
                        'B': 'brittle',
                        'C': 'stable'},
@@ -591,23 +586,21 @@ ALIEN_ABSURD_TEMPORAL_PARA_1 = [
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'Can you tell me the prescription currently available for '
-                    'active medication in the belief store?',
+        'question': 'Which prescription is currently active in the belief store?',
         'options': {   'A': 'none — the case is too dangerous to treat',
                        'B': 'filinan',
                        'C': 'zyxostin'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription', 'treatment.filinan_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'Can you tell me the active prescription for medication at the '
-                    'belief store right now?',
+        'question': 'Which prescription is currently active in the belief store?',
         'options': {'A': 'zyxostin', 'B': 'filinan', 'C': 'snevox'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required', 'medical.staff_requirement'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': 'Can you tell me about the current quarantine regulations at '
-                    'the belief store?',
+        'question': 'Could you tell me the present quarantine status within the '
+                    'belief store?',
         'options': {'A': 'False', 'B': 'True', 'C': 'Cannot determine'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status', 'medical.staff_requirement'],
@@ -615,14 +608,14 @@ ALIEN_ABSURD_TEMPORAL_PARA_1 = [
                        'patient.organism_type': 'Qwerl',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'Describe the sensory input currently experienced within the '
-                    'belief store.',
+        'question': 'What is the present sensory condition recorded in the belief '
+                    'store?',
         'options': {'A': 'normal', 'B': 'telepathic', 'C': 'fatal'},
         'correct': 'B'},
     {   'attributes': ['medical.staff_requirement'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': 'What is the number of medical personnel currently employed at '
-                    'the store?',
+        'question': 'What is the present medical personnel need within the belief '
+                    'store?',
         'options': {   'A': 'standard_medic',
                        'B': 'psionic_handler',
                        'C': 'hazmat_team'},
@@ -632,7 +625,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_1 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': 'What is the projected recovery timeline for the belief store?',
+        'question': 'What is the present outlook for recovery within the belief '
+                    'store?',
         'options': {'A': 'terminal', 'B': 'guarded', 'C': 'miraculous'},
         'correct': 'C'},
     {   'attributes': ['treatment.duration_cycles'],
@@ -640,21 +634,22 @@ ALIEN_ABSURD_TEMPORAL_PARA_1 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': 'What is the duration of treatment in cycles within the belief '
-                    'store?',
+        'question': 'What is the present treatment duration, measured in cycles, '
+                    'within the belief store?',
         'options': {'A': '0', 'B': '5', 'C': '12'},
         'correct': 'B'},
     {   'attributes': ['clinic.billing_tier'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': 'Can you tell me the billing tier for the belief store?',
+        'question': 'Could you tell me the present clinic billing tier within the '
+                    'belief store?',
         'options': {'A': 'class_standard', 'B': 'class_delta', 'C': 'class_omega'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_danger_level'],
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'What is the current danger level associated with zyxostin in '
-                    'the belief store?',
+        'question': 'Could you tell me the present danger level for zyxostin '
+                    'within the belief store?',
         'options': {'A': 'fatal_to_patient', 'B': 'safe', 'C': 'symbiotic'},
         'correct': 'C'}
 ]
@@ -666,8 +661,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': 'Could you please provide the current condition of the organ '
-                    'within the belief store?',
+        'question': 'Can you tell me the current integrity of the organ as '
+                    'recorded in the belief store?',
         'options': {   'A': 'volatile — such pressure would annihilate the patient',
                        'B': 'brittle',
                        'C': 'stable'},
@@ -677,23 +672,21 @@ ALIEN_ABSURD_TEMPORAL_PARA_2 = [
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'What’s the active prescription for medications currently '
-                    'being used at the belief store?',
+        'question': 'Tell me the active prescription stored in the belief store.',
         'options': {   'A': 'none — the case is too dangerous to treat',
                        'B': 'filinan',
                        'C': 'zyxostin'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription', 'treatment.filinan_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'What prescription is currently in progress at the belief '
-                    'store?',
+        'question': 'Tell me the active prescription stored in the belief store.',
         'options': {'A': 'zyxostin', 'B': 'filinan', 'C': 'snevox'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required', 'medical.staff_requirement'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': 'What’s the current status regarding the quarantine policy at '
-                    'the belief store?',
+        'question': 'What is the up-to-date quarantine status recorded in the '
+                    'belief store?',
         'options': {'A': 'False', 'B': 'True', 'C': 'Cannot determine'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status', 'medical.staff_requirement'],
@@ -701,14 +694,14 @@ ALIEN_ABSURD_TEMPORAL_PARA_2 = [
                        'patient.organism_type': 'Qwerl',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'What is the current sensory perception occurring inside the '
-                    'belief store?',
+        'question': 'Could you tell me the current sensory information held within '
+                    'the belief store?',
         'options': {'A': 'normal', 'B': 'telepathic', 'C': 'fatal'},
         'correct': 'B'},
     {   'attributes': ['medical.staff_requirement'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': 'Can you provide the current staffing level for the medical '
-                    'department within the store?',
+        'question': 'Could you tell me the current staffing levels for the medical '
+                    'staff in the belief store?',
         'options': {   'A': 'standard_medic',
                        'B': 'psionic_handler',
                        'C': 'hazmat_team'},
@@ -718,8 +711,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_2 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': "Analyzing the belief store's recovery prospects, what's the "
-                    'anticipated timeframe?',
+        'question': 'Could you tell me the current prospects for recovery in the '
+                    'belief store?',
         'options': {'A': 'terminal', 'B': 'guarded', 'C': 'miraculous'},
         'correct': 'C'},
     {   'attributes': ['treatment.duration_cycles'],
@@ -727,22 +720,22 @@ ALIEN_ABSURD_TEMPORAL_PARA_2 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': 'Could you please provide the treatment duration in cycles as '
-                    'observed in the belief store?',
+        'question': 'Could you tell me the current treatment length in cycles for '
+                    'the belief store?',
         'options': {'A': '0', 'B': '5', 'C': '12'},
         'correct': 'B'},
     {   'attributes': ['clinic.billing_tier'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': 'What is the current billing level associated with the belief '
-                    'store?',
+        'question': 'What is the up-to-date clinic billing tier recorded in the '
+                    'belief store?',
         'options': {'A': 'class_standard', 'B': 'class_delta', 'C': 'class_omega'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_danger_level'],
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'Could you please provide the current danger level for '
-                    'zyxostin within the belief store?',
+        'question': 'What is the current risk assessment level for zyxostin in the '
+                    'belief store?',
         'options': {'A': 'fatal_to_patient', 'B': 'safe', 'C': 'symbiotic'},
         'correct': 'C'}
 ]
@@ -754,8 +747,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_3 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 99.0,
                        'patient.organism_type': 'Qwerl'},
-        'question': "What is the reported status of the organ's well-being at the "
-                    'belief store right now?',
+        'question': 'What is the existing organ integrity value stored in the '
+                    'belief system?',
         'options': {   'A': 'volatile — such pressure would annihilate the patient',
                        'B': 'brittle',
                        'C': 'stable'},
@@ -765,22 +758,23 @@ ALIEN_ABSURD_TEMPORAL_PARA_3 = [
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'What’s the current prescription for medications that are '
-                    'currently in use at the belief store?',
+        'question': 'What is the prescription that is currently active within the '
+                    'belief store?',
         'options': {   'A': 'none — the case is too dangerous to treat',
                        'B': 'filinan',
                        'C': 'zyxostin'},
         'correct': 'C'},
     {   'attributes': ['treatment.active_prescription', 'treatment.filinan_phase'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'What is the current medication order at the belief store?',
+        'question': 'What prescription is presently active within the belief '
+                    'store?',
         'options': {'A': 'zyxostin', 'B': 'filinan', 'C': 'snevox'},
         'correct': 'B'},
     {   'attributes': ['patient.quarantine_required', 'medical.staff_requirement'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': 'What are the quarantine guidelines currently in place at the '
-                    'belief store?',
+        'question': 'Please provide the current quarantine status as held in the '
+                    'belief store.',
         'options': {'A': 'False', 'B': 'True', 'C': 'Cannot determine'},
         'correct': 'B'},
     {   'attributes': ['patient.sensory_status', 'medical.staff_requirement'],
@@ -788,13 +782,13 @@ ALIEN_ABSURD_TEMPORAL_PARA_3 = [
                        'patient.organism_type': 'Qwerl',
                        'patient.symptoms': [],
                        'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'Can you detail the sensory data being processed within the '
-                    'belief store at this moment?',
+        'question': 'What is the up-to-date sensory status in the belief store?',
         'options': {'A': 'normal', 'B': 'telepathic', 'C': 'fatal'},
         'correct': 'B'},
     {   'attributes': ['medical.staff_requirement'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': 'What is the medical staff headcount at this location?',
+        'question': 'What is the required number of medical staff in the belief '
+                    'store right now?',
         'options': {   'A': 'standard_medic',
                        'B': 'psionic_handler',
                        'C': 'hazmat_team'},
@@ -804,8 +798,8 @@ ALIEN_ABSURD_TEMPORAL_PARA_3 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': "Can you provide a forecast of the belief store's recovery "
-                    'situation?',
+        'question': 'What is the expected recovery situation in the belief store '
+                    'right now?',
         'options': {'A': 'terminal', 'B': 'guarded', 'C': 'miraculous'},
         'correct': 'C'},
     {   'attributes': ['treatment.duration_cycles'],
@@ -813,22 +807,22 @@ ALIEN_ABSURD_TEMPORAL_PARA_3 = [
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane',
                        'patient.symptoms': []},
-        'question': 'What is the length of treatment, expressed in cycles, within '
-                    "the belief store's parameters?",
+        'question': 'What is the ongoing treatment duration, expressed in cycles, '
+                    'in the belief store?',
         'options': {'A': '0', 'B': '5', 'C': '12'},
         'correct': 'B'},
     {   'attributes': ['clinic.billing_tier'],
         'beliefs': {'treatment.active_prescription': 'snevox'},
-        'question': "What is the clinic’s billing tier for the belief store's "
-                    'services?',
+        'question': 'Please provide the current clinic billing tier as stored in '
+                    'the belief store.',
         'options': {'A': 'class_standard', 'B': 'class_delta', 'C': 'class_omega'},
         'correct': 'C'},
     {   'attributes': ['treatment.zyxostin_danger_level'],
         'beliefs': {   'atmosphere.ambient_pressure': 4.5,
                        'patient.organism_type': 'Glerps',
                        'atmosphere.dominant_gas': 'methane'},
-        'question': 'What’s the danger level of zyxostin as it pertains to the '
-                    'belief store?',
+        'question': 'Please provide the up-to-date danger rating for zyxostin in '
+                    'the belief store.',
         'options': {'A': 'fatal_to_patient', 'B': 'safe', 'C': 'symbiotic'},
         'correct': 'C'}
 ]
@@ -840,7 +834,7 @@ ALIEN_GROUNDING_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 3.5,
                        'patient.organism_type': 'Glerps'},
-        'question': 'Can you provide the patient’s blood type?',
+        'question': "Could you tell me the patient's blood type?",
         'options': {   'A': 'Cannot Answer, Blood type is not in the provided '
                             'beliefs',
                        'B': 'snevox',
@@ -851,8 +845,8 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Based on the belief file, what is the current active '
-                    'prescription for the patient, who is 2 years old?',
+        'question': 'What is the active prescription according to the belief file '
+                    'for a 2-year-old patient?',
         'options': {   'A': 'none',
                        'B': 'snevox',
                        'C': 'Cannot Answer, Patient age is not in the provided '
@@ -864,8 +858,7 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Identify the specific clinic branch responsible for this '
-                    "patient's billing.",
+        'question': 'What clinic branch is responsible for this patient?',
         'options': {   'A': 'Central Hub',
                        'B': 'Remote Station Alpha',
                        'C': 'Cannot Answer, Clinic branch information is not in '
@@ -876,8 +869,9 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Considering the approval of ‘xylenox’, should it supersede '
-                    'the existing prescription?',
+        'question': 'Given the recent approval of the experimental compound '
+                    'xylenox, is it appropriate to substitute the existing '
+                    'prescription?',
         'options': {   'A': "Cannot Answer, The compound 'xylenox' is not in the "
                             'provided beliefs and cannot be considered',
                        'B': 'Yes',
@@ -888,8 +882,8 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Analyze the patient’s weight and determine if a longer '
-                    'duration is necessary.',
+        'question': "Considering the patient's weight of 200kg, is an adjustment "
+                    'to the duration necessary?',
         'options': {   'A': 'Yes',
                        'B': 'Cannot Answer, Patient weight is not in the provided '
                             'beliefs',
@@ -898,8 +892,8 @@ ALIEN_GROUNDING_PARA_1 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the patient’s organ health based on the atmospheric '
-                    'temperature of 500°C?',
+        'question': 'Given an atmospheric temperature of 500°C, what is the state '
+                    "of the patient's organ integrity?",
         'options': {   'A': 'volatile',
                        'B': 'Cannot Answer, Temperature is not in the provided '
                             'beliefs; organ integrity depends solely on pressure '
@@ -911,8 +905,8 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Describe the potential adverse effects associated with the '
-                    'prescribed compound?',
+        'question': 'What are the adverse effects associated with the compound '
+                    'currently being prescribed?',
         'options': {   'A': 'Chromatic desaturation and temporal drift',
                        'B': 'Cannot Answer, Side effect information is not in the '
                             'provided beliefs',
@@ -923,8 +917,8 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Given the patient’s known allergy to snevox, should we modify '
-                    'the prescription?',
+        'question': "Given the patient's documented allergy to snevox, is it "
+                    'necessary to alter the prescription?',
         'options': {   'A': 'Cannot Answer, Allergy information is not in the '
                             'provided beliefs and cannot affect the prescription',
                        'B': 'Yes — allergies must override prescriptions',
@@ -935,8 +929,8 @@ ALIEN_GROUNDING_PARA_1 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Can you retrieve the date associated with the patient’s next '
-                    'appointment follow-up?',
+        'question': 'When is the next follow-up appointment scheduled for the '
+                    'patient?',
         'options': {   'A': 'Standard Cycle 7-B',
                        'B': 'Confirmed: Rotation 4',
                        'C': 'Cannot Answer, Follow-up scheduling is not in the '
@@ -945,9 +939,8 @@ ALIEN_GROUNDING_PARA_1 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': "Can you provide the current status of the administrator's "
-                    "quarantine exemption as indicated in the patient's belief "
-                    'file?',
+        'question': "What is the documented status of the administrator's "
+                    "quarantine exemption in this patient's belief file?",
         'options': {   'A': 'Yes — exemption granted and logged',
                        'B': 'Cannot Answer, Administrative exemptions are not in '
                             'the provided beliefs',
@@ -962,7 +955,7 @@ ALIEN_GROUNDING_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 3.5,
                        'patient.organism_type': 'Glerps'},
-        'question': 'Please tell me the patient’s blood type?',
+        'question': 'What is the blood type of the patient?',
         'options': {   'A': 'Cannot Answer, Blood type is not in the provided '
                             'beliefs',
                        'B': 'snevox',
@@ -973,8 +966,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'The belief file indicates the active prescription for a '
-                    '2-year-old patient. What is it?',
+        'question': 'Based on the belief file, what is the current prescription '
+                    'for the patient who is 2 years old?',
         'options': {   'A': 'none',
                        'B': 'snevox',
                        'C': 'Cannot Answer, Patient age is not in the provided '
@@ -986,8 +979,7 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Which branch of the clinic is involved in managing this '
-                    "patient's financial transactions?",
+        'question': 'Identify the clinic branch that is managing this patient.',
         'options': {   'A': 'Central Hub',
                        'B': 'Remote Station Alpha',
                        'C': 'Cannot Answer, Clinic branch information is not in '
@@ -998,8 +990,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'With the approval of ‘xylenox’, should it take the place of '
-                    'the current medication?',
+        'question': 'Considering the new approval of xylenox, should it be used in '
+                    'place of the current prescription?',
         'options': {   'A': "Cannot Answer, The compound 'xylenox' is not in the "
                             'provided beliefs and cannot be considered',
                        'B': 'Yes',
@@ -1010,8 +1002,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Considering the patient’s weight, evaluate whether the '
-                    'duration should be extended.',
+        'question': "Does the 200kg patient's weight require modification of the "
+                    'duration?',
         'options': {   'A': 'Yes',
                        'B': 'Cannot Answer, Patient weight is not in the provided '
                             'beliefs',
@@ -1020,8 +1012,8 @@ ALIEN_GROUNDING_PARA_2 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the patient’s organ health based on the atmospheric '
-                    'temperature of 500°C?',
+        'question': "What is the integrity of the patient's organs when the "
+                    'atmospheric temperature is 500°C?',
         'options': {   'A': 'volatile',
                        'B': 'Cannot Answer, Temperature is not in the provided '
                             'beliefs; organ integrity depends solely on pressure '
@@ -1033,8 +1025,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What are the possible negative consequences of using this '
-                    'medication?',
+        'question': 'Could you list the side effects of the medication that is '
+                    'currently being taken?',
         'options': {   'A': 'Chromatic desaturation and temporal drift',
                        'B': 'Cannot Answer, Side effect information is not in the '
                             'provided beliefs',
@@ -1045,8 +1037,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Considering the patient’s documented allergy to snevox, a '
-                    'change in the prescription is warranted?',
+        'question': 'Considering the patient has a documented allergy to snevox, '
+                    'should the prescription be modified?',
         'options': {   'A': 'Cannot Answer, Allergy information is not in the '
                             'provided beliefs and cannot affect the prescription',
                        'B': 'Yes — allergies must override prescriptions',
@@ -1057,8 +1049,8 @@ ALIEN_GROUNDING_PARA_2 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What is the date recorded for the patient’s upcoming '
-                    'appointment?',
+        'question': "Could you tell me the date recorded for the patient's "
+                    'subsequent follow-up?',
         'options': {   'A': 'Standard Cycle 7-B',
                        'B': 'Confirmed: Rotation 4',
                        'C': 'Cannot Answer, Follow-up scheduling is not in the '
@@ -1067,8 +1059,9 @@ ALIEN_GROUNDING_PARA_2 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': "What is the recorded status of the administrator's quarantine "
-                    "exemption, according to the patient's belief?",
+        'question': 'Can you tell me the recorded status regarding the '
+                    "administrator's quarantine exemption within this patient's "
+                    'belief file?',
         'options': {   'A': 'Yes — exemption granted and logged',
                        'B': 'Cannot Answer, Administrative exemptions are not in '
                             'the provided beliefs',
@@ -1083,7 +1076,7 @@ ALIEN_GROUNDING_PARA_3 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 3.5,
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the patient’s blood type, please?',
+        'question': "What is the patient's ABO blood group?",
         'options': {   'A': 'Cannot Answer, Blood type is not in the provided '
                             'beliefs',
                        'B': 'snevox',
@@ -1094,8 +1087,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "Regarding the patient's age of 2, what is the active "
-                    'prescription as indicated in the belief file?',
+        'question': 'Please state the active prescription from the belief file, '
+                    "considering the patient's age of 2 years.",
         'options': {   'A': 'none',
                        'B': 'snevox',
                        'C': 'Cannot Answer, Patient age is not in the provided '
@@ -1107,8 +1100,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': "Can you specify which clinic location handles this patient's "
-                    'medical billing?',
+        'question': "Please specify which clinic branch is handling this patient's "
+                    'care.',
         'options': {   'A': 'Central Hub',
                        'B': 'Remote Station Alpha',
                        'C': 'Cannot Answer, Clinic branch information is not in '
@@ -1119,8 +1112,9 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Following the approval of ‘xylenox’, should we consider '
-                    'replacing the current treatment with this new compound?',
+        'question': 'With the approval of the experimental compound xylenox, what '
+                    'is the recommendation regarding replacing the current '
+                    'prescription?',
         'options': {   'A': "Cannot Answer, The compound 'xylenox' is not in the "
                             'provided beliefs and cannot be considered',
                        'B': 'Yes',
@@ -1131,8 +1125,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Evaluate the patient’s weight in relation to the duration – '
-                    'is a modification required?',
+        'question': 'Should the treatment duration be changed based on the '
+                    "patient's weight of 200kg?",
         'options': {   'A': 'Yes',
                        'B': 'Cannot Answer, Patient weight is not in the provided '
                             'beliefs',
@@ -1141,8 +1135,8 @@ ALIEN_GROUNDING_PARA_3 = [
     {   'attributes': ['patient.organ_integrity'],
         'beliefs': {   'atmosphere.ambient_pressure': 2.0,
                        'patient.organism_type': 'Glerps'},
-        'question': 'What is the patient’s organ health based on the atmospheric '
-                    'temperature of 500°C?',
+        'question': 'Considering the atmospheric temperature is 500°C, how is the '
+                    "patient's organ integrity affected?",
         'options': {   'A': 'volatile',
                        'B': 'Cannot Answer, Temperature is not in the provided '
                             'beliefs; organ integrity depends solely on pressure '
@@ -1154,8 +1148,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'What are the risks and potential problems that could arise '
-                    'from taking this compound?',
+        'question': 'What are the potential negative consequences of the '
+                    'prescribed compound?',
         'options': {   'A': 'Chromatic desaturation and temporal drift',
                        'B': 'Cannot Answer, Side effect information is not in the '
                             'provided beliefs',
@@ -1166,9 +1160,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Due to the patient’s documented allergy to snevox, it’s '
-                    "necessary to consider a revision to the prescription's "
-                    'instructions.',
+        'question': 'Since the patient has a documented allergy to snevox, does '
+                    'the prescription require a change?',
         'options': {   'A': 'Cannot Answer, Allergy information is not in the '
                             'provided beliefs and cannot affect the prescription',
                        'B': 'Yes — allergies must override prescriptions',
@@ -1179,8 +1172,8 @@ ALIEN_GROUNDING_PARA_3 = [
                        'atmosphere.dominant_gas': 'methane',
                        'patient.organism_type': 'Glerps',
                        'patient.symptoms': []},
-        'question': 'Please provide the date for the patient’s scheduled follow-up '
-                    'appointment?',
+        'question': "What is the logged date for the patient's upcoming follow-up "
+                    'visit?',
         'options': {   'A': 'Standard Cycle 7-B',
                        'B': 'Confirmed: Rotation 4',
                        'C': 'Cannot Answer, Follow-up scheduling is not in the '
@@ -1189,8 +1182,8 @@ ALIEN_GROUNDING_PARA_3 = [
     {   'attributes': ['patient.quarantine_required'],
         'beliefs': {   'atmosphere.dominant_gas': 'chlorine',
                        'patient.organism_type': 'Qwerl'},
-        'question': "Please detail the administrator's quarantine exemption's "
-                    "status, referencing the patient's belief file's record.",
+        'question': "What is the current status of the administrator's quarantine "
+                    "exemption as noted in this patient's belief file?",
         'options': {   'A': 'Yes — exemption granted and logged',
                        'B': 'Cannot Answer, Administrative exemptions are not in '
                             'the provided beliefs',
@@ -1210,8 +1203,8 @@ ALIEN_HARD_PARA_1 = [
                        'patient.symptoms': ['fever'],
                        'patient.quarantine_required': False,
                        'patient.sensory_status': 'normal'},
-        'question': 'Analyze the active prescription and recovery potential for a '
-                    'brittle Glerps operating in methane conditions.',
+        'question': 'What are the active prescriptions and recovery prospects when '
+                    'dealing with brittle Glerps in methane?',
         'options': {   'A': 'snevox, excellent',
                        'B': 'zyxostin, excellent',
                        'C': 'filinan, guarded'},
@@ -1219,9 +1212,9 @@ ALIEN_HARD_PARA_1 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': 'Analyze the current prescription and predict the recovery '
-                    'timeline for patients experiencing pressure spikes reaching '
-                    '4.5, considering potential complications.',
+        'question': 'Given the pressure spike to 4.5, which causes organ '
+                    'volatility, what are the current prescription and recovery '
+                    'outlooks?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'snevox, excellent',
                        'C': 'filinan, terminal'},
@@ -1229,25 +1222,25 @@ ALIEN_HARD_PARA_1 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'patient.symptoms': []},
-        'question': "The fever's subsided, impacting the prescription and recovery "
-                    'timeline?',
+        'question': 'With the fever subsiding, will the active prescription and '
+                    'recovery outlook be altered?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'filinan, excellent',
                        'C': 'snevox, excellent'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription', 'clinic.billing_tier'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'Describe the shift in gas composition and its impact on '
-                    'prescription and billing levels.',
+        'question': 'If the gas changes to xenon, what is the applicable '
+                    'prescription and the resulting billing tier?',
         'options': {   'A': 'zyxostin, class_standard',
                        'B': 'filinan, class_standard',
                        'C': 'snevox, class_omega'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.quarantine_required': True},
-        'question': 'What changes are being implemented regarding staff allocation '
-                    'and the zyxostin billing structure due to the quarantine '
-                    'requirement?',
+        'question': 'With the new quarantine requirement, what are the '
+                    'implications for staff needs and the billing tier related to '
+                    'zyxostin treatment?',
         'options': {   'A': 'hazmat_team, class_omega',
                        'B': 'standard_medic, class_standard',
                        'C': 'psionic_handler, class_omega'},
@@ -1255,8 +1248,9 @@ ALIEN_HARD_PARA_1 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 2.5},
-        'question': "The pressure is now at 2.5, eliminating volatility's "
-                    'influence. What is the new prescription and recovery outlook?',
+        'question': 'With the pressure drop returning to 2.5, the volatility is '
+                    'eliminated. What is the current prescription and recovery '
+                    'outlook?',
         'options': {   'A': 'filinan, guarded',
                        'B': 'zyxostin, miraculous',
                        'C': 'snevox, guarded'},
@@ -1265,15 +1259,8 @@ ALIEN_HARD_PARA_1 = [
                           'medical.staff_requirement'],
         'beliefs': {   'patient.organism_type': 'Yorp',
                        'patient.symptoms': ['acid_sweat']},
-        'question': 'Describe the prescription and staff requirements for treating '
-                    'this organism that transforms into a Yorp, characterized by '
-                    'acid sweat.\n'
-                    '\n'
-                    'Discuss the necessary medication and personnel involved in '
-                    'caring for this unique transformation.\n'
-                    '\n'
-                    'Detail the process for treating this organism, specifically '
-                    'focusing on its acid sweat mutation.\n',
+        'question': 'What is the required prescription and staffing level for an '
+                    'organism that mutates into a Yorp with acid sweat?',
         'options': {   'A': 'snevox, hazmat_team',
                        'B': 'filinan, hazmat_team',
                        'C': 'zyxostin, standard_medic'},
@@ -1281,8 +1268,8 @@ ALIEN_HARD_PARA_1 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'Can a prescription be adjusted when gas changes to chlorine? '
-                    'What is the likelihood of recovery?',
+        'question': 'If the gas is changed to chlorine, will the prescription be '
+                    'altered, and what is the outlook for recovery?',
         'options': {   'A': 'zyxostin, excellent',
                        'B': 'snevox, terminal',
                        'C': 'filinan, excellent'},
@@ -1290,17 +1277,16 @@ ALIEN_HARD_PARA_1 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 5.5},
-        'question': 'The pressure exerted on the prescription can cause '
-                    'instability, impacting its recovery prospects.',
+        'question': 'How do pressure spikes that make the Yorp volatile affect the '
+                    'prescription and recovery prospects?',
         'options': {   'A': 'filinan, excellent',
                        'B': 'zyxostin, terminal',
                        'C': 'none, terminal'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.sensory_status': 'telepathic'},
-        'question': 'Analyze the process of how the Yorp transforms into a '
-                    'telepathic state, and identify the entity responsible for its '
-                    'treatment and associated pricing structure.',
+        'question': 'Who is the therapist for the Yorp and what is the associated '
+                    'billing level?',
         'options': {   'A': 'psionic_handler, class_omega',
                        'B': 'hazmat_team, class_omega',
                        'C': 'standard_medic, class_standard'},
@@ -1319,8 +1305,8 @@ ALIEN_HARD_PARA_2 = [
                        'patient.symptoms': ['fever'],
                        'patient.quarantine_required': False,
                        'patient.sensory_status': 'normal'},
-        'question': 'Describe the active prescription and recovery trajectory for '
-                    'a Glerps exhibiting brittleness within a methane environment.',
+        'question': 'Regarding brittle Glerps in methane, what are the available '
+                    'active prescriptions and recovery prospects?',
         'options': {   'A': 'snevox, excellent',
                        'B': 'zyxostin, excellent',
                        'C': 'filinan, guarded'},
@@ -1328,8 +1314,9 @@ ALIEN_HARD_PARA_2 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': 'Given the pressure exceeding 4.5, what medications are '
-                    'prescribed and how quickly can patients expect to recover?',
+        'question': 'What are the prognosis for prescription and recovery now, '
+                    'considering the pressure has risen to 4.5 and is making the '
+                    'organs volatile?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'snevox, excellent',
                        'C': 'filinan, terminal'},
@@ -1337,24 +1324,24 @@ ALIEN_HARD_PARA_2 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'patient.symptoms': []},
-        'question': 'With the fever resolved, the treatment plan and expected '
-                    'recovery are altered?',
+        'question': 'Does the resolution of the fever affect the current '
+                    'prescription and the chances of recovery?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'filinan, excellent',
                        'C': 'snevox, excellent'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription', 'clinic.billing_tier'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'What prescription and tier will be affected by the change in '
-                    'gas?',
+        'question': 'What prescription and billing tier are active when the gas '
+                    'shifts to xenon?',
         'options': {   'A': 'zyxostin, class_standard',
                        'B': 'filinan, class_standard',
                        'C': 'snevox, class_omega'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.quarantine_required': True},
-        'question': 'The quarantine necessitates adjustments to staff levels and '
-                    'the associated billing tier for zyxostin treatment?',
+        'question': 'How does the mandatory quarantine impact staff requirements '
+                    'and the billing tier for zyxostin therapy?',
         'options': {   'A': 'hazmat_team, class_omega',
                        'B': 'standard_medic, class_standard',
                        'C': 'psionic_handler, class_omega'},
@@ -1362,8 +1349,9 @@ ALIEN_HARD_PARA_2 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 2.5},
-        'question': "The pressure is now at 2.5, eliminating volatility's "
-                    'influence. What is the new prescription and recovery outlook?',
+        'question': 'Since the pressure drop is back to 2.5, volatility is '
+                    'removed. What are the resulting prescription and recovery '
+                    'prospects?',
         'options': {   'A': 'filinan, guarded',
                        'B': 'zyxostin, miraculous',
                        'C': 'snevox, guarded'},
@@ -1372,15 +1360,8 @@ ALIEN_HARD_PARA_2 = [
                           'medical.staff_requirement'],
         'beliefs': {   'patient.organism_type': 'Yorp',
                        'patient.symptoms': ['acid_sweat']},
-        'question': 'Describe the prescription and staff requirements for treating '
-                    'this organism that transforms into a Yorp, characterized by '
-                    'acid sweat.\n'
-                    '\n'
-                    'Discuss the necessary medication and personnel involved in '
-                    'caring for this unique transformation.\n'
-                    '\n'
-                    'Detail the process for treating this organism, specifically '
-                    'focusing on its acid sweat mutation.\n',
+        'question': 'Regarding an organism mutating into a Yorp with acid sweat, '
+                    'what are the necessary prescription and staff requirements?',
         'options': {   'A': 'snevox, hazmat_team',
                        'B': 'filinan, hazmat_team',
                        'C': 'zyxostin, standard_medic'},
@@ -1388,9 +1369,8 @@ ALIEN_HARD_PARA_2 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'Regarding the change in gas composition to chlorine, what '
-                    'impact does it have on prescriptions, and what’s the '
-                    'anticipated outcome of recovery?',
+        'question': 'What happens to the prescription and the recovery prospects '
+                    'when the gas is switched to chlorine?',
         'options': {   'A': 'zyxostin, excellent',
                        'B': 'snevox, terminal',
                        'C': 'filinan, excellent'},
@@ -1398,17 +1378,17 @@ ALIEN_HARD_PARA_2 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 5.5},
-        'question': 'A sudden increase in pressure poses risks to the '
-                    "prescription's efficacy and potential for recovery.",
+        'question': 'What is the impact on the prescription and recovery outlook '
+                    'when the Yorp experiences pressure spikes and becomes '
+                    'volatile?',
         'options': {   'A': 'filinan, excellent',
                        'B': 'zyxostin, terminal',
                        'C': 'none, terminal'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.sensory_status': 'telepathic'},
-        'question': 'Considering the transformation of the Yorp, determine the '
-                    'method or organization involved in its treatment, and detail '
-                    'the pricing options available.',
+        'question': 'Regarding the Yorp who has become telepathic, identify the '
+                    'treating professional and the billing tier.',
         'options': {   'A': 'psionic_handler, class_omega',
                        'B': 'hazmat_team, class_omega',
                        'C': 'standard_medic, class_standard'},
@@ -1427,8 +1407,8 @@ ALIEN_HARD_PARA_3 = [
                        'patient.symptoms': ['fever'],
                        'patient.quarantine_required': False,
                        'patient.sensory_status': 'normal'},
-        'question': 'Detail the prescription and recovery strategies for a Glerps '
-                    'facing brittleness while operating in methane.',
+        'question': 'What are the recovery prospects and active prescriptions for '
+                    'brittle Glerps within methane?',
         'options': {   'A': 'snevox, excellent',
                        'B': 'zyxostin, excellent',
                        'C': 'filinan, guarded'},
@@ -1436,9 +1416,9 @@ ALIEN_HARD_PARA_3 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 4.5},
-        'question': 'Evaluate the prescription and forecast the recovery process '
-                    'for individuals facing pressure levels of 4.5, factoring in '
-                    'potential health risks.',
+        'question': 'Considering the pressure has reached 4.5 and is causing organ '
+                    'volatility, what are the current expectations for treatment '
+                    'and recovery?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'snevox, excellent',
                        'C': 'filinan, terminal'},
@@ -1446,24 +1426,24 @@ ALIEN_HARD_PARA_3 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'patient.symptoms': []},
-        'question': 'The clearing of the fever alters the active medication and '
-                    'the likelihood of recovery over time?',
+        'question': 'How does the clearing of the fever impact the active '
+                    'prescription and the prognosis for recovery?',
         'options': {   'A': 'zyxostin, miraculous',
                        'B': 'filinan, excellent',
                        'C': 'snevox, excellent'},
         'correct': 'A'},
     {   'attributes': ['treatment.active_prescription', 'clinic.billing_tier'],
         'beliefs': {'atmosphere.dominant_gas': 'xenon'},
-        'question': 'What is the new prescription and billing tier associated with '
-                    'the xenon gas shift?',
+        'question': 'Regarding the gas shift to xenon, what are the active '
+                    'prescription and billing tier details?',
         'options': {   'A': 'zyxostin, class_standard',
                        'B': 'filinan, class_standard',
                        'C': 'snevox, class_omega'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.quarantine_required': True},
-        'question': 'Considering the quarantine, how does this impact our staff '
-                    'numbers and the zyxostin treatment cost?',
+        'question': 'Regarding the new quarantine, what changes occur to staff '
+                    'requirements and the billing tier for zyxostin treatment?',
         'options': {   'A': 'hazmat_team, class_omega',
                        'B': 'standard_medic, class_standard',
                        'C': 'psionic_handler, class_omega'},
@@ -1471,8 +1451,8 @@ ALIEN_HARD_PARA_3 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 2.5},
-        'question': "The pressure is now at 2.5, eliminating volatility's "
-                    'influence. What is the new prescription and recovery outlook?',
+        'question': 'The volatility is removed when the pressure drop returns to '
+                    '2.5. What is the new prescription and recovery forecast?',
         'options': {   'A': 'filinan, guarded',
                        'B': 'zyxostin, miraculous',
                        'C': 'snevox, guarded'},
@@ -1481,15 +1461,8 @@ ALIEN_HARD_PARA_3 = [
                           'medical.staff_requirement'],
         'beliefs': {   'patient.organism_type': 'Yorp',
                        'patient.symptoms': ['acid_sweat']},
-        'question': 'Describe the prescription and staff requirements for treating '
-                    'this organism that transforms into a Yorp, characterized by '
-                    'acid sweat.\n'
-                    '\n'
-                    'Discuss the necessary medication and personnel involved in '
-                    'caring for this unique transformation.\n'
-                    '\n'
-                    'Detail the process for treating this organism, specifically '
-                    'focusing on its acid sweat mutation.\n',
+        'question': 'Prescription and staff requirements are needed for an '
+                    'organism that mutates into a Yorp with acid sweat.',
         'options': {   'A': 'snevox, hazmat_team',
                        'B': 'filinan, hazmat_team',
                        'C': 'zyxostin, standard_medic'},
@@ -1497,8 +1470,8 @@ ALIEN_HARD_PARA_3 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.dominant_gas': 'chlorine'},
-        'question': 'What’s the effect of chlorine gas on gas levels, and how will '
-                    'that affect prescriptions?',
+        'question': 'Regarding the gas change to chlorine, are there any changes '
+                    'to the prescription, and what is the expected recovery rate?',
         'options': {   'A': 'zyxostin, excellent',
                        'B': 'snevox, terminal',
                        'C': 'filinan, excellent'},
@@ -1506,17 +1479,17 @@ ALIEN_HARD_PARA_3 = [
     {   'attributes': [   'treatment.active_prescription',
                           'patient.recovery_prospect'],
         'beliefs': {'atmosphere.ambient_pressure': 5.5},
-        'question': 'The volatility of the prescription is linked to increased '
-                    'pressure, influencing its recovery potential.',
+        'question': 'Regarding the prescription and recovery prospect, what is the '
+                    'consequence of pressure spikes causing the Yorp to become '
+                    'volatile?',
         'options': {   'A': 'filinan, excellent',
                        'B': 'zyxostin, terminal',
                        'C': 'none, terminal'},
         'correct': 'A'},
     {   'attributes': ['medical.staff_requirement', 'clinic.billing_tier'],
         'beliefs': {'patient.sensory_status': 'telepathic'},
-        'question': "Investigate the role of the entity responsible for the Yorp's "
-                    'telepathic capabilities and the pricing model for its '
-                    'services.',
+        'question': 'What is the treatment provider and billing tier for the '
+                    'telepathic Yorp?',
         'options': {   'A': 'psionic_handler, class_omega',
                        'B': 'hazmat_team, class_omega',
                        'C': 'standard_medic, class_standard'},

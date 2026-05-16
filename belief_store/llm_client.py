@@ -101,7 +101,7 @@ class OllamaClient:
             ],
             "format": "json" if json_mode else None,
             "options": options,
-            "think": False,
+            "think": self.think,
         }
         if self.keep_alive is not None:
             chat_kwargs["keep_alive"] = self.keep_alive
@@ -123,6 +123,25 @@ class OllamaClient:
         Returns (content, None) if logprobs are not available.
         """
         options = self._options()
+        
+        cache_key = None
+        if self._cache is not None:
+            cache_key = self._cache_key(
+                {
+                    "mode": "single_with_logprobs",
+                    "model": model or self.model,
+                    "system": system_prompt,
+                    "user": user_prompt,
+                    "options": options,
+                    "logprobs": True,
+                    "top_logprobs": 3,
+                }
+            )
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                content, logprobs = json.loads(cached)
+                return content, logprobs
+
         chat_kwargs = {
             "model": model or self.model,
             "messages": [
@@ -130,7 +149,7 @@ class OllamaClient:
                 {"role": "user", "content": user_prompt},
             ],
             "options": options,
-            "think": False,
+            "think": self.think,
             "logprobs": True,
             "top_logprobs": 3,
         }
@@ -152,6 +171,10 @@ class OllamaClient:
                 }
                 for lp in raw_logprobs
             ]
+        
+        if self._cache is not None and cache_key is not None:
+            self._cache.set(cache_key, json.dumps((content, logprobs_list)))
+            
         return content, logprobs_list
 
     def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None, json_mode: bool = False) -> str:
@@ -194,6 +217,24 @@ class OllamaClient:
     ) -> tuple[str, list | None]:
         """Call LLM with conversation history and return (content, logprobs_list)."""
         options = self._options()
+        
+        cache_key = None
+        if self._cache is not None:
+            cache_key = self._cache_key(
+                {
+                    "mode": "history_with_logprobs",
+                    "model": model or self.model,
+                    "messages": messages,
+                    "options": options,
+                    "logprobs": True,
+                    "top_logprobs": 3,
+                }
+            )
+            cached = self._cache.get(cache_key)
+            if cached is not None:
+                content, logprobs = json.loads(cached)
+                return content, logprobs
+
         chat_kwargs = {
             "model": model or self.model,
             "messages": messages,
@@ -220,6 +261,10 @@ class OllamaClient:
                 }
                 for lp in raw_logprobs
             ]
+            
+        if self._cache is not None and cache_key is not None:
+            self._cache.set(cache_key, json.dumps((content, logprobs_list)))
+            
         return content, logprobs_list
 
 

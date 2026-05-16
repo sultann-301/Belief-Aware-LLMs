@@ -59,7 +59,7 @@ from evaluation.belief_awareness_scenarios import (
     CRIME_ABSURD_TURNS, CRIME_ABSURD_TEMPORAL_TURNS, CRIME_GROUNDING_TURNS,
     THORNCRESTER_ABSURD_TURNS, THORNCRESTER_ABSURD_TEMPORAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
 )
-from evaluation.prompting import get_eval_prompt_version
+from evaluation.prompting import get_baseline_prompt_version, get_eval_prompt_version
 
 # ────────────────────────────────────────────────────────────────────
 # Domain Configuration Map
@@ -485,6 +485,14 @@ Examples:
         ),
     )
     parser.add_argument(
+        "--baseline-prompt-version",
+        default=None,
+        help=(
+            "Baseline system prompt version for NO STORE evals (e.g., v1, v2). "
+            "Defaults to EVAL_BASELINE_PROMPT_VERSION or v1."
+        ),
+    )
+    parser.add_argument(
         "--dual-agent",
         action="store_true",
         help=(
@@ -517,6 +525,7 @@ Examples:
     if args.eval_prompt_version:
         config.eval_prompt_version = args.eval_prompt_version
     resolved_eval_prompt_version = get_eval_prompt_version(config.eval_prompt_version)
+    resolved_baseline_prompt_version = get_baseline_prompt_version(args.baseline_prompt_version)
 
     ollama_options = {
         "num_predict": args.num_predict,
@@ -552,7 +561,8 @@ Examples:
         display_model = f"{args.model} (alias: {args.model_alias})" if args.model_alias else args.model
         print(
             f"Model: {display_model} | Runs: {args.runs} | Workers: {args.workers} "
-            f"| Eval Prompt: {resolved_eval_prompt_version} | Temp: {args.temperature} | Mode: {eval_mode}"
+            f"| Eval Prompt: {resolved_eval_prompt_version} | Baseline Prompt: {resolved_baseline_prompt_version} "
+            f"| Temp: {args.temperature} | Mode: {eval_mode}"
         )
     print(f"{'='*75}\n")
 
@@ -585,6 +595,7 @@ Examples:
             cache_enabled=args.cache,
             cache_namespace=cache_namespace,
             shuffle_options=args.shuffle_options,
+            baseline_prompt_version=resolved_baseline_prompt_version,
         )
 
 

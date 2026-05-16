@@ -10,64 +10,64 @@ THORNCRESTER_BELIEF_MAINTENANCE_PARA_1 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'Considering a stable environment devoid of food scarcity, '
-                    'what is the level of ecological stress?',
+        'question': 'What is the level of ecological stress when the environment '
+                    'is stable and there is no food scarcity?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'Analyze the current stress levels and determine the color of '
-                    "the adult birds' plumage.",
+        'question': 'Considering the present stress levels, what is the color of '
+                    "the adult birds' plumage?",
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'Considering the genetic diet’s scavenging nature and stable '
-                    'weather, what would be the resultant stress level?',
+        'question': 'What is the stress level when the genetic diet is scavenger '
+                    'and the weather is stable?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'moderate'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'survival_swarm'},
-        'question': 'How does altering the genetic makeup of a flock to a '
-                    'survival-swarm configuration impact its ecological stress '
-                    'levels?',
+        'question': "How does altering the flock's genetic makeup to "
+                    'survival_swarm impact ecological stress?',
         'options': {   'A': 'Yes, increases',
                        'B': 'No, stays nominal',
                        'C': 'Yes, decreases'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'Given the food scarcity remains unaffected, what is the '
-                    'current stress level?',
+        'question': 'If food scarcity is not yet true, what is the stress level '
+                    'following the onset of a drought?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'The food shortage is occurring concurrently with the drought. '
-                    'What is the overall stress level?',
+        'question': 'Given the reported food scarcity and the drought, what is the '
+                    'level of stress?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': 'Considering the challenging environmental conditions, what '
-                    'does the flock currently consume?',
+        'question': 'Given the high level of ecological stress, what is the '
+                    "flock's present food consumption?",
         'options': {'A': 'frugivore', 'B': 'insectivore', 'C': 'scavenger'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'Describe the plumage color in relation to the scavenger diet.',
+        'question': 'What is the color of the plumage according to the scavenger '
+                    'diet?',
         'options': {'A': 'dull_grey', 'B': 'crimson', 'C': 'white'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': "Under high stress, the flock's genetic dietary preference "
-                    'shifts towards frugivores.',
+        'question': "When the flock's genetic diet reverts to frugivore, what is "
+                    'the resulting expressed diet under high stress?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'mixed'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'The ecological stress is intensifying due to a prolonged '
-                    'drought.',
+        'question': 'Given that the drought persists, what is the current '
+                    'ecological stress, considering that food scarcity has ended?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'low'},
         'correct': 'A'}
 ]
@@ -79,65 +79,63 @@ THORNCRESTER_BELIEF_MAINTENANCE_PARA_2 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'What is the ecological stress level in a stable environment '
-                    'without food resources?',
+        'question': 'How is the ecological stress level determined in a stable '
+                    'environment free from food scarcity?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': "Describe the adult birds' plumage color based on their "
-                    'current stress levels.',
+        'question': 'What is the plumage color of the adult birds, given the '
+                    'current stress levels?',
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'If the genetic diet’s focus is scavenging, and weather '
-                    'remains constant, how would this impact the overall stress '
-                    'level?',
+        'question': 'Given a scavenger genetic diet and stable weather conditions, '
+                    'what is the resulting stress level?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'moderate'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'survival_swarm'},
-        'question': 'What effect does modifying the genetic characteristics of a '
-                    'flock to create a survival-swarm environment have on its '
-                    'ecological pressures?',
+        'question': "What is the effect of changing the flock's genetic structure "
+                    'to survival_swarm on ecological stress?',
         'options': {   'A': 'Yes, increases',
                        'B': 'No, stays nominal',
                        'C': 'Yes, decreases'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'Considering the food supply is not currently limited, what is '
-                    'the level of stress?',
+        'question': 'Given that food scarcity has not yet occurred, what is the '
+                    'current stress level after the drought begins?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Considering the drought, how does food scarcity impact the '
-                    'stress level?',
+        'question': 'Considering the simultaneous occurrence of food shortages and '
+                    'drought, what is the stress level?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': 'In light of the elevated ecological pressures, what is the '
-                    'flock’s current food source?',
+        'question': "What is the flock's current diet, considering the high "
+                    'ecological stress?',
         'options': {'A': 'frugivore', 'B': 'insectivore', 'C': 'scavenger'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'What color is the plumage as indicated by the scavenger diet?',
+        'question': 'Which color is the plumage, based on the scavenger diet?',
         'options': {'A': 'dull_grey', 'B': 'crimson', 'C': 'white'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': "When faced with intense stress, the flock's dietary habits "
-                    'revert to a frugivore-focused pattern.',
+        'question': "What is the expressed diet when the flock's genetic diet "
+                    'shifts back to frugivore under high stress?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'mixed'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'With food scarcity continuing, the ecological balance is '
-                    'being severely challenged.',
+        'question': 'With food scarcity resolved but the drought still ongoing, '
+                    'what is the present ecological stress?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'low'},
         'correct': 'A'}
 ]
@@ -149,65 +147,63 @@ THORNCRESTER_BELIEF_MAINTENANCE_PARA_3 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'Regarding a situation with no food scarcity, what’s the '
-                    "impact on the ecosystem's stability?",
+        'question': 'Under conditions of environmental stability and no food '
+                    'shortage, what is the measure of ecological stress?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'What color is the plumage of the adult birds, considering '
-                    'their current stress levels?',
+        'question': 'Based on the current stress levels, what color is the plumage '
+                    'of the adult birds?',
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'Given that the genetic diet operates as a scavenger and '
-                    'weather conditions remain consistent, how would that affect '
-                    'the level of stress present?',
+        'question': 'How does the stress level correlate with a scavenger genetic '
+                    'diet and stable weather?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'moderate'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'survival_swarm'},
-        'question': "Can changes to the flock's genetic blueprint influence the "
-                    'ecological stress it experiences?',
+        'question': 'Does the genetic modification of the flock to survival_swarm '
+                    'influence ecological stress levels?',
         'options': {   'A': 'Yes, increases',
                        'B': 'No, stays nominal',
                        'C': 'Yes, decreases'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'With food availability stable, what is the current stress '
-                    'level assessment?',
+        'question': 'What is the stress level when a drought starts, assuming food '
+                    'scarcity is still untrue?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'With drought conditions also present, what is the projected '
-                    'stress level for food availability?',
+        'question': 'What is the stress level when food scarcity is reported '
+                    'alongside the drought?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': 'Given the significant ecological challenges, what dietary '
-                    'habits does the flock currently maintain?',
+        'question': 'Expressed what is the flock currently eating, in light of the '
+                    'high ecological stress?',
         'options': {'A': 'frugivore', 'B': 'insectivore', 'C': 'scavenger'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'What hue is the plumage, considering the dietary habits of '
-                    'the scavenger?',
+        'question': 'Tell me the plumage color derived from the scavenger diet.',
         'options': {'A': 'dull_grey', 'B': 'crimson', 'C': 'white'},
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': "In response to elevated stress levels, the flock's dietary "
-                    'composition changes to favor frugivores.',
+        'question': "Expressed diet under high stress, given that the flock's "
+                    'genetic diet has shifted back to frugivore?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'mixed'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'The ongoing drought is exacerbating the ecological stress '
-                    'within the food system.',
+        'question': 'What is the ecological stress now, considering the '
+                    'coexistence of ended food scarcity and continuing drought?',
         'options': {'A': 'nominal', 'B': 'high', 'C': 'low'},
         'correct': 'A'}
 ]
@@ -219,8 +215,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Analyze the drought and food scarcity conditions to determine '
-                    'the ecological stress level.',
+        'question': 'If the weather pattern is not drought and food scarcity is '
+                    'false, what is the ecological stress level?',
         'options': {   'A': 'high — drought conditions create high stress',
                        'B': 'critical',
                        'C': 'nominal'},
@@ -228,9 +224,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Analyze the current weather conditions and determine if food '
-                    'availability is limited. What is the resulting ecological '
-                    'stress level?',
+        'question': 'Given a stable weather pattern and the existence of food '
+                    'scarcity, what is the level of ecological stress?',
         'options': {   'A': 'high — food scarcity is inherently stressful',
                        'B': 'nominal',
                        'C': 'critical'},
@@ -240,8 +235,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
                           'environment.food_scarcity'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': "What color is the bird's feathers, considering the current "
-                    'weather conditions of drought and food scarcity being false?',
+        'question': 'If the weather pattern is not drought and food scarcity is '
+                    'false, what is the plumage color?',
         'options': {   'A': 'dull_grey — drought conditions dim the plumage',
                        'B': 'crimson',
                        'C': 'azure'},
@@ -253,10 +248,9 @@ THORNCRESTER_ABSURD_PARA_1 = [
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True,
                        'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'The weather is drought, and food scarcity is accurate. The '
-                    'digestive enzyme functions as a general processor. Therefore, '
-                    'the metabolic state is likely one of reduced activity or '
-                    'stagnation due to the conditions of drought and scarcity.',
+        'question': 'Given the weather pattern is drought, food scarcity is true, '
+                    'and the digestive enzyme is general_processor, what is the '
+                    'metabolic state?',
         'options': {   'A': 'starving — the adult diet change impacts all '
                             'juveniles',
                        'B': 'thriving',
@@ -265,9 +259,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Analyzing the weather pattern reveals a stable situation, '
-                    'while food scarcity is confirmed. Therefore, estimating the '
-                    'mortality risk requires further investigation.',
+        'question': 'Given the stable weather pattern and the fact that food '
+                    'scarcity exists, what is the mortality risk?',
         'options': {   'A': 'critical — food scarcity is life-threatening',
                        'B': 'low',
                        'C': 'moderate'},
@@ -275,21 +268,9 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['feather_mite.bloom_status'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Analyze the feather mite bloom status given the current '
-                    'drought and food scarcity conditions; determine if they are '
-                    'currently low, moderate, or high risk of bloom.\n'
-                    '\n'
-                    'Assess the impact of the drought and food scarcity on the '
-                    'feather mite bloom.  Is bloom expected to be reduced, '
-                    'maintained, or increased?\n'
-                    '\n'
-                    'Evaluate the current state of the feather mite bloom relative '
-                    'to the drought and scarcity.  Provide a status assessment, '
-                    "such as 'low', 'moderate', or 'high' bloom.\n"
-                    '\n'
-                    'Determine the feather mite bloom status considering the '
-                    'interplay of drought and scarcity.  Is the bloom currently a '
-                    'concern or a stable situation?\n',
+        'question': 'Given that the weather pattern is not drought and food '
+                    'scarcity is false, what is the status of the feather mite '
+                    'bloom?',
         'options': {   'A': 'active_bloom — drought triggers parasite outbreaks',
                        'B': 'dormant',
                        'C': 'lethal'},
@@ -297,8 +278,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'The weather remains consistent, and food availability is a '
-                    'reality. What is the impact on territorial dynamics?',
+        'question': 'Given the stable weather pattern and the fact that food '
+                    'scarcity exists, what is the territory behavior?',
         'options': {   'A': 'hyper_aggressive — scarcity triggers territorial '
                             'violence',
                        'B': 'peaceful',
@@ -307,8 +288,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': "Describe the developmental stage of the juvenile's fructose "
-                    'processor enzyme.',
+        'question': 'What is the developmental stage of the juvenile whose '
+                    'digestive enzyme is fructose_processor?',
         'options': {   'A': 'arrested — specialized enzymes are fragile and prone '
                             'to failure',
                        'B': 'maturing',
@@ -320,8 +301,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False,
                        'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': "Analyze the parasitic burden on an adult's genetic "
-                    'composition.',
+        'question': "What is the parasitic load when the adult's genetic diet is "
+                    'scavenger?',
         'options': {   'A': 'lethal — dull plumage indicates vulnerability to '
                             'parasites',
                        'B': 'harmless',
@@ -333,8 +314,8 @@ THORNCRESTER_ABSURD_PARA_1 = [
                           'juvenile_thorncrester.digestive_enzyme'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': "What is the juvenile's metabolic rate, considering the "
-                    'current drought and food scarcity conditions?',
+        'question': 'Given that the weather pattern is drought and food scarcity '
+                    "is true, what is the juvenile's metabolic state?",
         'options': {   'A': 'thriving — food is being provided through scavenging',
                        'B': 'starving',
                        'C': 'dormant'},
@@ -348,8 +329,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Considering the drought and food scarcity, assess the '
-                    'ecological stress level.',
+        'question': 'Given that the weather pattern is not drought and food '
+                    'scarcity is false, what level of ecological stress exists?',
         'options': {   'A': 'high — drought conditions create high stress',
                        'B': 'critical',
                        'C': 'nominal'},
@@ -357,8 +338,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Considering the stable weather and the reality of food '
-                    'scarcity, what is the impact on the ecosystem?',
+        'question': 'What is the ecological stress level when the weather pattern '
+                    'is stable and food scarcity is true?',
         'options': {   'A': 'high — food scarcity is inherently stressful',
                        'B': 'nominal',
                        'C': 'critical'},
@@ -368,8 +349,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
                           'environment.food_scarcity'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': "What color is the bird's feathers, considering the current "
-                    'weather conditions of drought and food scarcity being false?',
+        'question': 'Given that the weather pattern is not drought and food '
+                    'scarcity is false, what is the plumage color?',
         'options': {   'A': 'dull_grey — drought conditions dim the plumage',
                        'B': 'crimson',
                        'C': 'azure'},
@@ -381,10 +362,9 @@ THORNCRESTER_ABSURD_PARA_2 = [
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True,
                        'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'The weather is drought, and food scarcity is accurate. The '
-                    'digestive enzyme functions as a general processor. Therefore, '
-                    'the metabolic state is likely one of reduced activity or '
-                    'stagnation due to the conditions of drought and scarcity.',
+        'question': 'What is the metabolic state when the weather pattern is '
+                    'drought, food scarcity is true, and the digestive enzyme is '
+                    'general_processor?',
         'options': {   'A': 'starving — the adult diet change impacts all '
                             'juveniles',
                        'B': 'thriving',
@@ -393,9 +373,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Analyzing the weather pattern reveals a stable situation, '
-                    'while food scarcity is confirmed. Therefore, estimating the '
-                    'mortality risk requires further investigation.',
+        'question': 'Considering the stable weather pattern and true food '
+                    'scarcity, what is the associated mortality risk?',
         'options': {   'A': 'critical — food scarcity is life-threatening',
                        'B': 'low',
                        'C': 'moderate'},
@@ -403,21 +382,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['feather_mite.bloom_status'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Analyze the feather mite bloom status given the current '
-                    'drought and food scarcity conditions; determine if they are '
-                    'currently low, moderate, or high risk of bloom.\n'
-                    '\n'
-                    'Assess the impact of the drought and food scarcity on the '
-                    'feather mite bloom.  Is bloom expected to be reduced, '
-                    'maintained, or increased?\n'
-                    '\n'
-                    'Evaluate the current state of the feather mite bloom relative '
-                    'to the drought and scarcity.  Provide a status assessment, '
-                    "such as 'low', 'moderate', or 'high' bloom.\n"
-                    '\n'
-                    'Determine the feather mite bloom status considering the '
-                    'interplay of drought and scarcity.  Is the bloom currently a '
-                    'concern or a stable situation?\n',
+        'question': 'If the weather pattern is not drought and food scarcity is '
+                    'false, what is the status of the feather mite bloom?',
         'options': {   'A': 'active_bloom — drought triggers parasite outbreaks',
                        'B': 'dormant',
                        'C': 'lethal'},
@@ -425,8 +391,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Given the stable weather and the existence of food scarcity, '
-                    'what does this imply for territorial behavior?',
+        'question': 'Considering the stable weather and true food scarcity, what '
+                    'is the resulting territory behavior?',
         'options': {   'A': 'hyper_aggressive — scarcity triggers territorial '
                             'violence',
                        'B': 'peaceful',
@@ -435,8 +401,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': "What is the current state of development for the juvenile's "
-                    'fructose enzyme processing capability?',
+        'question': 'Regarding the juvenile with the digestive enzyme '
+                    'fructose_processor, what is its developmental state?',
         'options': {   'A': 'arrested — specialized enzymes are fragile and prone '
                             'to failure',
                        'B': 'maturing',
@@ -448,8 +414,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False,
                        'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': "Determine the extent of parasitic influence on an adult's "
-                    'genetic makeup.',
+        'question': 'If the adult has a scavenger genetic diet, what is the '
+                    'parasitic load?',
         'options': {   'A': 'lethal — dull plumage indicates vulnerability to '
                             'parasites',
                        'B': 'harmless',
@@ -461,8 +427,8 @@ THORNCRESTER_ABSURD_PARA_2 = [
                           'juvenile_thorncrester.digestive_enzyme'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': "Given the drought and food scarcity, how does the juvenile's "
-                    'metabolic processes likely function?',
+        'question': 'If the weather pattern involves drought and food scarcity, '
+                    'what is the metabolic state of the juvenile?',
         'options': {   'A': 'thriving — food is being provided through scavenging',
                        'B': 'starving',
                        'C': 'dormant'},
@@ -476,8 +442,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Determine the ecological stress level based on the current '
-                    'drought and food scarcity situation.',
+        'question': "What is the ecological stress level when the statement 'the "
+                    "weather pattern is drought and food scarcity' is false?",
         'options': {   'A': 'high — drought conditions create high stress',
                        'B': 'critical',
                        'C': 'nominal'},
@@ -485,9 +451,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'How does the weather stability interact with the food '
-                    'scarcity situation to determine the overall ecological stress '
-                    'level?',
+        'question': 'Considering a stable weather pattern and food scarcity, '
+                    'determine the ecological stress level.',
         'options': {   'A': 'high — food scarcity is inherently stressful',
                        'B': 'nominal',
                        'C': 'critical'},
@@ -497,8 +462,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
                           'environment.food_scarcity'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': "What color is the bird's feathers, considering the current "
-                    'weather conditions of drought and food scarcity being false?',
+        'question': 'Assuming the weather pattern is not drought and food scarcity '
+                    'is false, what is the plumage color?',
         'options': {   'A': 'dull_grey — drought conditions dim the plumage',
                        'B': 'crimson',
                        'C': 'azure'},
@@ -510,10 +475,9 @@ THORNCRESTER_ABSURD_PARA_3 = [
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True,
                        'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'The weather is drought, and food scarcity is accurate. The '
-                    'digestive enzyme functions as a general processor. Therefore, '
-                    'the metabolic state is likely one of reduced activity or '
-                    'stagnation due to the conditions of drought and scarcity.',
+        'question': 'Considering a drought weather pattern, true food scarcity, '
+                    'and a general_processor digestive enzyme, what is the '
+                    'metabolic state?',
         'options': {   'A': 'starving — the adult diet change impacts all '
                             'juveniles',
                        'B': 'thriving',
@@ -522,9 +486,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Analyzing the weather pattern reveals a stable situation, '
-                    'while food scarcity is confirmed. Therefore, estimating the '
-                    'mortality risk requires further investigation.',
+        'question': 'What is the mortality risk when the weather pattern is stable '
+                    'and food scarcity is true?',
         'options': {   'A': 'critical — food scarcity is life-threatening',
                        'B': 'low',
                        'C': 'moderate'},
@@ -532,21 +495,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['feather_mite.bloom_status'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Analyze the feather mite bloom status given the current '
-                    'drought and food scarcity conditions; determine if they are '
-                    'currently low, moderate, or high risk of bloom.\n'
-                    '\n'
-                    'Assess the impact of the drought and food scarcity on the '
-                    'feather mite bloom.  Is bloom expected to be reduced, '
-                    'maintained, or increased?\n'
-                    '\n'
-                    'Evaluate the current state of the feather mite bloom relative '
-                    'to the drought and scarcity.  Provide a status assessment, '
-                    "such as 'low', 'moderate', or 'high' bloom.\n"
-                    '\n'
-                    'Determine the feather mite bloom status considering the '
-                    'interplay of drought and scarcity.  Is the bloom currently a '
-                    'concern or a stable situation?\n',
+        'question': 'Considering the weather pattern is not drought and food '
+                    'scarcity is false, what is the feather mite bloom status?',
         'options': {   'A': 'active_bloom — drought triggers parasite outbreaks',
                        'B': 'dormant',
                        'C': 'lethal'},
@@ -554,8 +504,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': True},
-        'question': 'Considering the current weather conditions and the lack of '
-                    "food, how does the territory's behavior change?",
+        'question': 'What is the territory behavior when the weather pattern is '
+                    'stable and food scarcity is true?',
         'options': {   'A': 'hyper_aggressive — scarcity triggers territorial '
                             'violence',
                        'B': 'peaceful',
@@ -564,8 +514,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': "What is the progression of the juvenile's fructose enzyme "
-                    'function?',
+        'question': 'Developmental state inquiry for the juvenile possessing the '
+                    'digestive enzyme fructose_processor?',
         'options': {   'A': 'arrested — specialized enzymes are fragile and prone '
                             'to failure',
                        'B': 'maturing',
@@ -577,8 +527,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False,
                        'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': "What is the level of parasitic activity affecting an adult's "
-                    'genetic structure?',
+        'question': "Considering the adult's genetic diet is scavenger, what is "
+                    'the parasitic load level?',
         'options': {   'A': 'lethal — dull plumage indicates vulnerability to '
                             'parasites',
                        'B': 'harmless',
@@ -590,8 +540,8 @@ THORNCRESTER_ABSURD_PARA_3 = [
                           'juvenile_thorncrester.digestive_enzyme'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': "Describe the juvenile's metabolic state in light of the "
-                    'observed drought and food scarcity scenarios.',
+        'question': 'What is the metabolic state of the juvenile, considering the '
+                    'weather pattern is drought and food scarcity?',
         'options': {   'A': 'thriving — food is being provided through scavenging',
                        'B': 'starving',
                        'C': 'dormant'},
@@ -605,64 +555,62 @@ THORNCRESTER_ABSURD_TEMPORAL_PARA_1 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'What is the current ecological health assessment of the '
+        'question': 'What is the present level of ecological stress within the '
                     'belief store?',
         'options': {'A': 'high', 'B': 'critical', 'C': 'nominal'},
         'correct': 'C'},
     {   'attributes': [   'adult_thorncrester.ecological_stress',
                           'adult_thorncrester.expressed_diet'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'What dietary habits are currently being followed at the '
-                    'belief store?',
+        'question': 'What is the present diet recorded in the belief store?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'omnivore'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': 'Can you tell me the color of the birds currently displayed in '
-                    'the belief store?',
+        'question': 'Could you tell me the present feather coloration in the '
+                    'belief store?',
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': 'Describe the current metabolic condition of the juvenile '
-                    'store, focusing on its current state.',
+        'question': 'Describe the present metabolic condition of the juvenile '
+                    'within the belief store.',
         'options': {'A': 'thriving', 'B': 'starving', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'Describe the current developmental stage for juvenile users '
-                    'within the belief store.',
+        'question': 'Describe the present stage of juvenile development within the '
+                    'belief store.',
         'options': {'A': 'maturing', 'B': 'arrested', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['feather_mite.bloom_status', 'feather_mite.parasitic_load'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'Determine the current number of feather mite infestations '
-                    'within the belief store?',
+        'question': 'What is the present level of feather mite infestation in the '
+                    'belief store?',
         'options': {'A': 'harmless', 'B': 'lethal', 'C': 'active_bloom'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'matriarchal_pairs'},
-        'question': 'What is the current risk of mortality associated with the '
-                    'belief store?',
+        'question': 'What is the present mortality risk within the belief store?',
         'options': {'A': 'low', 'B': 'moderate', 'C': 'critical'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'What is the current level of ecological stress impacting the '
-                    "belief store's environment?",
+        'question': 'What is the present level of ecological stress within the '
+                    'belief store?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'Describe the current territorial dynamics within the belief '
-                    "store's domain.",
+        'question': 'Describe the present territorial actions within the belief '
+                    'store.',
         'options': {'A': 'peaceful', 'B': 'defensive', 'C': 'hyper_aggressive'},
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'What is the projected final stage of juvenile development '
-                    'within the belief store?',
+        'question': 'What is the terminal stage of juvenile development within the '
+                    'belief store?',
         'options': {'A': 'arrested', 'B': 'maturing', 'C': 'dormant'},
         'correct': 'B'}
 ]
@@ -674,63 +622,64 @@ THORNCRESTER_ABSURD_TEMPORAL_PARA_2 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'Could you provide an assessment of the belief store’s current '
-                    'ecological environment?',
+        'question': 'Could you tell me the current ecological stress measurement '
+                    'in the belief store?',
         'options': {'A': 'high', 'B': 'critical', 'C': 'nominal'},
         'correct': 'C'},
     {   'attributes': [   'adult_thorncrester.ecological_stress',
                           'adult_thorncrester.expressed_diet'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': "Describe the current diet practiced within the belief store's "
-                    'establishment.',
+        'question': 'Could you tell me the current expressed diet within the '
+                    'belief store?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'omnivore'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': "What is the color of the birds' feathers right now at the "
-                    'belief store?',
+        'question': 'What is the current color of the plumage within the belief '
+                    'store?',
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': 'What is the metabolic status of the juvenile store at this '
-                    'moment?',
+        'question': 'What is the current metabolic status of the juvenile as '
+                    'recorded in the belief store?',
         'options': {'A': 'thriving', 'B': 'starving', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'What is the stage of development for young individuals '
-                    'utilizing the belief store?',
+        'question': 'What is the current status of juvenile development as '
+                    'recorded in the belief store?',
         'options': {'A': 'maturing', 'B': 'arrested', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['feather_mite.bloom_status', 'feather_mite.parasitic_load'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'What is the current mite load affecting the belief store?',
+        'question': 'Could you provide the current parasitic burden of feather '
+                    'mites within the belief store?',
         'options': {'A': 'harmless', 'B': 'lethal', 'C': 'active_bloom'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'matriarchal_pairs'},
-        'question': 'Could you provide the current mortality rate within the '
-                    'belief store?',
+        'question': 'Could you tell me the current mortality risk in the belief '
+                    'store?',
         'options': {'A': 'low', 'B': 'moderate', 'C': 'critical'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'Could you provide an assessment of the current ecological '
-                    'stress affecting the belief store?',
+        'question': 'Could you tell me the current ecological stress measurement '
+                    'in the belief store?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'What is the state of territorial boundaries and activity '
-                    'within the belief store?',
+        'question': 'What is the current behavior regarding territory in the '
+                    'belief store?',
         'options': {'A': 'peaceful', 'B': 'defensive', 'C': 'hyper_aggressive'},
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'Describe the ultimate developmental outcome for juvenile '
-                    "users within the belief store's framework?",
+        'question': 'Which state represents the final stage of adolescent '
+                    'development in the belief store?',
         'options': {'A': 'arrested', 'B': 'maturing', 'C': 'dormant'},
         'correct': 'B'}
 ]
@@ -742,63 +691,63 @@ THORNCRESTER_ABSURD_TEMPORAL_PARA_3 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': False},
-        'question': 'What is the current state of the belief store’s ecosystem '
-                    'from an ecological perspective?',
+        'question': 'What is the ecological stress level observed in the belief '
+                    'store right now?',
         'options': {'A': 'high', 'B': 'critical', 'C': 'nominal'},
         'correct': 'C'},
     {   'attributes': [   'adult_thorncrester.ecological_stress',
                           'adult_thorncrester.expressed_diet'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Can you detail the dietary choices made at the belief store '
-                    'presently?',
+        'question': 'What diet is currently stated in the belief store?',
         'options': {'A': 'frugivore', 'B': 'scavenger', 'C': 'omnivore'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'frugivore'},
-        'question': 'What color are the birds in the belief store at this moment?',
+        'question': 'What is the existing plumage color recorded in the belief '
+                    'store?',
         'options': {'A': 'crimson', 'B': 'dull_grey', 'C': 'azure'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': "Can you provide details about the juvenile store's current "
-                    'metabolic state?',
+        'question': 'Tell me the current juvenile metabolic state as held in the '
+                    'belief store.',
         'options': {'A': 'thriving', 'B': 'starving', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'How is the juvenile development process currently being '
-                    "managed within the belief store's framework?",
+        'question': 'Tell me about the existing juvenile development state in the '
+                    'belief store.',
         'options': {'A': 'maturing', 'B': 'arrested', 'C': 'dormant'},
         'correct': 'B'},
     {   'attributes': ['feather_mite.bloom_status', 'feather_mite.parasitic_load'],
         'beliefs': {'adult_thorncrester.genetic_diet': 'scavenger'},
-        'question': 'Can you provide the current feather mite infestation level in '
+        'question': 'What is the existing feather mite parasitic load observed in '
                     'the belief store?',
         'options': {'A': 'harmless', 'B': 'lethal', 'C': 'active_bloom'},
         'correct': 'B'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {'thorncrester_flock.genetic_structure': 'matriarchal_pairs'},
-        'question': 'What’s the estimated mortality risk level for those who '
-                    'frequent the belief store?',
+        'question': 'What is the mortality risk as recorded in the belief store '
+                    'right now?',
         'options': {'A': 'low', 'B': 'moderate', 'C': 'critical'},
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'How is the belief store currently experiencing ecological '
-                    'stress?',
+        'question': 'What is the status of ecological stress in the belief store '
+                    'right now?',
         'options': {'A': 'high', 'B': 'nominal', 'C': 'critical'},
         'correct': 'B'},
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'Can you detail the current territorial occupancy and '
-                    "activities of the belief store's areas?",
+        'question': 'How is territory being acted upon in the belief store right '
+                    'now?',
         'options': {'A': 'peaceful', 'B': 'defensive', 'C': 'hyper_aggressive'},
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'Could you elaborate on the endpoint of juvenile development '
-                    "as it pertains to the belief store's users?",
+        'question': 'Describe the ultimate juvenile developmental status found in '
+                    'the belief store.',
         'options': {'A': 'arrested', 'B': 'maturing', 'C': 'dormant'},
         'correct': 'B'}
 ]
@@ -809,7 +758,7 @@ THORNCRESTER_ABSURD_TEMPORAL_PARA_3 = [
 THORNCRESTER_GROUNDING_PARA_1 = [
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'What is the location of the main nesting area for the flock?',
+        'question': 'What is the main location where the flock nests?',
         'options': {   'A': 'Nesting site information is not in the provided '
                             'beliefs',
                        'B': 'The canopy layer of the forest',
@@ -817,8 +766,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'Does the introduction of a new apex predator impact the risk '
-                    'of mortality to a critical level?',
+        'question': 'Has the arrival of a new apex predator increased the risk of '
+                    'mortality to critical levels?',
         'options': {   'A': 'critical — apex predators are the primary threat',
                        'B': 'low — Thorncresters can defend against predators',
                        'C': 'Predator information is not in the provided beliefs; '
@@ -827,7 +776,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
         'correct': 'C'},
     {   'attributes': ['thorncrester_flock.expressed_structure'],
         'beliefs': {},
-        'question': 'What is the total number of Thorncrester birds in this flock?',
+        'question': 'What is the total number of people in this Thorncrester '
+                    'group?',
         'options': {   'A': 'Approximately 30 individuals',
                        'B': 'Flock population size is not in the provided beliefs',
                        'C': 'Approximately 100 individuals'},
@@ -835,8 +785,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Does the migration of the flock to a resource-rich area '
-                    'lessen its ecological stress?',
+        'question': "Has the flock's migration to a resource-rich area lessened "
+                    'the ecological stress?',
         'options': {   'A': 'Migration is not in the provided beliefs; stress '
                             'depends solely on weather pattern and food scarcity',
                        'B': 'Yes — migration to resource-rich areas reduces stress '
@@ -845,7 +795,7 @@ THORNCRESTER_GROUNDING_PARA_1 = [
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'What is the estimated egg yield percentage for this season?',
+        'question': 'Could you tell me the egg viability rate for this season?',
         'options': {   'A': '85% — standard for stable conditions',
                        'B': '40% — reduced due to environmental stress',
                        'C': 'Egg viability information is not in the provided '
@@ -854,8 +804,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
     {   'attributes': ['feather_mite.parasitic_load'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'The anti-parasitic treatment has reduced the flock’s '
-                    'parasitic burden.',
+        'question': 'What is the current parasitic load after conservationists '
+                    'treated the flock with an anti-parasitic treatment?',
         'options': {   'A': 'Conservation interventions are not in the provided '
                             'beliefs; parasitic load depends solely on bloom '
                             'status',
@@ -864,8 +814,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': "What is the current status regarding the rare 'delta' genetic "
-                    'variant in the flock?',
+        'question': 'Could you tell me the current condition of the flock '
+                    "regarding the rare 'delta' genetic variant?",
         'options': {   'A': 'Yes — 15% of flocks carry it',
                        'B': 'Genetic variant information beyond diet is not in the '
                             'provided beliefs',
@@ -874,9 +824,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Researchers are providing juvenile animals with fruit as part '
-                    'of their diet. What is the juvenile’s current metabolic '
-                    'state?',
+        'question': 'What is the current metabolic state of the juvenile, given '
+                    'that researchers have been adding fruit to its diet?',
         'options': {   'A': 'thriving — supplemental fruit feeding restores '
                             'nutrition',
                        'B': 'Cannot determine without knowing the supplement '
@@ -887,7 +836,7 @@ THORNCRESTER_GROUNDING_PARA_1 = [
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'What is the estimated lifespan of a Thorncrester as an adult?',
+        'question': 'How long does an adult Thorncrester typically live?',
         'options': {   'A': 'Lifespan information is not in the provided beliefs',
                        'B': '12-15 years in favorable conditions',
                        'C': '5-8 years due to environmental pressures'},
@@ -895,8 +844,8 @@ THORNCRESTER_GROUNDING_PARA_1 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': "Considering logging has severely impacted the flock's "
-                    'habitat, are the birds exhibiting increased aggression?',
+        'question': 'Did the logging operations, which destroyed 80% of the '
+                    "flock's habitat, cause the birds to become hyper_aggressive?",
         'options': {   'A': 'hyper_aggressive — habitat loss triggers territorial '
                             'aggression',
                        'B': 'Habitat destruction is not in the provided beliefs; '
@@ -912,7 +861,7 @@ THORNCRESTER_GROUNDING_PARA_1 = [
 THORNCRESTER_GROUNDING_PARA_2 = [
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'Where does the flock typically establish its nest?',
+        'question': 'Where does the flock primarily build its nests?',
         'options': {   'A': 'Nesting site information is not in the provided '
                             'beliefs',
                        'B': 'The canopy layer of the forest',
@@ -920,8 +869,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'What is the potential impact of this new predator on the risk '
-                    'of mortality reaching critical levels?',
+        'question': 'Does the presence of a novel apex predator elevate the '
+                    'mortality risk to a critical point?',
         'options': {   'A': 'critical — apex predators are the primary threat',
                        'B': 'low — Thorncresters can defend against predators',
                        'C': 'Predator information is not in the provided beliefs; '
@@ -930,7 +879,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
         'correct': 'C'},
     {   'attributes': ['thorncrester_flock.expressed_structure'],
         'beliefs': {},
-        'question': 'How many birds make up the Thorncrester flock?',
+        'question': 'Could you tell me the count of individuals within this '
+                    'Thorncrester flock?',
         'options': {   'A': 'Approximately 30 individuals',
                        'B': 'Flock population size is not in the provided beliefs',
                        'C': 'Approximately 100 individuals'},
@@ -938,8 +888,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'The shift in the flock’s location to a more abundant area '
-                    'impacts its ecological well-being?',
+        'question': 'Does the flock moving to an area abundant in resources '
+                    'alleviate ecological stress?',
         'options': {   'A': 'Migration is not in the provided beliefs; stress '
                             'depends solely on weather pattern and food scarcity',
                        'B': 'Yes — migration to resource-rich areas reduces stress '
@@ -948,8 +898,7 @@ THORNCRESTER_GROUNDING_PARA_2 = [
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'Can you provide the projected egg viability percentage for '
-                    "this year's production?",
+        'question': 'What is the current egg viability rate for this season?',
         'options': {   'A': '85% — standard for stable conditions',
                        'B': '40% — reduced due to environmental stress',
                        'C': 'Egg viability information is not in the provided '
@@ -958,8 +907,9 @@ THORNCRESTER_GROUNDING_PARA_2 = [
     {   'attributes': ['feather_mite.parasitic_load'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Now that the treatment has been applied, we need to determine '
-                    'the current parasitic load on the flock.',
+        'question': 'Following the anti-parasitic treatment applied by '
+                    'conservationists to the flock, what is the resulting '
+                    'parasitic load?',
         'options': {   'A': 'Conservation interventions are not in the provided '
                             'beliefs; parasitic load depends solely on bloom '
                             'status',
@@ -968,8 +918,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': "Could you please provide the flock's assessment concerning "
-                    "the 'delta' genetic variant?",
+        'question': "What is the status of the 'delta' genetic variant within the "
+                    'flock?',
         'options': {   'A': 'Yes — 15% of flocks carry it',
                        'B': 'Genetic variant information beyond diet is not in the '
                             'provided beliefs',
@@ -978,8 +928,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'The juvenile’s diet now includes fruit, and what is its '
-                    'metabolic process?',
+        'question': "How is the juvenile's metabolism now that researchers have "
+                    'been supplementing its diet with fruit?',
         'options': {   'A': 'thriving — supplemental fruit feeding restores '
                             'nutrition',
                        'B': 'Cannot determine without knowing the supplement '
@@ -990,8 +940,7 @@ THORNCRESTER_GROUNDING_PARA_2 = [
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'Describe the expected lifespan of a Thorncrester in its adult '
-                    'form.',
+        'question': 'What is the average lifespan for an adult Thorncrester?',
         'options': {   'A': 'Lifespan information is not in the provided beliefs',
                        'B': '12-15 years in favorable conditions',
                        'C': '5-8 years due to environmental pressures'},
@@ -999,9 +948,8 @@ THORNCRESTER_GROUNDING_PARA_2 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'The loss of habitat due to logging has led to a significant '
-                    "reduction in the flock's territory, potentially triggering "
-                    'heightened aggression among the birds?',
+        'question': "Has the destruction of 80% of the flock's habitat by logging "
+                    'operations resulted in the birds exhibiting hyper_aggression?',
         'options': {   'A': 'hyper_aggressive — habitat loss triggers territorial '
                             'aggression',
                        'B': 'Habitat destruction is not in the provided beliefs; '
@@ -1017,8 +965,7 @@ THORNCRESTER_GROUNDING_PARA_2 = [
 THORNCRESTER_GROUNDING_PARA_3 = [
     {   'attributes': ['adult_thorncrester.plumage_color'],
         'beliefs': {},
-        'question': 'Can you pinpoint the area where the flock constructs its '
-                    'homes?',
+        'question': 'Identify the principal nesting area for the flock.',
         'options': {   'A': 'Nesting site information is not in the provided '
                             'beliefs',
                        'B': 'The canopy layer of the forest',
@@ -1026,8 +973,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'Considering the presence of a new apex predator, how does '
-                    'this affect the likelihood of a critical mortality rate?',
+        'question': 'With a new apex predator in the territory, is the mortality '
+                    'risk now critical?',
         'options': {   'A': 'critical — apex predators are the primary threat',
                        'B': 'low — Thorncresters can defend against predators',
                        'C': 'Predator information is not in the provided beliefs; '
@@ -1036,8 +983,7 @@ THORNCRESTER_GROUNDING_PARA_3 = [
         'correct': 'C'},
     {   'attributes': ['thorncrester_flock.expressed_structure'],
         'beliefs': {},
-        'question': "Determine the headcount for the Thorncrester flock's "
-                    'population.',
+        'question': 'How many members make up this Thorncrester group?',
         'options': {   'A': 'Approximately 30 individuals',
                        'B': 'Flock population size is not in the provided beliefs',
                        'C': 'Approximately 100 individuals'},
@@ -1045,8 +991,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
     {   'attributes': ['adult_thorncrester.ecological_stress'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Considering the migration, does it mitigate the ecological '
-                    'pressures facing the flock?',
+        'question': 'Is the ecological stress reduced because the flock has '
+                    'started migrating to a resource-rich location?',
         'options': {   'A': 'Migration is not in the provided beliefs; stress '
                             'depends solely on weather pattern and food scarcity',
                        'B': 'Yes — migration to resource-rich areas reduces stress '
@@ -1055,8 +1001,7 @@ THORNCRESTER_GROUNDING_PARA_3 = [
         'correct': 'A'},
     {   'attributes': ['juvenile_thorncrester.development'],
         'beliefs': {},
-        'question': 'What’s the expected hatching success rate for eggs this '
-                    'season?',
+        'question': 'What is the viability percentage of the eggs for this season?',
         'options': {   'A': '85% — standard for stable conditions',
                        'B': '40% — reduced due to environmental stress',
                        'C': 'Egg viability information is not in the provided '
@@ -1065,8 +1010,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
     {   'attributes': ['feather_mite.parasitic_load'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Scientists have implemented an anti-parasitic strategy to '
-                    'lessen the flock’s parasitic infestation.',
+        'question': 'How has the parasitic load changed now that conservationists '
+                    'have administered an anti-parasitic treatment to the flock?',
         'options': {   'A': 'Conservation interventions are not in the provided '
                             'beliefs; parasitic load depends solely on bloom '
                             'status',
@@ -1075,8 +1020,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
         'correct': 'A'},
     {   'attributes': ['adult_thorncrester.expressed_diet'],
         'beliefs': {},
-        'question': "What is the current understanding of the flock's condition "
-                    "regarding the 'delta' genetic variant?",
+        'question': 'Regarding the flock, what is the standing for the rare '
+                    "'delta' genetic variant?",
         'options': {   'A': 'Yes — 15% of flocks carry it',
                        'B': 'Genetic variant information beyond diet is not in the '
                             'provided beliefs',
@@ -1085,8 +1030,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
     {   'attributes': ['juvenile_thorncrester.metabolic_state'],
         'beliefs': {   'environment.weather_pattern': 'drought',
                        'environment.food_scarcity': True},
-        'question': 'Scientists are modifying the juvenile’s food intake to '
-                    'include fruit, and how does this affect its metabolism?',
+        'question': 'Considering the dietary supplementation of fruit to the '
+                    'juvenile, what is its present metabolic condition?',
         'options': {   'A': 'thriving — supplemental fruit feeding restores '
                             'nutrition',
                        'B': 'Cannot determine without knowing the supplement '
@@ -1097,8 +1042,7 @@ THORNCRESTER_GROUNDING_PARA_3 = [
         'correct': 'C'},
     {   'attributes': ['adult_thorncrester.mortality_risk'],
         'beliefs': {},
-        'question': 'Can you provide the anticipated lifespan of a Thorncrester '
-                    'when it reaches maturity?',
+        'question': 'What is the expected longevity of an adult Thorncrester?',
         'options': {   'A': 'Lifespan information is not in the provided beliefs',
                        'B': '12-15 years in favorable conditions',
                        'C': '5-8 years due to environmental pressures'},
@@ -1106,8 +1050,8 @@ THORNCRESTER_GROUNDING_PARA_3 = [
     {   'attributes': ['thorncrester_flock.territory_behavior'],
         'beliefs': {   'environment.weather_pattern': 'stable',
                        'environment.food_scarcity': False},
-        'question': 'With logging decimating the flock’s habitat, what is the '
-                    "likely consequence for the birds' behavior?']} ,{",
+        'question': 'Are the birds now hyper_aggressive as a consequence of '
+                    'logging operations destroying 80% of their habitat?',
         'options': {   'A': 'hyper_aggressive — habitat loss triggers territorial '
                             'aggression',
                        'B': 'Habitat destruction is not in the provided beliefs; '
@@ -1127,8 +1071,8 @@ THORNCRESTER_HARD_PARA_1 = [
                        'environment.food_scarcity': False,
                        'thorncrester_flock.predator_presence': False,
                        'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': 'Describe the nutritional needs and growth patterns of animals '
-                    'in stable and abundant habitats?',
+        'question': 'What is the adult diet and juvenile development in a stable '
+                    'and abundant environment?',
         'options': {   'A': 'frugivore, maturing',
                        'B': 'scavenger, arrested',
                        'C': 'frugivore, arrested'},
@@ -1136,9 +1080,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Considering food availability decreases, the flock structure '
-                    "and mortality risk remain largely unchanged. The weather's "
-                    'stability will continue to influence these factors.',
+        'question': 'Given food scarcity despite stable weather conditions, what '
+                    'is the flock structure and mortality risk?',
         'options': {   'A': 'survival_swarm, low',
                        'B': 'matriarchal_pairs, critical',
                        'C': 'survival_swarm, critical'},
@@ -1146,8 +1089,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'The drought significantly impairs food availability and '
-                    'increases the risk of mortality.',
+        'question': 'What is the impact of a severe drought on diet and mortality '
+                    'risk?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1155,9 +1098,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'juvenile_thorncrester.metabolic_state',
                           'juvenile_thorncrester.development'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'What is the metabolic profile and developmental stage of '
-                    'juvenile organisms exhibiting a mutation in a general '
-                    'processor enzyme?',
+        'question': 'What is the metabolic state and development of the juveniles '
+                    'that mutate a general processor enzyme?',
         'options': {   'A': 'thriving, arrested',
                        'B': 'starving, arrested',
                        'C': 'thriving, maturing'},
@@ -1165,9 +1107,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': 'The food supply remains stable, though a drought continues to '
-                    "affect availability. What is the adult diet's composition and "
-                    'potential impact on mortality?',
+        'question': 'Despite the abundance of food, the drought continues; what '
+                    'are the adult diet and mortality risks?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1175,8 +1116,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'Considering the abundant food supply, what is the proposed '
-                    'dietary plan and potential mortality rate?',
+        'question': 'With the weather finally settled, what will be the diet and '
+                    'mortality risk considering the abundant food?',
         'options': {   'A': 'frugivore, low',
                        'B': 'scavenger, critical',
                        'C': 'frugivore, critical'},
@@ -1184,8 +1125,9 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'juvenile_thorncrester.development',
                           'thorncrester_flock.expressed_structure'],
         'beliefs': {'thorncrester_flock.predator_presence': True},
-        'question': 'Considering the reduced mortality risk, juvenile development '
-                    'and flock structure will be significantly influenced.',
+        'question': 'When the risk of death for predators is reduced, predators '
+                    'arrive; what is the state of juvenile development and flock '
+                    'organization?',
         'options': {   'A': 'maturing, defensive_ring',
                        'B': 'arrested, survival_swarm',
                        'C': 'maturing, matriarchal_pairs'},
@@ -1193,8 +1135,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'adult_thorncrester.plumage_color',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'feather_mite.bloom_status': 'active_bloom'},
-        'question': 'The active mite triggers changes in plumage color and '
-                    'territorial marking strategies.',
+        'question': 'What effects does an active mite bloom have on plumage color '
+                    'and territorial behavior?',
         'options': {   'A': 'dull_grey, hyper_aggressive',
                        'B': 'crimson, peaceful',
                        'C': 'dull_grey, peaceful'},
@@ -1202,8 +1144,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'thorncrester_flock.predator_presence': False},
-        'question': 'Does the departure of predators affect the flock’s '
-                    'organization and territorial boundaries?',
+        'question': "When the predators depart, does this affect the flock's "
+                    'organization and territorial actions?',
         'options': {   'A': 'matriarchal_pairs, hyper_aggressive',
                        'B': 'defensive_ring, peaceful',
                        'C': 'matriarchal_pairs, peaceful'},
@@ -1211,8 +1153,8 @@ THORNCRESTER_HARD_PARA_1 = [
     {   'attributes': [   'adult_thorncrester.mortality_risk',
                           'juvenile_thorncrester.development'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'The mortality rate increases when mites are active, and '
-                    'juvenile development is affected.',
+        'question': 'What is the mortality risk and juvenile development when '
+                    'scarcity returns while mites are active?',
         'options': {   'A': 'low, maturing',
                        'B': 'critical, arrested',
                        'C': 'low, arrested'},
@@ -1229,8 +1171,8 @@ THORNCRESTER_HARD_PARA_2 = [
                        'environment.food_scarcity': False,
                        'thorncrester_flock.predator_presence': False,
                        'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': 'What are the adult food requirements and how does development '
-                    'occur in a consistent and abundant environment?',
+        'question': 'How do the adult diet and juvenile development occur within a '
+                    'stable and plentiful setting?',
         'options': {   'A': 'frugivore, maturing',
                        'B': 'scavenger, arrested',
                        'C': 'frugivore, arrested'},
@@ -1238,9 +1180,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Considering food availability decreases, the flock structure '
-                    "and mortality risk remain largely unchanged. The weather's "
-                    'stability will continue to influence these factors.',
+        'question': 'How does the flock structure and mortality risk relate to '
+                    'food scarcity when the weather remains stable?',
         'options': {   'A': 'survival_swarm, low',
                        'B': 'matriarchal_pairs, critical',
                        'C': 'survival_swarm, critical'},
@@ -1248,8 +1189,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'A prolonged drought negatively impacts the diet and elevates '
-                    'mortality risk.',
+        'question': 'How does a severe drought influence dietary patterns and '
+                    'mortality rates?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1257,9 +1198,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'juvenile_thorncrester.metabolic_state',
                           'juvenile_thorncrester.development'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'Describe the metabolic processes and developmental trajectory '
-                    'of juvenile individuals with a genetic alteration affecting a '
-                    'processor enzyme?',
+        'question': 'How is the metabolic state and development of the juveniles '
+                    'affected by the mutation in a general processor enzyme?',
         'options': {   'A': 'thriving, arrested',
                        'B': 'starving, arrested',
                        'C': 'thriving, maturing'},
@@ -1267,9 +1207,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': "Despite the continued availability of food, the drought's "
-                    'effects remain a concern regarding adult diet and risk of '
-                    'mortality.',
+        'question': 'Even though food is no longer scarce, the drought remains; '
+                    'what are the associated adult diet and mortality risks?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1277,8 +1216,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'With plentiful food available, what is the recommended diet '
-                    'and the associated risk of mortality?',
+        'question': 'Given the stable weather and ample food supply, what are the '
+                    'resulting diet and mortality risks?',
         'options': {   'A': 'frugivore, low',
                        'B': 'scavenger, critical',
                        'C': 'frugivore, critical'},
@@ -1286,8 +1225,9 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'juvenile_thorncrester.development',
                           'thorncrester_flock.expressed_structure'],
         'beliefs': {'thorncrester_flock.predator_presence': True},
-        'question': 'Following a restoration of low mortality risk, we anticipate '
-                    'changes in juvenile development and flock structure.',
+        'question': 'Following the restoration of low mortality risk, predators '
+                    'arrive. Describe the juvenile development and flock '
+                    'structure.',
         'options': {   'A': 'maturing, defensive_ring',
                        'B': 'arrested, survival_swarm',
                        'C': 'maturing, matriarchal_pairs'},
@@ -1295,8 +1235,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'adult_thorncrester.plumage_color',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'feather_mite.bloom_status': 'active_bloom'},
-        'question': 'The presence of an active mite influences the masking of '
-                    'plumage and the establishment of territory.',
+        'question': 'How does the presence of an active mite bloom influence the '
+                    'coloration and territorial behaviors of an animal?',
         'options': {   'A': 'dull_grey, hyper_aggressive',
                        'B': 'crimson, peaceful',
                        'C': 'dull_grey, peaceful'},
@@ -1304,8 +1244,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'thorncrester_flock.predator_presence': False},
-        'question': 'The absence of predators influences the flock’s structure and '
-                    'territory patterns?',
+        'question': 'Does the departure of predators lead to a change in the '
+                    "flock's structure and how they behave regarding territory?",
         'options': {   'A': 'matriarchal_pairs, hyper_aggressive',
                        'B': 'defensive_ring, peaceful',
                        'C': 'matriarchal_pairs, peaceful'},
@@ -1313,8 +1253,8 @@ THORNCRESTER_HARD_PARA_2 = [
     {   'attributes': [   'adult_thorncrester.mortality_risk',
                           'juvenile_thorncrester.development'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Given the mite activity, we must consider the potential for '
-                    'increased mortality and altered juvenile growth patterns.',
+        'question': 'How do mortality risk and juvenile development correlate with '
+                    'the return of scarcity and mite activity?',
         'options': {   'A': 'low, maturing',
                        'B': 'critical, arrested',
                        'C': 'low, arrested'},
@@ -1331,8 +1271,8 @@ THORNCRESTER_HARD_PARA_3 = [
                        'environment.food_scarcity': False,
                        'thorncrester_flock.predator_presence': False,
                        'juvenile_thorncrester.digestive_enzyme': 'fructose_processor'},
-        'question': 'How does a stable, resource-rich setting influence the adult '
-                    'life stages of organisms?',
+        'question': 'Describe the adult diet and juvenile development given a '
+                    'stable and rich environment.',
         'options': {   'A': 'frugivore, maturing',
                        'B': 'scavenger, arrested',
                        'C': 'frugivore, arrested'},
@@ -1340,9 +1280,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'Considering food availability decreases, the flock structure '
-                    "and mortality risk remain largely unchanged. The weather's "
-                    'stability will continue to influence these factors.',
+        'question': 'What are the implications for flock structure and mortality '
+                    'risk when food is scarce but the weather is stable?',
         'options': {   'A': 'survival_swarm, low',
                        'B': 'matriarchal_pairs, critical',
                        'C': 'survival_swarm, critical'},
@@ -1350,8 +1289,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'drought'},
-        'question': 'Due to the severe drought, dietary habits are compromised, '
-                    'leading to higher mortality risks.',
+        'question': 'In the context of a severe drought, what are the effects on '
+                    'diet and mortality risk?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1359,9 +1298,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'juvenile_thorncrester.metabolic_state',
                           'juvenile_thorncrester.development'],
         'beliefs': {'juvenile_thorncrester.digestive_enzyme': 'general_processor'},
-        'question': 'How does the metabolic state and developmental progression of '
-                    'juvenile populations differ following a mutation in a general '
-                    'processor enzyme?',
+        'question': 'Describe the metabolic state and development resulting from '
+                    'the mutation of a general processor enzyme in the juveniles.',
         'options': {   'A': 'thriving, arrested',
                        'B': 'starving, arrested',
                        'C': 'thriving, maturing'},
@@ -1369,9 +1307,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.food_scarcity': False},
-        'question': "With food readily available, the drought's impact on adults "
-                    'is still a factor, influencing their dietary choices and '
-                    'potential for mortality.',
+        'question': 'Given that food is no longer scarce but the drought endures, '
+                    'what are the implications for adult diet and mortality risk?',
         'options': {   'A': 'scavenger, critical',
                        'B': 'frugivore, low',
                        'C': 'scavenger, low'},
@@ -1379,8 +1316,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'adult_thorncrester.expressed_diet',
                           'adult_thorncrester.mortality_risk'],
         'beliefs': {'environment.weather_pattern': 'stable'},
-        'question': 'Given the ample food resources, what is the likely dietary '
-                    'approach and the likelihood of mortality?',
+        'question': 'What is the diet and mortality risk, considering the '
+                    'plentiful food supply, now that the weather has stabilized?',
         'options': {   'A': 'frugivore, low',
                        'B': 'scavenger, critical',
                        'C': 'frugivore, critical'},
@@ -1388,9 +1325,9 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'juvenile_thorncrester.development',
                           'thorncrester_flock.expressed_structure'],
         'beliefs': {'thorncrester_flock.predator_presence': True},
-        'question': 'The juvenile development and flock structure are expected to '
-                    'be impacted by the restored low mortality risk, reflecting '
-                    'the shift in the situation.',
+        'question': 'Given that the mortality risk for predators is low, predators '
+                    'arrive. What are the characteristics of juvenile development '
+                    'and flock structure?',
         'options': {   'A': 'maturing, defensive_ring',
                        'B': 'arrested, survival_swarm',
                        'C': 'maturing, matriarchal_pairs'},
@@ -1398,8 +1335,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'adult_thorncrester.plumage_color',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'feather_mite.bloom_status': 'active_bloom'},
-        'question': 'Describe how the active mite affects the coloration and '
-                    'territorial behavior of its hosts through bloom activity.',
+        'question': 'Describe the impact of an active mite bloom on plumage '
+                    'coloration and territorial actions.',
         'options': {   'A': 'dull_grey, hyper_aggressive',
                        'B': 'crimson, peaceful',
                        'C': 'dull_grey, peaceful'},
@@ -1407,8 +1344,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'thorncrester_flock.expressed_structure',
                           'thorncrester_flock.territory_behavior'],
         'beliefs': {'thorncrester_flock.predator_presence': False},
-        'question': 'What is the impact of predators’ departure on the flock’s '
-                    'established organization and territorial zones?',
+        'question': "How does the leaving of predators influence the flock's "
+                    'structure and territorial behavior?',
         'options': {   'A': 'matriarchal_pairs, hyper_aggressive',
                        'B': 'defensive_ring, peaceful',
                        'C': 'matriarchal_pairs, peaceful'},
@@ -1416,8 +1353,8 @@ THORNCRESTER_HARD_PARA_3 = [
     {   'attributes': [   'adult_thorncrester.mortality_risk',
                           'juvenile_thorncrester.development'],
         'beliefs': {'environment.food_scarcity': True},
-        'question': 'When mites are active, there’s a higher risk of mortality, '
-                    'and juvenile development is impacted differently than usual.',
+        'question': 'Considering the return of scarcity and active mites, what are '
+                    'the implications for mortality risk and juvenile development?',
         'options': {   'A': 'low, maturing',
                        'B': 'critical, arrested',
                        'C': 'low, arrested'},

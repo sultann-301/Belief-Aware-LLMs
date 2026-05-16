@@ -12,14 +12,18 @@ import sys
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
 MODE = "standard"  # Change to "standard" for single-model batch
 
+# Prompt Versions
+DEFAULT_EVAL_PROMPT_VERSION = "v15"
+DEFAULT_BASELINE_PROMPT_VERSION = "v2"
+
 # STANDARD MODE: Single model configuration
 MODELS = [
     "gemma3:1b",
     "llama3.2:1b",
      "ministral-3:3b",
-     "gemma4:e2b",
     # "ministral:latest",
-    "hoangquan456/qwen3-nothink:4b"
+    "hoangquan456/qwen3-nothink:4b",
+     "gemma4:e2b"
 ]
 
 
@@ -35,7 +39,7 @@ REASONER_MODELS = [
     "llama3.2:1b",
     "hoangquan456/qwen3-nothink:4b",
 ]
-COOLDOWN_SECONDS = 30
+COOLDOWN_SECONDS = 2
 MATCHER_MODELS = [
    "gemma3:1b",
    "ministral-3:3b",
@@ -44,7 +48,7 @@ MATCHER_MODELS = [
 ]
 
 # Prompt versions to compare
-PROMPTS = ["v15"]
+PROMPTS = [DEFAULT_EVAL_PROMPT_VERSION]
 
 # Temperature(s) to test
 TEMPERATURES = [0.0]  # Set to [0.0, 0.7] to test both deterministic and stochastic
@@ -75,15 +79,15 @@ DOMAINS = [
 ]
 
 RUNS_PER_CONFIG = 10
-WORKERS = 3
+WORKERS = 4
 FAST_EVAL = False
-OLLAMA_NUM_PREDICT = 768
+OLLAMA_NUM_PREDICT = 384
 OLLAMA_NUM_CTX = 8162
 OLLAMA_REPEAT_PENALTY = None
 OLLAMA_REPEAT_LAST_N = None
 OLLAMA_TOP_K = None
 OLLAMA_TOP_P = None
-OLLAMA_KEEP_ALIVE = None
+OLLAMA_KEEP_ALIVE = "10m"
 CACHE_ENABLED = False
 CACHE_DIR = ".cache/ollama_eval"
 
@@ -163,6 +167,7 @@ def run_standard_batch(state):
             "--domain", domain,
             "--model", model,
             "--eval-prompt-version", prompt,
+            "--baseline-prompt-version", DEFAULT_BASELINE_PROMPT_VERSION,
             "--runs", str(RUNS_PER_CONFIG),
             "--workers", str(WORKERS),
             "--temperature", str(temperature)
@@ -194,7 +199,7 @@ def run_standard_batch(state):
                 state["completed"].append(config_id)
                 save_state(state)
                 
-                log("Cooldown: Sleeping for 300 seconds (5 mins)...")
+                log(f"Cooldown: Sleeping for {COOLDOWN_SECONDS} seconds...")
                 for remaining in range(COOLDOWN_SECONDS, 0, -1):
                     sys.stdout.write(f"\rCooling down... {remaining}s remaining   ")
                     sys.stdout.flush()
@@ -246,6 +251,7 @@ def run_dual_agent_batch(state):
             "--reasoner-model", reasoner_model,
             "--matcher-model", matcher_model,
             "--eval-prompt-version", prompt,
+            "--baseline-prompt-version", DEFAULT_BASELINE_PROMPT_VERSION,
             "--runs", str(RUNS_PER_CONFIG),
             "--workers", str(WORKERS),
             "--temperature", str(temperature)

@@ -31,8 +31,8 @@ from belief_store.llm_client import OllamaClient
 from belief_store.langgraph_dual_agent import run_dual_agent, build_dual_agent_graph
 from belief_store.text_utils import normalize_for_match as _normalize_for_match
 from evaluation.prompting import (
-    BASELINE_SYSTEM_PROMPT,
     EVAL_SYSTEM_PROMPT,
+    build_baseline_system_prompt,
     build_baseline_prompt as _build_baseline_prompt,
     build_eval_system_prompt,
     build_store_prompt as _build_store_prompt,
@@ -1070,11 +1070,17 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig, turns: 
     return results
 
 
-def run_without_store(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
+def run_without_store(
+    llm: OllamaClient,
+    config: DomainConfig,
+    turns: list[dict] | None = None,
+    baseline_prompt_version: str | None = None,
+) -> list[dict]:
     """[3] NO Store (Baseline): Rules + chat history only, no explicit belief tracking."""
     results = []
     t_list = turns if turns is not None else config.turns
-    base_messages = [{"role": "system", "content": BASELINE_SYSTEM_PROMPT}]
+    system_prompt = build_baseline_system_prompt(baseline_prompt_version)
+    base_messages = [{"role": "system", "content": system_prompt}]
     messages = base_messages.copy()
     initial_belief_lines = [f"{k} = {v}" for k, v in config.initial_beliefs.items()]
 
@@ -1122,6 +1128,7 @@ def _run_standard_eval_task(
     ollama_options: dict[str, object] | None,
     cache_path: str | None,
     cache_enabled: bool,
+    baseline_prompt_version: str | None = None,
     turns: list[dict] | None = None,
 ) -> list[dict]:
     """Run one standard eval task with its own Ollama client instance."""
@@ -1129,7 +1136,7 @@ def _run_standard_eval_task(
     t_list = turns if turns is not None else config.turns
     if condition == 0:
         return run_with_store(llm, config, turns=t_list)
-    return run_without_store(llm, config, turns=t_list)
+    return run_without_store(llm, config, turns=t_list, baseline_prompt_version=baseline_prompt_version)
 
 
 def run_with_store_dual_agent(
@@ -1304,7 +1311,12 @@ def run_with_store_with_history_dual_agent(
 # Evaluation Orchestrators
 # ────────────────────────────────────────────────────────────────────
 
-def run_single_eval(config: DomainConfig, model: str = "gemma3:1b", temperature: float = 0.0) -> None:
+def run_single_eval(
+    config: DomainConfig,
+    model: str = "gemma3:1b",
+    temperature: float = 0.0,
+    baseline_prompt_version: str | None = None,
+) -> None:
     """Run single evaluation: Store vs No Store, print results table."""
     print(f"Connecting to Ollama ({model}) with temperature {temperature}...\n")
     llm = OllamaClient(model=model, temperature=temperature)
@@ -1320,7 +1332,7 @@ def run_single_eval(config: DomainConfig, model: str = "gemma3:1b", temperature:
     print("=" * 75)
     print("[2] NO Store (Baseline: rules + chat history only)")
     print("=" * 75)
-    no_store = run_without_store(llm, config)
+    no_store = run_without_store(llm, config, baseline_prompt_version=baseline_prompt_version)
     score_no_store = sum(r["hit"] for r in no_store)
 
     # Results table
@@ -1355,6 +1367,7 @@ def run_multi_eval(
     cache_enabled: bool = False,
     cache_namespace: str = "eval",
     shuffle_options: bool = False,
+    baseline_prompt_version: str | None = None,
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
@@ -1422,7 +1435,8 @@ def run_multi_eval(
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    0, config, model, temperature, ollama_options, cache_path, cache_enabled, run_turns
+                    1, config, model, temperature, ollama_options, cache_path, cache_enabled,
+                    baseline_prompt_version, run_turns
                 )
             ] = (run_idx, 0)
             
@@ -1430,7 +1444,8 @@ def run_multi_eval(
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    1, config, model, temperature, ollama_options, cache_path, cache_enabled, run_turns
+                    0, config, model, temperature, ollama_options, cache_path, cache_enabled,
+                    baseline_prompt_version, run_turns
                 )
             ] = (run_idx, 1)
 
