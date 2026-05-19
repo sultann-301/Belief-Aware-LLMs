@@ -59,6 +59,12 @@ from evaluation.belief_awareness_scenarios import (
     CRIME_ABSURD_TURNS, CRIME_ABSURD_TEMPORAL_TURNS, CRIME_GROUNDING_TURNS,
     THORNCRESTER_ABSURD_TURNS, THORNCRESTER_ABSURD_TEMPORAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
 )
+from evaluation.noise_scenarios import (
+    LOAN_ABSURD_TEMPORAL_NOISE_TURNS,
+    ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
+    CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
+    THORNCRESTER_ABSURD_TEMPORAL_NOISE_TURNS,
+)
 from evaluation.prompting import get_baseline_prompt_version, get_eval_prompt_version
 
 # ────────────────────────────────────────────────────────────────────
@@ -310,6 +316,21 @@ _BELIEF_AWARENESS_MAP = {
     },
 }
 
+_NOISE_MAP = {
+    "loan": {
+        "absurd_temporal_noise": LOAN_ABSURD_TEMPORAL_NOISE_TURNS,
+    },
+    "alien_clinic": {
+        "absurd_temporal_noise": ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
+    },
+    "crime_scene": {
+        "absurd_temporal_noise": CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
+    },
+    "thorncrester": {
+        "absurd_temporal_noise": THORNCRESTER_ABSURD_TEMPORAL_NOISE_TURNS,
+    },
+}
+
 for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
     domain_config = _SUBSET_MAP[domain_name]
 
@@ -342,6 +363,22 @@ for domain_name, ba_subsets in _BELIEF_AWARENESS_MAP.items():
         accumulate_prior_beliefs=False,
         seed_fn=make_ba_seed_fn(domain_name, ba_subsets),
     )
+
+for domain_name, noise_subsets in _NOISE_MAP.items():
+    domain_config = _SUBSET_MAP[domain_name]
+
+    for subset_name, turns in noise_subsets.items():
+        full_name = f"{domain_name}_{subset_name}"
+        DOMAIN_REGISTRY[full_name] = DomainConfig(
+            name=full_name,
+            setup_fn=domain_config["setup_fn"],
+            initial_beliefs=domain_config["initial_beliefs"],
+            turns=turns,
+            baseline_rules=domain_config["baseline_rules"],
+            default_entities=domain_config["default_entities"],
+            is_conversational=False,
+            accumulate_prior_beliefs=True,
+        )
 
 
 # ────────────────────────────────────────────────────────────────────

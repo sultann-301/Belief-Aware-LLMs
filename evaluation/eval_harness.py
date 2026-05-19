@@ -2,12 +2,13 @@
 
 Provides:
   - DomainConfig: dataclass describing domain setup, beliefs, turns, and rules.
-  - Three comparison conditions:
+  - Standard conditions:
     [1] run_with_store: WITH Store (stateless, no chat history)
-    [2] run_with_store_with_history: WITH Store + Chat History
-    [3] run_without_store: NO Store (baseline rules + chat history only)
-  - run_single_eval: runs all 3 conditions and prints results table.
-  - run_multi_eval: parallel N-run benchmark with summary statistics.
+    [2] run_without_store: NO Store (baseline rules + chat history only)
+  - Dual-agent condition:
+    [1] run_with_store_dual_agent: WITH Store (dual-agent, stateless)
+  - run_single_eval / run_multi_eval: standard benchmark orchestrators.
+  - run_multi_eval_dual_agent: dual-agent benchmark orchestrator.
 """
 
 from __future__ import annotations
@@ -154,6 +155,19 @@ def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[st
             binding_correct = False
             binding_status = "wrong-conclusion"
 
+    # Extract matcher confidence from logprobs (decision_prob for the matched label)
+    matcher_confidence = None
+    matcher_logprobs = dual_agent_result.get("agent2_matcher_logprobs")
+    matched_label = dual_agent_result.get("agent2_matched_option_label", "")
+    if matcher_logprobs and matched_label:
+        # Reuse extract_answer_logprob_confidence with the matched label as the phrase
+        logprob_conf = extract_answer_logprob_confidence(matcher_logprobs, "", matched_label)
+        matcher_confidence = logprob_conf.get("decision_prob")
+    
+    # Fallback: use match_status binary confidence if logprobs unavailable
+    if matcher_confidence is None:
+        matcher_confidence = 1.0 if match_status == "matched" else 0.0
+
     return {
         "binding_correct": binding_correct,
         "binding_scored": binding_scored,
@@ -165,6 +179,7 @@ def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[st
         "agent2_matcher_rationale": dual_agent_result.get("agent2_matcher_rationale", ""),
         "agent2_matched_option_label": derived_label,
         "agent2_match_status": match_status,
+        "agent2_matcher_confidence": matcher_confidence,
     }
 
 
@@ -595,6 +610,44 @@ def macro_calibration_error(predictions: list[tuple[float, int]]) -> float:
         return ice_pos
 
     return 0.5 * (ice_pos + ice_neg)
+
+
+def _compute_reasoner_metrics(binding_metrics: list[tuple[bool, bool]]) -> dict[str, float]:
+    """Compute binding accuracy for the reasoner (Agent 1).
+
+    The reasoner produces a free-text conclusion per turn which is checked
+    against the expected answer.  This is a binary per-turn outcome (correct
+    or not), so the natural metric is **accuracy** — there is no distinct
+    FP/TN class the way there is for set-based evidence F1.
+
+    Args:
+        binding_metrics: list of (binding_scored, binding_correct) tuples.
+
+    Returns:
+        dict with binding_accuracy, correct/scored counts, mirroring the
+        structure of ``_compute_reasoning_metrics``.
+    """
+    empty: dict[str, float] = {
+        "reasoner_binding_accuracy": 0.0,
+        "reasoner_correct_count": 0.0,
+        "reasoner_scored_count": 0.0,
+    }
+
+    if not binding_metrics:
+        return empty
+
+    scored = [correct for scored, correct in binding_metrics if scored]
+    if not scored:
+        return empty
+
+    correct_count = sum(1 for c in scored if c)
+    accuracy = correct_count / len(scored)
+
+    return {
+        "reasoner_binding_accuracy": accuracy,
+        "reasoner_correct_count": float(correct_count),
+        "reasoner_scored_count": float(len(scored)),
+    }
 
 
 
@@ -1224,88 +1277,6 @@ def _run_dual_agent_eval_task(
     return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model, turns=t_list)
 
 
-def run_with_store_with_history_dual_agent(
-    llm: OllamaClient,
-    config: DomainConfig,
-    reasoner_model: str | None = None,
-    matcher_model: str | None = None,
-) -> list[dict]:
-    """[5] WITH Store + Chat History (Dual-Agent): Store-derived beliefs + conversational context, dual-agent reasoning."""
-    results = []
-    # Pre-compile graph once for all turns
-    graph = build_dual_agent_graph(llm, reasoner_model=reasoner_model, matcher_model=matcher_model)
-
-    # For conversational: maintain one store and one chat history across all turns
-    store: BeliefStore | None = _init_store(config) if config.is_conversational else None
-    messages: list[dict[str, str]] = []
-
-    t_list = turns if turns is not None else config.turns
-    for i, turn in enumerate(t_list):
-        # Store management (same logic as run_with_store_with_history)
-        if config.is_conversational:
-            assert store is not None
-            if turn.get("beliefs"):
-                for key, value in turn["beliefs"].items():
-                    store.add_hypothesis(key, value)
-            current_store = store
-        else:
-            current_store = _init_store(config)
-            if config.accumulate_prior_beliefs:
-                accumulated = _accumulate_prior_beliefs(config, i)
-                for key, value in accumulated.items():
-                    current_store.add_hypothesis(key, value)
-            if turn.get("beliefs"):
-                for key, value in turn["beliefs"].items():
-                    current_store.add_hypothesis(key, value)
-
-        # Serialize beliefs for the prompt
-        filter_spec, is_attr = _get_filter_spec(turn, config.default_entities)
-        beliefs_text = _resolve_and_serialize(current_store, filter_spec, is_attr)
-
-        # Run dual-agent system
-        dual_agent_result = run_dual_agent(
-            llm=llm,
-            relevant_beliefs=beliefs_text,
-            query=turn["question"],
-            options=turn.get("options", {}),
-            chat_history=messages if config.is_conversational else None,
-            compiled_graph=graph,
-        )
-
-        # Build response string for logging
-        response = _build_dual_agent_response(dual_agent_result)
-
-        # Enforce exact phrase output format for compatibility
-        response = _enforce_exact_phrase_output(turn, response)
-
-        if config.is_conversational:
-            # Update history for next turn
-            user_prompt = f"""[RELEVANT BELIEFS]\n{beliefs_text}\n\n[QUERY]\n{turn['question']}"""
-            messages.append({"role": "user", "content": user_prompt})
-            messages.append({"role": "assistant", "content": response})
-
-        split_metrics = _compute_dual_agent_metrics(turn, dual_agent_result)
-
-        cited_override = set(dual_agent_result.get("agent1_evidence_keys", []))
-        reasoning = _get_reasoning_metrics(
-            current_store, filter_spec, is_attr, response,
-            cited_keys_override=cited_override,
-            beliefs_text=beliefs_text,
-        )
-        split_metrics.update(reasoning)
-
-        results.append(
-            _process_result(
-                "WITH STORE +History (Dual-Agent)",
-                i + 1,
-                turn,
-                response,
-                extra_fields=split_metrics,
-            )
-        )
-
-    return results
-
 
 # ────────────────────────────────────────────────────────────────────
 # Evaluation Orchestrators
@@ -1435,7 +1406,7 @@ def run_multi_eval(
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    1, config, model, temperature, ollama_options, cache_path, cache_enabled,
+                    0, config, model, temperature, ollama_options, cache_path, cache_enabled,
                     baseline_prompt_version, run_turns
                 )
             ] = (run_idx, 0)
@@ -1444,7 +1415,7 @@ def run_multi_eval(
             future_to_task[
                 pool.submit(
                     _run_standard_eval_task,
-                    0, config, model, temperature, ollama_options, cache_path, cache_enabled,
+                    1, config, model, temperature, ollama_options, cache_path, cache_enabled,
                     baseline_prompt_version, run_turns
                 )
             ] = (run_idx, 1)
@@ -1805,6 +1776,10 @@ def run_multi_eval_dual_agent(
     tpca_correct_da: list[int] = []
     tpca_wrong_da: list[int] = []
     retrieval_scores_da: dict[str, list[float]] = {"bcr": [], "sbir": []}
+    # ── Reasoner F1 tracking ──────────────────────────────────────────────
+    reasoner_binding_metrics: list[tuple[bool, bool]] = []  # (binding_scored, binding_correct)
+    # ── Matcher calibration tracking ──────────────────────────────────────
+    matcher_calibration_preds: list[tuple[float, int]] = []  # (matcher_confidence, end_to_end_correct)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
@@ -1863,6 +1838,16 @@ def run_multi_eval_dual_agent(
                 method = r.get("extraction_method")
                 if method:
                     emds_da[method] += 1
+                
+                # ── Reasoner F1 tracking ──────────────────────────────────
+                binding_scored = r.get("binding_scored", False)
+                binding_correct = r.get("binding_correct", False)
+                reasoner_binding_metrics.append((binding_scored, binding_correct))
+                
+                # ── Matcher calibration tracking ──────────────────────────
+                matcher_conf = r.get("agent2_matcher_confidence", 0.0)
+                end_to_end_correct = 1 if r.get("end_to_end_correct", False) else 0
+                matcher_calibration_preds.append((matcher_conf, end_to_end_correct))
 
             efr_counts_da.append(sum(1 for r in res if r.get("answer") is None))
 
@@ -1967,6 +1952,26 @@ def run_multi_eval_dual_agent(
             r_avg = sum(sc) / len(sc) if sc else 0.0
             print(f"    {label} | Avg: {r_avg:.4f}")
 
+    # ── Reasoner Binding Accuracy ─────────────────────────────────────────
+    reasoner_metrics = _compute_reasoner_metrics(reasoner_binding_metrics)
+    if reasoner_binding_metrics:
+        print("\n  REASONER (Agent 1) METRICS:")
+        print(f"    Binding Accuracy                | {reasoner_metrics['reasoner_binding_accuracy']:.4f}")
+        print(f"    Correct / Scored                | {reasoner_metrics['reasoner_correct_count']:.0f} / {reasoner_metrics['reasoner_scored_count']:.0f}")
+
+    # ── Matcher Calibration Metrics ───────────────────────────────────────
+    bs_matcher = ll_matcher = ece_matcher = mce_matcher = 0.0
+    if matcher_calibration_preds:
+        bs_matcher = brier_score(matcher_calibration_preds)
+        ll_matcher = log_loss_score(matcher_calibration_preds)
+        ece_matcher = expected_calibration_error(matcher_calibration_preds)
+        mce_matcher = macro_calibration_error(matcher_calibration_preds)
+        print("\n  MATCHER (Agent 2) CALIBRATION METRICS:")
+        print(f"    Brier Score (Calibration)       | {bs_matcher:.4f}")
+        print(f"    Log Loss (Uncertainty)          | {ll_matcher:.4f}")
+        print(f"    ECE (Exp. Calibration Error)    | {ece_matcher:.4f}")
+        print(f"    MacroCE (Macro Calib. Error)    | {mce_matcher:.4f}")
+
     print("\n  PER-TURN ACCURACY:")
     print(f"    {'Turn':<4} | {'[1 DA]':<24}")
     print(f"    {'─'*4} | {'─'*24}")
@@ -2056,6 +2061,18 @@ def run_multi_eval_dual_agent(
                 sc = retrieval_scores_da[key]
                 r_avg = sum(sc) / len(sc) if sc else 0.0
                 _da_row("Retrieval", csv_name, f"{r_avg:.4f}")
+
+            # ── Reasoner binding accuracy ─────────────────────────────────
+            _da_row("Reasoner", "Binding_Accuracy", f"{reasoner_metrics['reasoner_binding_accuracy']:.4f}")
+            _da_row("Reasoner", "Correct_Count", f"{reasoner_metrics['reasoner_correct_count']:.0f}")
+            _da_row("Reasoner", "Scored_Count", f"{reasoner_metrics['reasoner_scored_count']:.0f}")
+
+            # ── Matcher calibration metrics ────────────────────────────────
+            if matcher_calibration_preds:
+                _da_row("Matcher", "Brier_Score", f"{bs_matcher:.4f}")
+                _da_row("Matcher", "Log_Loss", f"{ll_matcher:.4f}")
+                _da_row("Matcher", "ECE", f"{ece_matcher:.4f}")
+                _da_row("Matcher", "MacroCE", f"{mce_matcher:.4f}")
 
         print(f"Results exported to {csv_filename}")
     except Exception as e:

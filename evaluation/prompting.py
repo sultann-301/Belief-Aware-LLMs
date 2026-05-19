@@ -33,6 +33,7 @@ You are a reasoning assistant evaluating facts over a conversation.
 You will receive [NEW BELIEF] updates. You MUST remember all previous facts across the conversation.
 
 First, output your reasoning starting with REASONING:
+Keep your reasoning to 2-3 sentences maximum.
 
 IMPORTANT: For multiple-choice questions, you MUST end your response with:
 1. An ANSWER line with the EXACT phrase from the options (without extra text)
@@ -51,7 +52,7 @@ You will receive [NEW BELIEF] updates. You MUST remember all previous facts acro
 Do not provide a reasoning block.
 
 For every answer, first list the exact belief keys that support your answer, then give the answer.
-
+Be concise. Do not elaborate beyond the required format.
 IMPORTANT: For multiple-choice questions, you MUST end your response with:
 1. A CITED KEYS line containing only the exact belief keys used to support YOUR CHOSEN ANSWER
 2. An ANSWER line with the EXACT phrase from the options (without extra text)

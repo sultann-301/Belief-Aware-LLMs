@@ -68,7 +68,7 @@ def _baseline_from_eval_prompt(eval_prompt_ver: str) -> str:
     if eval_prompt_ver == "v15":
         return "v2"
     if eval_prompt_ver == "v16":
-        return "v2"
+        return "v1"
     return ""
 
 

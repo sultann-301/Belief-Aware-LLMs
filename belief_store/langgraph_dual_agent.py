@@ -71,6 +71,7 @@ class DualAgentState(TypedDict, total=False):
     matcher_rationale: str
     matched_option_label: str
     match_status: str
+    matcher_logprobs: list[dict[str, Any]] | None
 
 
 # ────────────────────────────────────────────────────────────────────
@@ -151,7 +152,8 @@ def agent2_decide(
         "Return JSON only."
     )
 
-    response = llm.generate(system_prompt, user_prompt, model=matcher_model, json_mode=True).strip()
+    response, logprobs_data = llm.generate_with_logprobs(system_prompt, user_prompt, model=matcher_model)
+    response = response.strip()
     parsed = _parse_json_object(response)
 
     matched_option_label = ""
@@ -176,6 +178,7 @@ def agent2_decide(
         "matcher_rationale": matcher_rationale,
         "matched_option_label": matched_option_label or "",
         "match_status": match_status,
+        "matcher_logprobs": logprobs_data,
     }
 
 
@@ -457,6 +460,7 @@ def run_dual_agent(
         "agent2_matcher_rationale": final_state.get("matcher_rationale", ""),
         "agent2_matched_option_label": final_state.get("matched_option_label", ""),
         "agent2_match_status": final_state.get("match_status", "phrase-not-found"),
+        "agent2_matcher_logprobs": final_state.get("matcher_logprobs"),
         # Backward-compatible alias while downstream migrates.
         "agent2_answer": final_state.get("matched_option_text", ""),
         "full_response": dict(final_state),

@@ -18,13 +18,17 @@ DEFAULT_BASELINE_PROMPT_VERSION = "v2"
 
 # STANDARD MODE: Single model configuration
 MODELS = [
-    "gemma3:1b",
+     "gemma3:1b",
     "llama3.2:1b",
      "ministral-3:3b",
-    # "ministral:latest",
     "hoangquan456/qwen3-nothink:4b",
      "gemma4:e2b"
 ]
+
+HARD_SCENARIO_EXCLUDED_MODELS = {
+    "gemma3:1b",
+    "llama3.2:1b",
+}
 
 
 # ministral-3:3b                   
@@ -56,16 +60,17 @@ TEMPERATURES = [0.0]  # Set to [0.0, 0.7] to test both deterministic and stochas
 # Domains to iterate through
 DOMAINS = [
     # 1. Prior Suppression (Core Thesis)
-     "loan_absurd", "alien_clinic_absurd", "crime_scene_absurd", "thorncrester_absurd",
+    #  "loan_absurd", "alien_clinic_absurd", "crime_scene_absurd", "thorncrester_absurd",
     
     # 2. Hallucination Resistance (Core Thesis)
-    "loan_grounding", "alien_clinic_grounding", "crime_scene_grounding", "thorncrester_grounding",
+    # "loan_grounding", "alien_clinic_grounding", "crime_scene_grounding", "thorncrester_grounding",
     
     # 3. Temporal Tracking (Supporting)
-    "loan_absurd_temporal", "alien_clinic_absurd_temporal", "crime_scene_absurd_temporal", "thorncrester_absurd_temporal",
+    # "loan_absurd_temporal", "alien_clinic_absurd_temporal", "crime_scene_absurd_temporal", "thorncrester_absurd_temporal",
+     "loan_absurd_temporal_noise", "alien_clinic_absurd_temporal_noise", "crime_scene_absurd_temporal_noise", "thorncrester_absurd_temporal_noise",
     
     # 4. Context Stability (Supporting)
-    "loan_belief_maintenance", "alien_clinic_belief_maintenance", "crime_scene_belief_maintenance", "thorncrester_belief_maintenance",
+    #  "loan_belief_maintenance", "alien_clinic_belief_maintenance", "crime_scene_belief_maintenance", "thorncrester_belief_maintenance",
     
     # 5. Reasoning Depth (Supporting)
     # "loan_2hop", "alien_clinic_2hop", "crime_scene_2hop", "thorncrester_2hop",
@@ -75,13 +80,13 @@ DOMAINS = [
     # "alien_clinic_trace_selection",
     
     # 7. Stress Testing (Hard Belief Revision)
-    # "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
+     "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
 ]
 
 RUNS_PER_CONFIG = 10
 WORKERS = 4
 FAST_EVAL = False
-OLLAMA_NUM_PREDICT = 384
+OLLAMA_NUM_PREDICT = 768
 OLLAMA_NUM_CTX = 8162
 OLLAMA_REPEAT_PENALTY = None
 OLLAMA_REPEAT_LAST_N = None
@@ -143,6 +148,8 @@ def run_standard_batch(state):
         for prompt in PROMPTS:
             for temperature in TEMPERATURES:
                 for domain in DOMAINS:
+                    if domain.endswith("_hard") and model in HARD_SCENARIO_EXCLUDED_MODELS:
+                        continue
                     configs.append(f"std|{model}|{prompt}|{temperature}|{domain}")
     
     total_configs = len(configs)

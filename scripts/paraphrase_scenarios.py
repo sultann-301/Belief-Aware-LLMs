@@ -26,6 +26,16 @@ from evaluation.hard_scenarios import (
     LOAN_HARD_TURNS, ALIEN_HARD_TURNS, CRIME_HARD_TURNS, THORNCRESTER_HARD_TURNS
 )
 
+from evaluation.noise_scenarios import (
+    ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
+    CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
+    LOAN_ABSURD_TEMPORAL_NOISE_TURNS,
+    THORNCRESTER_ABSURD_TEMPORAL_NOISE_TURNS,
+)
+
+USE_NOISE_ONLY = True
+NOISE_OUTPUT_SUFFIX = "_noise"
+
 # Mapping domains to their respective subsets
 TARGETS = {
     "LOAN": {
@@ -58,6 +68,22 @@ TARGETS = {
     }
 }
 
+if USE_NOISE_ONLY:
+    TARGETS = {
+        "LOAN": {
+            "ABSURD_TEMPORAL_NOISE": LOAN_ABSURD_TEMPORAL_NOISE_TURNS,
+        },
+        "ALIEN": {
+            "ABSURD_TEMPORAL_NOISE": ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
+        },
+        "CRIME": {
+            "ABSURD_TEMPORAL_NOISE": CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
+        },
+        "THORNCRESTER": {
+            "ABSURD_TEMPORAL_NOISE": THORNCRESTER_ABSURD_TEMPORAL_NOISE_TURNS,
+        },
+    }
+
 def format_turn(turn, new_question):
     """Formats a single dictionary turn back into a python string representation."""
     t_copy = turn.copy()
@@ -77,11 +103,12 @@ def process_domain(domain, subsets, out_dir):
         '{"paraphrases": ["rewrite 1", "rewrite 2", "rewrite 3"]}'
     )
 
-    out_filename = f"{domain.lower()}_paraphrased_scenarios.py"
+    suffix = NOISE_OUTPUT_SUFFIX if USE_NOISE_ONLY else ""
+    out_filename = f"{domain.lower()}_paraphrased_scenarios{suffix}.py"
     if domain == "ALIEN":
-        out_filename = "alien_clinic_paraphrased_scenarios.py"
+        out_filename = f"alien_clinic_paraphrased_scenarios{suffix}.py"
     elif domain == "CRIME":
-        out_filename = "crime_scene_paraphrased_scenarios.py"
+        out_filename = f"crime_scene_paraphrased_scenarios{suffix}.py"
         
     out_filepath = os.path.join(out_dir, out_filename)
     
