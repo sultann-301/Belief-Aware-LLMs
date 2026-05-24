@@ -152,7 +152,14 @@ def agent2_decide(
         "Return JSON only."
     )
 
-    response, logprobs_data = llm.generate_with_logprobs(system_prompt, user_prompt, model=matcher_model)
+    # Backwards-compatible: some test mocks implement `generate` but not
+    # `generate_with_logprobs`. Prefer `generate_with_logprobs` when
+    # available, otherwise fall back to `generate` and set logprobs to None.
+    if hasattr(llm, "generate_with_logprobs"):
+        response, logprobs_data = llm.generate_with_logprobs(system_prompt, user_prompt, model=matcher_model)
+    else:
+        response = llm.generate(system_prompt, user_prompt, model=matcher_model)
+        logprobs_data = None
     response = response.strip()
     parsed = _parse_json_object(response)
 

@@ -11,10 +11,10 @@ import importlib
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "sequential"  # Change to "standard" for single-model batch
+MODE = "standard"  # Change to "standard" for single-model batch
 
 # Prompt Versions
-DEFAULT_EVAL_PROMPT_VERSION = "v16"
+DEFAULT_EVAL_PROMPT_VERSION = "v16_one_shot"
 DEFAULT_BASELINE_PROMPT_VERSION = "v1"
 
 # STANDARD MODE: Single model configuration
@@ -81,7 +81,7 @@ DOMAINS = [
     # "alien_clinic_trace_selection",
     
     # 7. Stress Testing (Hard Belief Revision)
-    #  "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
+      "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
 ]
 
 # Sequential mode: Phase-specific configuration
@@ -226,6 +226,8 @@ def run_standard_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
+        # Run only WITH_STORE for batch runs to avoid altering existing NO_STORE CSVs
+        cmd.append("--only-with-store")
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -310,6 +312,8 @@ def run_dual_agent_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
+        # Dual-agent already uses WITH STORE, adding only-with-store is harmless
+        cmd.append("--only-with-store")
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -385,6 +389,7 @@ def run_sequential_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
+        cmd.append("--only-with-store")
 
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -467,6 +472,7 @@ def run_sequential_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
+        cmd.append("--only-with-store")
 
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)

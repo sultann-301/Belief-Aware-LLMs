@@ -542,6 +542,16 @@ Examples:
         action="store_true",
         help="Randomize MCQ option order (A, B, C) for every run to detect position bias."
     )
+    parser.add_argument(
+        "--only-with-store",
+        action="store_true",
+        help="Run only the WITH STORE condition (skip NO STORE).",
+    )
+    parser.add_argument(
+        "--csv-out",
+        default=None,
+        help="Optional output CSV path for WITH_STORE-only runs (default: eval_results_with_store.csv).",
+    )
 
     args = parser.parse_args()
 
@@ -633,6 +643,8 @@ Examples:
             cache_namespace=cache_namespace,
             shuffle_options=args.shuffle_options,
             baseline_prompt_version=resolved_baseline_prompt_version,
+            only_with_store=args.only_with_store,
+            csv_out=args.csv_out,
         )
 
 

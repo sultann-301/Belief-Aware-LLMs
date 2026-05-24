@@ -17,7 +17,7 @@ Rate (AFR), Determinism Score (DS), and Extraction Failure Rate (EFR).
 
 ### Calibration & Uncertainty Metrics
 
-The evaluation pipeline obtains the model’s predicted answer and a confidence score derived from the model’s output probabilities. Each prediction is paired with a binary correctness label ($o = 1$ if correct, $o = 0$ if wrong), and we then compute accuracy, Brier score, and expected calibration error (ECE) over the full set of examples. Accuracy measures answer correctness, while Brier score and ECE measure whether the model’s confidence is aligned with correctness.
+The evaluation pipeline obtains the model’s predicted answer and a confidence score derived from the model’s output probabilities. Each prediction is paired with a binary correctness label ($o = 1$ if correct, $o = 0$ if wrong), and we then compute accuracy, Brier score, expected calibration error (ECE), and Macro Calibration Error (MacroCE) over the full set of examples. Accuracy measures answer correctness, while Brier score, ECE, and MacroCE measure whether the model’s confidence is aligned with correctness, with MacroCE giving a balanced view across correct and incorrect predictions.
 
 #### Brier Score
 
