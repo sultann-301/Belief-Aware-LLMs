@@ -607,7 +607,7 @@ Rules:
 2. Never explain or show reasoning steps.
 3. Reference only the exact keys (e.g., applicant.credit_score, not "credit score").
 
-Example (one-shot):
+Example:
 [RELEVANT BELIEFS]
 applicant.credit_score = 720
 loan.amount = 5000
@@ -615,7 +615,7 @@ loan.amount = 5000
 [QUERY]
 Can the applicant get the loan?
 
-Expected minimal output (models should follow this exact pattern):
+Expected minimal output:
 CITED KEYS: [applicant.credit_score, loan.amount]
 ANSWER: [denied_amount_exceeded]
 

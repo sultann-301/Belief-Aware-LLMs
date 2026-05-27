@@ -124,7 +124,7 @@ def run_multi_eval(
     retrieval_scores: dict[str, list[float]] = {"bcr": [], "sbir": []}
     calibration_preds: list[list[tuple[float, int]]] = [[] for _ in range(2)]
 
-    # [BUGFIX: Removed duplicate ThreadPoolExecutor and weird import random placement]
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as pool:
         future_to_task: dict[concurrent.futures.Future, tuple[int, int]] = {}
         for i in range(runs):
