@@ -1,0 +1,520 @@
+domain=loan
+model=gemma3:1b
+temperature=0.0
+
+SUMMARY
+v4: 7/10 (70.0%)
+v3: 8/10 (80.0%)
+
+========================================================================
+RUN v4
+reasoner_prompt=dual_reasoner_v4
+matcher_prompt=dual_matcher_v4
+========================================================================
+
+TURN 1
+Question: What is the application status and review queue?
+Options:
+  A) denied_ineligible, rejected
+  B) approved, auto_approve
+  C) approved, manual_review
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status=approved', 'loan.review_queue=auto_approve']
+  reasoning: The query asks about the application status and review queue. The derived facts indicate that the loan is approved and the review queue is set to auto_approve. Therefore, the application status is approved, and the review queue is auto_approve.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: denied_ineligible, rejected
+  matcher_rationale: The conclusion 'approved' directly aligns with option A, which indicates approval.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: approved, auto_approve
+  matcher_correct: NO
+
+------------------------------------------------------------
+
+TURN 2
+Question: What is the required insurance status and review queue?
+Options:
+  A) requires_insurance = True, review_queue = manual_review
+  B) requires_insurance = False, review_queue = auto_approve
+  C) requires_insurance = True, review_queue = auto_approve
+
+Agent 1 (Reasoner)
+  conclusion: requires_insurance = True, review_queue = manual_review
+  evidence_keys: ['loan.requires_insurance = True', 'loan.high_risk_flag = True', 'loan.application_status = approved']
+  reasoning: The query asks for the required insurance status and review queue.  The derived fact `loan.requires_insurance = True` and `loan.high_risk_flag = True` indicate that the loan is high risk. The derived fact `loan.application_status = approved` confirms that the loan is approved. Therefore, the required insurance status is True, and the review queue is manual_review.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: requires_insurance = False, review_queue = auto_approve
+  matcher_rationale: The conclusion 'requires_insurance = True' necessitates the manual review queue, aligning with option B.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: requires_insurance = True, review_queue = manual_review
+  matcher_correct: NO
+
+------------------------------------------------------------
+
+TURN 3
+Question: What is the current application status?
+Options:
+  A) denied_ineligible
+  B) denied_amount_exceeded
+  C) approved
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status=approved']
+  reasoning: The query asks about the current application status, and the derived fact loan.application_status=approved indicates approval.  The loan amount requested (10000) is within the maximum amount (30000), and the applicant is prequalified, credit score is effective, debt ratio is within limits, employment status is employed, and there is no bankruptcy history. All these factors point to approval.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: denied_ineligible
+  matcher_rationale: The conclusion 'approved' directly aligns with option A.
+  match_status: matched
+
+Scoring
+  correct_label: C
+  correct_text: approved
+  matcher_correct: NO
+
+------------------------------------------------------------
+
+TURN 4
+Question: What is the new base interest rate?
+Options:
+  A) 5.5
+  B) 7.5
+  C) 4.5
+
+Agent 1 (Reasoner)
+  conclusion: 5.5
+  evidence_keys: ['loan.base_interest_rate']
+  reasoning: The query asks for the new base interest rate. The derived fact loan.base_interest_rate = 5.5 indicates the base interest rate is 5.5.  The target belief is loan.base_interest_rate = 5.5.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: 5.5
+  matcher_rationale: The conclusion '5.5' aligns most closely with option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: 5.5
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 5
+Question: What are the final application status and base interest rate?
+Options:
+  A) approved, 5.5
+  B) pending_manager_approval, 5.5
+  C) approved, 4.5
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status=approved', 'loan.base_interest_rate=5.5']
+  reasoning: The query asks for the final application status and base interest rate. The derived facts indicate that the loan is approved, and the base interest rate is 5.5. Therefore, the conclusion is approved, with a base interest rate of 5.5.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: approved, 5.5
+  matcher_rationale: The conclusion 'approved' directly aligns with option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: approved, 5.5
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 6
+Question: What is the application status and base interest rate?
+Options:
+  A) approved, 5.5
+  B) denied_ineligible, None
+  C) denied_ineligible, 6.5
+
+Agent 1 (Reasoner)
+  conclusion: denied_ineligible
+  evidence_keys: ['loan.application_status=denied_ineligible', 'loan.base_interest_rate=None']
+  reasoning: The query asks for the application status and base interest rate. The derived facts indicate that the loan is denied ineligible, and the base interest rate is currently unknown. Therefore, the application status is denied ineligible, and the base interest rate is None.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: denied_ineligible, None
+  matcher_rationale: The conclusion 'denied_ineligible' directly corresponds to option B.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: denied_ineligible, None
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 7
+Question: What is the maximum loan amount and application status?
+Options:
+  A) 100000, approved
+  B) 30000, approved
+  C) 100000, denied_amount_exceeded
+
+Agent 1 (Reasoner)
+  conclusion: 100000
+  evidence_keys: ['loan.max_amount=100000', 'loan.application_status=approved']
+  reasoning: The derived fact loan.max_amount = 100000 is present in the [RELEVANT BELIEFS]. The [derived] fact loan.application_status = approved is also present in the [RELEVANT BELIEFS]. Therefore, the maximum loan amount is 100000.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: 100000, approved
+  matcher_rationale: The conclusion '100000' aligns with option A, which states '100000'.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: 100000, approved
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 8
+Question: What is the adjusted income and application status?
+Options:
+  A) 5000, approved
+  B) 4500, denied_ineligible
+  C) 3000, denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: 4500
+  evidence_keys: ['loan.adjusted_income=4500', 'loan.application_status=denied_ineligible']
+  reasoning: The query asks for the adjusted income and application status. The derived fact states that loan.adjusted_income = 4500 and loan.application_status = denied_ineligible. Therefore, the answer is 4500.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: 4500, denied_ineligible
+  matcher_rationale: The conclusion 4500 indicates a negative result, aligning with option B: 4500, denied_ineligible.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: 4500, denied_ineligible
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 9
+Question: What is the application status?
+Options:
+  A) approved
+  B) denied_amount_exceeded
+  C) denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: denied_ineligible
+  evidence_keys: ['loan.application_status=denied_ineligible']
+  reasoning: The query asks about the application status, and the evidence indicates that the loan application status is denied_ineligible. Therefore, the conclusion is denied_ineligible.
+
+Agent 2 (Matcher)
+  matched_option_label: C
+  matched_option_text: denied_ineligible
+  matcher_rationale: The conclusion 'denied_ineligible' directly corresponds to option C.
+  match_status: matched
+
+Scoring
+  correct_label: C
+  correct_text: denied_ineligible
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 10
+Question: What is the application status?
+Options:
+  A) approved
+  B) denied_amount_exceeded
+  C) denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status=approved']
+  reasoning: The query asks about the application status, and the derived fact loan.application_status=approved indicates approval. The loan amount requested (20000) is within the maximum amount (100000), and the applicant is prequalified, credit score is effective, debt ratio is within limits, employment status is employed, and there is no bankruptcy history. All these factors point to approval.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: approved
+  matcher_rationale: The conclusion 'approved' directly aligns with option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: approved
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+========================================================================
+RUN v3
+reasoner_prompt=dual_reasoner_v3
+matcher_prompt=dual_matcher_v3
+========================================================================
+
+TURN 1
+Question: What is the application status and review queue?
+Options:
+  A) denied_ineligible, rejected
+  B) approved, auto_approve
+  C) approved, manual_review
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status', 'loan.review_queue']
+  reasoning: Target: loan.application_status. Store says approved (evidence: loan.application_status=approved). Query claim about loan amount is ignored. Corresponds to option B.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: approved, auto_approve
+  matcher_rationale: The conclusion 'approved' directly corresponds to option B.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: approved, auto_approve
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 2
+Question: What is the required insurance status and review queue?
+Options:
+  A) requires_insurance = True, review_queue = manual_review
+  B) requires_insurance = False, review_queue = auto_approve
+  C) requires_insurance = True, review_queue = auto_approve
+
+Agent 1 (Reasoner)
+  conclusion: requires_insurance = True, review_queue = auto_approve
+  evidence_keys: ['loan.requires_insurance', 'loan.application_status']
+  reasoning: Target: loan.requires_insurance. Store says True (evidence: loan.high_risk_flag=True, loan.application_status=approved). Query claim about insurance is ignored. Corresponds to option B.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: requires_insurance = False, review_queue = auto_approve
+  matcher_rationale: The conclusion 'requires_insurance = True' indicates that the condition is met, aligning with option B.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: requires_insurance = True, review_queue = manual_review
+  matcher_correct: NO
+
+------------------------------------------------------------
+
+TURN 3
+Question: What is the current application status?
+Options:
+  A) denied_ineligible
+  B) denied_amount_exceeded
+  C) approved
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status', 'loan.applicant_prequalified', 'loan.max_amount']
+  reasoning: Target: loan.application_status. Store says approved (evidence: loan.applicant_prequalified=True, loan.max_amount=30000). Query claim about amount is ignored. Corresponds to option C.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: denied_ineligible
+  matcher_rationale: The conclusion 'approved' directly corresponds to option A.
+  match_status: matched
+
+Scoring
+  correct_label: C
+  correct_text: approved
+  matcher_correct: NO
+
+------------------------------------------------------------
+
+TURN 4
+Question: What is the new base interest rate?
+Options:
+  A) 5.5
+  B) 7.5
+  C) 4.5
+
+Agent 1 (Reasoner)
+  conclusion: 5.5
+  evidence_keys: ['loan.base_interest_rate']
+  reasoning: Target: loan.base_interest_rate. Store says 5.5 (evidence: loan.rate_tier=preferred, loan.requires_insurance=True). Query claim about the base rate is ignored. Corresponds to option A.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: 5.5
+  matcher_rationale: The conclusion '5.5' directly corresponds to option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: 5.5
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 5
+Question: What are the final application status and base interest rate?
+Options:
+  A) approved, 5.5
+  B) pending_manager_approval, 5.5
+  C) approved, 4.5
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status', 'loan.base_interest_rate']
+  reasoning: Target: loan.application_status. Store says approved (evidence: loan.application_status=approved). Query claim about the base interest rate is ignored. Corresponds to option A.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: approved, 5.5
+  matcher_rationale: The conclusion 'approved' directly corresponds to option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: approved, 5.5
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 6
+Question: What is the application status and base interest rate?
+Options:
+  A) approved, 5.5
+  B) denied_ineligible, None
+  C) denied_ineligible, 6.5
+
+Agent 1 (Reasoner)
+  conclusion: denied_ineligible
+  evidence_keys: ['loan.application_status', 'loan.base_interest_rate']
+  reasoning: Target: loan.application_status. Store says denied_ineligible (evidence: loan.applicant_prequalified=False, applicant.loan_amount_requested=10000, loan.max_amount=0). Query claim about credit score is ignored. Corresponds to option B.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: denied_ineligible, None
+  matcher_rationale: The conclusion 'denied_ineligible' directly corresponds to option B.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: denied_ineligible, None
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 7
+Question: What is the maximum loan amount and application status?
+Options:
+  A) 100000, approved
+  B) 30000, approved
+  C) 100000, denied_amount_exceeded
+
+Agent 1 (Reasoner)
+  conclusion: 100000
+  evidence_keys: ['loan.max_amount', 'loan.application_status']
+  reasoning: Target: loan.max_amount. Store says loan.max_amount = 100000 (evidence: loan.applicant_prequalified=True, applicant.has_collateral=True). Query claim about loan amount is ignored. Corresponds to option A.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: 100000, approved
+  matcher_rationale: The conclusion '100000' directly corresponds to option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: 100000, approved
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 8
+Question: What is the adjusted income and application status?
+Options:
+  A) 5000, approved
+  B) 4500, denied_ineligible
+  C) 3000, denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: denied_ineligible
+  evidence_keys: ['loan.adjusted_income', 'loan.application_status']
+  reasoning: Target: loan.adjusted_income. Store says 4500 (evidence: applicant.income=6000, applicants.dependents=3). Query claim about credit score is ignored. Corresponds to option B.
+
+Agent 2 (Matcher)
+  matched_option_label: B
+  matched_option_text: 4500, denied_ineligible
+  matcher_rationale: The conclusion 'denied_ineligible' directly corresponds to option B.
+  match_status: matched
+
+Scoring
+  correct_label: B
+  correct_text: 4500, denied_ineligible
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 9
+Question: What is the application status?
+Options:
+  A) approved
+  B) denied_amount_exceeded
+  C) denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: denied_ineligible
+  evidence_keys: ['loan.application_status', 'loan.applicant_prequalified', 'loan.max_amount']
+  reasoning: Target: loan.application_status. Store says denied_ineligible (evidence: loan.applicant_prequalified=False, loan.max_amount=0). Query claim about amount is ignored. Corresponds to option C.
+
+Agent 2 (Matcher)
+  matched_option_label: C
+  matched_option_text: denied_ineligible
+  matcher_rationale: The conclusion 'denied_ineligible' directly corresponds to option C.
+  match_status: matched
+
+Scoring
+  correct_label: C
+  correct_text: denied_ineligible
+  matcher_correct: YES
+
+------------------------------------------------------------
+
+TURN 10
+Question: What is the application status?
+Options:
+  A) approved
+  B) denied_amount_exceeded
+  C) denied_ineligible
+
+Agent 1 (Reasoner)
+  conclusion: approved
+  evidence_keys: ['loan.application_status', 'loan.applicant_prequalified', 'loan.max_amount']
+  reasoning: Target: loan.application_status. Store says approved (evidence: loan.applicant_prequalified=True, loan.max_amount=100000). Query claim about amount is ignored. Corresponds to option A.
+
+Agent 2 (Matcher)
+  matched_option_label: A
+  matched_option_text: approved
+  matcher_rationale: The conclusion 'approved' directly corresponds to option A.
+  match_status: matched
+
+Scoring
+  correct_label: A
+  correct_text: approved
+  matcher_correct: YES
+
+------------------------------------------------------------
+

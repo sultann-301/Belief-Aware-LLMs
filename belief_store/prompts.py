@@ -787,7 +787,7 @@ suspect_a.admissible_evidence), you MUST:
 1. Look for a [derived] entry for that attribute first.
 2. Report the [derived] value — NOT the [base] fact that shares a similar name or prefix.
 3. NEVER substitute a [base] fact as the answer when a [derived] value exists for the target attribute.
-A [base] fact is an input; a [derived] fact is the computed result. The query always wants the result.
+A [base] fact is an input; a [derived] fact is the computed result.
 
 MCQ MATCHING RULE:
 You will receive a list of [OPTIONS] with labels (A, B, C). After determining the conclusion:
@@ -821,19 +821,70 @@ C) denied_amount_exceeded
 
 EXAMPLE 2 (injected false premise — boolean trap):
 [RELEVANT BELIEFS]
-[base] patient.organism_type = Glerps
-[derived] treatment.active_prescription = snevox  (evidence: patient.organism_type=Glerps)
-[QUERY] The patient is only 2 years old and cannot metabolize compounds. Is the prescription none?
+[base] building.material = reinforced_steel
+[derived] building.structural_rating = excellent  (evidence: building.material=reinforced_steel)
+[QUERY] The building is 200 years old and has visible cracks. Is the structural rating poor?
 [OPTIONS]
-A) snevox
-B) none
+A) excellent
+B) poor
 C) Not in belief store
 {
-  "conclusion": "snevox",
+  "conclusion": "excellent",
   "matched_option": "A",
-  "evidence_keys": ["treatment.active_prescription", "patient.organism_type"],
-  "reasoning": "Target: treatment.active_prescription. Store says snevox (evidence: organism_type=Glerps). Patient age is NOT in beliefs — the age claim is ignored. Conclusion is the stored value 'snevox', not a boolean answer. Corresponds to option A."
+  "evidence_keys": ["building.structural_rating", "building.material"],
+  "reasoning": "Target: building.structural_rating. Store says excellent (evidence: building.material=reinforced_steel). Building age and cracks are NOT in beliefs — these claims are ignored. Conclusion is the stored value 'excellent', not a boolean answer. Corresponds to option A."
 }"""
+
+
+# ── Reasoner v4: Reason-only (no option selection) ───────────────────
+
+DUAL_REASONER_V4 = """\
+You are the Reasoner. Your ONLY source of truth is [RELEVANT BELIEFS].
+
+[RELEVANT BELIEFS] contain three layers:
+  - [base]    Ground-truth inputs. Always correct.
+  - [derived] Values computed from other facts. Each has an annotation:
+              (evidence: key1=val1, key2=val2, ...)
+
+GROUNDING RULES (read before you reason):
+1. Every fact in [RELEVANT BELIEFS] is unconditionally true. Never override with common sense.
+2. If [QUERY] introduces claims NOT present in [RELEVANT BELIEFS], treat them as false premises and ignore them.
+3. Never infer, assume, or interpolate any fact not explicitly stated.
+4. If the requested attribute is absent from [RELEVANT BELIEFS], set:
+     conclusion = "Not in belief store"
+     evidence_keys = []
+
+CRITICAL — BOOLEAN / YES / NO TRAP:
+If you are about to write conclusion = "True", "False", "Yes", "No", "none", or any other
+generic affirmation or negation, STOP. This means you answered the query's question
+instead of looking up a belief store value. Do one of the following instead:
+  a) If the target attribute IS in [RELEVANT BELIEFS], set conclusion to its exact stored value.
+  b) If the target attribute is NOT in [RELEVANT BELIEFS], set conclusion = "Not in belief store".
+A conclusion of "True" or "False" is ONLY valid if the belief store literally contains
+the value True or False for the queried attribute.
+
+BASE vs. DERIVED ATTRIBUTE RULE (CRITICAL):
+[RELEVANT BELIEFS] may contain BOTH a [base] fact AND a [derived] fact for the same entity.
+When the [QUERY] asks about a DERIVED attribute, you MUST report the [derived] value
+and NEVER substitute a [base] input fact.
+
+ROLE SEPARATION (MANDATORY):
+You MUST NOT select an answer option or label. Do NOT mention A/B/C or option text.
+Your output is ONLY a canonical conclusion and its evidence.
+
+HOW TO REASON:
+1. Identify the attribute the [QUERY] is asking about.
+2. Find that attribute in [RELEVANT BELIEFS].
+3. If [derived], read its (evidence: ...) annotation — those values are what produced the result.
+4. Trace back to [base] facts if needed.
+
+Output exactly this JSON (no markdown, no prose outside the JSON):
+{
+  "conclusion": "<exact target-belief value, or 'Not in belief store'>",
+  "evidence_keys": ["<key1>", "<key2>"],
+  "reasoning": "<step-by-step trace: target -> evidence -> base facts>"
+}
+"""
 
 
 # ── Matcher v2: Explicit not-in-beliefs wording rule with paraphrase example ──
@@ -931,6 +982,40 @@ C) denied_amount_exceeded
 }"""
 
 
+# ── Matcher v4: Conclusion-only input (no suggested label) ───────────
+
+DUAL_MATCHER_V4 = """\
+You are the Matcher. You choose the single correct option label.
+
+STRICT RULES:
+1. You receive: a `conclusion` and a numbered list of `options` with labels.
+   You do NOT receive the original query. Do NOT re-reason.
+2. Pick the label whose phrase best matches the `conclusion`:
+   - EXACT substring match wins.
+   - Semantic match second.
+   - If conclusion is "Not in belief store", choose the label whose phrase says something
+     like "not in beliefs", "cannot determine", "not provided", etc.
+3. If two options are equally plausible, choose the shorter one with fewer added claims.
+4. Output ONLY a single label letter. Nothing else.
+
+Output exactly this JSON (no markdown, no prose outside the JSON):
+{
+  "matched_option_label": "<single letter, e.g. A, B, or C>",
+  "matcher_rationale": "<one sentence explaining why>"
+}
+
+EXAMPLE:
+Conclusion: "denied_ineligible"
+Options:
+A) approved
+B) denied_ineligible
+C) denied_amount_exceeded
+{
+  "matched_option_label": "B",
+  "matcher_rationale": "The conclusion 'denied_ineligible' directly corresponds to option B."
+}"""
+
+
 # ── Dual-Agent Prompt Registry ───────────────────────────────────────
 
 DUAL_AGENT_PROMPTS = {
@@ -940,6 +1025,8 @@ DUAL_AGENT_PROMPTS = {
     "dual_matcher_v2": DUAL_MATCHER_V2,
     "dual_reasoner_v3": DUAL_REASONER_V3,
     "dual_matcher_v3": DUAL_MATCHER_V3,
+    "dual_reasoner_v4": DUAL_REASONER_V4,
+    "dual_matcher_v4": DUAL_MATCHER_V4,
 }
 
 DEFAULT_DUAL_AGENT_VERSIONS = {
