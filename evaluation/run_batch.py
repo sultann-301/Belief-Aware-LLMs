@@ -11,10 +11,10 @@ import importlib
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "standard"  # Change to "standard" for single-model batch
+MODE = "sequential"  # Change to "standard" for single-model batch
 
 # Prompt Versions
-DEFAULT_EVAL_PROMPT_VERSION = "v16_one_shot"
+DEFAULT_EVAL_PROMPT_VERSION = "v15"
 DEFAULT_BASELINE_PROMPT_VERSION = "v1"
 
 # STANDARD MODE: Single model configuration
@@ -226,8 +226,6 @@ def run_standard_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
-        # Run only WITH_STORE for batch runs to avoid altering existing NO_STORE CSVs
-        cmd.append("--only-with-store")
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -312,8 +310,6 @@ def run_dual_agent_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
-        # Dual-agent already uses WITH STORE, adding only-with-store is harmless
-        cmd.append("--only-with-store")
         
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -389,7 +385,6 @@ def run_sequential_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
-        cmd.append("--only-with-store")
 
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)
@@ -420,7 +415,7 @@ def run_sequential_batch(state):
         log("WARNING: cannot import DOMAIN_REGISTRY; falling back to configured DOMAINS list for Phase B")
         all_domains = list(DOMAINS)
 
-    filtered_domains = [d for d in all_domains if "hop" not in d and not d.endswith("_hard")]
+    filtered_domains = [d for d in all_domains if "noise" in d]
 
     phase2_configs = []
     for reasoner_model, matcher_model in PHASE2_PAIRS:
@@ -472,7 +467,6 @@ def run_sequential_batch(state):
             cmd += ["--keep-alive", str(OLLAMA_KEEP_ALIVE)]
         if CACHE_ENABLED:
             cmd += ["--cache", "--cache-dir", CACHE_DIR]
-        cmd.append("--only-with-store")
 
         try:
             result = subprocess.run(cmd, capture_output=True, text=True)

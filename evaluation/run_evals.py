@@ -154,7 +154,10 @@ def seed_paraphrased_turns(domain_name: str, subset_name: str, original_turns: l
         return original_turns
         
     try:
-        module_name = f"evaluation.{domain_name}_paraphrased_scenarios"
+        if subset_name.endswith("_noise"):
+            module_name = f"evaluation.{domain_name}_paraphrased_scenarios_noise"
+        else:
+            module_name = f"evaluation.{domain_name}_paraphrased_scenarios"
         para_module = importlib.import_module(module_name)
     except ImportError:
         return original_turns
@@ -378,6 +381,7 @@ for domain_name, noise_subsets in _NOISE_MAP.items():
             default_entities=domain_config["default_entities"],
             is_conversational=False,
             accumulate_prior_beliefs=True,
+            seed_fn=make_subset_seed_fn(domain_name, subset_name, turns),
         )
 
 
