@@ -64,6 +64,8 @@ pytest tests/
 
 ## 📁 Project Structure
 
+For detailed information on domain logic, see [domains.md](domains.md). For evaluation metrics, see [METRICS.md](METRICS.md).
+
 ```
 Belief-Aware-LLMs/
 ├── belief_store/                    # Core belief store engine
@@ -125,9 +127,9 @@ Belief-Aware-LLMs/
 ├── Root configuration files
 │   ├── README.md                    # This file
 │   ├── pyrightconfig.json           # Pyright type checking configuration
-│   ├── [domains.md](domains.md)     # Domain logic reference documentation
+│   ├── domains.md                   # Domain logic reference documentation
 │   ├── Implementation.md            # Implementation notes
-│   ├── [METRICS.md](METRICS.md)     # Evaluation metrics definitions
+│   ├── METRICS.md                   # Evaluation metrics definitions
 │   ├── LICENSE                      # License file
 │
 ├── Notebooks (Jupyter)
