@@ -1,6 +1,6 @@
 # Belief-Aware LLMs
 
-An LLM-based system that utilizes belief revision and a deterministic belief graph to drastically improve reasoning. By grounding standard Large Language Models with a strictly evaluated, dependency-driven belief store, the system successfully bridges LLM reasoning gaps handling tasks like complex multi-hop rule traces, counterfactual branching, and negated phrasing.
+An LLM-based system that utilizes belief revision and a deterministic belief graph to improve reasoning. By grounding standard Large Language Models with a strictly evaluated, dependency-driven belief store, the system successfully bridges LLM reasoning gaps handling tasks like complex multi-hop rule traces, counterfactual branching, and negated phrasing.
 
 ## 🌟 Core Features
 
