@@ -66,6 +66,7 @@ pytest tests/
 ## 📁 Project Structure
 
 For detailed information on domain logic, see [domains.md](domains.md). For evaluation metrics, see [METRICS.md](METRICS.md).
+To view the results, please download the CSVs on this [drive link](https://drive.google.com/drive/folders/1hgE6zobA_hbXER7DpbgmWObnkERz4B4K?usp=drive_link), and add the CSVs to the root directory of the project. Then open the "final_*_analysis" notebooks, and run the cells.
 
 ```
 Belief-Aware-LLMs/
