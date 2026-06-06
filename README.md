@@ -6,8 +6,8 @@ An LLM-based system that utilizes belief revision and a deterministic belief gra
 
 - **Deterministic Belief Store**: A reactive topological graph that manages factual state, derivation rules, and automatic cascading variable updates with rigid determinism.
 - **Real-Time Visualizer (Web App)**: A dynamic front-end that allows developers to converse alongside the LLM while immediately observing topological graph updates, logic nodes, and branching edge activations.
-- **Automated Evaluator Harness**: A robust, multi-threaded MCQ benchmarking harness running 60+ scenarios isolated by inference hops to analyze LLM reasoning baseline against the store.
-- **Intricate Logic Domains**: Ships with specialized domains to tax varying forms of structural logic:
+- **Automated Evaluator Harness**: A robust, multi-threaded MCQ benchmarking harness running 60+ scenarios isolated by inference hops to analyze LLM reasoning baseline against the store. See [METRICS.md](METRICS.md) for evaluation metrics definitions.
+- **Intricate Logic Domains**: Ships with specialized domains to tax varying forms of structural logic (see [domains.md](domains.md) for detailed logic reference):
   - 🏠 **Loan Application**: Tests sequential hierarchies, multi-tiered prerequisites, and financial status routing.
   - 👽 **Alien Clinic**: Tests multivariate symptom combinations, variable phasing structures, and compound hazard exclusions.
   - 🔍 **Crime Scene**: Tests evidence chains, interlocking suspect alibis, and transitive motive verification.
@@ -99,9 +99,7 @@ Belief-Aware-LLMs/
 │       ├── crime_scene_*_scenarios.py
 │       ├── loan_*_scenarios.py
 │       └── thorncrester_*_scenarios.py
-│   ├── batch_state_*.json           # Cached batch execution states
 │   ├── eval_results*.csv            # Evaluation results (various runs)
-│   └── test_logprobs.py             # Token probability analysis tools
 │
 ├── tests/                           # Unit test suite (pytest)
 │   ├── __init__.py
@@ -127,9 +125,9 @@ Belief-Aware-LLMs/
 ├── Root configuration files
 │   ├── README.md                    # This file
 │   ├── pyrightconfig.json           # Pyright type checking configuration
-│   ├── domains.md                   # Domain logic reference documentation
+│   ├── [domains.md](domains.md)     # Domain logic reference documentation
 │   ├── Implementation.md            # Implementation notes
-│   ├── METRICS.md                   # Evaluation metrics definitions
+│   ├── [METRICS.md](METRICS.md)     # Evaluation metrics definitions
 │   ├── LICENSE                      # License file
 │
 ├── Notebooks (Jupyter)
