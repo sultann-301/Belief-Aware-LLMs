@@ -555,9 +555,10 @@ def run_multi_eval_dual_agent(
                 binding_correct = r.get("binding_correct", False)
                 reasoner_binding_metrics.append((binding_scored, binding_correct))
                 
-                matcher_conf = r.get("agent2_matcher_confidence", 0.0)
+                matcher_conf = r.get("agent2_matcher_confidence")
                 end_to_end_correct = 1 if r.get("end_to_end_correct", False) else 0
-                matcher_calibration_preds.append((matcher_conf, end_to_end_correct))
+                if matcher_conf is not None:
+                    matcher_calibration_preds.append((matcher_conf, end_to_end_correct))
 
             efr_counts_da.append(sum(1 for r in res if r.get("answer") is None))
             run_results[run_idx][condition_idx] = end_to_end_hits

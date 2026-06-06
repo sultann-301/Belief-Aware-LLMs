@@ -102,9 +102,8 @@ def _compute_dual_agent_metrics(turn: dict[str, Any], dual_agent_result: dict[st
         logprob_conf = extract_answer_logprob_confidence(matcher_logprobs, "", matched_label)
         matcher_confidence = logprob_conf.get("decision_prob")
 
-    # Fallback: use match_status binary confidence if logprobs unavailable
-    if matcher_confidence is None:
-        matcher_confidence = 1.0 if match_status == "matched" else 0.0
+    # Do not fallback to 1.0 if logprobs unavailable - this breaks calibration metrics.
+    # If logprobs are unavailable, matcher_confidence remains None.
 
     return {
         "binding_correct": binding_correct,
@@ -192,42 +191,49 @@ def extract_answer_logprob_confidence(
     if not logprobs_data:
         return empty
 
-    # Reconstruct token stream and locate the last ANSWER: [...] span.
-    # We search from the end of the token stream because the answer line
-    # is always at the end of the response.
-
-    # Locate the anchor (the last mention of "Answer:")
+    # Reconstruct token stream
     tokens = [entry.get("token", "") for entry in logprobs_data]
     cumulative = "".join(tokens)
 
-    # Locate the anchor (the last mention of "Answer:")
-    anchor_idx = -1
-    for m in re.finditer(r"(?i)\banswer\s*:", cumulative):
-        anchor_idx = m.end()
+    # Check if this is a Matcher JSON response
+    json_match = re.search(r'"matched_option_label"\s*:\s*["\']?([A-Za-z0-9_]+)["\']?', cumulative)
+    if not json_match:
+        json_match = re.search(r"'matched_option_label'\s*:\s*[\"']?([A-Za-z0-9_]+)[\"']?", cumulative)
 
-    # If no "Answer:" found, anchor to the last ~50 chars to avoid reasoning leakage
-    if anchor_idx == -1:
-        anchor_idx = max(0, len(cumulative) - 50)
+    if json_match:
+        # Direct character matching for Matcher JSON format
+        start_idx = json_match.start(1)
+        end_idx = json_match.end(1)
+    else:
+        # Fall back to single-agent free-text anchor extraction
+        # Locate the anchor (the last mention of "Answer:")
+        anchor_idx = -1
+        for m in re.finditer(r"(?i)\banswer\s*:", cumulative):
+            anchor_idx = m.end()
 
-    search_range = cumulative[anchor_idx:]
+        # If no "Answer:" found, anchor to the last ~50 chars to avoid reasoning leakage
+        if anchor_idx == -1:
+            anchor_idx = max(0, len(cumulative) - 50)
 
-    # Strategy 1: Brackets within the anchor range
-    bracket_open = search_range.find("[")
-    start_idx = -1
-    end_idx = -1
+        search_range = cumulative[anchor_idx:]
 
-    if bracket_open != -1:
-        bracket_close = search_range.find("]", bracket_open + 1)
-        if bracket_close != -1:
-            start_idx = anchor_idx + bracket_open + 1
-            end_idx = anchor_idx + bracket_close
+        # Strategy 1: Brackets within the anchor range
+        bracket_open = search_range.find("[")
+        start_idx = -1
+        end_idx = -1
 
-    # Strategy 2: Phrase fallback within the anchor range
-    if start_idx == -1 and extracted_answer_phrase:
-        phrase_pos = search_range.find(extracted_answer_phrase)
-        if phrase_pos != -1:
-            start_idx = anchor_idx + phrase_pos
-            end_idx = start_idx + len(extracted_answer_phrase)
+        if bracket_open != -1:
+            bracket_close = search_range.find("]", bracket_open + 1)
+            if bracket_close != -1:
+                start_idx = anchor_idx + bracket_open + 1
+                end_idx = anchor_idx + bracket_close
+
+        # Strategy 2: Phrase fallback within the anchor range
+        if start_idx == -1 and extracted_answer_phrase:
+            phrase_pos = search_range.find(extracted_answer_phrase)
+            if phrase_pos != -1:
+                start_idx = anchor_idx + phrase_pos
+                end_idx = start_idx + len(extracted_answer_phrase)
 
     if start_idx == -1 or end_idx == -1:
         return empty
@@ -282,6 +288,10 @@ def extract_answer_logprob_confidence(
 
                 if denom > 0:
                     relative_probs.append(chosen_prob / denom)
+                else:
+                    relative_probs.append(chosen_prob)
+            elif "logprob" in token_data:
+                relative_probs.append(math.exp(token_data["logprob"]))
 
         # Gap 5 Fix: Use a composite of Min (Decision) and Mean (Fluency)
         # Min represents the hardest branching point; Mean represents overall shakiness.
@@ -504,12 +514,16 @@ def _get_reasoning_metrics(
     known_keys = (set(store.rule_index.keys()) | set(store.beliefs.keys())) - store.removed
 
     if cited_keys_override is not None:
-        cited = cited_keys_override
+        cited = cited_keys_override | _extract_evidence_keys_from_response(response, known_keys)
     else:
         # Use both rule_index (computed rules) and beliefs (input hypotheses)
         # store.beliefs contains explicitly set/resolved values, rule_index has computed rules.
         # Together they cover both input assumptions and derived facts.
         cited = _extract_evidence_keys_from_response(response, known_keys)
+
+    # Exclude target attributes from cited keys (they are the targets, not evidence)
+    targets = set(filter_spec)
+    cited = cited - targets
 
     metrics = _compute_reasoning_metrics(canonical, cited)
 
