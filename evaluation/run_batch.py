@@ -11,7 +11,7 @@ import importlib
 # ────────────────────────────────────────────────────────────────────
 
 # Batch mode: "standard" (single model) or "dual-agent" (reasoner + matcher)
-MODE = "sequential"  # Change to "standard" for single-model batch
+MODE = "dual-agent"  # Change to "standard" for single-model batch
 
 # Prompt Versions
 DEFAULT_EVAL_PROMPT_VERSION = "v15"
@@ -68,7 +68,7 @@ DOMAINS = [
     
     # 3. Temporal Tracking (Supporting)
      "loan_absurd_temporal", "alien_clinic_absurd_temporal", "crime_scene_absurd_temporal", "thorncrester_absurd_temporal",
-     "loan_absurd_temporal_noise", "alien_clinic_absurd_temporal_noise", "crime_scene_absurd_temporal_noise", "thorncrester_absurd_temporal_noise",
+    #  "loan_absurd_temporal_noise", "alien_clinic_absurd_temporal_noise", "crime_scene_absurd_temporal_noise", "thorncrester_absurd_temporal_noise",
     
     # 4. Context Stability (Supporting)
      "loan_belief_maintenance", "alien_clinic_belief_maintenance", "crime_scene_belief_maintenance", "thorncrester_belief_maintenance",
@@ -81,7 +81,7 @@ DOMAINS = [
     # "alien_clinic_trace_selection",
     
     # 7. Stress Testing (Hard Belief Revision)
-      "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
+    #   "loan_hard", "alien_clinic_hard", "crime_scene_hard", "thorncrester_hard",
 ]
 
 # Sequential mode: Phase-specific configuration
@@ -252,21 +252,27 @@ def run_standard_batch(state):
 
 def run_dual_agent_batch(state):
     """Dual-agent batch evaluation with separate reasoner and matcher models."""
+    if run_evals and hasattr(run_evals, "DOMAIN_REGISTRY"):
+        all_domains = list(run_evals.DOMAIN_REGISTRY.keys())
+    else:
+        all_domains = list(DOMAINS)
+
+    filtered_domains = DOMAINS
+
     configs = []
-    for reasoner_model in REASONER_MODELS:
-        for matcher_model in MATCHER_MODELS:
-            for prompt in PROMPTS:
-                for temperature in TEMPERATURES:
-                    for domain in DOMAINS:
-                        configs.append(f"da|{reasoner_model}|{matcher_model}|{prompt}|{temperature}|{domain}")
+    for reasoner_model, matcher_model in PHASE2_PAIRS:
+        for prompt in PROMPTS:
+            for temperature in TEMPERATURES:
+                for domain in filtered_domains:
+                    configs.append(f"da|{reasoner_model}|{matcher_model}|{prompt}|{temperature}|{domain}")
 
     total_configs = len(configs)
     current_count = len(state["completed"])
     
     log(f"Starting DUAL-AGENT Batch Eval: {total_configs} total configurations planned.")
     log(f"Already completed: {current_count}")
-    log(f"Reasoner models: {REASONER_MODELS}")
-    log(f"Matcher models: {MATCHER_MODELS}")
+    log(f"Model pairs: {PHASE2_PAIRS}")
+    log(f"Domains: {filtered_domains}")
     log(f"Temperatures: {TEMPERATURES}")
     
     for i, config_id in enumerate(configs):
@@ -278,7 +284,7 @@ def run_dual_agent_batch(state):
 
         print_progress(i, total_configs)
         print()
-        log(f"RUNNING: {domain} | Reasoner: {reasoner_model} | Matcher: {matcher_model} | Prompt: {prompt} | Temp: {temperature} | Runs: {RUNS_PER_CONFIG}")
+        log(f"RUNNING: {domain} | Reasoner: {reasoner_model} | Matcher: {matcher_model} | Prompt: {prompt} | Temp: {temperature} | Runs: {PHASE2_RUNS}")
         
         cmd = [
             sys.executable, "evaluation/run_evals.py",
@@ -288,7 +294,7 @@ def run_dual_agent_batch(state):
             "--matcher-model", matcher_model,
             "--eval-prompt-version", prompt,
             "--baseline-prompt-version", DEFAULT_BASELINE_PROMPT_VERSION,
-            "--runs", str(RUNS_PER_CONFIG),
+            "--runs", str(PHASE2_RUNS),
             "--workers", str(WORKERS),
             "--temperature", str(temperature)
         ]

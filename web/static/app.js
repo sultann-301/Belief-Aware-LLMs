@@ -93,6 +93,8 @@ const $fullPromptBody = document.getElementById("full-prompt-body");
 const $systemPrompt = document.getElementById("system-prompt-view");
 const $userPrompt = document.getElementById("user-prompt-view");
 const $btnTogglePrompt = document.getElementById("btn-toggle-prompt");
+const $btnThemeToggle = document.getElementById("btn-theme-toggle");
+const $themeIcon = document.getElementById("theme-icon");
 
 let selectedModel = "";
 
@@ -103,8 +105,10 @@ $btnSend.disabled = true;
 // Mode tabs
 const $tabChat = document.getElementById("tab-chat");
 const $tabSim = document.getElementById("tab-simulation");
+const $tabExample = document.getElementById("tab-example");
 const $panelChat = document.getElementById("panel-chat");
 const $panelSim = document.getElementById("panel-simulation");
+const $panelExample = document.getElementById("panel-example");
 
 // Simulation
 const $simWelcome = document.getElementById("sim-welcome");
@@ -117,6 +121,10 @@ const $btnSimStart = document.getElementById("btn-sim-start");
 const $btnSimStep = document.getElementById("btn-sim-step");
 const $btnSimStop = document.getElementById("btn-sim-stop");
 const $simCondition = document.getElementById("sim-condition");
+const $btnRunExample = document.getElementById("btn-run-example");
+const $exampleInputBeliefs = document.getElementById("example-input-beliefs");
+const $exampleStepGrid = document.getElementById("example-step-grid");
+const $exampleStorePrompt = document.getElementById("example-store-prompt");
 
 // Graph collapse
 const $btnGraphToggle = document.getElementById("btn-graph-toggle");
@@ -125,6 +133,61 @@ let graphCollapsed = false;
 
 // Simulation abort controller
 let simAbortController = null;
+let lastHopwalkGraph = null;
+
+// ── Theme helpers ──────────────────────────────────────────────────
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+}
+
+function themeCanvasColors() {
+  return {
+    isLight: document.documentElement.getAttribute("data-theme") === "light",
+    edgeRgb: cssVar("--canvas-edge"),
+    labelRgb: cssVar("--canvas-label"),
+    mutedLabelRgb: cssVar("--canvas-muted-label"),
+    nodeStroke: cssVar("--node-stroke"),
+    accentBlue: cssVar("--accent-blue"),
+    accentBlueRgb: cssVar("--accent-blue-rgb"),
+    accentPurple: cssVar("--accent-purple"),
+    accentPurpleRgb: cssVar("--accent-purple-rgb"),
+    accentOrange: cssVar("--accent-orange"),
+    accentOrangeRgb: cssVar("--accent-orange-rgb"),
+    accentCyan: cssVar("--accent-cyan"),
+    accentCyanRgb: cssVar("--accent-cyan-rgb"),
+  };
+}
+
+function setTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("theme", theme);
+  if ($themeIcon) $themeIcon.textContent = theme === "light" ? "☾" : "☼";
+  if (graphData && graphData.nodes && graphData.nodes.length > 0) renderGraph();
+  const hopwalkOverlay = document.getElementById("hopwalk-overlay");
+  if (
+    hopwalkOverlay &&
+    hopwalkOverlay.style.display !== "none" &&
+    lastHopwalkGraph
+  ) {
+    renderHopWalkGraph(
+      lastHopwalkGraph.nodes,
+      lastHopwalkGraph.edges,
+      lastHopwalkGraph.attributes,
+    );
+  }
+}
+
+if ($btnThemeToggle) {
+  $btnThemeToggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    setTheme(current === "light" ? "dark" : "light");
+  });
+}
+
+setTheme(localStorage.getItem("theme") || "dark");
 
 // ── API helpers ─────────────────────────────────────────────────────
 
@@ -349,9 +412,12 @@ function renderGraph() {
       n.vy *= 0.7;
       n.x += n.vx;
       n.y += n.vy;
-      // Bounds
-      n.x = Math.max(n.radius, Math.min(W - n.radius, n.x));
-      n.y = Math.max(n.radius, Math.min(H - n.radius, n.y));
+      // Bounds include label space below each node.
+      const labelPadX = Math.max(n.radius, 48);
+      const labelPadTop = n.radius + 6;
+      const labelPadBottom = n.radius + 34;
+      n.x = Math.max(labelPadX, Math.min(W - labelPadX, n.x));
+      n.y = Math.max(labelPadTop, Math.min(H - labelPadBottom, n.y));
     }
 
     draw(ctx, W, H);
@@ -368,6 +434,7 @@ function renderGraph() {
 
 function draw(ctx, W, H) {
   ctx.clearRect(0, 0, W, H);
+  const theme = themeCanvasColors();
 
   // Draw edges
   for (const e of gEdges) {
@@ -384,7 +451,7 @@ function draw(ctx, W, H) {
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.lineTo(endX, endY);
-    ctx.strokeStyle = "rgba(110, 118, 129, 0.35)";
+    ctx.strokeStyle = `rgba(${theme.edgeRgb}, 0.35)`;
     ctx.lineWidth = 1;
     ctx.stroke();
 
@@ -402,7 +469,7 @@ function draw(ctx, W, H) {
       endY - aLen * Math.sin(angle + 0.4),
     );
     ctx.closePath();
-    ctx.fillStyle = "rgba(110, 118, 129, 0.5)";
+    ctx.fillStyle = `rgba(${theme.edgeRgb}, 0.5)`;
     ctx.fill();
   }
 
@@ -410,11 +477,11 @@ function draw(ctx, W, H) {
   for (const n of gNodes) {
     let color;
     if (n.is_dirty) {
-      color = "#f39c12"; // orange
+      color = theme.accentOrange;
     } else if (n.is_derived) {
-      color = "#6c5ce7"; // purple
+      color = theme.accentPurple;
     } else {
-      color = "#4a9eff"; // blue
+      color = theme.accentBlue;
     }
 
     // Dirty glow
@@ -429,8 +496,8 @@ function draw(ctx, W, H) {
         n.y,
         n.radius + 6,
       );
-      grad.addColorStop(0, "rgba(243, 156, 18, 0.4)");
-      grad.addColorStop(1, "rgba(243, 156, 18, 0)");
+      grad.addColorStop(0, `rgba(${theme.accentOrangeRgb}, 0.4)`);
+      grad.addColorStop(1, `rgba(${theme.accentOrangeRgb}, 0)`);
       ctx.fillStyle = grad;
       ctx.fill();
     }
@@ -447,15 +514,15 @@ function draw(ctx, W, H) {
         n.y,
         n.radius + 10,
       );
-      grad.addColorStop(0, "rgba(52, 152, 219, 0.5)"); // Sleek blue glow
-      grad.addColorStop(1, "rgba(52, 152, 219, 0)");
+      grad.addColorStop(0, `rgba(${theme.accentBlueRgb}, 0.5)`);
+      grad.addColorStop(1, `rgba(${theme.accentBlueRgb}, 0)`);
       ctx.fillStyle = grad;
       ctx.fill();
 
       // Add a subtle pulse or ring for updated nodes
       ctx.beginPath();
       ctx.arc(n.x, n.y, n.radius + 4, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(52, 152, 219, 0.8)";
+      ctx.strokeStyle = `rgba(${theme.accentBlueRgb}, 0.8)`;
       ctx.lineWidth = 2;
       ctx.stroke();
     }
@@ -476,16 +543,26 @@ function draw(ctx, W, H) {
 
     ctx.fillStyle = color;
     ctx.fill();
-    ctx.strokeStyle = n === hoveredNode ? "#fff" : "rgba(0,0,0,0.3)";
+    ctx.strokeStyle =
+      n === hoveredNode
+        ? theme.isLight
+          ? "#212529"
+          : "#fff"
+        : theme.nodeStroke;
     ctx.lineWidth = n === hoveredNode ? 2 : 1;
     ctx.stroke();
 
     // Label
-    const label = n.id.split(".").pop();
-    ctx.font = "10px Inter, sans-serif";
+    const parts = n.id.split(".");
+    const entityLabel = n.entity || parts[0] || "";
+    const attrLabel = parts.length > 1 ? parts.slice(1).join(".") : n.id;
     ctx.textAlign = "center";
-    ctx.fillStyle = "rgba(230, 237, 243, 0.7)";
-    ctx.fillText(label, n.x, n.y + n.radius + 14);
+    ctx.font = "9px Inter, sans-serif";
+    ctx.fillStyle = `rgba(${theme.mutedLabelRgb}, 0.76)`;
+    ctx.fillText(entityLabel, n.x, n.y + n.radius + 13);
+    ctx.font = "10px Inter, sans-serif";
+    ctx.fillStyle = `rgba(${theme.labelRgb}, 0.82)`;
+    ctx.fillText(attrLabel, n.x, n.y + n.radius + 26);
   }
 }
 
@@ -508,8 +585,9 @@ $graphCanvas.addEventListener("mousemove", (e) => {
   hoveredNode = found;
   if (found) {
     $graphTooltip.style.display = "block";
+    const theme = themeCanvasColors();
     let val =
-      found.value !== null && found.value !== undefined ? found.value : "—";
+      found.value !== null && found.value !== undefined ? found.value : "-";
     if (Array.isArray(val)) {
       val =
         `<ul style="margin:4px 0 0 12px;padding:0;font-size:11px;">` +
@@ -521,7 +599,12 @@ $graphCanvas.addEventListener("mousemove", (e) => {
       : found.is_derived
         ? "derived"
         : "base";
-    $graphTooltip.innerHTML = `<strong>${found.id}</strong><br>${found.entity} · <span style="color:${found.is_dirty ? "#f39c12" : found.is_derived ? "#6c5ce7" : "#4a9eff"}">${tag}</span><br>Value: ${val}`;
+    const tagColor = found.is_dirty
+      ? theme.accentOrange
+      : found.is_derived
+        ? theme.accentPurple
+        : theme.accentBlue;
+    $graphTooltip.innerHTML = `<strong>${found.id}</strong><br>${found.entity} · <span style="color:${tagColor}">${tag}</span><br>Value: ${val}`;
 
     // Position tooltip using fixed coords, clamped to viewport
     let tx = e.clientX + 14;
@@ -653,16 +736,17 @@ function updateAttributeChips() {
 
   const sorted = Array.from(allKeys).sort();
   selectedAttributes = new Set();
+  const theme = themeCanvasColors();
 
   $grid.innerHTML = sorted
     .map((key) => {
       const node = graphData.nodes.find((n) => n.id === key);
-      let color = "#4a9eff"; // base blue by default
+      let color = theme.accentBlue;
       if (node) {
         if (node.is_dirty) {
-          color = "#f39c12"; // dirty orange
+          color = theme.accentOrange;
         } else if (node.is_derived) {
-          color = "#6c5ce7"; // derived purple
+          color = theme.accentPurple;
         }
       }
       return `<span class="attr-chip" data-key="${key}">
@@ -1011,6 +1095,320 @@ function scrollChat() {
   });
 }
 
+// ── Screenshot example run ─────────────────────────────────────────
+
+const EXAMPLE_RUN = {
+  domain: "alien_clinic",
+  query:
+    "What billing tier should the clinic assign?",
+  inputBeliefs: [
+    ["atmosphere.dominant_gas", "chlorine"],
+    ["atmosphere.ambient_pressure", 4.5],
+    ["patient.organism_type", "Qwerl"],
+    ["patient.symptoms", ["fever"]],
+  ],
+  steps: [
+    {
+      title: "After Input: Broad Dirty Fan-Out",
+      label: "14 dirty",
+      note: "The update marks many downstream clinic beliefs dirty.",
+      graphNodes: [
+        { key: "atmosphere.dominant_gas", x: 70, y: 70 },
+        { key: "patient.organism_type", x: 70, y: 175 },
+        { key: "atmosphere.ambient_pressure", x: 70, y: 285 },
+        { key: "patient.symptoms", x: 70, y: 365 },
+        { key: "treatment.zyxostin_phase", x: 235, y: 60 },
+        { key: "treatment.filinan_phase", x: 235, y: 145 },
+        { key: "treatment.snevox_phase", x: 235, y: 230 },
+        { key: "patient.organ_integrity", x: 235, y: 315 },
+        { key: "treatment.zyxostin_danger_level", x: 400, y: 72 },
+        { key: "treatment.filinan_danger_level", x: 400, y: 168 },
+        { key: "treatment.snevox_danger_level", x: 400, y: 264 },
+        { key: "patient.quarantine_required", x: 400, y: 360 },
+        { key: "treatment.active_prescription", x: 575, y: 175 },
+        { key: "patient.sensory_status", x: 710, y: 95 },
+        { key: "treatment.duration_cycles", x: 710, y: 255 },
+        { key: "medical.staff_requirement", x: 710, y: 350 },
+        { key: "clinic.billing_tier", x: 875, y: 230 },
+        { key: "patient.recovery_prospect", x: 875, y: 340 },
+      ],
+    },
+    {
+      title: "Resolved HopWalker Subgraph",
+      label: "3 keys",
+      note: "HopWalker extracts only the keys needed for clinic.billing_tier.",
+      graphNodes: [
+        { key: "treatment.active_prescription", x: 250, y: 150 },
+        { key: "medical.staff_requirement", x: 250, y: 260 },
+        { key: "clinic.billing_tier", x: 650, y: 205 },
+      ],
+    },
+  ],
+  targetAttributes: ["clinic.billing_tier"],
+  fallbackValues: {
+    "atmosphere.dominant_gas": "chlorine",
+    "atmosphere.ambient_pressure": 4.5,
+    "patient.organism_type": "Qwerl",
+    "patient.symptoms": ["fever"],
+    "treatment.active_prescription": "zyxostin",
+    "medical.staff_requirement": "hazmat_team",
+    "clinic.billing_tier": "class_delta",
+  },
+};
+
+function formatExampleValue(value) {
+  if (value === null || value === undefined) return "-";
+  if (typeof value === "number") return value.toLocaleString("en-US");
+  if (typeof value === "boolean") return String(value);
+  return String(value);
+}
+
+function graphValueMap(graph = graphData) {
+  const values = { ...EXAMPLE_RUN.fallbackValues };
+  for (const node of graph.nodes || []) {
+    if (node.value !== null && node.value !== undefined) {
+      values[node.id] = node.value;
+    }
+  }
+  return values;
+}
+
+function exampleGraphSnapshot(graph) {
+  return {
+    nodes: [...(graph.nodes || [])],
+    edges: [...(graph.edges || [])],
+  };
+}
+
+async function fetchExampleGraphSnapshot() {
+  const graph = await api("/api/graph");
+  return exampleGraphSnapshot(graph);
+}
+
+function graphNodeMap(graph) {
+  const map = {};
+  for (const node of graph?.nodes || []) map[node.id] = node;
+  return map;
+}
+
+function truncateExampleLabel(value, max = 16) {
+  if (value.length <= max) return value;
+  return value.slice(0, max - 1) + "...";
+}
+
+function wrapExampleLabel(value, max = 13, maxLines = 2) {
+  const words = value.replaceAll("_", " ").split(" ");
+  const lines = [];
+  let current = "";
+  for (const word of words) {
+    const next = current ? `${current} ${word}` : word;
+    if (next.length > max && current) {
+      lines.push(current);
+      current = word;
+    } else {
+      current = next;
+    }
+  }
+  if (current) lines.push(current);
+  return lines.slice(0, maxLines).map((line, index) => {
+    if (index === maxLines - 1 && lines.length > maxLines) {
+      return truncateExampleLabel(line, max - 1) + ".";
+    }
+    return truncateExampleLabel(line, max);
+  });
+}
+
+function edgeEndpoint(from, to, radius = 30) {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const len = Math.hypot(dx, dy) || 1;
+  return {
+    x1: from.x + (dx / len) * radius,
+    y1: from.y + (dy / len) * radius,
+    x2: to.x - (dx / len) * (radius + 5),
+    y2: to.y - (dy / len) * (radius + 5),
+  };
+}
+
+function renderMiniGraph(graph, step, stateIndex) {
+  if (!graph) {
+    return `<div class="example-graph-placeholder">Run the example to capture this graph state.</div>`;
+  }
+
+  const nodeMap = graphNodeMap(graph);
+  const layoutNodes = step.graphNodes
+    .map((layout) => ({ ...layout, node: nodeMap[layout.key] }))
+    .filter((layout) => layout.node);
+  const layoutByKey = Object.fromEntries(layoutNodes.map((layout) => [layout.key, layout]));
+  const visibleKeys = new Set(layoutNodes.map((layout) => layout.key));
+
+  const edgeHtml = (graph.edges || [])
+    .filter((edge) => visibleKeys.has(edge.source) && visibleKeys.has(edge.target))
+    .map((edge) => {
+      const points = edgeEndpoint(layoutByKey[edge.source], layoutByKey[edge.target]);
+      return `
+        <line class="example-dependency-edge"
+          x1="${points.x1}" y1="${points.y1}"
+          x2="${points.x2}" y2="${points.y2}" />
+      `;
+    })
+    .join("");
+
+  const nodeHtml = layoutNodes
+    .map(({ key, x, y, node }) => {
+      const parts = key.split(".");
+      const entity = parts[0];
+      const attr = parts.slice(1).join(".");
+      let cls = node.is_derived ? "derived" : "base";
+      if (node.is_dirty) cls += " dirty";
+      if (stateIndex === 1 && EXAMPLE_RUN.targetAttributes.includes(key)) {
+        cls += " final";
+      }
+      const showValue = stateIndex === 1 && node.is_derived;
+      const value = showValue ? formatExampleValue(node.value) : "";
+      const attrLines = wrapExampleLabel(attr);
+      const attrText = attrLines
+        .map((line, index) => `<tspan x="0" dy="${index === 0 ? 0 : 11}">${escapeHtml(line)}</tspan>`)
+        .join("");
+      return `
+        <g class="example-dependency-node ${cls}" transform="translate(${x} ${y})">
+          <circle r="30"></circle>
+          <text class="example-dependency-entity" x="0" y="-8">${escapeHtml(truncateExampleLabel(entity, 12))}</text>
+          <text class="example-dependency-attr" x="0" y="4">${attrText}</text>
+          ${showValue ? `<text class="example-dependency-value" x="0" y="24">${escapeHtml(truncateExampleLabel(value, 12))}</text>` : ""}
+        </g>
+      `;
+    })
+    .join("");
+
+  return `
+    <svg class="example-dependency-graph" viewBox="0 0 950 430" role="img" aria-label="Alien Clinic dependency graph">
+      <g class="example-dependency-edges">${edgeHtml}</g>
+      <g class="example-dependency-nodes">${nodeHtml}</g>
+    </svg>
+  `;
+}
+
+function renderExampleNode(key, values, variant = "") {
+  const parts = key.split(".");
+  const entity = parts[0] || key;
+  const attr = parts.length > 1 ? parts.slice(1).join(".") : key;
+  return `
+    <div class="example-node ${variant}">
+      <span class="example-node-entity">${escapeHtml(entity)}</span>
+      <span class="example-node-attr">${escapeHtml(attr)}</span>
+      <span class="example-node-value">${escapeHtml(formatExampleValue(values[key]))}</span>
+    </div>
+  `;
+}
+
+function renderExampleRun(values = EXAMPLE_RUN.fallbackValues, graphStates = []) {
+  if (!$exampleInputBeliefs || !$exampleStepGrid) return;
+
+  $exampleInputBeliefs.innerHTML = EXAMPLE_RUN.inputBeliefs
+    .map(
+      ([key]) => `
+        <div class="example-belief">
+          <span class="example-belief-key">${escapeHtml(key)}</span>
+          <span class="example-belief-value">${escapeHtml(formatExampleValue(values[key]))}</span>
+        </div>
+      `,
+    )
+    .join("");
+
+  $exampleStepGrid.innerHTML = EXAMPLE_RUN.steps
+    .map((step, index) => {
+      return `
+        <div class="example-step">
+          <div class="example-step-title">${escapeHtml(step.title)} <span>${step.label}</span></div>
+          ${step.note ? `<div class="example-step-note">${escapeHtml(step.note)}</div>` : ""}
+          ${renderMiniGraph(graphStates[index], step, index)}
+        </div>
+      `;
+    })
+    .join("");
+}
+
+async function buildExamplePrompt() {
+  const data = await api("/api/hopwalk", {
+    method: "POST",
+    body: JSON.stringify({ attributes: EXAMPLE_RUN.targetAttributes }),
+  });
+  if (data.error) throw new Error(data.error);
+  return [
+    "[ENTITY]",
+    EXAMPLE_RUN.targetAttributes.join(", "),
+    "",
+    "[RELEVANT BELIEFS]",
+    data.prompt || "",
+    "",
+    "[QUERY]",
+    EXAMPLE_RUN.query,
+  ].join("\n");
+}
+
+async function seedExampleBeliefs() {
+  for (const [key, value] of EXAMPLE_RUN.inputBeliefs) {
+    await api("/api/beliefs", {
+      method: "POST",
+      body: JSON.stringify({ key, value }),
+    });
+  }
+}
+
+async function runExample() {
+  if (!$btnRunExample) return;
+
+  $btnRunExample.disabled = true;
+  $btnRunExample.textContent = "Running...";
+  if ($exampleStorePrompt) {
+    $exampleStorePrompt.textContent =
+      "Resolving graph states and building the HopWalker prompt...";
+  }
+  renderExampleRun();
+
+  try {
+    if (currentDomain !== EXAMPLE_RUN.domain) {
+      currentDomain = EXAMPLE_RUN.domain;
+      $domainSelector.value = EXAMPLE_RUN.domain;
+      await api("/api/domain", {
+        method: "POST",
+        body: JSON.stringify({ domain: EXAMPLE_RUN.domain }),
+      });
+      await loadDomains();
+    } else {
+      await api("/api/reset", { method: "POST" });
+    }
+
+    await api("/api/resolve", { method: "POST" });
+    await seedExampleBeliefs();
+    const dirtyGraph = await fetchExampleGraphSnapshot();
+    await api("/api/resolve", { method: "POST" });
+    const resolvedGraph = await fetchExampleGraphSnapshot();
+    const graphStates = [dirtyGraph, resolvedGraph];
+    await refreshGraph([]);
+    await refreshLog();
+    renderExampleRun(graphValueMap(resolvedGraph), graphStates);
+
+    const promptText = await buildExamplePrompt();
+
+    await refreshGraph([]);
+    await refreshLog();
+    renderExampleRun(graphValueMap(resolvedGraph), graphStates);
+
+    if ($exampleStorePrompt) {
+      $exampleStorePrompt.textContent = promptText;
+    }
+  } catch (err) {
+    if ($exampleStorePrompt) {
+      $exampleStorePrompt.textContent = "Error: " + err.message;
+    }
+  } finally {
+    $btnRunExample.disabled = false;
+    $btnRunExample.textContent = "Run Alien Clinic Example";
+  }
+}
+
 // Toggle system prompt visibility inside user bubbles
 $chatMessages.addEventListener("click", (evt) => {
   const btn = evt.target.closest(".prompt-collapse");
@@ -1166,8 +1564,13 @@ function switchMode(mode) {
   currentMode = mode;
   $tabChat.classList.toggle("active", mode === "chat");
   $tabSim.classList.toggle("active", mode === "simulation");
+  $tabExample?.classList.toggle("active", mode === "example");
+  $layout.classList.toggle("example-mode", mode === "example");
   $panelChat.style.display = mode === "chat" ? "flex" : "none";
   $panelSim.style.display = mode === "simulation" ? "flex" : "none";
+  if ($panelExample) {
+    $panelExample.style.display = mode === "example" ? "flex" : "none";
+  }
 }
 
 // ── Graph collapse/expand ───────────────────────────────────────────
@@ -1300,6 +1703,8 @@ $modelSelector.addEventListener("change", (e) => {
 
 $tabChat.addEventListener("click", () => switchMode("chat"));
 $tabSim.addEventListener("click", () => switchMode("simulation"));
+$tabExample?.addEventListener("click", () => switchMode("example"));
+$btnRunExample?.addEventListener("click", runExample);
 
 $btnSimStart.addEventListener("click", () => {
   // Reset sim UI
@@ -1349,12 +1754,6 @@ const $hopwalkAttrs = document.getElementById("hopwalk-attrs");
 const $btnHopwalk = document.getElementById("btn-hopwalk");
 const $btnHopwalkClose = document.getElementById("btn-hopwalk-close");
 
-const LAYER_COLORS = {
-  base: "#4a9eff",
-  intermediate: "#6c5ce7",
-  target: "#00cec9",
-};
-
 async function openHopWalker() {
   const attrs = Array.from(selectedAttributes);
   if (attrs.length === 0) {
@@ -1390,6 +1789,7 @@ function closeHopWalker() {
 }
 
 function renderHopWalkGraph(nodes, edges, targetAttrs) {
+  lastHopwalkGraph = { nodes, edges, attributes: targetAttrs };
   const canvas = $hopwalkCanvas;
   const container = canvas.parentElement;
   const rect = container.getBoundingClientRect();
@@ -1406,9 +1806,15 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
   const W = rect.width;
   const H = rect.height;
   const padding = 60;
+  const theme = themeCanvasColors();
+  const layerColors = {
+    base: theme.accentBlue,
+    intermediate: theme.accentPurple,
+    target: theme.accentCyan,
+  };
 
   if (!nodes || nodes.length === 0) {
-    ctx.fillStyle = "#8b949e";
+    ctx.fillStyle = `rgba(${theme.mutedLabelRgb}, 0.8)`;
     ctx.font = "14px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.fillText("No beliefs found for these attributes.", W / 2, H / 2);
@@ -1437,7 +1843,7 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       positions[n.key] = {
         x,
         y: padding + ni * rowH + rowH / 2,
-        color: LAYER_COLORS[layer],
+        color: layerColors[layer],
         layer,
         node: n,
       };
@@ -1460,7 +1866,7 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
     ctx.textAlign = "center";
     activeLayerOrder.forEach((layer, li) => {
       const x = padding + li * colWidth;
-      ctx.fillStyle = LAYER_COLORS[layer];
+      ctx.fillStyle = layerColors[layer];
       ctx.globalAlpha = ease;
       const label =
         layer === "base"
@@ -1487,7 +1893,7 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       const midY = (srcPos.y + tgtPos.y) / 2 - 20;
       ctx.quadraticCurveTo(midX, midY, tgtPos.x, tgtPos.y);
 
-      ctx.strokeStyle = `rgba(110, 118, 129, ${edgeAlpha})`;
+      ctx.strokeStyle = `rgba(${theme.edgeRgb}, ${edgeAlpha})`;
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
@@ -1505,7 +1911,7 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
         tgtPos.y - aLen * Math.sin(angle + 0.35),
       );
       ctx.closePath();
-      ctx.fillStyle = `rgba(110, 118, 129, ${edgeAlpha * 1.5})`;
+      ctx.fillStyle = `rgba(${theme.edgeRgb}, ${edgeAlpha * 1.5})`;
       ctx.fill();
     });
 
@@ -1527,8 +1933,8 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
           pos.y,
           r + 12,
         );
-        grad.addColorStop(0, `rgba(0, 206, 201, ${0.3 * alpha})`);
-        grad.addColorStop(1, "rgba(0, 206, 201, 0)");
+        grad.addColorStop(0, `rgba(${theme.accentCyanRgb}, ${0.3 * alpha})`);
+        grad.addColorStop(1, `rgba(${theme.accentCyanRgb}, 0)`);
         ctx.fillStyle = grad;
         ctx.fill();
       }
@@ -1553,17 +1959,22 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
       ctx.fillStyle = pos.color;
       ctx.globalAlpha = alpha;
       ctx.fill();
-      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.strokeStyle = theme.nodeStroke;
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.globalAlpha = 1;
 
       // Label
-      const label = n.key.split(".").pop();
-      ctx.font = "bold 9px Inter, sans-serif";
+      const parts = n.key.split(".");
+      const entityLabel = n.entity || parts[0] || "";
+      const attrLabel = parts.length > 1 ? parts.slice(1).join(".") : n.key;
       ctx.textAlign = "center";
-      ctx.fillStyle = `rgba(230, 237, 243, ${0.8 * alpha})`;
-      ctx.fillText(label, pos.x, pos.y + r + 14);
+      ctx.font = "9px Inter, sans-serif";
+      ctx.fillStyle = `rgba(${theme.mutedLabelRgb}, ${0.72 * alpha})`;
+      ctx.fillText(entityLabel, pos.x, pos.y + r + 13);
+      ctx.font = "bold 9px Inter, sans-serif";
+      ctx.fillStyle = `rgba(${theme.labelRgb}, ${0.84 * alpha})`;
+      ctx.fillText(attrLabel, pos.x, pos.y + r + 25);
 
       // Value below label
       if (n.value !== null && n.value !== undefined) {
@@ -1572,8 +1983,8 @@ function renderHopWalkGraph(nodes, edges, targetAttrs) {
             ? String(n.value).slice(0, 17) + "…"
             : String(n.value);
         ctx.font = "9px 'JetBrains Mono', monospace";
-        ctx.fillStyle = `rgba(139, 148, 158, ${0.7 * alpha})`;
-        ctx.fillText(valStr, pos.x, pos.y + r + 26);
+        ctx.fillStyle = `rgba(${theme.mutedLabelRgb}, ${0.7 * alpha})`;
+        ctx.fillText(valStr, pos.x, pos.y + r + 37);
       }
     });
 
@@ -1608,6 +2019,7 @@ document.addEventListener("keydown", (e) => {
   await refresh();
   // Build attribute chips after initial graph data is loaded
   updateAttributeChips();
+  renderExampleRun();
 
   // Enable chat AFTER initialization is complete
   $chatInput.disabled = false;
