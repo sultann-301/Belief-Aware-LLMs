@@ -5,7 +5,7 @@ An LLM-based system that utilizes belief revision and a deterministic belief gra
 ## 🌟 Core Features
 
 - **Deterministic Belief Store**: A reactive topological graph that manages factual state, derivation rules, and automatic cascading variable updates with rigid determinism.
-See [Implementation.md](Implemementation.md) for the core mechanics of the belief store.
+See [Implementation.md](Implementation.md) for the core mechanics of the belief store.
 - **Real-Time Visualizer (Web App)**: A dynamic front-end that allows developers to converse alongside the LLM while immediately observing topological graph updates, logic nodes, and branching edge activations.
 - **Automated Evaluator Harness**: A robust, multi-threaded MCQ benchmarking harness running 60+ scenarios isolated by inference hops to analyze LLM reasoning baseline against the store. See [METRICS.md](METRICS.md) for evaluation metrics definitions.
 - **Intricate Logic Domains**: Ships with specialized domains to tax varying forms of structural logic (see [domains.md](domains.md) for detailed logic reference):
