@@ -554,7 +554,20 @@ Examples:
     parser.add_argument(
         "--csv-out",
         default=None,
-        help="Optional output CSV path for WITH_STORE-only runs (default: eval_results_with_store.csv).",
+        help=(
+            "Optional output CSV path. Defaults to eval_results.csv, "
+            "eval_results_with_store.csv, or eval_results_dual_agent.csv depending on mode."
+        ),
+    )
+    parser.add_argument(
+        "--log-dir",
+        default=None,
+        help="Directory for failed_extractions.log and incorrect_answers.log (default: evaluation/).",
+    )
+    parser.add_argument(
+        "--no-debug-logs",
+        action="store_true",
+        help="Disable failed-extraction and incorrect-answer debug logs.",
     )
 
     args = parser.parse_args()
@@ -632,6 +645,9 @@ Examples:
             cache_enabled=args.cache,
             cache_namespace=cache_namespace,
             shuffle_options=args.shuffle_options,
+            csv_out=args.csv_out,
+            debug_log_dir=args.log_dir,
+            debug_logs_enabled=not args.no_debug_logs,
         )
     else:
         run_multi_eval(
@@ -649,6 +665,8 @@ Examples:
             baseline_prompt_version=resolved_baseline_prompt_version,
             only_with_store=args.only_with_store,
             csv_out=args.csv_out,
+            debug_log_dir=args.log_dir,
+            debug_logs_enabled=not args.no_debug_logs,
         )
 
 

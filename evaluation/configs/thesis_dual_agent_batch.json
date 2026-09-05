@@ -1,0 +1,72 @@
+{
+  "mode": "dual-agent",
+  "eval_prompt_versions": ["v15"],
+  "baseline_prompt_version": "v1",
+  "models": [
+    "gemma3:1b",
+    "llama3.2:1b",
+    "ministral-3:3b",
+    "hoangquan456/qwen3-nothink:4b",
+    "gemma4:e2b"
+  ],
+  "hard_scenario_excluded_models": [
+    "gemma3:1b",
+    "llama3.2:1b"
+  ],
+  "dual_agent_pairs": [
+    ["gemma3:1b", "gemma3:1b"],
+    ["gemma3:1b", "ministral-3:3b"],
+    ["ministral-3:3b", "gemma3:1b"],
+    ["ministral-3:3b", "hoangquan456/qwen3-nothink:4b"]
+  ],
+  "temperatures": [0.0],
+  "domains": [
+    "loan_absurd",
+    "alien_clinic_absurd",
+    "crime_scene_absurd",
+    "thorncrester_absurd",
+    "loan_grounding",
+    "alien_clinic_grounding",
+    "crime_scene_grounding",
+    "thorncrester_grounding",
+    "loan_absurd_temporal",
+    "alien_clinic_absurd_temporal",
+    "crime_scene_absurd_temporal",
+    "thorncrester_absurd_temporal",
+    "loan_belief_maintenance",
+    "alien_clinic_belief_maintenance",
+    "crime_scene_belief_maintenance",
+    "thorncrester_belief_maintenance"
+  ],
+  "phase1_domains": [
+    "loan_absurd_temporal_noise",
+    "alien_clinic_absurd_temporal_noise",
+    "crime_scene_absurd_temporal_noise",
+    "thorncrester_absurd_temporal_noise"
+  ],
+  "phase2_domains": [
+    "loan_absurd_temporal_noise",
+    "alien_clinic_absurd_temporal_noise",
+    "crime_scene_absurd_temporal_noise",
+    "thorncrester_absurd_temporal_noise"
+  ],
+  "runs_per_config": 10,
+  "phase1_runs": 10,
+  "phase2_runs": 5,
+  "workers": 4,
+  "fast_eval": false,
+  "cooldown_seconds": 2,
+  "ollama": {
+    "num_predict": 768,
+    "num_ctx": 8162,
+    "repeat_penalty": null,
+    "repeat_last_n": null,
+    "top_k": null,
+    "top_p": null,
+    "keep_alive": "10m"
+  },
+  "cache": {
+    "enabled": false,
+    "dir": ".cache/ollama_eval"
+  }
+}
