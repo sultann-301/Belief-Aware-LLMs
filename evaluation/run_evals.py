@@ -19,7 +19,7 @@ from os.path import join, dirname
 path.insert(0, join(dirname(__file__), ".."))
 
 from evaluation.eval_harness import run_multi_eval, run_multi_eval_dual_agent, DomainConfig
-from evaluation.scenarios import (
+from evaluation.scenario_sets.base import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
     ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
     ALIEN_INITIAL_BELIEFS_CF, ALIEN_TURNS_CF,
@@ -31,35 +31,35 @@ from belief_store.domains.alien_clinic import setup_alien_clinic_domain
 from belief_store.domains.crime_scene import setup_crime_scene_domain
 from belief_store.domains.thorncrester import setup_thorncrester_domain
 
-from evaluation.loan_extended_scenarios import (
+from evaluation.scenario_sets.extended.loan import (
     LOAN_NEGATION_TURNS, LOAN_1HOP_TURNS, LOAN_2HOP_TURNS, LOAN_3HOP_TURNS,
     LOAN_4HOP_TURNS, LOAN_BELIEF_MAINTENANCE_TURNS
 )
-from evaluation.alien_clinic_extended_scenarios import (
+from evaluation.scenario_sets.extended.alien_clinic import (
     ALIEN_NEGATION_TURNS, ALIEN_1HOP_TURNS, ALIEN_2HOP_TURNS, ALIEN_3HOP_TURNS,
     ALIEN_4HOP_TURNS, ALIEN_BELIEF_MAINTENANCE_TURNS
 )
-from evaluation.crime_scene_extended_scenarios import (
+from evaluation.scenario_sets.extended.crime_scene import (
     CRIME_NEGATION_TURNS, CRIME_1HOP_TURNS, CRIME_2HOP_TURNS, CRIME_3HOP_TURNS,
     CRIME_4HOP_TURNS, CRIME_BELIEF_MAINTENANCE_TURNS
 )
-from evaluation.thorncrester_extended_scenarios import (
+from evaluation.scenario_sets.extended.thorncrester import (
     THORNCRESTER_NEGATION_TURNS, THORNCRESTER_1HOP_TURNS, THORNCRESTER_2HOP_TURNS,
     THORNCRESTER_3HOP_TURNS, THORNCRESTER_4HOP_TURNS, THORNCRESTER_BELIEF_MAINTENANCE_TURNS
 )
-from evaluation.hard_scenarios import (
+from evaluation.scenario_sets.hard import (
     LOAN_HARD_TURNS,
     ALIEN_HARD_TURNS,
     CRIME_HARD_TURNS,
     THORNCRESTER_HARD_TURNS,
 )
-from evaluation.belief_awareness_scenarios import (
+from evaluation.scenario_sets.belief_awareness import (
     LOAN_ABSURD_TURNS, LOAN_ABSURD_TEMPORAL_TURNS, LOAN_GROUNDING_TURNS,
     ALIEN_ABSURD_TURNS, ALIEN_ABSURD_TEMPORAL_TURNS, ALIEN_TRACE_SELECTION_TURNS, ALIEN_GROUNDING_TURNS,
     CRIME_ABSURD_TURNS, CRIME_ABSURD_TEMPORAL_TURNS, CRIME_GROUNDING_TURNS,
     THORNCRESTER_ABSURD_TURNS, THORNCRESTER_ABSURD_TEMPORAL_TURNS, THORNCRESTER_GROUNDING_TURNS,
 )
-from evaluation.noise_scenarios import (
+from evaluation.scenario_sets.noise import (
     LOAN_ABSURD_TEMPORAL_NOISE_TURNS,
     ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
     CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
@@ -155,9 +155,9 @@ def seed_paraphrased_turns(domain_name: str, subset_name: str, original_turns: l
         
     try:
         if subset_name.endswith("_noise"):
-            module_name = f"evaluation.{domain_name}_paraphrased_scenarios_noise"
+            module_name = f"evaluation.scenario_sets.paraphrased_noise.{domain_name}"
         else:
-            module_name = f"evaluation.{domain_name}_paraphrased_scenarios"
+            module_name = f"evaluation.scenario_sets.paraphrased.{domain_name}"
         para_module = importlib.import_module(module_name)
     except ImportError:
         return original_turns
@@ -574,6 +574,10 @@ Examples:
 
     if args.runs is None:
         args.runs = 1 if args.temperature == 0.0 else 10
+    if args.runs <= 0:
+        parser.error("--runs must be a positive integer.")
+    if args.workers <= 0:
+        parser.error("--workers must be a positive integer.")
 
     if args.fast_eval:
         if args.num_predict is None:
