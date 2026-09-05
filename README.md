@@ -32,15 +32,50 @@ Open your browser and navigate to `http://localhost:5000` to select a domain con
 
 ### 2. Running Automated Evaluations
 
-The built-in evaluation suite contains hundreds of deterministic and carefully mapped multi-hop scenarios. You can run gauntlets on different domains targeting logic tests by running the script:
+The built-in evaluation suite contains deterministic, carefully mapped multi-hop scenario sets plus paraphrased variants. Paraphrase selection is intentionally random during evaluation to sample a broader answer distribution.
+
+For a single evaluation run, use `evaluation/run_evals.py`:
 
 ```bash
 # General Domain Usage
-python3 evaluation/run_evals.py --domain [domain_name] --runs 10 --workers 4 --model gemma3:1b
+python3 evaluation/run_evals.py \
+  --domain loan_belief_maintenance \
+  --runs 10 \
+  --workers 4 \
+  --model gemma3:1b \
+  --eval-prompt-version v15 \
+  --baseline-prompt-version v1
 ```
 
-**Valid Domains:**
-The repository ships with base structures (`loan`, `alien_clinic`, `crime_scene`, `thorncrester`) and massive 60-turn logic suites (`loan_extended`, `alien_clinic_extended`, etc.).
+For thesis-style batches, use the config-driven runner:
+
+```bash
+# Inspect the planned standard batch without running models
+python3 evaluation/run_batch.py \
+  --config evaluation/configs/thesis_standard_batch.json \
+  --dry-run
+
+# Inspect the planned dual-agent batch without running models
+python3 evaluation/run_batch.py \
+  --config evaluation/configs/thesis_dual_agent_batch.json \
+  --dry-run
+```
+
+`run_batch.py` validates its JSON config before launching model calls. Batch configs define the mode, domains, models, model pairs, prompt versions, run counts, worker count, Ollama options, cache settings, result CSV path, and debug-log behavior.
+
+By default, evaluation results are appended to `eval_results.csv`, `eval_results_with_store.csv`, or `eval_results_dual_agent.csv` depending on mode. Use `--csv-out` to route a run somewhere else, and use `--log-dir` or `--no-debug-logs` to redirect or disable failed-extraction and incorrect-answer logs:
+
+```bash
+python3 evaluation/run_evals.py \
+  --domain loan \
+  --runs 1 \
+  --model gemma3:1b \
+  --csv-out /tmp/belief-aware-smoke.csv \
+  --no-debug-logs
+```
+
+**Valid domains and scenario subsets:**
+The repository ships with base structures (`loan`, `alien_clinic`, `crime_scene`, `thorncrester`) and larger logic suites (`loan_extended`, `alien_clinic_extended`, etc.).
 
 If you want to isolate a specific structural issue, target the subsets individually using these suffixes on any domain name:
 
@@ -50,6 +85,12 @@ If you want to isolate a specific structural issue, target the subsets individua
 - `_3hop`
 - `_4hop`
 - `_belief_maintenance` (e.g. `crime_scene_belief_maintenance`)
+- `_hard`
+- `_absurd`
+- `_absurd_temporal`
+- `_absurd_temporal_noise`
+- `_belief_awareness`
+- `_grounding`
 
 ### 3. Running Unit Tests
 
@@ -58,7 +99,7 @@ A `pytest` suite is configured to ensure the underlying node graph math triggers
 **To run the test suite:**
 
 ```bash
-pytest tests/
+pytest -q
 ```
 
 ---
@@ -84,24 +125,28 @@ Belief-Aware-LLMs/
 │       ├── crime_scene.py           # Crime scene investigation (suspects, alibis)
 │       └── thorncrester.py          # Ecological taxonomy (species, phenotypes)
 │
-├── evaluation/                      # Evaluation harness and test scenarios
+├── evaluation/                      # Evaluation harness and scenario sets
 │   ├── eval_harness.py              # Main evaluation runner (multi-threaded)
 │   ├── eval_orchestrator.py         # Orchestrates test execution and result aggregation
 │   ├── eval_metrics.py              # Metrics computation (accuracy, precision, F1)
 │   ├── eval_conditions.py           # Test condition definitions
 │   ├── eval_common.py               # Shared utilities and constants
 │   ├── run_evals.py                 # CLI entry point for evaluations
-│   ├── run_batch.py                 # Batch test runner (for scaling)
+│   ├── run_batch.py                 # Config-driven batch runner
 │   ├── prompting.py                 # Query generation and prompt construction
 │   ├── answer_extraction.py         # Extract and normalize answers from LLM output
-│   ├── scenarios.py                 # Base scenario definitions
-│   ├── hard_scenarios.py            # Adversarial & edge-case scenarios
-│   ├── noise_scenarios.py           # Paraphrasing & noisy input scenarios
-│   ├── *_scenarios.py               # Domain-specific scenario files:
-│       ├── alien_clinic_*_scenarios.py
-│       ├── crime_scene_*_scenarios.py
-│       ├── loan_*_scenarios.py
-│       └── thorncrester_*_scenarios.py
+│   ├── configs/                     # Reusable batch-evaluation JSON configs
+│   │   ├── thesis_standard_batch.json
+│   │   └── thesis_dual_agent_batch.json
+│   ├── scenario_sets/               # Scenario data grouped by type and domain
+│   │   ├── base.py                  # Base domain rules, initial beliefs, basic turns
+│   │   ├── belief_awareness.py      # Absurd, grounding, and trace-selection scenarios
+│   │   ├── hard.py                  # Adversarial & edge-case scenarios
+│   │   ├── noise.py                 # Noise-augmented scenario variants
+│   │   ├── extended/                # Negation, hop-depth, and maintenance scenarios
+│   │   ├── paraphrased/             # Generated paraphrase variants
+│   │   └── paraphrased_noise/       # Generated noisy paraphrase variants
+│   ├── *_scenarios.py               # Compatibility shims for legacy imports
 │   ├── eval_results*.csv            # Evaluation results (various runs)
 │
 ├── tests/                           # Unit test suite (pytest)
@@ -154,7 +199,10 @@ Belief-Aware-LLMs/
 **evaluation/** — Test framework
 
 - `eval_harness.py`: Multi-threaded runner orchestrating scenario execution.
-- Scenarios are grouped by domain and complexity (base, extended, paraphrased, with noise).
+- `run_evals.py`: Runs one domain/scenario subset and writes summary metrics to CSV.
+- `run_batch.py`: Runs validated JSON batch configs for standard, dual-agent, or sequential experiments.
+- `configs/`: Reusable experiment configurations, including thesis standard and dual-agent batches.
+- `scenario_sets/`: Scenario data grouped by type and domain. Legacy `*_scenarios.py` modules remain as compatibility shims, but new imports should target `evaluation.scenario_sets...`.
 - Results stored in CSV format for aggregation and analysis.
 
 **tests/** — Unit testing
