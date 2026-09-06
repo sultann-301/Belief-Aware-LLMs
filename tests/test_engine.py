@@ -14,13 +14,41 @@ class MockLLMClient:
         self.response = response
         self.calls: list[dict[str, str]] = []
 
-    def generate(self, system_prompt: str, user_prompt: str, model: str | None = None) -> str:
+    def generate(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: str | None = None,
+        json_mode: bool = False,
+    ) -> str:
         self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt})
         return self.response
 
-    def generate_with_history(self, messages: list[dict[str, str]], model: str | None = None) -> str:
+    def generate_with_history(
+        self,
+        messages: list[dict[str, str]],
+        model: str | None = None,
+        json_mode: bool = False,
+    ) -> str:
         self.calls.append({"messages": messages})
         return self.response
+
+    def generate_with_logprobs(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        model: str | None = None,
+    ) -> tuple[str, list | None]:
+        self.calls.append({"system_prompt": system_prompt, "user_prompt": user_prompt})
+        return self.response, None
+
+    def generate_with_history_and_logprobs(
+        self,
+        messages: list[dict[str, str]],
+        model: str | None = None,
+    ) -> tuple[str, list | None]:
+        self.calls.append({"messages": messages})
+        return self.response, None
 
 
 def _make_engine(mock_response="REASONING: mock\nANSWER: mock"):
@@ -288,4 +316,3 @@ class TestAttributeLevelRouting:
         # Should use old-style flat listing, not layered
         assert "# Root facts" not in prompt
         assert "applicant.income = 6000" in prompt
-

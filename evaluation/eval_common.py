@@ -166,18 +166,35 @@ def _create_ollama_client(
 # Result Processing & Logging
 # ────────────────────────────────────────────────────────────────────
 
-def log_none_answer(condition: str, turn: int, response: str) -> None:
+def _debug_log_path(log_dir: str | None, filename: str) -> str:
+    base_dir = log_dir or os.path.dirname(__file__)
+    os.makedirs(base_dir, exist_ok=True)
+    return os.path.join(base_dir, filename)
+
+
+def log_none_answer(
+    condition: str,
+    turn: int,
+    response: str,
+    log_dir: str | None = None,
+) -> None:
     """Log failures to extract an answer from the LLM response."""
-    log_file = os.path.join(os.path.dirname(__file__), "failed_extractions.log")
+    log_file = _debug_log_path(log_dir, "failed_extractions.log")
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{condition} - Turn {turn}]\n{response}\n{'-'*60}\n")
 
 
 def log_incorrect_answer(
-    condition: str, turn: int, question: str, actual: str, expected: str, response: str,
+    condition: str,
+    turn: int,
+    question: str,
+    actual: str,
+    expected: str,
+    response: str,
+    log_dir: str | None = None,
 ) -> None:
     """Log incorrect answers with full reasoning for post-analysis."""
-    log_file = os.path.join(os.path.dirname(__file__), "incorrect_answers.log")
+    log_file = _debug_log_path(log_dir, "incorrect_answers.log")
     with open(log_file, "a", encoding="utf-8") as f:
         f.write(f"[{condition} - Turn {turn}] LLM chose {actual}, Correct was {expected}\n")
         f.write(f"QUESTION: {question}\n")
@@ -191,6 +208,8 @@ def _process_result(
     response: str,
     extra_fields: dict[str, Any] | None = None,
     logprobs_data: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> dict:
     """Extract answer with extraction-quality tracking, log if needed, and return result dict."""
     extraction_result = extract_answer_with_confidence(response, turn.get("options", {}))
@@ -199,7 +218,8 @@ def _process_result(
         answer = None
         confidence = None
         extraction_method = None
-        log_none_answer(condition, turn_idx, response)
+        if debug_logs_enabled:
+            log_none_answer(condition, turn_idx, response, log_dir=debug_log_dir)
     else:
         answer = extraction_result["answer"]
         confidence = extraction_result["confidence"]
@@ -208,8 +228,16 @@ def _process_result(
     correct = turn["correct"]
     hit = answer == correct
 
-    if answer is not None and not hit:
-        log_incorrect_answer(condition, turn_idx, turn["question"], answer, correct, response)
+    if answer is not None and not hit and debug_logs_enabled:
+        log_incorrect_answer(
+            condition,
+            turn_idx,
+            turn["question"],
+            answer,
+            correct,
+            response,
+            log_dir=debug_log_dir,
+        )
 
     # Confidence scores (Logprob-based)
     # We pass the extracted answer phrase as a hint to help locate tokens
@@ -261,6 +289,7 @@ def _process_result(
 
 def _ensure_csv_header(csv_filename: str, header: list[str]) -> None:
     """Ensure CSV has the expected header; upgrade if a new trailing column was added."""
+    os.makedirs(os.path.dirname(csv_filename) or ".", exist_ok=True)
     if not os.path.isfile(csv_filename):
         return
 

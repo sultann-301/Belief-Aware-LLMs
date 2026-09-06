@@ -10,23 +10,23 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from belief_store.llm_client import OllamaClient
 
 # Import the original scenario variables
-from evaluation.loan_extended_scenarios import LOAN_BELIEF_MAINTENANCE_TURNS
-from evaluation.alien_clinic_extended_scenarios import ALIEN_BELIEF_MAINTENANCE_TURNS
-from evaluation.crime_scene_extended_scenarios import CRIME_BELIEF_MAINTENANCE_TURNS
-from evaluation.thorncrester_extended_scenarios import THORNCRESTER_BELIEF_MAINTENANCE_TURNS
+from evaluation.scenario_sets.extended.loan import LOAN_BELIEF_MAINTENANCE_TURNS
+from evaluation.scenario_sets.extended.alien_clinic import ALIEN_BELIEF_MAINTENANCE_TURNS
+from evaluation.scenario_sets.extended.crime_scene import CRIME_BELIEF_MAINTENANCE_TURNS
+from evaluation.scenario_sets.extended.thorncrester import THORNCRESTER_BELIEF_MAINTENANCE_TURNS
 
-from evaluation.belief_awareness_scenarios import (
+from evaluation.scenario_sets.belief_awareness import (
     LOAN_ABSURD_TURNS, LOAN_ABSURD_TEMPORAL_TURNS, LOAN_GROUNDING_TURNS,
     ALIEN_ABSURD_TURNS, ALIEN_ABSURD_TEMPORAL_TURNS, ALIEN_GROUNDING_TURNS,
     CRIME_ABSURD_TURNS, CRIME_ABSURD_TEMPORAL_TURNS, CRIME_GROUNDING_TURNS,
     THORNCRESTER_ABSURD_TURNS, THORNCRESTER_ABSURD_TEMPORAL_TURNS, THORNCRESTER_GROUNDING_TURNS
 )
 
-from evaluation.hard_scenarios import (
+from evaluation.scenario_sets.hard import (
     LOAN_HARD_TURNS, ALIEN_HARD_TURNS, CRIME_HARD_TURNS, THORNCRESTER_HARD_TURNS
 )
 
-from evaluation.noise_scenarios import (
+from evaluation.scenario_sets.noise import (
     ALIEN_ABSURD_TEMPORAL_NOISE_TURNS,
     CRIME_ABSURD_TEMPORAL_NOISE_TURNS,
     LOAN_ABSURD_TEMPORAL_NOISE_TURNS,

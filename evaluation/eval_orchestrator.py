@@ -92,6 +92,8 @@ def run_multi_eval(
     baseline_prompt_version: str | None = None,
     only_with_store: bool = False,
     csv_out: str | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> None:
     """Run evaluation N times in parallel, print summary statistics and export results."""
     print(f"Connecting to Ollama ({model})...\n")
@@ -153,17 +155,17 @@ def run_multi_eval(
                 pool.submit(
                     _run_standard_eval_task,
                     0, config, model, temperature, ollama_options, cache_path, cache_enabled,
-                    baseline_prompt_version, run_turns
+                    baseline_prompt_version, run_turns, debug_log_dir, debug_logs_enabled
                 )
             ] = (run_idx, 0)
-            
+
             # [2] NO STORE
             if not only_with_store:
                 future_to_task[
                     pool.submit(
                         _run_standard_eval_task,
                         1, config, model, temperature, ollama_options, cache_path, cache_enabled,
-                        baseline_prompt_version, run_turns
+                        baseline_prompt_version, run_turns, debug_log_dir, debug_logs_enabled
                     )
                 ] = (run_idx, 1)
 
@@ -338,8 +340,10 @@ def run_multi_eval(
     print(f"Total wall-clock time: {elapsed:.1f}s  |  WCT/turn: {wct_per_turn:.3f}s\n")
 
     # ── CSV Export ────────────────────────────────────────────────────────
-    if only_with_store:
-        csv_filename = csv_out or "eval_results_with_store.csv"
+    if csv_out:
+        csv_filename = csv_out
+    elif only_with_store:
+        csv_filename = "eval_results_with_store.csv"
     else:
         csv_filename = "eval_results.csv"
     file_exists = os.path.isfile(csv_filename)
@@ -464,6 +468,9 @@ def run_multi_eval_dual_agent(
     cache_enabled: bool = False,
     cache_namespace: str = "eval",
     shuffle_options: bool = False,
+    csv_out: str | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> None:
     """Run evaluation N times with dual-agent conditions in parallel."""
     reasoner_model = reasoner_model or model
@@ -524,7 +531,8 @@ def run_multi_eval_dual_agent(
                 pool.submit(
                     _run_dual_agent_eval_task,
                     config, model, temperature, reasoner_model, matcher_model,
-                    ollama_options, cache_path, cache_enabled, run_turns
+                    ollama_options, cache_path, cache_enabled, run_turns,
+                    debug_log_dir, debug_logs_enabled
                 )
             ] = (run_idx, 0)
 
@@ -686,7 +694,7 @@ def run_multi_eval_dual_agent(
     print("=" * 80)
     print(f"Total wall-clock time: {elapsed:.1f}s  |  WCT/turn: {wct_per_turn_da:.3f}s\n")
 
-    csv_filename = "eval_results_dual_agent.csv"
+    csv_filename = csv_out or "eval_results_dual_agent.csv"
     file_exists = os.path.isfile(csv_filename)
     prompt_ver = get_eval_prompt_version(config.eval_prompt_version)
     header = [
@@ -762,4 +770,3 @@ def run_multi_eval_dual_agent(
         print(f"Results exported to {csv_filename}")
     except Exception as e:
         print(f"Failed to write CSV: {e}")
-

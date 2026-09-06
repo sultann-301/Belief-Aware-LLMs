@@ -24,7 +24,7 @@ from belief_store.answer_validation import (
     normalize_for_match,
 )
 
-from evaluation.scenarios import (
+from evaluation.scenario_sets.base import (
     LOAN_RULES, LOAN_INITIAL_BELIEFS, LOAN_TURNS,
     ALIEN_RULES, ALIEN_INITIAL_BELIEFS, ALIEN_TURNS_BASIC,
     CRIME_RULES, CRIME_INITIAL_BELIEFS, CRIME_TURNS,

@@ -48,7 +48,13 @@ from evaluation.eval_common import (
 # Standard Conditions
 # ────────────────────────────────────────────────────────────────────
 
-def run_with_store(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
+def run_with_store(
+    llm: OllamaClient,
+    config: DomainConfig,
+    turns: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
+) -> list[dict]:
     """[1] WITH Store (Stateless): Fresh store per turn, no chat history."""
     results = []
     eval_system_prompt = _resolve_eval_system_prompt(config)
@@ -83,12 +89,20 @@ def run_with_store(llm: OllamaClient, config: DomainConfig, turns: list[dict] | 
                                            beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE", i + 1, turn, response,
                                        extra_fields=reasoning or None,
-                                       logprobs_data=logprobs_data))
+                                       logprobs_data=logprobs_data,
+                                       debug_log_dir=debug_log_dir,
+                                       debug_logs_enabled=debug_logs_enabled))
 
     return results
 
 
-def run_with_store_with_history(llm: OllamaClient, config: DomainConfig, turns: list[dict] | None = None) -> list[dict]:
+def run_with_store_with_history(
+    llm: OllamaClient,
+    config: DomainConfig,
+    turns: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
+) -> list[dict]:
     """[2] WITH Store + Chat History: Store-derived beliefs + conversational context."""
     results = []
     t_list = turns if turns is not None else config.turns
@@ -101,7 +115,7 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig, turns: 
     # For conversational: maintain one store across all turns
     store: BeliefStore | None = _init_store(config) if config.is_conversational else None
 
-    for i, turn in enumerate(config.turns):
+    for i, turn in enumerate(t_list):
         # Store management
         if config.is_conversational:
             assert store is not None
@@ -146,7 +160,9 @@ def run_with_store_with_history(llm: OllamaClient, config: DomainConfig, turns: 
                                            beliefs_text=beliefs_text)
         results.append(_process_result("WITH STORE (+History)", i + 1, turn, response,
                                        extra_fields=reasoning or None,
-                                       logprobs_data=logprobs_data))
+                                       logprobs_data=logprobs_data,
+                                       debug_log_dir=debug_log_dir,
+                                       debug_logs_enabled=debug_logs_enabled))
 
     return results
 
@@ -156,6 +172,8 @@ def run_without_store(
     config: DomainConfig,
     turns: list[dict] | None = None,
     baseline_prompt_version: str | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> list[dict]:
     """[3] NO Store (Baseline): Rules + chat history only, no explicit belief tracking."""
     results = []
@@ -196,7 +214,9 @@ def run_without_store(
         messages.append({"role": "assistant", "content": response})
 
         results.append(_process_result("NO STORE", i + 1, turn, response,
-                                       logprobs_data=logprobs_data))
+                                       logprobs_data=logprobs_data,
+                                       debug_log_dir=debug_log_dir,
+                                       debug_logs_enabled=debug_logs_enabled))
 
     return results
 
@@ -211,6 +231,8 @@ def run_with_store_dual_agent(
     reasoner_model: str | None = None,
     matcher_model: str | None = None,
     turns: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> list[dict]:
     """[4] WITH Store (Dual-Agent): Fresh store per turn, decoupled reasoning+decision, no chat history."""
     results = []
@@ -267,6 +289,8 @@ def run_with_store_dual_agent(
                 turn,
                 response,
                 extra_fields=split_metrics,
+                debug_log_dir=debug_log_dir,
+                debug_logs_enabled=debug_logs_enabled,
             )
         )
 
@@ -287,13 +311,28 @@ def _run_standard_eval_task(
     cache_enabled: bool,
     baseline_prompt_version: str | None = None,
     turns: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> list[dict]:
     """Run one standard eval task with its own Ollama client instance."""
     llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
     t_list = turns if turns is not None else config.turns
     if condition == 0:
-        return run_with_store(llm, config, turns=t_list)
-    return run_without_store(llm, config, turns=t_list, baseline_prompt_version=baseline_prompt_version)
+        return run_with_store(
+            llm,
+            config,
+            turns=t_list,
+            debug_log_dir=debug_log_dir,
+            debug_logs_enabled=debug_logs_enabled,
+        )
+    return run_without_store(
+        llm,
+        config,
+        turns=t_list,
+        baseline_prompt_version=baseline_prompt_version,
+        debug_log_dir=debug_log_dir,
+        debug_logs_enabled=debug_logs_enabled,
+    )
 
 
 def _run_dual_agent_eval_task(
@@ -306,8 +345,18 @@ def _run_dual_agent_eval_task(
     cache_path: str | None,
     cache_enabled: bool,
     turns: list[dict] | None = None,
+    debug_log_dir: str | None = None,
+    debug_logs_enabled: bool = True,
 ) -> list[dict]:
     """Run one dual-agent eval task with its own Ollama client instance."""
     llm = _create_ollama_client(model, temperature, ollama_options, cache_path, cache_enabled)
     t_list = turns if turns is not None else config.turns
-    return run_with_store_dual_agent(llm, config, reasoner_model, matcher_model, turns=t_list)
+    return run_with_store_dual_agent(
+        llm,
+        config,
+        reasoner_model,
+        matcher_model,
+        turns=t_list,
+        debug_log_dir=debug_log_dir,
+        debug_logs_enabled=debug_logs_enabled,
+    )

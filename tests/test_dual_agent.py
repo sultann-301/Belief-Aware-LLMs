@@ -13,7 +13,7 @@ from belief_store.langgraph_dual_agent import (  # noqa: E402
     run_dual_agent,
 )
 from evaluation.eval_harness import DomainConfig, run_with_store_dual_agent  # noqa: E402
-from evaluation.scenarios import LOAN_INITIAL_BELIEFS, LOAN_RULES  # noqa: E402
+from evaluation.scenario_sets.base import LOAN_INITIAL_BELIEFS, LOAN_RULES  # noqa: E402
 from belief_store.domains.loan import setup_loan_domain  # noqa: E402
 
 

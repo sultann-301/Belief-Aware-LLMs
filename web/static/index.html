@@ -50,9 +50,15 @@
           <button class="mode-tab" data-mode="simulation" id="tab-simulation">
             Simulation
           </button>
+          <button class="mode-tab" data-mode="example" id="tab-example">
+            Example Run
+          </button>
         </div>
       </div>
       <div class="topbar-actions">
+        <button id="btn-theme-toggle" class="btn btn-ghost" title="Toggle Light/Dark Mode">
+          <span class="btn-icon" id="theme-icon">☼</span>
+        </button>
         <button
           id="btn-resolve"
           class="btn btn-secondary"
@@ -146,6 +152,8 @@
               <option value="v4">Prompt v4 (HopWalker)</option>
               <option value="v5">Prompt v5 (value-aware)</option>
               <option value="v13">Prompt v13 (chat-safe small model)</option>
+              <option value="v15">Prompt v15 (free-form reasoning)</option>
+              <option value="v16">Prompt v16 (cited keys)</option>
             </select>
             <div
               class="dirty-indicator"
@@ -333,6 +341,54 @@
             <button class="btn btn-primary" id="btn-sim-step">
               Next Turn →
             </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER: Screenshot-friendly example run panel -->
+      <section
+        class="panel panel-example"
+        id="panel-example"
+        style="display: none"
+      >
+        <div class="example-stage">
+          <div class="example-hero">
+            <div>
+              <p class="example-eyebrow">Alien Clinic · Dirty Fan-Out vs HopWalker Subgraph · No Model Call</p>
+              <h2>Example Run: Broad Dirty State, Small Prompt</h2>
+              <p>
+                The update touches many dependent beliefs, but the queried
+                attribute only needs a small resolved subgraph.
+              </p>
+            </div>
+            <button class="btn btn-primary" id="btn-run-example">
+              Run Alien Clinic Example
+            </button>
+          </div>
+
+          <div class="example-grid">
+            <section class="example-card example-input-card">
+              <div class="example-card-label">Input Beliefs</div>
+              <div class="example-belief-list" id="example-input-beliefs"></div>
+            </section>
+
+            <section class="example-card example-steps-card">
+              <div class="example-card-label">Dependency Graph States</div>
+              <div class="example-step-grid" id="example-step-grid"></div>
+            </section>
+
+            <section class="example-card example-prompt-card">
+              <div class="example-card-label">Queried Attribute + Store-Built Prompt</div>
+              <div class="example-query">
+                Query target: <code>clinic.billing_tier</code><br />
+                What billing tier should the clinic assign?
+              </div>
+              <div class="example-prompt-block">
+                <div class="example-sub-label">Store-built prompt</div>
+                <pre id="example-store-prompt">Run the example to show the exact prompt built from the resolved belief snapshot.</pre>
+              </div>
+            </section>
+
           </div>
         </div>
       </section>
