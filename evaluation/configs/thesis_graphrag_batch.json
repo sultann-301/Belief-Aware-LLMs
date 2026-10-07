@@ -1,0 +1,40 @@
+{
+  "models": [
+    "gemma3:1b",
+    "llama3.2:1b",
+    "ministral-3:3b",
+    "qwen3:4b",
+    "gemma4:e2b"
+  ],
+  "domains": [
+    "loan_belief_maintenance",
+    "alien_clinic_belief_maintenance",
+    "crime_scene_belief_maintenance",
+    "thorncrester_belief_maintenance",
+    "loan_absurd",
+    "alien_clinic_absurd",
+    "crime_scene_absurd",
+    "thorncrester_absurd",
+    "loan_absurd_temporal",
+    "alien_clinic_absurd_temporal",
+    "crime_scene_absurd_temporal",
+    "thorncrester_absurd_temporal",
+    "loan_grounding",
+    "alien_clinic_grounding",
+    "crime_scene_grounding",
+    "thorncrester_grounding"
+  ],
+  "runs_per_config": 10,
+  "workers": 4,
+  "temperature": 0.0,
+  "think": false,
+  "baseline_prompt_version": "v1",
+  "question_policy": "sampled_paraphrases",
+  "scenario_seed": 0,
+  "ollama": {
+    "num_predict": 768,
+    "num_ctx": 8162,
+    "keep_alive": "10m"
+  },
+  "csv_out": "eval_results_graphrag.csv"
+}
