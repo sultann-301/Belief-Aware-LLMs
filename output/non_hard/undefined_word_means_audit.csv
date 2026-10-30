@@ -1,0 +1,57 @@
+,Model,Domain,Temp,Runs,Metric,Value,System,cell_accuracy
+1245,gemma3:1b,thorncrester_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+1425,gemma3:1b,loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+1856,llama3.2:1b,loan_grounding,0,10,TPCA_Words_Correct,0,No Store (v2),0
+1964,llama3.2:1b,thorncrester_grounding,0,10,TPCA_Words_Correct,0,No Store (v2),0
+2325,ministral-3:3b,alien_clinic_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2361,ministral-3:3b,crime_scene_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2577,ministral-3:3b,loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2793,ministral-3:3b,crime_scene_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2829,ministral-3:3b,thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2865,"Qwen3:4b, no thinking",loan_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2901,"Qwen3:4b, no thinking",alien_clinic_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2937,"Qwen3:4b, no thinking",crime_scene_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+2973,"Qwen3:4b, no thinking",thorncrester_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3153,"Qwen3:4b, no thinking",loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3369,"Qwen3:4b, no thinking",crime_scene_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3405,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3442,gemma4:e2b,loan_absurd,0,10,TPCA_Words_Wrong,0,No Store (v2),1
+3513,gemma4:e2b,crime_scene_absurd,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3729,gemma4:e2b,loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3909,gemma4:e2b,alien_clinic_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+3981,gemma4:e2b,thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v15),1
+4231,gemma3:1b,crime_scene_grounding,0,10,TPCA_Words_Correct,0,With Store (v16),0
+4592,llama3.2:1b,loan_absurd,0,10,TPCA_Words_Correct,0,No Store (v1),0
+4663,llama3.2:1b,crime_scene_absurd,0,10,TPCA_Words_Correct,0,No Store (v1),0
+4729,llama3.2:1b,loan_grounding,0,10,TPCA_Words_Correct,0,With Store (v16),0
+4730,llama3.2:1b,loan_grounding,0,10,TPCA_Words_Correct,0,No Store (v1),0
+4801,llama3.2:1b,crime_scene_grounding,0,10,TPCA_Words_Correct,0,With Store (v16),0
+4837,llama3.2:1b,thorncrester_grounding,0,10,TPCA_Words_Correct,0,With Store (v16),0
+4874,llama3.2:1b,loan_absurd_temporal,0,10,TPCA_Words_Correct,0,No Store (v1),0
+4909,llama3.2:1b,alien_clinic_absurd_temporal,0,10,TPCA_Words_Correct,0,No Store (v1),0
+4940,llama3.2:1b,crime_scene_absurd_temporal,0,10,TPCA_Words_Correct,0,No Store (v1),0
+5007,llama3.2:1b,loan_belief_maintenance,0,10,TPCA_Words_Correct,0,No Store (v1),0
+5183,ministral-3:3b,alien_clinic_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5219,ministral-3:3b,crime_scene_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5435,ministral-3:3b,loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5579,ministral-3:3b,loan_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5651,ministral-3:3b,crime_scene_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5652,ministral-3:3b,crime_scene_belief_maintenance,0,10,TPCA_Words_Wrong,0,No Store (v1),1
+5687,ministral-3:3b,thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+5723,"Qwen3:4b, no thinking",loan_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6011,"Qwen3:4b, no thinking",loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6083,"Qwen3:4b, no thinking",crime_scene_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6155,"Qwen3:4b, no thinking",loan_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6191,"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6228,"Qwen3:4b, no thinking",crime_scene_belief_maintenance,0,10,TPCA_Words_Wrong,0,No Store (v1),1
+6263,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6264,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,No Store (v1),1
+6299,gemma4:e2b,loan_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6335,gemma4:e2b,alien_clinic_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6371,gemma4:e2b,crime_scene_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6407,gemma4:e2b,thorncrester_absurd,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6587,gemma4:e2b,loan_absurd_temporal,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6731,gemma4:e2b,loan_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6767,gemma4:e2b,alien_clinic_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6839,gemma4:e2b,thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,With Store (v16),1
+6840,gemma4:e2b,thorncrester_belief_maintenance,0,10,TPCA_Words_Wrong,0,No Store (v1),1

@@ -1,0 +1,101 @@
+Pair,System,Metric_Family,Summary_Metric,available,expected,missing
+gemma3:1b | gemma3:1b,Dual-Agent,Binding,Average_Accuracy,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Binding,Standard_Deviation_Accuracy,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Correct,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Wrong,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,End_to_End,Average_Accuracy,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Extraction,EMD_bracketed_exact,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,Brier_Score,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,ECE,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,Log_Loss,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,MacroCE,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Binding_Accuracy,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Correct_Count,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Scored_Count,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_F1,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Precision,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Recall,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,DS_Determinism_Score,16,16,0
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Binding,Average_Accuracy,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Binding,Standard_Deviation_Accuracy,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,TPCA_Words_Correct,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,TPCA_Words_Wrong,15,16,1
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,End_to_End,Average_Accuracy,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Extraction,EMD_bracketed_exact,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,Brier_Score,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,ECE,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,Log_Loss,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,MacroCE,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Binding_Accuracy,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Correct_Count,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Scored_Count,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_F1,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Precision,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Recall,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,DS_Determinism_Score,16,16,0
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Binding,Average_Accuracy,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Binding,Standard_Deviation_Accuracy,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,TPCA_Words_Correct,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,TPCA_Words_Wrong,14,16,2
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,End_to_End,Average_Accuracy,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,End_to_End,Standard_Deviation_Accuracy,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Extraction,EMD_bracketed_exact,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,Brier_Score,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,ECE,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,Log_Loss,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,MacroCE,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Binding_Accuracy,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Correct_Count,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Scored_Count,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_F1,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Precision,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Recall,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,AFR_Answer_Flip_Rate,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,DS_Determinism_Score,16,16,0
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,EFR_Extraction_Failure_Rate,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Binding,Average_Accuracy,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Binding,Standard_Deviation_Accuracy,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Correct,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Wrong,15,16,1
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,End_to_End,Average_Accuracy,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Extraction,EMD_bracketed_exact,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,Brier_Score,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,ECE,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,Log_Loss,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,MacroCE,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Binding_Accuracy,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Correct_Count,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Scored_Count,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_F1,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Precision,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Recall,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,DS_Determinism_Score,16,16,0
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,16,16,0

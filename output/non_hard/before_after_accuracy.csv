@@ -1,0 +1,16 @@
+,Model,System,before_combinations,before_accuracy,after_combinations,after_accuracy,before_scope
+0,gemma3:1b,With Store (mean v15/v16),16,0.56125000000000003,16,0.56125000000000003,"all available historical scenarios, including Hard where present"
+1,gemma3:1b,No Store (mean v1/v2),16,0.36968749999999995,16,0.3696875,"all available historical scenarios, including Hard where present"
+2,gemma3:1b,GraphRAG (v1),16,0.270625,16,0.270625,GraphRAG already used only the 16 benchmark combinations
+3,gemma4:e2b,With Store (mean v15/v16),20,0.77874999999999994,16,0.83968750000000003,"all available historical scenarios, including Hard where present"
+4,gemma4:e2b,No Store (mean v1/v2),20,0.5089999999999999,16,0.55281250000000004,"all available historical scenarios, including Hard where present"
+5,gemma4:e2b,GraphRAG (v1),16,0.75437500000000002,16,0.75437500000000002,GraphRAG already used only the 16 benchmark combinations
+6,llama3.2:1b,With Store (mean v15/v16),16,0.38843749999999999,16,0.38843749999999999,"all available historical scenarios, including Hard where present"
+7,llama3.2:1b,No Store (mean v1/v2),16,0.17468750000000002,16,0.1746875,"all available historical scenarios, including Hard where present"
+8,llama3.2:1b,GraphRAG (v1),16,0.26375000000000004,16,0.26375000000000004,GraphRAG already used only the 16 benchmark combinations
+9,ministral-3:3b,With Store (mean v15/v16),20,0.81749999999999989,16,0.88500000000000001,"all available historical scenarios, including Hard where present"
+10,ministral-3:3b,No Store (mean v1/v2),20,0.57124999999999992,16,0.60187499999999994,"all available historical scenarios, including Hard where present"
+11,ministral-3:3b,GraphRAG (v1),16,0.70187500000000003,16,0.70187500000000003,GraphRAG already used only the 16 benchmark combinations
+12,"Qwen3:4b, no thinking",With Store (mean v15/v16),20,0.8264999999999999,16,0.89687499999999998,"all available historical scenarios, including Hard where present"
+13,"Qwen3:4b, no thinking",No Store (mean v1/v2),20,0.57999999999999996,16,0.62375000000000003,"all available historical scenarios, including Hard where present"
+14,"Qwen3:4b, no thinking",GraphRAG (v1),16,0.38500000000000001,16,0.38500000000000001,GraphRAG already used only the 16 benchmark combinations

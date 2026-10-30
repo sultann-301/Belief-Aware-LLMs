@@ -1,0 +1,257 @@
+,Timestamp,Domain,Model,Reasoner_Model,Matcher_Model,Temp,Runs,Condition,Metric_Family,Summary_Metric,Value,Class_Label,Pair,System
+1,2026-05-20 11:32:46,loan_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+4,2026-05-20 11:32:46,loan_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+28,2026-05-20 12:44:04,alien_clinic_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0080000000000000002,,gemma3:1b | gemma3:1b,Dual-Agent
+31,2026-05-20 12:44:04,alien_clinic_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.014999999999999999,,gemma3:1b | gemma3:1b,Dual-Agent
+55,2026-05-20 12:49:44,crime_scene_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+58,2026-05-20 12:49:44,crime_scene_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+82,2026-05-20 12:55:33,thorncrester_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+85,2026-05-20 12:55:33,thorncrester_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+109,2026-05-20 13:01:38,loan_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+112,2026-05-20 13:01:38,loan_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+136,2026-05-20 13:08:07,alien_clinic_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+139,2026-05-20 13:08:07,alien_clinic_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0070000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+163,2026-05-20 13:14:25,crime_scene_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+166,2026-05-20 13:14:25,crime_scene_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0050000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+190,2026-05-20 13:21:06,thorncrester_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+193,2026-05-20 13:21:06,thorncrester_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+217,2026-05-20 13:27:27,loan_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+220,2026-05-20 13:27:27,loan_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+244,2026-05-20 13:34:13,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+247,2026-05-20 13:34:13,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0080000000000000002,,gemma3:1b | gemma3:1b,Dual-Agent
+271,2026-05-20 13:50:54,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+274,2026-05-20 13:50:54,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+298,2026-05-20 14:06:04,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+301,2026-05-20 14:06:04,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+325,2026-05-20 14:11:43,loan_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+328,2026-05-20 14:11:43,loan_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0070000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+352,2026-05-20 14:17:32,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+355,2026-05-20 14:17:32,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+379,2026-05-20 14:42:19,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+382,2026-05-20 14:42:19,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+406,2026-05-20 14:48:49,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+409,2026-05-20 14:48:49,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+433,2026-05-20 14:53:54,loan_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+436,2026-05-20 14:53:54,loan_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+460,2026-05-20 14:59:13,alien_clinic_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0070000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+463,2026-05-20 14:59:13,alien_clinic_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0070000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+487,2026-05-20 15:04:34,crime_scene_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+490,2026-05-20 15:04:34,crime_scene_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+514,2026-05-20 15:29:12,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+517,2026-05-20 15:29:12,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+541,2026-05-20 16:19:22,loan_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+544,2026-05-20 16:19:22,loan_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0080000000000000002,,gemma3:1b | ministral-3:3b,Dual-Agent
+568,2026-05-20 16:27:09,alien_clinic_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+571,2026-05-20 16:27:09,alien_clinic_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.012,,gemma3:1b | ministral-3:3b,Dual-Agent
+595,2026-05-20 16:34:40,crime_scene_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+598,2026-05-20 16:34:40,crime_scene_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.017000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+622,2026-05-20 16:42:33,thorncrester_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+625,2026-05-20 16:42:33,thorncrester_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+649,2026-05-20 16:50:11,loan_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+652,2026-05-20 16:50:11,loan_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+676,2026-05-20 16:58:13,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+679,2026-05-20 16:58:13,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+703,2026-05-20 17:06:04,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+706,2026-05-20 17:06:04,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+730,2026-05-20 17:10:45,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+733,2026-05-20 17:10:45,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+757,2026-05-20 17:16:10,loan_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+760,2026-05-20 17:16:10,loan_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+784,2026-05-20 17:24:18,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+787,2026-05-20 17:24:18,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+811,2026-05-20 17:29:18,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+814,2026-05-20 17:29:18,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+838,2026-05-20 17:35:12,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+841,2026-05-20 17:35:12,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+865,2026-05-20 17:46:52,loan_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+868,2026-05-20 17:46:52,loan_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+892,2026-05-20 18:20:48,alien_clinic_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0070000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+895,2026-05-20 18:20:48,alien_clinic_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+919,2026-05-20 18:29:04,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+922,2026-05-20 18:29:04,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+946,2026-05-20 19:02:22,thorncrester_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+949,2026-05-20 19:02:22,thorncrester_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+973,2026-05-20 19:14:46,loan_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+976,2026-05-20 19:14:46,loan_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1000,2026-05-20 19:27:47,alien_clinic_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1003,2026-05-20 19:27:47,alien_clinic_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1027,2026-05-20 19:35:35,crime_scene_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+1030,2026-05-20 19:35:35,crime_scene_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1054,2026-05-20 19:45:40,thorncrester_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+1057,2026-05-20 19:45:40,thorncrester_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0080000000000000002,,ministral-3:3b | gemma3:1b,Dual-Agent
+1081,2026-05-20 19:55:20,loan_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1084,2026-05-20 19:55:20,loan_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1108,2026-05-20 20:02:41,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1111,2026-05-20 20:02:41,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1135,2026-05-20 20:13:39,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1138,2026-05-20 20:13:39,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1162,2026-05-20 21:04:10,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1165,2026-05-20 21:04:10,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1189,2026-05-20 21:56:22,loan_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+1192,2026-05-20 21:56:22,loan_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+1216,2026-05-20 22:04:34,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1219,2026-05-20 22:04:34,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+1243,2026-05-20 22:13:10,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1246,2026-05-20 22:13:10,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1270,2026-05-20 22:20:15,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1273,2026-05-20 22:20:15,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+1297,2026-05-20 22:39:50,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1300,2026-05-20 22:39:50,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1324,2026-05-20 23:02:16,alien_clinic_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1327,2026-05-20 23:02:16,alien_clinic_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1351,2026-05-20 23:17:23,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1354,2026-05-20 23:17:23,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1378,2026-05-20 23:32:54,thorncrester_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1381,2026-05-20 23:32:54,thorncrester_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0050000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1405,2026-05-20 23:48:23,loan_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1408,2026-05-20 23:48:23,loan_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1432,2026-05-21 00:04:30,alien_clinic_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1435,2026-05-21 00:04:30,alien_clinic_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1459,2026-05-21 00:23:11,crime_scene_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1462,2026-05-21 00:23:11,crime_scene_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1486,2026-05-21 00:44:42,thorncrester_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1489,2026-05-21 00:44:42,thorncrester_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1513,2026-05-21 01:04:02,loan_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1516,2026-05-21 01:04:02,loan_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1540,2026-05-21 01:19:18,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1543,2026-05-21 01:19:18,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1567,2026-05-21 01:37:21,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1570,2026-05-21 01:37:21,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1594,2026-05-21 01:54:23,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1597,2026-05-21 01:54:23,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1621,2026-05-21 03:44:24,loan_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1624,2026-05-21 03:44:24,loan_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1648,2026-05-21 04:03:03,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1651,2026-05-21 04:03:03,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1675,2026-05-21 04:21:28,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1678,2026-05-21 04:21:28,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1702,2026-05-21 04:40:17,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1705,2026-05-21 04:40:17,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+1729,2026-06-04 21:14:15,loan_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+1732,2026-06-04 21:14:15,loan_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1756,2026-06-04 21:21:56,alien_clinic_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0080000000000000002,,gemma3:1b | gemma3:1b,Dual-Agent
+1759,2026-06-04 21:21:56,alien_clinic_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1783,2026-06-04 21:29:43,crime_scene_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1786,2026-06-04 21:29:43,crime_scene_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1810,2026-06-04 21:57:42,thorncrester_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1813,2026-06-04 21:57:42,thorncrester_absurd,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1837,2026-06-04 22:09:08,loan_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1840,2026-06-04 22:09:08,loan_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1864,2026-06-04 22:20:56,alien_clinic_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1867,2026-06-04 22:20:56,alien_clinic_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1891,2026-06-04 22:31:42,crime_scene_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1894,2026-06-04 22:31:42,crime_scene_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+1918,2026-06-04 22:42:47,thorncrester_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1921,2026-06-04 22:42:47,thorncrester_grounding,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1945,2026-06-04 22:53:35,loan_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1948,2026-06-04 22:53:35,loan_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+1972,2026-06-04 23:18:25,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+1975,2026-06-04 23:18:25,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+1999,2026-06-04 23:27:11,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+2002,2026-06-04 23:27:11,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0070000000000000001,,gemma3:1b | gemma3:1b,Dual-Agent
+2026,2026-06-04 23:36:53,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2029,2026-06-04 23:36:53,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2053,2026-06-04 23:47:12,loan_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2056,2026-06-04 23:47:12,loan_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2080,2026-06-04 23:57:42,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+2083,2026-06-04 23:57:42,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+2107,2026-06-05 00:08:21,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+2110,2026-06-05 00:08:21,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | gemma3:1b,Dual-Agent
+2134,2026-06-05 00:15:40,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2137,2026-06-05 00:15:40,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | gemma3:1b,Dual-Agent
+2161,2026-06-05 00:31:27,loan_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2164,2026-06-05 00:31:27,loan_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2188,2026-06-05 00:37:42,alien_clinic_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2191,2026-06-05 00:37:42,alien_clinic_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2215,2026-06-05 00:44:00,crime_scene_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2218,2026-06-05 00:44:00,crime_scene_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2242,2026-06-05 00:50:29,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2245,2026-06-05 00:50:29,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2269,2026-06-05 00:57:32,loan_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2272,2026-06-05 00:57:32,loan_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2296,2026-06-05 01:04:19,alien_clinic_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2299,2026-06-05 01:04:19,alien_clinic_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0050000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2323,2026-06-05 01:10:40,crime_scene_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2326,2026-06-05 01:10:40,crime_scene_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0080000000000000002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2350,2026-06-05 01:17:47,thorncrester_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2353,2026-06-05 01:17:47,thorncrester_grounding,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.017999999999999999,,gemma3:1b | ministral-3:3b,Dual-Agent
+2377,2026-06-05 01:24:40,loan_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2380,2026-06-05 01:24:40,loan_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2404,2026-06-05 01:31:14,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2407,2026-06-05 01:31:14,alien_clinic_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2431,2026-06-05 01:37:35,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2434,2026-06-05 01:37:35,crime_scene_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2458,2026-06-05 01:43:48,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2461,2026-06-05 01:43:48,thorncrester_absurd_temporal,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2485,2026-06-05 01:51:04,loan_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2488,2026-06-05 01:51:04,loan_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,gemma3:1b | ministral-3:3b,Dual-Agent
+2512,2026-06-05 01:56:55,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2515,2026-06-05 01:56:55,alien_clinic_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2539,2026-06-05 02:03:04,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2542,2026-06-05 02:03:04,crime_scene_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,gemma3:1b | ministral-3:3b,Dual-Agent
+2566,2026-06-05 02:15:19,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2569,2026-06-05 02:15:19,thorncrester_belief_maintenance,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,gemma3:1b | ministral-3:3b,Dual-Agent
+2593,2026-06-05 02:23:32,loan_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2596,2026-06-05 02:23:32,loan_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2620,2026-06-05 02:32:14,alien_clinic_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2623,2026-06-05 02:32:14,alien_clinic_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2647,2026-06-05 03:07:49,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2650,2026-06-05 03:07:49,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2674,2026-06-05 03:17:55,thorncrester_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0080000000000000002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2677,2026-06-05 03:17:55,thorncrester_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2701,2026-06-05 03:27:34,loan_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2704,2026-06-05 03:27:34,loan_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2728,2026-06-05 03:37:40,alien_clinic_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2731,2026-06-05 03:37:40,alien_clinic_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2755,2026-06-05 03:48:39,crime_scene_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.014999999999999999,,ministral-3:3b | gemma3:1b,Dual-Agent
+2758,2026-06-05 03:48:39,crime_scene_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.017000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2782,2026-06-05 03:59:04,thorncrester_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2785,2026-06-05 03:59:04,thorncrester_grounding,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.01,,ministral-3:3b | gemma3:1b,Dual-Agent
+2809,2026-06-05 04:08:51,loan_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2812,2026-06-05 04:08:51,loan_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2836,2026-06-05 04:18:21,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2839,2026-06-05 04:18:21,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2863,2026-06-05 04:27:12,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2866,2026-06-05 04:27:12,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2890,2026-06-05 04:36:13,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2893,2026-06-05 04:36:13,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2917,2026-06-05 04:45:42,loan_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2920,2026-06-05 04:45:42,loan_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2944,2026-06-05 04:55:03,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2947,2026-06-05 04:55:03,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,ministral-3:3b | gemma3:1b,Dual-Agent
+2971,2026-06-05 05:04:27,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+2974,2026-06-05 05:04:27,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,ministral-3:3b | gemma3:1b,Dual-Agent
+2998,2026-06-05 05:14:14,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+3001,2026-06-05 05:14:14,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,ministral-3:3b | gemma3:1b,Dual-Agent
+3025,2026-06-05 05:32:59,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3028,2026-06-05 05:32:59,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3052,2026-06-05 05:43:24,alien_clinic_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3055,2026-06-05 05:43:24,alien_clinic_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.002,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3079,2026-06-05 05:53:18,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3082,2026-06-05 05:53:18,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3106,2026-06-05 06:05:10,thorncrester_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.012,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3109,2026-06-05 06:05:10,thorncrester_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3133,2026-06-05 06:15:07,loan_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3136,2026-06-05 06:15:07,loan_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3160,2026-06-05 06:25:45,alien_clinic_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3163,2026-06-05 06:25:45,alien_clinic_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3187,2026-06-05 06:37:18,crime_scene_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3190,2026-06-05 06:37:18,crime_scene_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0070000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3214,2026-06-05 06:47:48,thorncrester_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0070000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3217,2026-06-05 06:47:48,thorncrester_grounding,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0050000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3241,2026-06-05 06:57:38,loan_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3244,2026-06-05 06:57:38,loan_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3268,2026-06-05 07:06:47,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3271,2026-06-05 07:06:47,alien_clinic_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3295,2026-06-05 07:15:51,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3298,2026-06-05 07:15:51,crime_scene_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3322,2026-06-05 07:24:24,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3325,2026-06-05 07:24:24,thorncrester_absurd_temporal,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3349,2026-06-05 07:34:28,loan_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.012999999999999999,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3352,2026-06-05 07:34:28,loan_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.012999999999999999,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3376,2026-06-05 07:43:41,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3379,2026-06-05 07:43:41,alien_clinic_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3403,2026-06-05 07:53:10,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3406,2026-06-05 07:53:10,crime_scene_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0.0030000000000000001,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3430,2026-06-05 08:02:55,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Binding,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent
+3433,2026-06-05 08:02:55,thorncrester_belief_maintenance,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,End_to_End,Variance_Accuracy,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent

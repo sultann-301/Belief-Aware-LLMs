@@ -1,0 +1,21 @@
+Model,System,mean,sd,n
+"Qwen3:4b, no thinking",No Store (v1),,,0
+"Qwen3:4b, no thinking",No Store (v2),,,0
+"Qwen3:4b, no thinking",With Store (v15),0.50401249999999997,0.16746320541141765,16
+"Qwen3:4b, no thinking",With Store (v16),0.37966250000000001,0.23197791813015309,16
+gemma3:1b,No Store (v1),,,0
+gemma3:1b,No Store (v2),,,0
+gemma3:1b,With Store (v15),0.46151249999999999,0.14754091805326414,16
+gemma3:1b,With Store (v16),0,0,16
+gemma4:e2b,No Store (v1),,,0
+gemma4:e2b,No Store (v2),,,0
+gemma4:e2b,With Store (v15),0.034618749999999997,0.13847499999999996,16
+gemma4:e2b,With Store (v16),0.59448749999999995,0.15837286752050256,16
+llama3.2:1b,No Store (v1),,,0
+llama3.2:1b,No Store (v2),,,0
+llama3.2:1b,With Store (v15),0.20088124999999998,0.073499362525580217,16
+llama3.2:1b,With Store (v16),0,0,16
+ministral-3:3b,No Store (v1),,,0
+ministral-3:3b,No Store (v2),,,0
+ministral-3:3b,With Store (v15),0.58151249999999999,0.11992399745950212,16
+ministral-3:3b,With Store (v16),0.13118749999999998,0.20773453211571091,16

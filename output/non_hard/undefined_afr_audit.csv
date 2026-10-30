@@ -1,0 +1,7 @@
+,Model,Domain,Temp,Runs,Metric,Value,System,cell_efr
+4585,llama3.2:1b,loan_absurd,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1
+4656,llama3.2:1b,crime_scene_absurd,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1
+4867,llama3.2:1b,loan_absurd_temporal,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1
+4902,llama3.2:1b,alien_clinic_absurd_temporal,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1
+4933,llama3.2:1b,crime_scene_absurd_temporal,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1
+5000,llama3.2:1b,loan_belief_maintenance,0,10,AFR_Answer_Flip_Rate,0,No Store (v1),1

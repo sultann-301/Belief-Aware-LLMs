@@ -1,0 +1,33 @@
+{
+  "source_file": "eval_results_dual_agent.csv",
+  "sha256": "ae857e3e694e896a0e17d4d6f44251805775cd6225258a17cc55aeac483153d3",
+  "combinations": [
+    "loan_belief_maintenance",
+    "loan_absurd",
+    "loan_absurd_temporal",
+    "loan_grounding",
+    "alien_clinic_belief_maintenance",
+    "alien_clinic_absurd",
+    "alien_clinic_absurd_temporal",
+    "alien_clinic_grounding",
+    "crime_scene_belief_maintenance",
+    "crime_scene_absurd",
+    "crime_scene_absurd_temporal",
+    "crime_scene_grounding",
+    "thorncrester_belief_maintenance",
+    "thorncrester_absurd",
+    "thorncrester_absurd_temporal",
+    "thorncrester_grounding"
+  ],
+  "condition": "Dual_Agent_Store",
+  "runs": 5,
+  "aggregation": "Equal combination means after averaging repeated experiments within each pair/combination. SD ddof=1 across combinations.",
+  "historical_comparison": {
+    "single_file": "eval_results_normalized.csv",
+    "sha256": "502e396420948ea7b3273f7c9d8f6a4f08527bc26b673f4259e59446e872a476",
+    "scope": "All available historical summary rows, including single-agent Hard and dual-agent noise; single-agent conditions pooled."
+  },
+  "non_hard_comparison": "Both systems restricted to the same 16 domain/scenario combinations; Hard and noise excluded.",
+  "missingness": "Available values only; no zero imputation.",
+  "limitations": "Historical summaries only; different cohorts, no verified question pairing or pooled prediction-level calibration."
+}

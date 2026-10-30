@@ -1,0 +1,6 @@
+Model,With Store (pooled v15/v16)
+"Qwen3:4b, no thinking",13.9805625
+gemma3:1b,11.7201875
+gemma4:e2b,26.155759374999999
+llama3.2:1b,13.812212500000001
+ministral-3:3b,17.202950000000001

@@ -92,6 +92,70 @@ If you want to isolate a specific structural issue, target the subsets individua
 - `_belief_awareness`
 - `_grounding`
 
+### Graph-retrieval baseline for the paper
+
+This command runs only graph retrieval + LLM and saves new baseline results for
+comparison with your existing plain-LLM and belief-store results. It retrieves
+rules and current input facts using the benchmark's supplied target attributes,
+then lets the LLM calculate the answer. It uses no assistant chat history.
+This is custom dependency-graph RAG, not Microsoft's GraphRAG implementation.
+
+```bash
+# Validate the full paper batch without calling models
+python3 -m evaluation.graphrag.run_batch --dry-run
+
+# Run the paper batch (graph baseline only)
+python3 -m evaluation.graphrag.run_batch
+
+# Inspect retrieved rules and facts for one scenario set
+python3 -m evaluation.graphrag.run_evals --domain loan_absurd --dry-run
+
+# Run one model and scenario set as a small smoke test
+python3 -m evaluation.graphrag.run_evals \
+  --domain loan_absurd --model qwen3:4b --runs 1 \
+  --csv-out graphrag_smoke.csv
+```
+
+The [paper config](evaluation/configs/thesis_graphrag_batch.json) uses the original
+five models, replacing the removed modified Qwen with `qwen3:4b`. Requests explicitly
+set `think=false` using [Ollama's thinking control](https://docs.ollama.com/capabilities/thinking).
+Only belief maintenance, absurd, absurd temporal, and grounding are run, across
+loan, alien clinic, crime scene, and Thorncrester. The original settings are
+retained: 10 runs, temperature 0.0, 4 workers, 768 output tokens, and 8162 context
+tokens. This is 8,000 model calls. Response caching is disabled.
+
+The batch samples paraphrases using the existing selector, saves the exact turns
+to `eval_results_graphrag.manifest.json`, and shares that selection across models.
+The scenario seed controls question selection, not model generation. A single-set
+smoke test uses canonical questions. The CSV records the policy and generation
+settings so comparisons with existing results can account for these differences.
+
+Use `--config` for an alternate batch config and `--csv-out` for a fresh output
+path. Completed runs are flushed to CSV as they finish. Once a stopped batch's
+process has exited, resume with:
+
+```bash
+# Inspect saved progress without making model calls or modifying results
+python3 -m evaluation.graphrag.run_batch --resume --dry-run
+
+# Skip completed runs and continue using the exact saved questions/settings
+python3 -m evaluation.graphrag.run_batch --resume
+```
+
+Include the original `--csv-out` path if you used a custom one. Resume uses the
+saved manifest, validates prior rows, and skips complete 10-question runs.
+An unfinished run repeats. If interruption left partial rows, the runner backs
+up the original CSV before retaining only complete runs. Resuming a finished
+batch makes no model calls. New runners lock their output to prevent concurrent
+writers. The original pre-resume runner has no lock: **it must exit before you
+resume; suspending it with Ctrl+Z is not enough**. Ctrl+C in a running batch may
+wait for active workers; wait for the terminal prompt before restarting.
+
+For a temporary terminal suspension use Ctrl+Z, then `fg` in that same terminal
+to continue. This only suspends Python, not Ollama requests already in progress,
+and does not survive a terminal closure or reboot. See
+[the baseline plan](GRAPHRAG_BASELINE_PLAN.md) for the protocol.
+
 ### 3. Running Unit Tests
 
 A `pytest` suite is configured to ensure the underlying node graph math triggers perfectly logic pathways independent from LLM injection.
@@ -107,7 +171,11 @@ pytest -q
 ## 📁 Project Structure
 
 For detailed information on domain logic, see [domains.md](domains.md). For evaluation metrics, see [METRICS.md](METRICS.md).
-To view the results, please download the CSVs on this [drive link](https://drive.google.com/drive/folders/1hgE6zobA_hbXER7DpbgmWObnkERz4B4K?usp=drive_link), and add the CSVs to the root directory of the project. Then open the "final_*_analysis" notebooks, and run the cells.
+To view the results, download the CSVs on this [drive link](https://drive.google.com/drive/folders/1hgE6zobA_hbXER7DpbgmWObnkERz4B4K?usp=drive_link) and add them to the project root. **Hard scenarios are excluded from the reported benchmark.** Reporting uses the 16 combinations of loan, alien_clinic, crime_scene and thorncrester with belief_maintenance, absurd, absurd_temporal and grounding. The evaluation harness still supports other scenarios; raw CSVs are preserved.
+
+Run `python3 scripts/execute_analysis_notebooks.py`, then `python3 -m tests.test_non_hard_reporting`. The runner executes `graphrag_single_agent_comparison.ipynb` first, followed by the four historical analysis views, without model calls. Corrected CSV tables, PNG/SVG charts, metric coverage, definitions and source hashes are in [output/non_hard](output/non_hard/). See the [reporting report](output/non_hard/REPORT.md) for before/after values and limitations. Original notebooks and the retired Hard-only chart are preserved in [backups/before_non_hard_standardization_2026-10-07](backups/before_non_hard_standardization_2026-10-07/).
+
+Accuracy averages With Store v15/v16 and No Store v1/v2 equally within each combination, then averages the 16 combinations equally. Other metrics name their prompt versions and support counts. Historical Qwen is `hoangquan456/qwen3-nothink:4b`; GraphRAG uses `qwen3:4b` with thinking disabled. Matching scenario coverage does not make the experiments identical.
 
 ```
 Belief-Aware-LLMs/

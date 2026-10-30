@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "models": 5,
+  "combinations_per_model": 16,
+  "accuracy_cells": 80,
+  "checks": [
+    "Hard excluded before aggregation",
+    "expected grid with explicit missing combinations",
+    "GraphRAG turn and historical metric uniqueness",
+    "run completeness against manifest",
+    "prompt mapping from normalizer",
+    "equal prompt and combination weighting",
+    "independent raw-wide accuracy agreement",
+    "toy metric and missingness checks",
+    "plot data CSV round-trip and artist value agreement",
+    "source hashes unchanged"
+  ]
+}

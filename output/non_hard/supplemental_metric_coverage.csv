@@ -1,0 +1,111 @@
+Model,Metric,System,available,expected,missing
+"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Accuracy,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Evidence_F1,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Evidence_Precision,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_Evidence_Recall,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",DS_Determinism_Score,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",EMD_bracketed_exact,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",StdDev_Raw_Score,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Summary_Metric_ECE,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",Summary_Metric_MacroCE,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",TPCA_Words_Correct,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",TPCA_Words_Wrong,With Store (v16_one_shot),11,16,5
+"Qwen3:4b, no thinking",Variance_Raw_Score,With Store (v16_one_shot),16,16,0
+"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,With Store (v16_one_shot),16,16,0
+gemma3:1b,AFR_Answer_Flip_Rate,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Accuracy,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_BCR_BeliefCoverage,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Evidence_Canonical_Keys,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Evidence_Cited_Keys,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Evidence_F1,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Evidence_Precision,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_Evidence_Recall,With Store (v16_one_shot),16,16,0
+gemma3:1b,Average_SBIR_SpuriousInjection,With Store (v16_one_shot),16,16,0
+gemma3:1b,DS_Determinism_Score,With Store (v16_one_shot),16,16,0
+gemma3:1b,EFR_Extraction_Failure_Rate,With Store (v16_one_shot),16,16,0
+gemma3:1b,EMD_bracketed_exact,With Store (v16_one_shot),16,16,0
+gemma3:1b,PTC_Variance_PerTurn_Consistency,With Store (v16_one_shot),16,16,0
+gemma3:1b,StdDev_Raw_Score,With Store (v16_one_shot),16,16,0
+gemma3:1b,Summary_Metric_Brier_Score,With Store (v16_one_shot),16,16,0
+gemma3:1b,Summary_Metric_ECE,With Store (v16_one_shot),16,16,0
+gemma3:1b,Summary_Metric_Log_Loss,With Store (v16_one_shot),16,16,0
+gemma3:1b,Summary_Metric_MacroCE,With Store (v16_one_shot),16,16,0
+gemma3:1b,TPCA_Words_Correct,With Store (v16_one_shot),13,16,3
+gemma3:1b,TPCA_Words_Wrong,With Store (v16_one_shot),16,16,0
+gemma3:1b,Variance_Raw_Score,With Store (v16_one_shot),16,16,0
+gemma3:1b,WCT_WallClock_PerTurn_Seconds,With Store (v16_one_shot),16,16,0
+gemma4:e2b,AFR_Answer_Flip_Rate,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Accuracy,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_BCR_BeliefCoverage,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Evidence_Canonical_Keys,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Evidence_Cited_Keys,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Evidence_F1,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Evidence_Precision,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_Evidence_Recall,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Average_SBIR_SpuriousInjection,With Store (v16_one_shot),16,16,0
+gemma4:e2b,DS_Determinism_Score,With Store (v16_one_shot),16,16,0
+gemma4:e2b,EFR_Extraction_Failure_Rate,With Store (v16_one_shot),16,16,0
+gemma4:e2b,EMD_bracketed_exact,With Store (v16_one_shot),16,16,0
+gemma4:e2b,PTC_Variance_PerTurn_Consistency,With Store (v16_one_shot),16,16,0
+gemma4:e2b,StdDev_Raw_Score,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Summary_Metric_Brier_Score,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Summary_Metric_ECE,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Summary_Metric_Log_Loss,With Store (v16_one_shot),16,16,0
+gemma4:e2b,Summary_Metric_MacroCE,With Store (v16_one_shot),16,16,0
+gemma4:e2b,TPCA_Words_Correct,With Store (v16_one_shot),16,16,0
+gemma4:e2b,TPCA_Words_Wrong,With Store (v16_one_shot),9,16,7
+gemma4:e2b,Variance_Raw_Score,With Store (v16_one_shot),16,16,0
+gemma4:e2b,WCT_WallClock_PerTurn_Seconds,With Store (v16_one_shot),16,16,0
+llama3.2:1b,AFR_Answer_Flip_Rate,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Accuracy,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_BCR_BeliefCoverage,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Evidence_Canonical_Keys,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Evidence_Cited_Keys,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Evidence_F1,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Evidence_Precision,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_Evidence_Recall,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Average_SBIR_SpuriousInjection,With Store (v16_one_shot),16,16,0
+llama3.2:1b,DS_Determinism_Score,With Store (v16_one_shot),16,16,0
+llama3.2:1b,EFR_Extraction_Failure_Rate,With Store (v16_one_shot),16,16,0
+llama3.2:1b,EMD_bracketed_exact,With Store (v16_one_shot),16,16,0
+llama3.2:1b,PTC_Variance_PerTurn_Consistency,With Store (v16_one_shot),16,16,0
+llama3.2:1b,StdDev_Raw_Score,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Summary_Metric_Brier_Score,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Summary_Metric_ECE,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Summary_Metric_Log_Loss,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Summary_Metric_MacroCE,With Store (v16_one_shot),16,16,0
+llama3.2:1b,TPCA_Words_Correct,With Store (v16_one_shot),14,16,2
+llama3.2:1b,TPCA_Words_Wrong,With Store (v16_one_shot),16,16,0
+llama3.2:1b,Variance_Raw_Score,With Store (v16_one_shot),16,16,0
+llama3.2:1b,WCT_WallClock_PerTurn_Seconds,With Store (v16_one_shot),16,16,0
+ministral-3:3b,AFR_Answer_Flip_Rate,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Accuracy,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_BCR_BeliefCoverage,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Evidence_Canonical_Keys,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Evidence_Cited_Keys,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Evidence_F1,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Evidence_Precision,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_Evidence_Recall,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Average_SBIR_SpuriousInjection,With Store (v16_one_shot),16,16,0
+ministral-3:3b,DS_Determinism_Score,With Store (v16_one_shot),16,16,0
+ministral-3:3b,EFR_Extraction_Failure_Rate,With Store (v16_one_shot),16,16,0
+ministral-3:3b,EMD_bracketed_exact,With Store (v16_one_shot),16,16,0
+ministral-3:3b,PTC_Variance_PerTurn_Consistency,With Store (v16_one_shot),16,16,0
+ministral-3:3b,StdDev_Raw_Score,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Summary_Metric_Brier_Score,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Summary_Metric_ECE,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Summary_Metric_Log_Loss,With Store (v16_one_shot),16,16,0
+ministral-3:3b,Summary_Metric_MacroCE,With Store (v16_one_shot),16,16,0
+ministral-3:3b,TPCA_Words_Correct,With Store (v16_one_shot),16,16,0
+ministral-3:3b,TPCA_Words_Wrong,With Store (v16_one_shot),12,16,4
+ministral-3:3b,Variance_Raw_Score,With Store (v16_one_shot),16,16,0
+ministral-3:3b,WCT_WallClock_PerTurn_Seconds,With Store (v16_one_shot),16,16,0

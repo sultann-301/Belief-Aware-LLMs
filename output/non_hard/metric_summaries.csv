@@ -1,0 +1,1281 @@
+,group,System,mean,sd,n,dimension,Metric,support
+0,"Qwen3:4b, no thinking",GraphRAG (v1),0,0,16,Model,AFR_Answer_Flip_Rate,available per system
+1,"Qwen3:4b, no thinking",No Store (v1),0.088749999999999996,0.065204805548875505,16,Model,AFR_Answer_Flip_Rate,available per system
+2,"Qwen3:4b, no thinking",No Store (v2),0.054231250000000002,0.036863527028758385,16,Model,AFR_Answer_Flip_Rate,available per system
+3,"Qwen3:4b, no thinking",With Store (v15),0.011875,0.023157072353818822,16,Model,AFR_Answer_Flip_Rate,available per system
+4,"Qwen3:4b, no thinking",With Store (v16),0.01465,0.025019192632856884,16,Model,AFR_Answer_Flip_Rate,available per system
+5,gemma3:1b,GraphRAG (v1),0.11556512188208617,0.065446988440130957,16,Model,AFR_Answer_Flip_Rate,available per system
+6,gemma3:1b,No Store (v1),0.1638,0.067441797129080147,16,Model,AFR_Answer_Flip_Rate,available per system
+7,gemma3:1b,No Store (v2),0.072325,0.03938508177808784,16,Model,AFR_Answer_Flip_Rate,available per system
+8,gemma3:1b,With Store (v15),0.069081249999999997,0.065625698408982039,16,Model,AFR_Answer_Flip_Rate,available per system
+9,gemma3:1b,With Store (v16),0.018450000000000001,0.021529576555674911,16,Model,AFR_Answer_Flip_Rate,available per system
+10,gemma4:e2b,GraphRAG (v1),0.066902832892416234,0.041771333656994571,16,Model,AFR_Answer_Flip_Rate,available per system
+11,gemma4:e2b,No Store (v1),0.11251875,0.056667053552600863,16,Model,AFR_Answer_Flip_Rate,available per system
+12,gemma4:e2b,No Store (v2),0.019493750000000001,0.02939987457456239,16,Model,AFR_Answer_Flip_Rate,available per system
+13,gemma4:e2b,With Store (v15),0.019875,0.026487821100775098,16,Model,AFR_Answer_Flip_Rate,available per system
+14,gemma4:e2b,With Store (v16),0.0159375,0.037381758028928139,16,Model,AFR_Answer_Flip_Rate,available per system
+15,llama3.2:1b,GraphRAG (v1),0.14311232363315696,0.045776614250845532,16,Model,AFR_Answer_Flip_Rate,available per system
+16,llama3.2:1b,No Store (v1),0.15322,0.14423373622931171,10,Model,AFR_Answer_Flip_Rate,available per system
+17,llama3.2:1b,No Store (v2),0.056837499999999999,0.042038345590662822,16,Model,AFR_Answer_Flip_Rate,available per system
+18,llama3.2:1b,With Store (v15),0.076274999999999996,0.056898090184703626,16,Model,AFR_Answer_Flip_Rate,available per system
+19,llama3.2:1b,With Store (v16),0.063068750000000007,0.039073549770486264,16,Model,AFR_Answer_Flip_Rate,available per system
+20,ministral-3:3b,GraphRAG (v1),0.091604662698412706,0.051467612412016452,16,Model,AFR_Answer_Flip_Rate,available per system
+21,ministral-3:3b,No Store (v1),0.1060125,0.057455221694812035,16,Model,AFR_Answer_Flip_Rate,available per system
+22,ministral-3:3b,No Store (v2),0.078256249999999999,0.044864328350409224,16,Model,AFR_Answer_Flip_Rate,available per system
+23,ministral-3:3b,With Store (v15),0.0170125,0.020268263369119716,16,Model,AFR_Answer_Flip_Rate,available per system
+24,ministral-3:3b,With Store (v16),0.020625000000000001,0.033159965822258226,16,Model,AFR_Answer_Flip_Rate,available per system
+25,absurd,GraphRAG (v1),0.080979875283446717,0.05923099807363022,20,Scenario,AFR_Answer_Flip_Rate,available per system
+26,absurd,No Store (v1),0.11058333333333333,0.054335572250273634,18,Scenario,AFR_Answer_Flip_Rate,available per system
+27,absurd,No Store (v2),0.054275000000000004,0.043896563526928667,20,Scenario,AFR_Answer_Flip_Rate,available per system
+28,absurd,With Store (v15),0.026114999999999999,0.038404663573718828,20,Scenario,AFR_Answer_Flip_Rate,available per system
+29,absurd,With Store (v16),0.024579999999999998,0.041052759379018346,20,Scenario,AFR_Answer_Flip_Rate,available per system
+30,absurd_temporal,GraphRAG (v1),0.085982142857142868,0.065615871962703451,20,Scenario,AFR_Answer_Flip_Rate,available per system
+31,absurd_temporal,No Store (v1),0.14945294117647059,0.060194674989228272,17,Scenario,AFR_Answer_Flip_Rate,available per system
+32,absurd_temporal,No Store (v2),0.051629999999999995,0.042498546105162606,20,Scenario,AFR_Answer_Flip_Rate,available per system
+33,absurd_temporal,With Store (v15),0.016480000000000002,0.029220839715590152,20,Scenario,AFR_Answer_Flip_Rate,available per system
+34,absurd_temporal,With Store (v16),0.018290000000000001,0.03294705321860323,20,Scenario,AFR_Answer_Flip_Rate,available per system
+35,belief_maintenance,GraphRAG (v1),0.085451058201058194,0.082734219706884368,20,Scenario,AFR_Answer_Flip_Rate,available per system
+36,belief_maintenance,No Store (v1),0.080973684210526309,0.083500863881793758,19,Scenario,AFR_Answer_Flip_Rate,available per system
+37,belief_maintenance,No Store (v2),0.054849999999999996,0.04208780921134439,20,Scenario,AFR_Answer_Flip_Rate,available per system
+38,belief_maintenance,With Store (v15),0.032185000000000005,0.037655771557344932,20,Scenario,AFR_Answer_Flip_Rate,available per system
+39,belief_maintenance,With Store (v16),0.014000000000000002,0.02107353041639028,20,Scenario,AFR_Answer_Flip_Rate,available per system
+40,grounding,GraphRAG (v1),0.08133487654320988,0.061974618394686175,20,Scenario,AFR_Answer_Flip_Rate,available per system
+41,grounding,No Store (v1),0.14999000000000001,0.097699872865294635,20,Scenario,AFR_Answer_Flip_Rate,available per system
+42,grounding,No Store (v2),0.064160000000000009,0.046173510291416871,20,Scenario,AFR_Answer_Flip_Rate,available per system
+43,grounding,With Store (v15),0.080515000000000003,0.064852125518062451,20,Scenario,AFR_Answer_Flip_Rate,available per system
+44,grounding,With Store (v16),0.049315000000000005,0.038164716069054923,20,Scenario,AFR_Answer_Flip_Rate,available per system
+45,all,GraphRAG (v1),0.083436988221214411,0.066742601881404406,80,Overall,AFR_Answer_Flip_Rate,available per system
+46,all,No Store (v1),0.1225608108108108,0.080903417503323929,74,Overall,AFR_Answer_Flip_Rate,available per system
+47,all,No Store (v2),0.056228750000000008,0.043119974500796805,80,Overall,AFR_Answer_Flip_Rate,available per system
+48,all,With Store (v15),0.038823750000000004,0.050310160142933311,80,Overall,AFR_Answer_Flip_Rate,available per system
+49,all,With Store (v16),0.02654625,0.036233277046195111,80,Overall,AFR_Answer_Flip_Rate,available per system
+50,"Qwen3:4b, no thinking",GraphRAG (v1),0,0,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+51,"Qwen3:4b, no thinking",No Store (v1),0.088749999999999996,0.065204805548875519,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+52,"Qwen3:4b, no thinking",With Store (v16),0.01465,0.025019192632856881,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+53,gemma3:1b,GraphRAG (v1),0.11556512188208617,0.065446988440130971,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+54,gemma3:1b,No Store (v1),0.1638,0.067441797129080119,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+55,gemma3:1b,With Store (v16),0.018450000000000001,0.021529576555674911,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+56,gemma4:e2b,GraphRAG (v1),0.066902832892416234,0.041771333656994571,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+57,gemma4:e2b,No Store (v1),0.11251875,0.056667053552600856,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+58,gemma4:e2b,With Store (v16),0.0159375,0.037381758028928132,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+59,llama3.2:1b,GraphRAG (v1),0.14944003527336863,0.032477545508582659,10,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+60,llama3.2:1b,No Store (v1),0.15322,0.14423373622931171,10,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+61,llama3.2:1b,With Store (v16),0.06658,0.029450440479633654,10,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+62,ministral-3:3b,GraphRAG (v1),0.091604662698412706,0.051467612412016459,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+63,ministral-3:3b,No Store (v1),0.1060125,0.057455221694812042,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+64,ministral-3:3b,With Store (v16),0.020625000000000001,0.033159965822258219,16,Model,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+65,absurd,GraphRAG (v1),0.07566546989166037,0.059976616324107793,18,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+66,absurd,No Store (v1),0.11058333333333333,0.054335572250273648,18,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+67,absurd,With Store (v16),0.020644444444444444,0.036001065706811296,18,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+68,absurd_temporal,GraphRAG (v1),0.08305088702147527,0.067359436537313758,17,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+69,absurd_temporal,No Store (v1),0.14945294117647059,0.060194674989228272,17,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+70,absurd_temporal,With Store (v16),0.010341176470588236,0.020305727604038516,17,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+71,belief_maintenance,GraphRAG (v1),0.077843219159008631,0.077481169555194518,19,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+72,belief_maintenance,No Store (v1),0.080973684210526309,0.083500863881793744,19,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+73,belief_maintenance,With Store (v16),0.012984210526315789,0.021141960992771765,19,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+74,grounding,GraphRAG (v1),0.08133487654320988,0.061974618394686168,20,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+75,grounding,No Store (v1),0.14999000000000001,0.097699872865294635,20,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+76,grounding,With Store (v16),0.049315000000000005,0.038164716069054923,20,Scenario,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+77,all,GraphRAG (v1),0.079453543679734159,0.065729159131407658,74,Overall,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+78,all,No Store (v1),0.1225608108108108,0.080903417503323929,74,Overall,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+79,all,With Store (v16),0.024059459459459458,0.033688154574092098,74,Overall,AFR_Answer_Flip_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+80,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+81,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+82,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_BCR_BeliefCoverage,available per system
+83,"Qwen3:4b, no thinking",With Store (v15),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+84,"Qwen3:4b, no thinking",With Store (v16),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+85,gemma3:1b,GraphRAG (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+86,gemma3:1b,No Store (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+87,gemma3:1b,No Store (v2),,,0,Model,Average_BCR_BeliefCoverage,available per system
+88,gemma3:1b,With Store (v15),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+89,gemma3:1b,With Store (v16),0,0,16,Model,Average_BCR_BeliefCoverage,available per system
+90,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+91,gemma4:e2b,No Store (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+92,gemma4:e2b,No Store (v2),,,0,Model,Average_BCR_BeliefCoverage,available per system
+93,gemma4:e2b,With Store (v15),0.0625,0.25,16,Model,Average_BCR_BeliefCoverage,available per system
+94,gemma4:e2b,With Store (v16),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+95,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+96,llama3.2:1b,No Store (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+97,llama3.2:1b,No Store (v2),,,0,Model,Average_BCR_BeliefCoverage,available per system
+98,llama3.2:1b,With Store (v15),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+99,llama3.2:1b,With Store (v16),0,0,16,Model,Average_BCR_BeliefCoverage,available per system
+100,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+101,ministral-3:3b,No Store (v1),,,0,Model,Average_BCR_BeliefCoverage,available per system
+102,ministral-3:3b,No Store (v2),,,0,Model,Average_BCR_BeliefCoverage,available per system
+103,ministral-3:3b,With Store (v15),1,0,16,Model,Average_BCR_BeliefCoverage,available per system
+104,ministral-3:3b,With Store (v16),0.4375,0.51234753829797997,16,Model,Average_BCR_BeliefCoverage,available per system
+105,absurd,GraphRAG (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+106,absurd,No Store (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+107,absurd,No Store (v2),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+108,absurd,With Store (v15),0.84999999999999998,0.36634754853252327,20,Scenario,Average_BCR_BeliefCoverage,available per system
+109,absurd,With Store (v16),0.40000000000000002,0.50262468995003462,20,Scenario,Average_BCR_BeliefCoverage,available per system
+110,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+111,absurd_temporal,No Store (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+112,absurd_temporal,No Store (v2),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+113,absurd_temporal,With Store (v15),0.80000000000000004,0.41039134083406165,20,Scenario,Average_BCR_BeliefCoverage,available per system
+114,absurd_temporal,With Store (v16),0.55000000000000004,0.51041778553404038,20,Scenario,Average_BCR_BeliefCoverage,available per system
+115,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+116,belief_maintenance,No Store (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+117,belief_maintenance,No Store (v2),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+118,belief_maintenance,With Store (v15),0.80000000000000004,0.41039134083406165,20,Scenario,Average_BCR_BeliefCoverage,available per system
+119,belief_maintenance,With Store (v16),0.59999999999999998,0.50262468995003462,20,Scenario,Average_BCR_BeliefCoverage,available per system
+120,grounding,GraphRAG (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+121,grounding,No Store (v1),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+122,grounding,No Store (v2),,,0,Scenario,Average_BCR_BeliefCoverage,available per system
+123,grounding,With Store (v15),0.80000000000000004,0.41039134083406165,20,Scenario,Average_BCR_BeliefCoverage,available per system
+124,grounding,With Store (v16),0.40000000000000002,0.50262468995003462,20,Scenario,Average_BCR_BeliefCoverage,available per system
+125,all,GraphRAG (v1),,,0,Overall,Average_BCR_BeliefCoverage,available per system
+126,all,No Store (v1),,,0,Overall,Average_BCR_BeliefCoverage,available per system
+127,all,No Store (v2),,,0,Overall,Average_BCR_BeliefCoverage,available per system
+128,all,With Store (v15),0.8125,0.39277493797177804,80,Overall,Average_BCR_BeliefCoverage,available per system
+129,all,With Store (v16),0.48749999999999999,0.50299734503665527,80,Overall,Average_BCR_BeliefCoverage,available per system
+130,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+131,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+132,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+133,"Qwen3:4b, no thinking",With Store (v15),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+134,"Qwen3:4b, no thinking",With Store (v16),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+135,gemma3:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+136,gemma3:1b,No Store (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+137,gemma3:1b,No Store (v2),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+138,gemma3:1b,With Store (v15),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+139,gemma3:1b,With Store (v16),0,0,16,Model,Average_Evidence_Canonical_Keys,available per system
+140,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+141,gemma4:e2b,No Store (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+142,gemma4:e2b,No Store (v2),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+143,gemma4:e2b,With Store (v15),0.73124999999999996,2.9249999999999998,16,Model,Average_Evidence_Canonical_Keys,available per system
+144,gemma4:e2b,With Store (v16),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+145,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+146,llama3.2:1b,No Store (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+147,llama3.2:1b,No Store (v2),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+148,llama3.2:1b,With Store (v15),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+149,llama3.2:1b,With Store (v16),0,0,16,Model,Average_Evidence_Canonical_Keys,available per system
+150,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+151,ministral-3:3b,No Store (v1),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+152,ministral-3:3b,No Store (v2),,,0,Model,Average_Evidence_Canonical_Keys,available per system
+153,ministral-3:3b,With Store (v15),5.8312499999999998,3.3129480829013893,16,Model,Average_Evidence_Canonical_Keys,available per system
+154,ministral-3:3b,With Store (v16),1.875,2.4428125866167738,16,Model,Average_Evidence_Canonical_Keys,available per system
+155,absurd,GraphRAG (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+156,absurd,No Store (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+157,absurd,No Store (v2),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+158,absurd,With Store (v15),5.5049999999999999,4.1099974388518072,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+159,absurd,With Store (v16),2.46,3.797838720557841,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+160,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+161,absurd_temporal,No Store (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+162,absurd_temporal,No Store (v2),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+163,absurd_temporal,With Store (v15),5.7799999999999994,4.5000116958912333,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+164,absurd_temporal,With Store (v16),3.6799999999999997,4.2749699906610603,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+165,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+166,belief_maintenance,No Store (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+167,belief_maintenance,No Store (v2),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+168,belief_maintenance,With Store (v15),2.8399999999999999,1.7052241710942904,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+169,belief_maintenance,With Store (v16),2.1299999999999999,1.9423534287315638,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+170,grounding,GraphRAG (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+171,grounding,No Store (v1),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+172,grounding,No Store (v2),,,0,Scenario,Average_Evidence_Canonical_Keys,available per system
+173,grounding,With Store (v15),5.1200000000000001,3.6334121993693911,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+174,grounding,With Store (v16),2.5600000000000001,3.6741486661609968,20,Scenario,Average_Evidence_Canonical_Keys,available per system
+175,all,GraphRAG (v1),,,0,Overall,Average_Evidence_Canonical_Keys,available per system
+176,all,No Store (v1),,,0,Overall,Average_Evidence_Canonical_Keys,available per system
+177,all,No Store (v2),,,0,Overall,Average_Evidence_Canonical_Keys,available per system
+178,all,With Store (v15),4.8112499999999994,3.7649278827124055,80,Overall,Average_Evidence_Canonical_Keys,available per system
+179,all,With Store (v16),2.7075,3.516139100947969,80,Overall,Average_Evidence_Canonical_Keys,available per system
+180,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+181,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+182,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_Evidence_Cited_Keys,available per system
+183,"Qwen3:4b, no thinking",With Store (v15),3.1475,0.94686500269749818,16,Model,Average_Evidence_Cited_Keys,available per system
+184,"Qwen3:4b, no thinking",With Store (v16),2.3799999999999999,0.7678020578248016,16,Model,Average_Evidence_Cited_Keys,available per system
+185,gemma3:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+186,gemma3:1b,No Store (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+187,gemma3:1b,No Store (v2),,,0,Model,Average_Evidence_Cited_Keys,available per system
+188,gemma3:1b,With Store (v15),2.4868749999999999,0.64059054785408764,16,Model,Average_Evidence_Cited_Keys,available per system
+189,gemma3:1b,With Store (v16),0,0,16,Model,Average_Evidence_Cited_Keys,available per system
+190,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+191,gemma4:e2b,No Store (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+192,gemma4:e2b,No Store (v2),,,0,Model,Average_Evidence_Cited_Keys,available per system
+193,gemma4:e2b,With Store (v15),0.42249999999999999,1.6899999999999999,16,Model,Average_Evidence_Cited_Keys,available per system
+194,gemma4:e2b,With Store (v16),3.6118749999999999,0.55306682839116872,16,Model,Average_Evidence_Cited_Keys,available per system
+195,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+196,llama3.2:1b,No Store (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+197,llama3.2:1b,No Store (v2),,,0,Model,Average_Evidence_Cited_Keys,available per system
+198,llama3.2:1b,With Store (v15),1.5125,0.55899314247433607,16,Model,Average_Evidence_Cited_Keys,available per system
+199,llama3.2:1b,With Store (v16),0,0,16,Model,Average_Evidence_Cited_Keys,available per system
+200,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+201,ministral-3:3b,No Store (v1),,,0,Model,Average_Evidence_Cited_Keys,available per system
+202,ministral-3:3b,No Store (v2),,,0,Model,Average_Evidence_Cited_Keys,available per system
+203,ministral-3:3b,With Store (v15),3.8325,1.1322278922549116,16,Model,Average_Evidence_Cited_Keys,available per system
+204,ministral-3:3b,With Store (v16),0.75750000000000006,0.92438447989279149,16,Model,Average_Evidence_Cited_Keys,available per system
+205,absurd,GraphRAG (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+206,absurd,No Store (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+207,absurd,No Store (v2),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+208,absurd,With Store (v15),3.048,2.0264295798535072,20,Scenario,Average_Evidence_Cited_Keys,available per system
+209,absurd,With Store (v16),1.3504999999999998,1.7333462465780793,20,Scenario,Average_Evidence_Cited_Keys,available per system
+210,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+211,absurd_temporal,No Store (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+212,absurd_temporal,No Store (v2),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+213,absurd_temporal,With Store (v15),2.3214999999999999,1.5774205293186057,20,Scenario,Average_Evidence_Cited_Keys,available per system
+214,absurd_temporal,With Store (v16),1.262,1.4923721844238806,20,Scenario,Average_Evidence_Cited_Keys,available per system
+215,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+216,belief_maintenance,No Store (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+217,belief_maintenance,No Store (v2),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+218,belief_maintenance,With Store (v15),1.9425000000000001,1.3427617847281459,20,Scenario,Average_Evidence_Cited_Keys,available per system
+219,belief_maintenance,With Store (v16),1.5925,1.5016688085347969,20,Scenario,Average_Evidence_Cited_Keys,available per system
+220,grounding,GraphRAG (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+221,grounding,No Store (v1),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+222,grounding,No Store (v2),,,0,Scenario,Average_Evidence_Cited_Keys,available per system
+223,grounding,With Store (v15),1.8094999999999999,1.1283078853799287,20,Scenario,Average_Evidence_Cited_Keys,available per system
+224,grounding,With Store (v16),1.1945000000000001,1.5382063204299112,20,Scenario,Average_Evidence_Cited_Keys,available per system
+225,all,GraphRAG (v1),,,0,Overall,Average_Evidence_Cited_Keys,available per system
+226,all,No Store (v1),,,0,Overall,Average_Evidence_Cited_Keys,available per system
+227,all,No Store (v2),,,0,Overall,Average_Evidence_Cited_Keys,available per system
+228,all,With Store (v15),2.2803750000000003,1.6001617352986304,80,Overall,Average_Evidence_Cited_Keys,available per system
+229,all,With Store (v16),1.3498749999999999,1.546809287378049,80,Overall,Average_Evidence_Cited_Keys,available per system
+230,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_Evidence_F1,available per system
+231,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_Evidence_F1,available per system
+232,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_Evidence_F1,available per system
+233,"Qwen3:4b, no thinking",With Store (v15),0.50401249999999997,0.16746320541141765,16,Model,Average_Evidence_F1,available per system
+234,"Qwen3:4b, no thinking",With Store (v16),0.37966250000000001,0.23197791813015309,16,Model,Average_Evidence_F1,available per system
+235,gemma3:1b,GraphRAG (v1),,,0,Model,Average_Evidence_F1,available per system
+236,gemma3:1b,No Store (v1),,,0,Model,Average_Evidence_F1,available per system
+237,gemma3:1b,No Store (v2),,,0,Model,Average_Evidence_F1,available per system
+238,gemma3:1b,With Store (v15),0.46151249999999999,0.14754091805326411,16,Model,Average_Evidence_F1,available per system
+239,gemma3:1b,With Store (v16),0,0,16,Model,Average_Evidence_F1,available per system
+240,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_Evidence_F1,available per system
+241,gemma4:e2b,No Store (v1),,,0,Model,Average_Evidence_F1,available per system
+242,gemma4:e2b,No Store (v2),,,0,Model,Average_Evidence_F1,available per system
+243,gemma4:e2b,With Store (v15),0.034618749999999997,0.13847499999999996,16,Model,Average_Evidence_F1,available per system
+244,gemma4:e2b,With Store (v16),0.59448749999999995,0.15837286752050261,16,Model,Average_Evidence_F1,available per system
+245,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_Evidence_F1,available per system
+246,llama3.2:1b,No Store (v1),,,0,Model,Average_Evidence_F1,available per system
+247,llama3.2:1b,No Store (v2),,,0,Model,Average_Evidence_F1,available per system
+248,llama3.2:1b,With Store (v15),0.20088125000000001,0.073499362525580231,16,Model,Average_Evidence_F1,available per system
+249,llama3.2:1b,With Store (v16),0,0,16,Model,Average_Evidence_F1,available per system
+250,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_Evidence_F1,available per system
+251,ministral-3:3b,No Store (v1),,,0,Model,Average_Evidence_F1,available per system
+252,ministral-3:3b,No Store (v2),,,0,Model,Average_Evidence_F1,available per system
+253,ministral-3:3b,With Store (v15),0.58151249999999999,0.11992399745950211,16,Model,Average_Evidence_F1,available per system
+254,ministral-3:3b,With Store (v16),0.13118749999999998,0.20773453211571094,16,Model,Average_Evidence_F1,available per system
+255,absurd,GraphRAG (v1),,,0,Scenario,Average_Evidence_F1,available per system
+256,absurd,No Store (v1),,,0,Scenario,Average_Evidence_F1,available per system
+257,absurd,No Store (v2),,,0,Scenario,Average_Evidence_F1,available per system
+258,absurd,With Store (v15),0.40682000000000001,0.23929952075083424,20,Scenario,Average_Evidence_F1,available per system
+259,absurd,With Store (v16),0.18834499999999998,0.25677145782316146,20,Scenario,Average_Evidence_F1,available per system
+260,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_Evidence_F1,available per system
+261,absurd_temporal,No Store (v1),,,0,Scenario,Average_Evidence_F1,available per system
+262,absurd_temporal,No Store (v2),,,0,Scenario,Average_Evidence_F1,available per system
+263,absurd_temporal,With Store (v15),0.31292999999999999,0.22627549370762973,20,Scenario,Average_Evidence_F1,available per system
+264,absurd_temporal,With Store (v16),0.13559499999999999,0.22363810633535411,20,Scenario,Average_Evidence_F1,available per system
+265,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_Evidence_F1,available per system
+266,belief_maintenance,No Store (v1),,,0,Scenario,Average_Evidence_F1,available per system
+267,belief_maintenance,No Store (v2),,,0,Scenario,Average_Evidence_F1,available per system
+268,belief_maintenance,With Store (v15),0.41452999999999995,0.30104876524017099,20,Scenario,Average_Evidence_F1,available per system
+269,belief_maintenance,With Store (v16),0.36550500000000002,0.33110346844421523,20,Scenario,Average_Evidence_F1,available per system
+270,grounding,GraphRAG (v1),,,0,Scenario,Average_Evidence_F1,available per system
+271,grounding,No Store (v1),,,0,Scenario,Average_Evidence_F1,available per system
+272,grounding,No Store (v2),,,0,Scenario,Average_Evidence_F1,available per system
+273,grounding,With Store (v15),0.29175000000000001,0.19040679582078165,20,Scenario,Average_Evidence_F1,available per system
+274,grounding,With Store (v16),0.194825,0.25883439305145634,20,Scenario,Average_Evidence_F1,available per system
+275,all,GraphRAG (v1),,,0,Overall,Average_Evidence_F1,available per system
+276,all,No Store (v1),,,0,Overall,Average_Evidence_F1,available per system
+277,all,No Store (v2),,,0,Overall,Average_Evidence_F1,available per system
+278,all,With Store (v15),0.35650750000000003,0.24421040874726521,80,Overall,Average_Evidence_F1,available per system
+279,all,With Store (v16),0.22106750000000003,0.27918007789311378,80,Overall,Average_Evidence_F1,available per system
+280,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_Evidence_Precision,available per system
+281,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_Evidence_Precision,available per system
+282,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_Evidence_Precision,available per system
+283,"Qwen3:4b, no thinking",With Store (v15),0.57180624999999996,0.13528272848002437,16,Model,Average_Evidence_Precision,available per system
+284,"Qwen3:4b, no thinking",With Store (v16),0.44841874999999998,0.24493426660704976,16,Model,Average_Evidence_Precision,available per system
+285,gemma3:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Precision,available per system
+286,gemma3:1b,No Store (v1),,,0,Model,Average_Evidence_Precision,available per system
+287,gemma3:1b,No Store (v2),,,0,Model,Average_Evidence_Precision,available per system
+288,gemma3:1b,With Store (v15),0.58384374999999999,0.11874850718359929,16,Model,Average_Evidence_Precision,available per system
+289,gemma3:1b,With Store (v16),0,0,16,Model,Average_Evidence_Precision,available per system
+290,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_Evidence_Precision,available per system
+291,gemma4:e2b,No Store (v1),,,0,Model,Average_Evidence_Precision,available per system
+292,gemma4:e2b,No Store (v2),,,0,Model,Average_Evidence_Precision,available per system
+293,gemma4:e2b,With Store (v15),0.04763125,0.19052499999999997,16,Model,Average_Evidence_Precision,available per system
+294,gemma4:e2b,With Store (v16),0.67599375000000006,0.063790652071182521,16,Model,Average_Evidence_Precision,available per system
+295,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Precision,available per system
+296,llama3.2:1b,No Store (v1),,,0,Model,Average_Evidence_Precision,available per system
+297,llama3.2:1b,No Store (v2),,,0,Model,Average_Evidence_Precision,available per system
+298,llama3.2:1b,With Store (v15),0.32219999999999999,0.15555516920586945,16,Model,Average_Evidence_Precision,available per system
+299,llama3.2:1b,With Store (v16),0,0,16,Model,Average_Evidence_Precision,available per system
+300,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_Evidence_Precision,available per system
+301,ministral-3:3b,No Store (v1),,,0,Model,Average_Evidence_Precision,available per system
+302,ministral-3:3b,No Store (v2),,,0,Model,Average_Evidence_Precision,available per system
+303,ministral-3:3b,With Store (v15),0.62956250000000002,0.06740137362596306,16,Model,Average_Evidence_Precision,available per system
+304,ministral-3:3b,With Store (v16),0.1559625,0.23479934092752477,16,Model,Average_Evidence_Precision,available per system
+305,absurd,GraphRAG (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+306,absurd,No Store (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+307,absurd,No Store (v2),,,0,Scenario,Average_Evidence_Precision,available per system
+308,absurd,With Store (v15),0.49556500000000003,0.26241595200829737,20,Scenario,Average_Evidence_Precision,available per system
+309,absurd,With Store (v16),0.22397499999999998,0.29399770295379057,20,Scenario,Average_Evidence_Precision,available per system
+310,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+311,absurd_temporal,No Store (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+312,absurd_temporal,No Store (v2),,,0,Scenario,Average_Evidence_Precision,available per system
+313,absurd_temporal,With Store (v15),0.42864500000000005,0.25586421044024604,20,Scenario,Average_Evidence_Precision,available per system
+314,absurd_temporal,With Store (v16),0.17267000000000002,0.26216331410622257,20,Scenario,Average_Evidence_Precision,available per system
+315,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+316,belief_maintenance,No Store (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+317,belief_maintenance,No Store (v2),,,0,Scenario,Average_Evidence_Precision,available per system
+318,belief_maintenance,With Store (v15),0.41068999999999994,0.2835235530919693,20,Scenario,Average_Evidence_Precision,available per system
+319,belief_maintenance,With Store (v16),0.36652499999999999,0.32330328742203462,20,Scenario,Average_Evidence_Precision,available per system
+320,grounding,GraphRAG (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+321,grounding,No Store (v1),,,0,Scenario,Average_Evidence_Precision,available per system
+322,grounding,No Store (v2),,,0,Scenario,Average_Evidence_Precision,available per system
+323,grounding,With Store (v15),0.38913500000000001,0.24258077607480077,20,Scenario,Average_Evidence_Precision,available per system
+324,grounding,With Store (v16),0.26112999999999997,0.33415655659554172,20,Scenario,Average_Evidence_Precision,available per system
+325,all,GraphRAG (v1),,,0,Overall,Average_Evidence_Precision,available per system
+326,all,No Store (v1),,,0,Overall,Average_Evidence_Precision,available per system
+327,all,No Store (v2),,,0,Overall,Average_Evidence_Precision,available per system
+328,all,With Store (v15),0.43100875,0.25961073108525434,80,Overall,Average_Evidence_Precision,available per system
+329,all,With Store (v16),0.256075,0.30729276787759485,80,Overall,Average_Evidence_Precision,available per system
+330,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_Evidence_Recall,available per system
+331,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_Evidence_Recall,available per system
+332,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_Evidence_Recall,available per system
+333,"Qwen3:4b, no thinking",With Store (v15),0.52153125,0.23028513258928957,16,Model,Average_Evidence_Recall,available per system
+334,"Qwen3:4b, no thinking",With Store (v16),0.37440625,0.25063152094592306,16,Model,Average_Evidence_Recall,available per system
+335,gemma3:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Recall,available per system
+336,gemma3:1b,No Store (v1),,,0,Model,Average_Evidence_Recall,available per system
+337,gemma3:1b,No Store (v2),,,0,Model,Average_Evidence_Recall,available per system
+338,gemma3:1b,With Store (v15),0.44548749999999998,0.18956017821965321,16,Model,Average_Evidence_Recall,available per system
+339,gemma3:1b,With Store (v16),0,0,16,Model,Average_Evidence_Recall,available per system
+340,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_Evidence_Recall,available per system
+341,gemma4:e2b,No Store (v1),,,0,Model,Average_Evidence_Recall,available per system
+342,gemma4:e2b,No Store (v2),,,0,Model,Average_Evidence_Recall,available per system
+343,gemma4:e2b,With Store (v15),0.029593749999999999,0.11837499999999998,16,Model,Average_Evidence_Recall,available per system
+344,gemma4:e2b,With Store (v16),0.60681874999999996,0.23946352879927252,16,Model,Average_Evidence_Recall,available per system
+345,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_Evidence_Recall,available per system
+346,llama3.2:1b,No Store (v1),,,0,Model,Average_Evidence_Recall,available per system
+347,llama3.2:1b,No Store (v2),,,0,Model,Average_Evidence_Recall,available per system
+348,llama3.2:1b,With Store (v15),0.17175625,0.063678452334103297,16,Model,Average_Evidence_Recall,available per system
+349,llama3.2:1b,With Store (v16),0,0,16,Model,Average_Evidence_Recall,available per system
+350,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_Evidence_Recall,available per system
+351,ministral-3:3b,No Store (v1),,,0,Model,Average_Evidence_Recall,available per system
+352,ministral-3:3b,No Store (v2),,,0,Model,Average_Evidence_Recall,available per system
+353,ministral-3:3b,With Store (v15),0.62036875000000002,0.19908358954218203,16,Model,Average_Evidence_Recall,available per system
+354,ministral-3:3b,With Store (v16),0.12873124999999999,0.21344836914735768,16,Model,Average_Evidence_Recall,available per system
+355,absurd,GraphRAG (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+356,absurd,No Store (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+357,absurd,No Store (v2),,,0,Scenario,Average_Evidence_Recall,available per system
+358,absurd,With Store (v15),0.406445,0.27594969693196275,20,Scenario,Average_Evidence_Recall,available per system
+359,absurd,With Store (v16),0.187135,0.26912141708080189,20,Scenario,Average_Evidence_Recall,available per system
+360,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+361,absurd_temporal,No Store (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+362,absurd_temporal,No Store (v2),,,0,Scenario,Average_Evidence_Recall,available per system
+363,absurd_temporal,With Store (v15),0.28590499999999996,0.23674928661038522,20,Scenario,Average_Evidence_Recall,available per system
+364,absurd_temporal,With Store (v16),0.12936500000000001,0.23303581896578177,20,Scenario,Average_Evidence_Recall,available per system
+365,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+366,belief_maintenance,No Store (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+367,belief_maintenance,No Store (v2),,,0,Scenario,Average_Evidence_Recall,available per system
+368,belief_maintenance,With Store (v15),0.47333999999999998,0.35390687802837267,20,Scenario,Average_Evidence_Recall,available per system
+369,belief_maintenance,With Store (v16),0.39776,0.36936011724403367,20,Scenario,Average_Evidence_Recall,available per system
+370,grounding,GraphRAG (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+371,grounding,No Store (v1),,,0,Scenario,Average_Evidence_Recall,available per system
+372,grounding,No Store (v2),,,0,Scenario,Average_Evidence_Recall,available per system
+373,grounding,With Store (v15),0.26529999999999998,0.18524332220366979,20,Scenario,Average_Evidence_Recall,available per system
+374,grounding,With Store (v16),0.173705,0.23870647131439152,20,Scenario,Average_Evidence_Recall,available per system
+375,all,GraphRAG (v1),,,0,Overall,Average_Evidence_Recall,available per system
+376,all,No Store (v1),,,0,Overall,Average_Evidence_Recall,available per system
+377,all,No Store (v2),,,0,Overall,Average_Evidence_Recall,available per system
+378,all,With Store (v15),0.3577475,0.27861156798750425,80,Overall,Average_Evidence_Recall,available per system
+379,all,With Store (v16),0.22199125,0.29645735970793508,80,Overall,Average_Evidence_Recall,available per system
+380,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+381,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+382,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+383,"Qwen3:4b, no thinking",With Store (v15),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+384,"Qwen3:4b, no thinking",With Store (v16),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+385,gemma3:1b,GraphRAG (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+386,gemma3:1b,No Store (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+387,gemma3:1b,No Store (v2),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+388,gemma3:1b,With Store (v15),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+389,gemma3:1b,With Store (v16),0,0,16,Model,Average_SBIR_SpuriousInjection,available per system
+390,gemma4:e2b,GraphRAG (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+391,gemma4:e2b,No Store (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+392,gemma4:e2b,No Store (v2),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+393,gemma4:e2b,With Store (v15),0.0099937499999999992,0.039974999999999997,16,Model,Average_SBIR_SpuriousInjection,available per system
+394,gemma4:e2b,With Store (v16),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+395,llama3.2:1b,GraphRAG (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+396,llama3.2:1b,No Store (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+397,llama3.2:1b,No Store (v2),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+398,llama3.2:1b,With Store (v15),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+399,llama3.2:1b,With Store (v16),0,0,16,Model,Average_SBIR_SpuriousInjection,available per system
+400,ministral-3:3b,GraphRAG (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+401,ministral-3:3b,No Store (v1),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+402,ministral-3:3b,No Store (v2),,,0,Model,Average_SBIR_SpuriousInjection,available per system
+403,ministral-3:3b,With Store (v15),0.23754375,0.076738664472350573,16,Model,Average_SBIR_SpuriousInjection,available per system
+404,ministral-3:3b,With Store (v16),0.11626249999999999,0.13860074494749297,16,Model,Average_SBIR_SpuriousInjection,available per system
+405,absurd,GraphRAG (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+406,absurd,No Store (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+407,absurd,No Store (v2),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+408,absurd,With Store (v15),0.23145500000000002,0.1285274554941063,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+409,absurd,With Store (v16),0.11173,0.15047149091754014,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+410,absurd_temporal,GraphRAG (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+411,absurd_temporal,No Store (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+412,absurd_temporal,No Store (v2),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+413,absurd_temporal,With Store (v15),0.16616,0.09957568081879388,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+414,absurd_temporal,With Store (v16),0.11813500000000002,0.1168649210120723,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+415,belief_maintenance,GraphRAG (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+416,belief_maintenance,No Store (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+417,belief_maintenance,No Store (v2),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+418,belief_maintenance,With Store (v15),0.23182,0.11911961966642477,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+419,belief_maintenance,With Store (v16),0.17386499999999999,0.14576965706570291,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+420,grounding,GraphRAG (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+421,grounding,No Store (v1),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+422,grounding,No Store (v2),,,0,Scenario,Average_SBIR_SpuriousInjection,available per system
+423,grounding,With Store (v15),0.13869999999999999,0.084353317096977035,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+424,grounding,With Store (v16),0.069349999999999995,0.092845522523337554,20,Scenario,Average_SBIR_SpuriousInjection,available per system
+425,all,GraphRAG (v1),,,0,Overall,Average_SBIR_SpuriousInjection,available per system
+426,all,No Store (v1),,,0,Overall,Average_SBIR_SpuriousInjection,available per system
+427,all,No Store (v2),,,0,Overall,Average_SBIR_SpuriousInjection,available per system
+428,all,With Store (v15),0.19203375,0.11474079753370585,80,Overall,Average_SBIR_SpuriousInjection,available per system
+429,all,With Store (v16),0.11827000000000001,0.13157903280317015,80,Overall,Average_SBIR_SpuriousInjection,available per system
+430,"Qwen3:4b, no thinking",GraphRAG (v1),0.58750000000000002,0.26299556396765833,16,Model,DS_Determinism_Score,available per system
+431,"Qwen3:4b, no thinking",No Store (v1),0.73124999999999996,0.18518009252256754,16,Model,DS_Determinism_Score,available per system
+432,"Qwen3:4b, no thinking",No Store (v2),0.80625000000000002,0.12893796958227624,16,Model,DS_Determinism_Score,available per system
+433,"Qwen3:4b, no thinking",With Store (v15),0.95625000000000004,0.072743842809317311,16,Model,DS_Determinism_Score,available per system
+434,"Qwen3:4b, no thinking",With Store (v16),0.96250000000000002,0.061913918736689014,16,Model,DS_Determinism_Score,available per system
+435,gemma3:1b,GraphRAG (v1),0.56874999999999998,0.16214705259938178,16,Model,DS_Determinism_Score,available per system
+436,gemma3:1b,No Store (v1),0.49374999999999997,0.18786076404259261,16,Model,DS_Determinism_Score,available per system
+437,gemma3:1b,No Store (v2),0.75,0.11547005383792518,16,Model,DS_Determinism_Score,available per system
+438,gemma3:1b,With Store (v15),0.79374999999999996,0.16520189667999174,16,Model,DS_Determinism_Score,available per system
+439,gemma3:1b,With Store (v16),0.76875000000000004,0.17404501333467345,16,Model,DS_Determinism_Score,available per system
+440,gemma4:e2b,GraphRAG (v1),0.76249999999999996,0.12041594578792297,16,Model,DS_Determinism_Score,available per system
+441,gemma4:e2b,No Store (v1),0.63124999999999998,0.1579820664927932,16,Model,DS_Determinism_Score,available per system
+442,gemma4:e2b,No Store (v2),0.67500000000000004,0.23523038352503134,16,Model,DS_Determinism_Score,available per system
+443,gemma4:e2b,With Store (v15),0.91874999999999996,0.11086778913041724,16,Model,DS_Determinism_Score,available per system
+444,gemma4:e2b,With Store (v16),0.94374999999999998,0.12632629707758136,16,Model,DS_Determinism_Score,available per system
+445,llama3.2:1b,GraphRAG (v1),0.53125,0.12499999999999996,16,Model,DS_Determinism_Score,available per system
+446,llama3.2:1b,No Store (v1),0.11875000000000001,0.15585784121008051,16,Model,DS_Determinism_Score,available per system
+447,llama3.2:1b,No Store (v2),0.78749999999999998,0.13601470508735444,16,Model,DS_Determinism_Score,available per system
+448,llama3.2:1b,With Store (v15),0.66874999999999996,0.16620770138594662,16,Model,DS_Determinism_Score,available per system
+449,llama3.2:1b,With Store (v16),0.75,0.11547005383792518,16,Model,DS_Determinism_Score,available per system
+450,ministral-3:3b,GraphRAG (v1),0.6875,0.15864005379054391,16,Model,DS_Determinism_Score,available per system
+451,ministral-3:3b,No Store (v1),0.58750000000000002,0.16278820596099708,16,Model,DS_Determinism_Score,available per system
+452,ministral-3:3b,No Store (v2),0.77500000000000002,0.13904435743076141,16,Model,DS_Determinism_Score,available per system
+453,ministral-3:3b,With Store (v15),0.91874999999999996,0.091058589197651557,16,Model,DS_Determinism_Score,available per system
+454,ministral-3:3b,With Store (v16),0.92500000000000004,0.11832159566199235,16,Model,DS_Determinism_Score,available per system
+455,absurd,GraphRAG (v1),0.59000000000000008,0.19166857359844663,20,Scenario,DS_Determinism_Score,available per system
+456,absurd,No Store (v1),0.495,0.22354794611117837,20,Scenario,DS_Determinism_Score,available per system
+457,absurd,No Store (v2),0.78000000000000003,0.13218806379747877,20,Scenario,DS_Determinism_Score,available per system
+458,absurd,With Store (v15),0.88000000000000012,0.15423836644690755,20,Scenario,DS_Determinism_Score,available per system
+459,absurd,With Store (v16),0.86999999999999988,0.16575187543592479,20,Scenario,DS_Determinism_Score,available per system
+460,absurd_temporal,GraphRAG (v1),0.59499999999999997,0.18202082009311035,20,Scenario,DS_Determinism_Score,available per system
+461,absurd_temporal,No Store (v1),0.44500000000000001,0.24165002967536597,20,Scenario,DS_Determinism_Score,available per system
+462,absurd_temporal,No Store (v2),0.77500000000000002,0.17733405882980474,20,Scenario,DS_Determinism_Score,available per system
+463,absurd_temporal,With Store (v15),0.91999999999999993,0.11516578439248722,20,Scenario,DS_Determinism_Score,available per system
+464,absurd_temporal,With Store (v16),0.92500000000000004,0.10699237552766383,20,Scenario,DS_Determinism_Score,available per system
+465,belief_maintenance,GraphRAG (v1),0.67999999999999994,0.23753116139062461,20,Scenario,DS_Determinism_Score,available per system
+466,belief_maintenance,No Store (v1),0.60499999999999998,0.32843328249833564,20,Scenario,DS_Determinism_Score,available per system
+467,belief_maintenance,No Store (v2),0.77000000000000002,0.1417930292993797,20,Scenario,DS_Determinism_Score,available per system
+468,belief_maintenance,With Store (v15),0.875,0.11641577031891931,20,Scenario,DS_Determinism_Score,available per system
+469,belief_maintenance,With Store (v16),0.93499999999999994,0.093330200448672976,20,Scenario,DS_Determinism_Score,available per system
+470,grounding,GraphRAG (v1),0.64500000000000002,0.1316894273021107,20,Scenario,DS_Determinism_Score,available per system
+471,grounding,No Store (v1),0.505,0.26847522673129648,20,Scenario,DS_Determinism_Score,available per system
+472,grounding,No Store (v2),0.70999999999999996,0.18324559303956278,20,Scenario,DS_Determinism_Score,available per system
+473,grounding,With Store (v15),0.72999999999999998,0.19761738683361685,20,Scenario,DS_Determinism_Score,available per system
+474,grounding,With Store (v16),0.75,0.16059101370939327,20,Scenario,DS_Determinism_Score,available per system
+475,all,GraphRAG (v1),0.62750000000000006,0.18958649206808897,80,Overall,DS_Determinism_Score,available per system
+476,all,No Store (v1),0.51249999999999996,0.26972794545052614,80,Overall,DS_Determinism_Score,available per system
+477,all,No Store (v2),0.75875000000000004,0.15966242077456722,80,Overall,DS_Determinism_Score,available per system
+478,all,With Store (v15),0.85124999999999995,0.16381044154599445,80,Overall,DS_Determinism_Score,available per system
+479,all,With Store (v16),0.86999999999999988,0.15211587854766878,80,Overall,DS_Determinism_Score,available per system
+480,"Qwen3:4b, no thinking",GraphRAG (v1),0.58750000000000002,0.26299556396765833,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+481,"Qwen3:4b, no thinking",No Store (v1),0.73124999999999996,0.18518009252256754,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+482,"Qwen3:4b, no thinking",With Store (v16),0.96250000000000002,0.061913918736689014,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+483,gemma3:1b,GraphRAG (v1),0.56874999999999998,0.16214705259938178,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+484,gemma3:1b,No Store (v1),0.49374999999999997,0.18786076404259267,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+485,gemma3:1b,With Store (v16),0.76875000000000004,0.17404501333467345,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+486,gemma4:e2b,GraphRAG (v1),0.76249999999999996,0.12041594578792297,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+487,gemma4:e2b,No Store (v1),0.63124999999999998,0.1579820664927932,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+488,gemma4:e2b,With Store (v16),0.94374999999999998,0.12632629707758133,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+489,llama3.2:1b,GraphRAG (v1),0.53125,0.12499999999999999,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+490,llama3.2:1b,No Store (v1),0.11874999999999999,0.15585784121008051,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+491,llama3.2:1b,With Store (v16),0.75,0.11547005383792516,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+492,ministral-3:3b,GraphRAG (v1),0.6875,0.15864005379054391,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+493,ministral-3:3b,No Store (v1),0.58750000000000002,0.16278820596099708,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+494,ministral-3:3b,With Store (v16),0.92500000000000004,0.11832159566199234,16,Model,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+495,absurd,GraphRAG (v1),0.59000000000000008,0.19166857359844666,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+496,absurd,No Store (v1),0.495,0.22354794611117837,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+497,absurd,With Store (v16),0.86999999999999988,0.16575187543592473,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+498,absurd_temporal,GraphRAG (v1),0.59499999999999997,0.1820208200931103,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+499,absurd_temporal,No Store (v1),0.44500000000000001,0.24165002967536597,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+500,absurd_temporal,With Store (v16),0.92500000000000004,0.10699237552766382,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+501,belief_maintenance,GraphRAG (v1),0.67999999999999994,0.23753116139062461,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+502,belief_maintenance,No Store (v1),0.60499999999999998,0.32843328249833575,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+503,belief_maintenance,With Store (v16),0.93499999999999994,0.093330200448672962,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+504,grounding,GraphRAG (v1),0.64500000000000002,0.13168942730211072,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+505,grounding,No Store (v1),0.505,0.26847522673129653,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+506,grounding,With Store (v16),0.75,0.16059101370939327,20,Scenario,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+507,all,GraphRAG (v1),0.62750000000000006,0.18958649206808889,80,Overall,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+508,all,No Store (v1),0.51249999999999996,0.26972794545052614,80,Overall,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+509,all,With Store (v16),0.86999999999999988,0.15211587854766881,80,Overall,DS_Determinism_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+510,"Qwen3:4b, no thinking",GraphRAG (v1),0.59375,0.20441379601191303,16,Model,EFR_Extraction_Failure_Rate,available per system
+511,"Qwen3:4b, no thinking",No Store (v1),0.0075000000000000006,0.019493588689617931,16,Model,EFR_Extraction_Failure_Rate,available per system
+512,"Qwen3:4b, no thinking",No Store (v2),0.046875,0.08669630903331467,16,Model,EFR_Extraction_Failure_Rate,available per system
+513,"Qwen3:4b, no thinking",With Store (v15),0.00125,0.0050000000000000001,16,Model,EFR_Extraction_Failure_Rate,available per system
+514,"Qwen3:4b, no thinking",With Store (v16),0.03125,0.056553809184999505,16,Model,EFR_Extraction_Failure_Rate,available per system
+515,gemma3:1b,GraphRAG (v1),0.39000000000000001,0.12649110640673519,16,Model,EFR_Extraction_Failure_Rate,available per system
+516,gemma3:1b,No Store (v1),0.21249999999999999,0.12593649193144932,16,Model,EFR_Extraction_Failure_Rate,available per system
+517,gemma3:1b,No Store (v2),0.033125000000000002,0.05108408101682297,16,Model,EFR_Extraction_Failure_Rate,available per system
+518,gemma3:1b,With Store (v15),0.080000000000000002,0.10321498599202218,16,Model,EFR_Extraction_Failure_Rate,available per system
+519,gemma3:1b,With Store (v16),0.31624999999999998,0.14536735075891927,16,Model,EFR_Extraction_Failure_Rate,available per system
+520,gemma4:e2b,GraphRAG (v1),0.042499999999999996,0.06126445407684078,16,Model,EFR_Extraction_Failure_Rate,available per system
+521,gemma4:e2b,No Store (v1),0.036874999999999998,0.047289005064602492,16,Model,EFR_Extraction_Failure_Rate,available per system
+522,gemma4:e2b,No Store (v2),0.489375,0.25225565735314376,16,Model,EFR_Extraction_Failure_Rate,available per system
+523,gemma4:e2b,With Store (v15),0.041875000000000002,0.12890403407186296,16,Model,EFR_Extraction_Failure_Rate,available per system
+524,gemma4:e2b,With Store (v16),0.048125000000000001,0.091594668694926412,16,Model,EFR_Extraction_Failure_Rate,available per system
+525,llama3.2:1b,GraphRAG (v1),0.18937499999999999,0.093056882245932421,16,Model,EFR_Extraction_Failure_Rate,available per system
+526,llama3.2:1b,No Store (v1),0.88249999999999995,0.14045165241700311,16,Model,EFR_Extraction_Failure_Rate,available per system
+527,llama3.2:1b,No Store (v2),0.078125,0.074763516057856277,16,Model,EFR_Extraction_Failure_Rate,available per system
+528,llama3.2:1b,With Store (v15),0.26937500000000003,0.17751877834940918,16,Model,EFR_Extraction_Failure_Rate,available per system
+529,llama3.2:1b,With Store (v16),0.060624999999999998,0.067967516751263862,16,Model,EFR_Extraction_Failure_Rate,available per system
+530,ministral-3:3b,GraphRAG (v1),0.036249999999999998,0.052265348622836785,16,Model,EFR_Extraction_Failure_Rate,available per system
+531,ministral-3:3b,No Store (v1),0.21062500000000001,0.26430963533956409,16,Model,EFR_Extraction_Failure_Rate,available per system
+532,ministral-3:3b,No Store (v2),0.026875,0.033807050546693168,16,Model,EFR_Extraction_Failure_Rate,available per system
+533,ministral-3:3b,With Store (v15),0.0062500000000000003,0.025000000000000001,16,Model,EFR_Extraction_Failure_Rate,available per system
+534,ministral-3:3b,With Store (v16),0.0025000000000000001,0.010000000000000002,16,Model,EFR_Extraction_Failure_Rate,available per system
+535,absurd,GraphRAG (v1),0.28549999999999998,0.29786035230235697,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+536,absurd,No Store (v1),0.33700000000000002,0.36503929132427143,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+537,absurd,No Store (v2),0.11850000000000001,0.17806784632475578,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+538,absurd,With Store (v15),0.077499999999999999,0.13633839479301801,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+539,absurd,With Store (v16),0.088999999999999996,0.14721627484401092,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+540,absurd_temporal,GraphRAG (v1),0.26550000000000001,0.27250253499545168,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+541,absurd_temporal,No Store (v1),0.221,0.36736472626704808,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+542,absurd_temporal,No Store (v2),0.1095,0.22385321788595031,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+543,absurd_temporal,With Store (v15),0.084499999999999992,0.18207791854327818,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+544,absurd_temporal,With Store (v16),0.054500000000000007,0.097897637195292195,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+545,belief_maintenance,GraphRAG (v1),0.16799999999999998,0.1835784645092636,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+546,belief_maintenance,No Store (v1),0.22900000000000001,0.35748978638336099,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+547,belief_maintenance,No Store (v2),0.11300000000000002,0.21272913343152206,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+548,belief_maintenance,With Store (v15),0.026000000000000002,0.060035077465726568,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+549,belief_maintenance,With Store (v16),0.062,0.090762848880156385,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+550,grounding,GraphRAG (v1),0.28250000000000003,0.21205448654333606,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+551,grounding,No Store (v1),0.29300000000000004,0.32433089016587591,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+552,grounding,No Store (v2),0.19850000000000001,0.25367353657387037,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+553,grounding,With Store (v15),0.13100000000000001,0.16421744249942707,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+554,grounding,With Store (v16),0.1615,0.19285323025827861,20,Scenario,EFR_Extraction_Failure_Rate,available per system
+555,all,GraphRAG (v1),0.25037500000000001,0.24590027694683803,80,Overall,EFR_Extraction_Failure_Rate,available per system
+556,all,No Store (v1),0.27000000000000002,0.35049332321779419,80,Overall,EFR_Extraction_Failure_Rate,available per system
+557,all,No Store (v2),0.13487500000000002,0.21775025614366775,80,Overall,EFR_Extraction_Failure_Rate,available per system
+558,all,With Store (v15),0.079750000000000001,0.14560198044278369,80,Overall,EFR_Extraction_Failure_Rate,available per system
+559,all,With Store (v16),0.091749999999999998,0.14231161209370388,80,Overall,EFR_Extraction_Failure_Rate,available per system
+560,"Qwen3:4b, no thinking",GraphRAG (v1),0.59375,0.20441379601191306,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+561,"Qwen3:4b, no thinking",No Store (v1),0.0075000000000000006,0.019493588689617931,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+562,"Qwen3:4b, no thinking",With Store (v16),0.03125,0.056553809184999498,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+563,gemma3:1b,GraphRAG (v1),0.39000000000000001,0.12649110640673519,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+564,gemma3:1b,No Store (v1),0.21249999999999999,0.12593649193144932,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+565,gemma3:1b,With Store (v16),0.31624999999999998,0.14536735075891924,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+566,gemma4:e2b,GraphRAG (v1),0.042499999999999996,0.06126445407684078,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+567,gemma4:e2b,No Store (v1),0.036874999999999998,0.047289005064602492,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+568,gemma4:e2b,With Store (v16),0.048125000000000001,0.091594668694926412,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+569,llama3.2:1b,GraphRAG (v1),0.18937500000000002,0.093056882245932435,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+570,llama3.2:1b,No Store (v1),0.88249999999999995,0.14045165241700316,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+571,llama3.2:1b,With Store (v16),0.060625000000000005,0.067967516751263862,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+572,ministral-3:3b,GraphRAG (v1),0.036249999999999998,0.052265348622836785,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+573,ministral-3:3b,No Store (v1),0.21062500000000001,0.26430963533956409,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+574,ministral-3:3b,With Store (v16),0.0025000000000000001,0.01,16,Model,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+575,absurd,GraphRAG (v1),0.28549999999999998,0.29786035230235708,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+576,absurd,No Store (v1),0.33700000000000002,0.36503929132427143,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+577,absurd,With Store (v16),0.088999999999999996,0.14721627484401092,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+578,absurd_temporal,GraphRAG (v1),0.26549999999999996,0.27250253499545163,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+579,absurd_temporal,No Store (v1),0.221,0.36736472626704808,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+580,absurd_temporal,With Store (v16),0.054500000000000007,0.097897637195292181,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+581,belief_maintenance,GraphRAG (v1),0.16800000000000001,0.18357846450926357,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+582,belief_maintenance,No Store (v1),0.22900000000000001,0.35748978638336093,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+583,belief_maintenance,With Store (v16),0.062,0.090762848880156372,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+584,grounding,GraphRAG (v1),0.28250000000000003,0.21205448654333606,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+585,grounding,No Store (v1),0.29300000000000004,0.32433089016587591,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+586,grounding,With Store (v16),0.1615,0.19285323025827861,20,Scenario,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+587,all,GraphRAG (v1),0.25037500000000001,0.24590027694683811,80,Overall,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+588,all,No Store (v1),0.27000000000000002,0.35049332321779419,80,Overall,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+589,all,With Store (v16),0.091749999999999998,0.14231161209370394,80,Overall,EFR_Extraction_Failure_Rate,shared GraphRAG v1 / With Store v16 / No Store v1
+590,"Qwen3:4b, no thinking",GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+591,"Qwen3:4b, no thinking",No Store (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+592,"Qwen3:4b, no thinking",No Store (v2),1,0,16,Model,EMD_bracketed_exact,available per system
+593,"Qwen3:4b, no thinking",With Store (v15),1,0,16,Model,EMD_bracketed_exact,available per system
+594,"Qwen3:4b, no thinking",With Store (v16),1,0,16,Model,EMD_bracketed_exact,available per system
+595,gemma3:1b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+596,gemma3:1b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+597,gemma3:1b,No Store (v2),1,0,16,Model,EMD_bracketed_exact,available per system
+598,gemma3:1b,With Store (v15),1,0,16,Model,EMD_bracketed_exact,available per system
+599,gemma3:1b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,available per system
+600,gemma4:e2b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+601,gemma4:e2b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+602,gemma4:e2b,No Store (v2),1,0,16,Model,EMD_bracketed_exact,available per system
+603,gemma4:e2b,With Store (v15),1,0,16,Model,EMD_bracketed_exact,available per system
+604,gemma4:e2b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,available per system
+605,llama3.2:1b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+606,llama3.2:1b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+607,llama3.2:1b,No Store (v2),1,0,16,Model,EMD_bracketed_exact,available per system
+608,llama3.2:1b,With Store (v15),1,0,16,Model,EMD_bracketed_exact,available per system
+609,llama3.2:1b,With Store (v16),1,0,10,Model,EMD_bracketed_exact,available per system
+610,ministral-3:3b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+611,ministral-3:3b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,available per system
+612,ministral-3:3b,No Store (v2),1,0,16,Model,EMD_bracketed_exact,available per system
+613,ministral-3:3b,With Store (v15),1,0,16,Model,EMD_bracketed_exact,available per system
+614,ministral-3:3b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,available per system
+615,absurd,GraphRAG (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+616,absurd,No Store (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+617,absurd,No Store (v2),1,0,20,Scenario,EMD_bracketed_exact,available per system
+618,absurd,With Store (v15),1,0,20,Scenario,EMD_bracketed_exact,available per system
+619,absurd,With Store (v16),1,0,18,Scenario,EMD_bracketed_exact,available per system
+620,absurd_temporal,GraphRAG (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+621,absurd_temporal,No Store (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+622,absurd_temporal,No Store (v2),1,0,20,Scenario,EMD_bracketed_exact,available per system
+623,absurd_temporal,With Store (v15),1,0,20,Scenario,EMD_bracketed_exact,available per system
+624,absurd_temporal,With Store (v16),1,0,17,Scenario,EMD_bracketed_exact,available per system
+625,belief_maintenance,GraphRAG (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+626,belief_maintenance,No Store (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+627,belief_maintenance,No Store (v2),1,0,20,Scenario,EMD_bracketed_exact,available per system
+628,belief_maintenance,With Store (v15),1,0,20,Scenario,EMD_bracketed_exact,available per system
+629,belief_maintenance,With Store (v16),1,0,19,Scenario,EMD_bracketed_exact,available per system
+630,grounding,GraphRAG (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+631,grounding,No Store (v1),1,0,20,Scenario,EMD_bracketed_exact,available per system
+632,grounding,No Store (v2),1,0,20,Scenario,EMD_bracketed_exact,available per system
+633,grounding,With Store (v15),1,0,20,Scenario,EMD_bracketed_exact,available per system
+634,grounding,With Store (v16),1,0,20,Scenario,EMD_bracketed_exact,available per system
+635,all,GraphRAG (v1),1,0,80,Overall,EMD_bracketed_exact,available per system
+636,all,No Store (v1),1,0,80,Overall,EMD_bracketed_exact,available per system
+637,all,No Store (v2),1,0,80,Overall,EMD_bracketed_exact,available per system
+638,all,With Store (v15),1,0,80,Overall,EMD_bracketed_exact,available per system
+639,all,With Store (v16),1,0,74,Overall,EMD_bracketed_exact,available per system
+640,"Qwen3:4b, no thinking",GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+641,"Qwen3:4b, no thinking",No Store (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+642,"Qwen3:4b, no thinking",With Store (v16),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+643,gemma3:1b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+644,gemma3:1b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+645,gemma3:1b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+646,gemma4:e2b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+647,gemma4:e2b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+648,gemma4:e2b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+649,llama3.2:1b,GraphRAG (v1),1,0,10,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+650,llama3.2:1b,No Store (v1),1,0,10,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+651,llama3.2:1b,With Store (v16),1,0,10,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+652,ministral-3:3b,GraphRAG (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+653,ministral-3:3b,No Store (v1),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+654,ministral-3:3b,With Store (v16),1,0,16,Model,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+655,absurd,GraphRAG (v1),1,0,18,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+656,absurd,No Store (v1),1,0,18,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+657,absurd,With Store (v16),1,0,18,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+658,absurd_temporal,GraphRAG (v1),1,0,17,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+659,absurd_temporal,No Store (v1),1,0,17,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+660,absurd_temporal,With Store (v16),1,0,17,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+661,belief_maintenance,GraphRAG (v1),1,0,19,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+662,belief_maintenance,No Store (v1),1,0,19,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+663,belief_maintenance,With Store (v16),1,0,19,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+664,grounding,GraphRAG (v1),1,0,20,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+665,grounding,No Store (v1),1,0,20,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+666,grounding,With Store (v16),1,0,20,Scenario,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+667,all,GraphRAG (v1),1,0,74,Overall,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+668,all,No Store (v1),1,0,74,Overall,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+669,all,With Store (v16),1,0,74,Overall,EMD_bracketed_exact,shared GraphRAG v1 / With Store v16 / No Store v1
+670,"Qwen3:4b, no thinking",GraphRAG (v1),0.1519722222222222,0.078429476066395998,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+671,"Qwen3:4b, no thinking",No Store (v1),0.11497225,0.073940425213365746,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+672,"Qwen3:4b, no thinking",No Store (v2),0.17127781249999999,0.064195953650489787,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+673,"Qwen3:4b, no thinking",With Store (v15),0.045743124999999996,0.073414149025806549,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+674,"Qwen3:4b, no thinking",With Store (v16),0.082895812499999999,0.097967376193791325,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+675,gemma3:1b,GraphRAG (v1),0.1175625,0.045142854526655868,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+676,gemma3:1b,No Store (v1),0.1164236875,0.036695347724598093,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+677,gemma3:1b,No Store (v2),0.19794462499999999,0.042415153942704641,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+678,gemma3:1b,With Store (v15),0.087569624999999998,0.074491716299084784,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+679,gemma3:1b,With Store (v16),0.15338893749999999,0.070696780522141414,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+680,gemma4:e2b,GraphRAG (v1),0.11975694444444444,0.089477221680092839,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+681,gemma4:e2b,No Store (v1),0.105493,0.066897943958440662,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+682,gemma4:e2b,No Store (v2),0.1225,0.059492447880382264,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+683,gemma4:e2b,With Store (v15),0.059625062499999999,0.083064371501840872,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+684,gemma4:e2b,With Store (v16),0.085868062499999995,0.10699482005808739,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+685,llama3.2:1b,GraphRAG (v1),0.092736111111111103,0.054445803082065279,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+686,llama3.2:1b,No Store (v1),0.0216944375,0.030570257937999695,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+687,llama3.2:1b,No Store (v2),0.13731256250000001,0.094554869984906115,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+688,llama3.2:1b,With Store (v15),0.1201735625,0.063976803804679863,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+689,llama3.2:1b,With Store (v16),0.1698333125,0.10355154642960433,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+690,ministral-3:3b,GraphRAG (v1),0.11603472222222222,0.076522631405904692,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+691,ministral-3:3b,No Store (v1),0.11879168750000001,0.064849376423338365,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+692,ministral-3:3b,No Store (v2),0.174458375,0.061983798245321069,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+693,ministral-3:3b,With Store (v15),0.061965312500000001,0.089160720100067051,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+694,ministral-3:3b,With Store (v16),0.094312437499999999,0.10464263607979858,16,Model,PTC_Variance_PerTurn_Consistency,available per system
+695,absurd,GraphRAG (v1),0.11218888888888887,0.058787843354861972,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+696,absurd,No Store (v1),0.10885,0.068545593417428149,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+697,absurd,No Store (v2),0.15964455,0.061628896139012235,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+698,absurd,With Store (v15),0.039405599999999999,0.056799298399484506,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+699,absurd,With Store (v16),0.0910556,0.098246783359906595,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+700,absurd_temporal,GraphRAG (v1),0.12921666666666667,0.059712354413936991,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+701,absurd_temporal,No Store (v1),0.11636115,0.068840752889147996,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+702,absurd_temporal,No Store (v2),0.19026680000000001,0.061458780128678635,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+703,absurd_temporal,With Store (v15),0.12001124999999999,0.100003642198343,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+704,absurd_temporal,With Store (v16),0.14895554999999999,0.097653532881614324,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+705,belief_maintenance,GraphRAG (v1),0.11215,0.082747376771551487,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+706,belief_maintenance,No Store (v1),0.06102225,0.061919278805363326,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+707,belief_maintenance,No Store (v2),0.16062219999999999,0.075037357388521034,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+708,belief_maintenance,With Store (v15),0.050544400000000003,0.068425166431657289,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+709,belief_maintenance,With Store (v16),0.087138899999999991,0.10551603285652349,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+710,grounding,GraphRAG (v1),0.12489444444444445,0.084507705413199047,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+711,grounding,No Store (v1),0.095666649999999992,0.060148439265112666,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+712,grounding,No Store (v2),0.13226114999999999,0.07544638177664216,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+713,grounding,With Store (v15),0.090100100000000002,0.065268413869513514,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+714,grounding,With Store (v16),0.14188879999999998,0.098332730939718935,20,Scenario,PTC_Variance_PerTurn_Consistency,available per system
+715,all,GraphRAG (v1),0.11961250000000001,0.071495209140663388,80,Overall,PTC_Variance_PerTurn_Consistency,available per system
+716,all,No Store (v1),0.095475012499999998,0.067217879430449323,80,Overall,PTC_Variance_PerTurn_Consistency,available per system
+717,all,No Store (v2),0.16069867499999999,0.070508540989551866,80,Overall,PTC_Variance_PerTurn_Consistency,available per system
+718,all,With Store (v15),0.075015337500000001,0.079840786965779786,80,Overall,PTC_Variance_PerTurn_Consistency,available per system
+719,all,With Store (v16),0.1172597125,0.10212570921646971,80,Overall,PTC_Variance_PerTurn_Consistency,available per system
+720,"Qwen3:4b, no thinking",GraphRAG (v1),0.15197222222222223,0.078429476066395984,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+721,"Qwen3:4b, no thinking",No Store (v1),0.11497225,0.073940425213365746,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+722,"Qwen3:4b, no thinking",With Store (v16),0.082895812499999999,0.097967376193791325,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+723,gemma3:1b,GraphRAG (v1),0.1175625,0.045142854526655868,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+724,gemma3:1b,No Store (v1),0.1164236875,0.0366953477245981,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+725,gemma3:1b,With Store (v16),0.15338893749999999,0.0706967805221414,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+726,gemma4:e2b,GraphRAG (v1),0.11975694444444444,0.089477221680092853,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+727,gemma4:e2b,No Store (v1),0.105493,0.066897943958440662,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+728,gemma4:e2b,With Store (v16),0.085868062499999995,0.10699482005808739,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+729,llama3.2:1b,GraphRAG (v1),0.092736111111111103,0.054445803082065272,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+730,llama3.2:1b,No Store (v1),0.0216944375,0.030570257937999695,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+731,llama3.2:1b,With Store (v16),0.1698333125,0.10355154642960432,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+732,ministral-3:3b,GraphRAG (v1),0.11603472222222222,0.076522631405904706,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+733,ministral-3:3b,No Store (v1),0.11879168750000001,0.064849376423338365,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+734,ministral-3:3b,With Store (v16),0.094312437499999999,0.1046426360797986,16,Model,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+735,absurd,GraphRAG (v1),0.11218888888888889,0.058787843354861972,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+736,absurd,No Store (v1),0.10885,0.068545593417428136,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+737,absurd,With Store (v16),0.0910556,0.098246783359906595,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+738,absurd_temporal,GraphRAG (v1),0.12921666666666667,0.059712354413936991,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+739,absurd_temporal,No Store (v1),0.11636115,0.068840752889147983,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+740,absurd_temporal,With Store (v16),0.14895554999999999,0.097653532881614297,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+741,belief_maintenance,GraphRAG (v1),0.11215,0.082747376771551487,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+742,belief_maintenance,No Store (v1),0.06102225,0.061919278805363319,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+743,belief_maintenance,With Store (v16),0.087138899999999991,0.1055160328565235,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+744,grounding,GraphRAG (v1),0.12489444444444445,0.084507705413199033,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+745,grounding,No Store (v1),0.095666649999999992,0.060148439265112666,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+746,grounding,With Store (v16),0.14188879999999998,0.098332730939718921,20,Scenario,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+747,all,GraphRAG (v1),0.11961249999999998,0.071495209140663388,80,Overall,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+748,all,No Store (v1),0.095475012499999998,0.067217879430449337,80,Overall,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+749,all,With Store (v16),0.1172597125,0.10212570921646973,80,Overall,PTC_Variance_PerTurn_Consistency,shared GraphRAG v1 / With Store v16 / No Store v1
+750,"Qwen3:4b, no thinking",GraphRAG (v1),0.12967618230821504,0.15974416989569687,16,Model,Summary_Metric_Brier_Score,available per system
+751,"Qwen3:4b, no thinking",No Store (v1),0.23975316018004142,0.17910997946717919,16,Model,Summary_Metric_Brier_Score,available per system
+752,"Qwen3:4b, no thinking",No Store (v2),0.43356017656265239,0.2428287250165827,16,Model,Summary_Metric_Brier_Score,available per system
+753,"Qwen3:4b, no thinking",With Store (v15),0.061297121060999188,0.10205470506673746,16,Model,Summary_Metric_Brier_Score,available per system
+754,"Qwen3:4b, no thinking",With Store (v16),0.13486548533952303,0.16687116726886408,16,Model,Summary_Metric_Brier_Score,available per system
+755,gemma3:1b,GraphRAG (v1),0.39449039676206293,0.12304617416570775,16,Model,Summary_Metric_Brier_Score,available per system
+756,gemma3:1b,No Store (v1),0.57910548426728725,0.11874406266066653,16,Model,Summary_Metric_Brier_Score,available per system
+757,gemma3:1b,No Store (v2),0.50104980354557682,0.16975363774713065,16,Model,Summary_Metric_Brier_Score,available per system
+758,gemma3:1b,With Store (v15),0.25472852304869409,0.23318815830239428,16,Model,Summary_Metric_Brier_Score,available per system
+759,gemma3:1b,With Store (v16),0.45942268070791137,0.24581252862590472,16,Model,Summary_Metric_Brier_Score,available per system
+760,gemma4:e2b,GraphRAG (v1),0.20866860065554349,0.17582428989909663,16,Model,Summary_Metric_Brier_Score,available per system
+761,gemma4:e2b,No Store (v1),0.19364923606945456,0.14943213803567068,16,Model,Summary_Metric_Brier_Score,available per system
+762,gemma4:e2b,No Store (v2),0.36526595310156812,0.22986334623257149,16,Model,Summary_Metric_Brier_Score,available per system
+763,gemma4:e2b,With Store (v15),0.11353138182896563,0.16364590492394229,16,Model,Summary_Metric_Brier_Score,available per system
+764,gemma4:e2b,With Store (v16),0.16998435175084595,0.23548589341775802,16,Model,Summary_Metric_Brier_Score,available per system
+765,llama3.2:1b,GraphRAG (v1),0.42660518814490711,0.15186311976548578,16,Model,Summary_Metric_Brier_Score,available per system
+766,llama3.2:1b,No Store (v1),0.38681331286162424,0.19513387544884664,12,Model,Summary_Metric_Brier_Score,available per system
+767,llama3.2:1b,No Store (v2),0.34278829367072583,0.14461370327140402,16,Model,Summary_Metric_Brier_Score,available per system
+768,llama3.2:1b,With Store (v15),0.34581452228608889,0.19027902746357053,16,Model,Summary_Metric_Brier_Score,available per system
+769,llama3.2:1b,With Store (v16),0.305838728460882,0.13843276395150031,16,Model,Summary_Metric_Brier_Score,available per system
+770,ministral-3:3b,GraphRAG (v1),0.35647324337063951,0.11896070802903867,16,Model,Summary_Metric_Brier_Score,available per system
+771,ministral-3:3b,No Store (v1),0.26215491446880712,0.15012203690902534,16,Model,Summary_Metric_Brier_Score,available per system
+772,ministral-3:3b,No Store (v2),0.24549647473831096,0.12256544049745971,16,Model,Summary_Metric_Brier_Score,available per system
+773,ministral-3:3b,With Store (v15),0.09161299527658455,0.11849131941108654,16,Model,Summary_Metric_Brier_Score,available per system
+774,ministral-3:3b,With Store (v16),0.10829490723683724,0.11661915903041484,16,Model,Summary_Metric_Brier_Score,available per system
+775,absurd,GraphRAG (v1),0.29671673065642445,0.18728591774475919,20,Scenario,Summary_Metric_Brier_Score,available per system
+776,absurd,No Store (v1),0.31223586953176558,0.19304834155808287,19,Scenario,Summary_Metric_Brier_Score,available per system
+777,absurd,No Store (v2),0.39037650397546914,0.22329082152401916,20,Scenario,Summary_Metric_Brier_Score,available per system
+778,absurd,With Store (v15),0.10042555168465732,0.1531194475281088,20,Scenario,Summary_Metric_Brier_Score,available per system
+779,absurd,With Store (v16),0.13836350950641255,0.17458678375460021,20,Scenario,Summary_Metric_Brier_Score,available per system
+780,absurd_temporal,GraphRAG (v1),0.35946265403230349,0.20741834975413664,20,Scenario,Summary_Metric_Brier_Score,available per system
+781,absurd_temporal,No Store (v1),0.4162285894821231,0.17587172563088363,18,Scenario,Summary_Metric_Brier_Score,available per system
+782,absurd_temporal,No Store (v2),0.44722075484462331,0.15645239811800007,20,Scenario,Summary_Metric_Brier_Score,available per system
+783,absurd_temporal,With Store (v15),0.22517937390527765,0.20763126095407852,20,Scenario,Summary_Metric_Brier_Score,available per system
+784,absurd_temporal,With Store (v16),0.248245645238794,0.19229691843205979,20,Scenario,Summary_Metric_Brier_Score,available per system
+785,belief_maintenance,GraphRAG (v1),0.25211758188083749,0.16030397776650823,20,Scenario,Summary_Metric_Brier_Score,available per system
+786,belief_maintenance,No Store (v1),0.22584703576560311,0.23621762052171422,19,Scenario,Summary_Metric_Brier_Score,available per system
+787,belief_maintenance,No Store (v2),0.30390165490744031,0.17611598678943968,20,Scenario,Summary_Metric_Brier_Score,available per system
+788,belief_maintenance,With Store (v15),0.058380118172212926,0.07052992255787062,20,Scenario,Summary_Metric_Brier_Score,available per system
+789,belief_maintenance,With Store (v16),0.1052236748348276,0.126610659725371,20,Scenario,Summary_Metric_Brier_Score,available per system
+790,grounding,GraphRAG (v1),0.30443392242352907,0.17628831844016782,20,Scenario,Summary_Metric_Brier_Score,available per system
+791,grounding,No Store (v1),0.36603373313903576,0.19796856429627174,20,Scenario,Summary_Metric_Brier_Score,available per system
+792,grounding,No Store (v2),0.36902964756753448,0.23297808106874887,20,Scenario,Summary_Metric_Brier_Score,available per system
+793,grounding,With Store (v15),0.30960259103891802,0.21997010944440767,20,Scenario,Summary_Metric_Brier_Score,available per system
+794,grounding,With Store (v16),0.45089209321676549,0.2262716485062706,20,Scenario,Summary_Metric_Brier_Score,available per system
+795,all,GraphRAG (v1),0.30318272224827358,0.18414916282809324,80,Overall,Summary_Metric_Brier_Score,available per system
+796,all,No Store (v1),0.32942584834353861,0.21031863883903862,76,Overall,Summary_Metric_Brier_Score,available per system
+797,all,No Store (v2),0.37763214032376685,0.20261915625785912,80,Overall,Summary_Metric_Brier_Score,available per system
+798,all,With Store (v15),0.17339690870026647,0.19726537813711209,80,Overall,Summary_Metric_Brier_Score,available per system
+799,all,With Store (v16),0.23568123069919991,0.22553277129966179,80,Overall,Summary_Metric_Brier_Score,available per system
+800,"Qwen3:4b, no thinking",GraphRAG (v1),0.12967618230821504,0.1597441698956969,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+801,"Qwen3:4b, no thinking",No Store (v1),0.23975316018004142,0.17910997946717921,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+802,"Qwen3:4b, no thinking",With Store (v16),0.13486548533952303,0.16687116726886411,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+803,gemma3:1b,GraphRAG (v1),0.39449039676206293,0.12304617416570772,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+804,gemma3:1b,No Store (v1),0.57910548426728725,0.11874406266066652,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+805,gemma3:1b,With Store (v16),0.45942268070791131,0.24581252862590472,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+806,gemma4:e2b,GraphRAG (v1),0.20866860065554352,0.17582428989909663,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+807,gemma4:e2b,No Store (v1),0.19364923606945456,0.14943213803567068,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+808,gemma4:e2b,With Store (v16),0.16998435175084595,0.23548589341775802,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+809,llama3.2:1b,GraphRAG (v1),0.46882360648234772,0.13874467575593188,12,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+810,llama3.2:1b,No Store (v1),0.38681331286162429,0.19513387544884664,12,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+811,llama3.2:1b,With Store (v16),0.31055585084321985,0.14263863016089873,12,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+812,ministral-3:3b,GraphRAG (v1),0.35647324337063951,0.11896070802903866,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+813,ministral-3:3b,No Store (v1),0.26215491446880712,0.15012203690902534,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+814,ministral-3:3b,With Store (v16),0.10829490723683724,0.11661915903041485,16,Model,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+815,absurd,GraphRAG (v1),0.29633943465187013,0.19241017974627905,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+816,absurd,No Store (v1),0.31223586953176558,0.19304834155808287,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+817,absurd,With Store (v16),0.13144125342668056,0.17652850840980777,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+818,absurd_temporal,GraphRAG (v1),0.35898420685095339,0.21614622295530542,18,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+819,absurd_temporal,No Store (v1),0.4162285894821231,0.1758717256308836,18,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+820,absurd_temporal,With Store (v16),0.23471136007325949,0.19372420906191762,18,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+821,belief_maintenance,GraphRAG (v1),0.25652497985043554,0.16344696402126213,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+822,belief_maintenance,No Store (v1),0.22584703576560311,0.23621762052171422,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+823,belief_maintenance,With Store (v16),0.10251151841682142,0.12948181400408704,19,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+824,grounding,GraphRAG (v1),0.30443392242352907,0.17628831844016779,20,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+825,grounding,No Store (v1),0.36603373313903576,0.19796856429627172,20,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+826,grounding,With Store (v16),0.45089209321676549,0.22627164850627063,20,Scenario,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+827,all,GraphRAG (v1),0.30335286904383613,0.1872712114053183,76,Overall,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+828,all,No Store (v1),0.32942584834353861,0.21031863883903856,76,Overall,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+829,all,With Store (v16),0.23273353961421736,0.2292755988279461,76,Overall,Summary_Metric_Brier_Score,shared GraphRAG v1 / With Store v16 / No Store v1
+830,"Qwen3:4b, no thinking",GraphRAG (v1),0.14578210016786919,0.16295172713399145,16,Model,Summary_Metric_ECE,available per system
+831,"Qwen3:4b, no thinking",No Store (v1),0.23701830902842141,0.18216582349657987,16,Model,Summary_Metric_ECE,available per system
+832,"Qwen3:4b, no thinking",No Store (v2),0.43154699801330865,0.25463312975342395,16,Model,Summary_Metric_ECE,available per system
+833,"Qwen3:4b, no thinking",With Store (v15),0.061996604767796511,0.10249750777670143,16,Model,Summary_Metric_ECE,available per system
+834,"Qwen3:4b, no thinking",With Store (v16),0.13496142743184864,0.16696052060091393,16,Model,Summary_Metric_ECE,available per system
+835,gemma3:1b,GraphRAG (v1),0.41421322742007582,0.15028562523756037,16,Model,Summary_Metric_ECE,available per system
+836,gemma3:1b,No Store (v1),0.59932669459237942,0.12466264487278085,16,Model,Summary_Metric_ECE,available per system
+837,gemma3:1b,No Store (v2),0.51790108295130421,0.17384679444603215,16,Model,Summary_Metric_ECE,available per system
+838,gemma3:1b,With Store (v15),0.25848513294291986,0.25536128273560443,16,Model,Summary_Metric_ECE,available per system
+839,gemma3:1b,With Store (v16),0.47829019834136832,0.26230030622252953,16,Model,Summary_Metric_ECE,available per system
+840,gemma4:e2b,GraphRAG (v1),0.21106086553376652,0.17730644814140695,16,Model,Summary_Metric_ECE,available per system
+841,gemma4:e2b,No Store (v1),0.18974235295324945,0.15205858064685579,16,Model,Summary_Metric_ECE,available per system
+842,gemma4:e2b,No Store (v2),0.36385349069678974,0.22909066073323139,16,Model,Summary_Metric_ECE,available per system
+843,gemma4:e2b,With Store (v15),0.11455271821483282,0.16614511484684003,16,Model,Summary_Metric_ECE,available per system
+844,gemma4:e2b,With Store (v16),0.17295528230430141,0.23885786993741751,16,Model,Summary_Metric_ECE,available per system
+845,llama3.2:1b,GraphRAG (v1),0.45274362575924043,0.19664358590419187,16,Model,Summary_Metric_ECE,available per system
+846,llama3.2:1b,No Store (v1),0.49184344557928705,0.22704764744642703,12,Model,Summary_Metric_ECE,available per system
+847,llama3.2:1b,No Store (v2),0.36353817253640913,0.17837451119850251,16,Model,Summary_Metric_ECE,available per system
+848,llama3.2:1b,With Store (v15),0.3500169472272936,0.21792037211859225,16,Model,Summary_Metric_ECE,available per system
+849,llama3.2:1b,With Store (v16),0.33015910734959247,0.17273997020509485,16,Model,Summary_Metric_ECE,available per system
+850,ministral-3:3b,GraphRAG (v1),0.39707068363180487,0.12084184450075952,16,Model,Summary_Metric_ECE,available per system
+851,ministral-3:3b,No Store (v1),0.25664023867098978,0.16027639131496749,16,Model,Summary_Metric_ECE,available per system
+852,ministral-3:3b,No Store (v2),0.22596814779834698,0.14779934987771226,16,Model,Summary_Metric_ECE,available per system
+853,ministral-3:3b,With Store (v15),0.091546581331178573,0.11879349362495019,16,Model,Summary_Metric_ECE,available per system
+854,ministral-3:3b,With Store (v16),0.1158378123827129,0.1069473590089933,16,Model,Summary_Metric_ECE,available per system
+855,absurd,GraphRAG (v1),0.30549235439874139,0.19487548387731254,20,Scenario,Summary_Metric_ECE,available per system
+856,absurd,No Store (v1),0.32678120982497605,0.20830973223180441,19,Scenario,Summary_Metric_ECE,available per system
+857,absurd,No Store (v2),0.3757589387632555,0.24041226870409022,20,Scenario,Summary_Metric_ECE,available per system
+858,absurd,With Store (v15),0.090655401098670554,0.15460329353474839,20,Scenario,Summary_Metric_ECE,available per system
+859,absurd,With Store (v16),0.13726667852195426,0.17384090249317399,20,Scenario,Summary_Metric_ECE,available per system
+860,absurd_temporal,GraphRAG (v1),0.38422930889219203,0.21598330905930746,20,Scenario,Summary_Metric_ECE,available per system
+861,absurd_temporal,No Store (v1),0.42767998923219985,0.20003771312153087,18,Scenario,Summary_Metric_ECE,available per system
+862,absurd_temporal,No Store (v2),0.46158401986095815,0.17599561109301104,20,Scenario,Summary_Metric_ECE,available per system
+863,absurd_temporal,With Store (v15),0.22703817933207984,0.2020908311119444,20,Scenario,Summary_Metric_ECE,available per system
+864,absurd_temporal,With Store (v16),0.24882485743201391,0.19164229701549659,20,Scenario,Summary_Metric_ECE,available per system
+865,belief_maintenance,GraphRAG (v1),0.26237727682119283,0.17306274541434322,20,Scenario,Summary_Metric_ECE,available per system
+866,belief_maintenance,No Store (v1),0.24501607989546306,0.25134542041581559,19,Scenario,Summary_Metric_ECE,available per system
+867,belief_maintenance,No Store (v2),0.28970103926558866,0.19200173483977123,20,Scenario,Summary_Metric_ECE,available per system
+868,belief_maintenance,With Store (v15),0.056166285661904194,0.068607939153234418,20,Scenario,Summary_Metric_ECE,available per system
+869,belief_maintenance,With Store (v16),0.11111585149018637,0.12507837146318077,20,Scenario,Summary_Metric_ECE,available per system
+870,grounding,GraphRAG (v1),0.34459746189807916,0.21275832838617209,20,Scenario,Summary_Metric_ECE,available per system
+871,grounding,No Store (v1),0.3931687280002073,0.23583545351805799,20,Scenario,Summary_Metric_ECE,available per system
+872,grounding,No Store (v2),0.3952023157071245,0.23672061397021271,20,Scenario,Summary_Metric_ECE,available per system
+873,grounding,With Store (v15),0.32741852149456252,0.2499034638206766,20,Scenario,Summary_Metric_ECE,available per system
+874,grounding,With Store (v16),0.48855567480370449,0.24160446585187573,20,Scenario,Summary_Metric_ECE,available per system
+875,all,GraphRAG (v1),0.32417410050255135,0.20128797793955416,80,Overall,Summary_Metric_ECE,available per system
+876,all,No Store (v1),0.3477074061956853,0.2315271117668416,76,Overall,Summary_Metric_ECE,available per system
+877,all,No Store (v2),0.38056157839923171,0.21795820525467544,80,Overall,Summary_Metric_ECE,available per system
+878,all,With Store (v15),0.17531959689680426,0.20896430653373457,80,Overall,Summary_Metric_ECE,available per system
+879,all,With Store (v16),0.24644076556196476,0.23748344955928444,80,Overall,Summary_Metric_ECE,available per system
+880,"Qwen3:4b, no thinking",GraphRAG (v1),0.14578210016786919,0.16295172713399148,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+881,"Qwen3:4b, no thinking",No Store (v1),0.23701830902842141,0.18216582349657987,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+882,"Qwen3:4b, no thinking",With Store (v16),0.13496142743184864,0.16696052060091393,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+883,gemma3:1b,GraphRAG (v1),0.41421322742007582,0.15028562523756039,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+884,gemma3:1b,No Store (v1),0.59932669459237942,0.12466264487278082,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+885,gemma3:1b,With Store (v16),0.47829019834136832,0.26230030622252953,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+886,gemma4:e2b,GraphRAG (v1),0.21106086553376652,0.17730644814140695,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+887,gemma4:e2b,No Store (v1),0.18974235295324945,0.15205858064685582,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+888,gemma4:e2b,With Store (v16),0.17295528230430141,0.23885786993741751,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+889,llama3.2:1b,GraphRAG (v1),0.49983675049842891,0.18133545513875984,12,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+890,llama3.2:1b,No Store (v1),0.49184344557928711,0.227047647446427,12,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+891,llama3.2:1b,With Store (v16),0.34226282879278119,0.18205835678534751,12,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+892,ministral-3:3b,GraphRAG (v1),0.39707068363180487,0.12084184450075951,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+893,ministral-3:3b,No Store (v1),0.25664023867098978,0.16027639131496751,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+894,ministral-3:3b,With Store (v16),0.11583781238271289,0.10694735900899328,16,Model,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+895,absurd,GraphRAG (v1),0.31007837980434916,0.19910363173817894,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+896,absurd,No Store (v1),0.32678120982497605,0.20830973223180438,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+897,absurd,With Store (v16),0.13081365258308619,0.17612633432685249,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+898,absurd_temporal,GraphRAG (v1),0.37903102864741478,0.22071541905320949,18,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+899,absurd_temporal,No Store (v1),0.42767998923219985,0.20003771312153087,18,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+900,absurd_temporal,With Store (v16),0.23470118246227134,0.19059214276556194,18,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+901,belief_maintenance,GraphRAG (v1),0.26747758232314345,0.17625401161638204,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+902,belief_maintenance,No Store (v1),0.24501607989546306,0.25134542041581559,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+903,belief_maintenance,With Store (v16),0.10835133123176127,0.12787650372554216,19,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+904,grounding,GraphRAG (v1),0.34459746189807916,0.21275832838617212,20,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+905,grounding,No Store (v1),0.3931687280002073,0.23583545351805799,20,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+906,grounding,With Store (v16),0.48855567480370449,0.24160446585187575,20,Scenario,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+907,all,GraphRAG (v1),0.3248430399215449,0.20292136744999362,76,Overall,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+908,all,No Store (v1),0.3477074061956853,0.2315271117668416,76,Overall,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+909,all,With Store (v16),0.24394565095890888,0.24138635838328773,76,Overall,Summary_Metric_ECE,shared GraphRAG v1 / With Store v16 / No Store v1
+910,"Qwen3:4b, no thinking",GraphRAG (v1),1.4157991155739786,2.6189518456080498,16,Model,Summary_Metric_Log_Loss,available per system
+911,"Qwen3:4b, no thinking",No Store (v1),3.0356399102472444,2.7927921161491365,16,Model,Summary_Metric_Log_Loss,available per system
+912,"Qwen3:4b, no thinking",No Store (v2),3.6689824063154806,2.3715025350309995,16,Model,Summary_Metric_Log_Loss,available per system
+913,"Qwen3:4b, no thinking",With Store (v15),0.87112219232011989,1.604729188012866,16,Model,Summary_Metric_Log_Loss,available per system
+914,"Qwen3:4b, no thinking",With Store (v16),1.5916050253374139,1.9602553388566251,16,Model,Summary_Metric_Log_Loss,available per system
+915,gemma3:1b,GraphRAG (v1),1.4387731593639244,0.48918489802436654,16,Model,Summary_Metric_Log_Loss,available per system
+916,gemma3:1b,No Store (v1),3.8625814680986981,1.072761431670652,16,Model,Summary_Metric_Log_Loss,available per system
+917,gemma3:1b,No Store (v2),2.9011989966112246,1.2319501879934531,16,Model,Summary_Metric_Log_Loss,available per system
+918,gemma3:1b,With Store (v15),1.4312355388485578,1.1984377869884604,16,Model,Summary_Metric_Log_Loss,available per system
+919,gemma3:1b,With Store (v16),2.6187155701965281,1.4998633652514368,16,Model,Summary_Metric_Log_Loss,available per system
+920,gemma4:e2b,GraphRAG (v1),2.6021562836165546,2.8952504438811615,16,Model,Summary_Metric_Log_Loss,available per system
+921,gemma4:e2b,No Store (v1),2.5215585884832121,2.3464309389245317,16,Model,Summary_Metric_Log_Loss,available per system
+922,gemma4:e2b,No Store (v2),3.4539982385605725,2.8277057564370045,16,Model,Summary_Metric_Log_Loss,available per system
+923,gemma4:e2b,With Store (v15),1.7580943772534658,2.7322702501758935,16,Model,Summary_Metric_Log_Loss,available per system
+924,gemma4:e2b,With Store (v16),1.8830513540352949,2.862952532527868,16,Model,Summary_Metric_Log_Loss,available per system
+925,llama3.2:1b,GraphRAG (v1),1.4774847495320169,0.72214373722450265,16,Model,Summary_Metric_Log_Loss,available per system
+926,llama3.2:1b,No Store (v1),1.2850992439304072,0.65146068982930616,12,Model,Summary_Metric_Log_Loss,available per system
+927,llama3.2:1b,No Store (v2),1.0583785444139655,0.42180564234670176,16,Model,Summary_Metric_Log_Loss,available per system
+928,llama3.2:1b,With Store (v15),1.5089982799777837,0.8779505734403511,16,Model,Summary_Metric_Log_Loss,available per system
+929,llama3.2:1b,With Store (v16),1.0657640587751556,0.51710008287728382,16,Model,Summary_Metric_Log_Loss,available per system
+930,ministral-3:3b,GraphRAG (v1),1.4256032586270579,0.87249931233962519,16,Model,Summary_Metric_Log_Loss,available per system
+931,ministral-3:3b,No Store (v1),1.3584157046031444,0.85003772824186463,16,Model,Summary_Metric_Log_Loss,available per system
+932,ministral-3:3b,No Store (v2),0.75233600758253083,0.42069178126976559,16,Model,Summary_Metric_Log_Loss,available per system
+933,ministral-3:3b,With Store (v15),0.54276544021180362,0.88388496541344941,16,Model,Summary_Metric_Log_Loss,available per system
+934,ministral-3:3b,With Store (v16),0.48627917002445192,0.72276988512628293,16,Model,Summary_Metric_Log_Loss,available per system
+935,absurd,GraphRAG (v1),1.4496257094038627,1.1536926165845334,20,Scenario,Summary_Metric_Log_Loss,available per system
+936,absurd,No Store (v1),2.5336999725662004,1.9430093069372232,19,Scenario,Summary_Metric_Log_Loss,available per system
+937,absurd,No Store (v2),2.6083355521482305,2.3975005783432444,20,Scenario,Summary_Metric_Log_Loss,available per system
+938,absurd,With Store (v15),0.47490108196941871,0.66160699154105385,20,Scenario,Summary_Metric_Log_Loss,available per system
+939,absurd,With Store (v16),0.69276681016825392,0.9878458254725907,20,Scenario,Summary_Metric_Log_Loss,available per system
+940,absurd_temporal,GraphRAG (v1),2.6041778827529449,2.9697844484292779,20,Scenario,Summary_Metric_Log_Loss,available per system
+941,absurd_temporal,No Store (v1),3.6665549318708077,2.6577426125931427,18,Scenario,Summary_Metric_Log_Loss,available per system
+942,absurd_temporal,No Store (v2),2.707818390396814,2.1506221595813484,20,Scenario,Summary_Metric_Log_Loss,available per system
+943,absurd_temporal,With Store (v15),2.17458428565324,2.4888069860407867,20,Scenario,Summary_Metric_Log_Loss,available per system
+944,absurd_temporal,With Store (v16),2.1578001803687297,2.4000299460265051,20,Scenario,Summary_Metric_Log_Loss,available per system
+945,belief_maintenance,GraphRAG (v1),1.2788139161318877,1.3684367416853773,20,Scenario,Summary_Metric_Log_Loss,available per system
+946,belief_maintenance,No Store (v1),1.6176118820789436,1.8128646664058123,19,Scenario,Summary_Metric_Log_Loss,available per system
+947,belief_maintenance,No Store (v2),1.8772131753527386,1.7554078770068025,20,Scenario,Summary_Metric_Log_Loss,available per system
+948,belief_maintenance,With Store (v15),0.32552689275091501,0.38345625962106855,20,Scenario,Summary_Metric_Log_Loss,available per system
+949,belief_maintenance,With Store (v16),0.51102064761231292,0.64700217013599637,20,Scenario,Summary_Metric_Log_Loss,available per system
+950,grounding,GraphRAG (v1),1.3552357450821306,0.9426546104337612,20,Scenario,Summary_Metric_Log_Loss,available per system
+951,grounding,No Store (v1),2.1499703829074699,0.92520475114554024,20,Scenario,Summary_Metric_Log_Loss,available per system
+952,grounding,No Store (v2),2.2745482368892356,2.1521200748218505,20,Scenario,Summary_Metric_Log_Loss,available per system
+953,grounding,With Store (v15),1.9147604025158114,1.2056245387241069,20,Scenario,Summary_Metric_Log_Loss,available per system
+954,grounding,With Store (v16),2.754744504545779,1.7691717725301905,20,Scenario,Summary_Metric_Log_Loss,available per system
+955,all,GraphRAG (v1),1.6719633133427063,1.844567241011263,80,Overall,Summary_Metric_Log_Loss,available per system
+956,all,No Store (v1),2.4720042325010745,2.0171208683670185,76,Overall,Summary_Metric_Log_Loss,available per system
+957,all,No Store (v2),2.3669788386967547,2.1111390947370547,80,Overall,Summary_Metric_Log_Loss,available per system
+958,all,With Store (v15),1.2224431657223462,1.6358317227948729,80,Overall,Summary_Metric_Log_Loss,available per system
+959,all,With Store (v16),1.5290830356737688,1.8421054712630147,80,Overall,Summary_Metric_Log_Loss,available per system
+960,"Qwen3:4b, no thinking",GraphRAG (v1),1.4157991155739786,2.6189518456080498,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+961,"Qwen3:4b, no thinking",No Store (v1),3.0356399102472444,2.7927921161491369,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+962,"Qwen3:4b, no thinking",With Store (v16),1.5916050253374141,1.9602553388566251,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+963,gemma3:1b,GraphRAG (v1),1.4387731593639244,0.4891848980243666,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+964,gemma3:1b,No Store (v1),3.8625814680986981,1.072761431670652,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+965,gemma3:1b,With Store (v16),2.6187155701965281,1.4998633652514366,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+966,gemma4:e2b,GraphRAG (v1),2.6021562836165546,2.8952504438811615,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+967,gemma4:e2b,No Store (v1),2.5215585884832121,2.3464309389245321,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+968,gemma4:e2b,With Store (v16),1.8830513540352949,2.8629525325278675,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+969,llama3.2:1b,GraphRAG (v1),1.6724207881851181,0.71603672707827015,12,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+970,llama3.2:1b,No Store (v1),1.2850992439304072,0.65146068982930627,12,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+971,llama3.2:1b,With Store (v16),1.0980544656577267,0.50011883322823569,12,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+972,ministral-3:3b,GraphRAG (v1),1.4256032586270579,0.87249931233962519,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+973,ministral-3:3b,No Store (v1),1.3584157046031444,0.85003772824186452,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+974,ministral-3:3b,With Store (v16),0.48627917002445192,0.72276988512628293,16,Model,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+975,absurd,GraphRAG (v1),1.4805140430940882,1.1767793274104674,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+976,absurd,No Store (v1),2.5336999725662008,1.9430093069372236,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+977,absurd,With Store (v16),0.69083804982394448,1.0148764149970801,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+978,absurd_temporal,GraphRAG (v1),2.7747480835668044,3.0883515192749318,18,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+979,absurd_temporal,No Store (v1),3.6665549318708077,2.6577426125931427,18,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+980,absurd_temporal,With Store (v16),2.2494345976811676,2.5121286016254922,18,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+981,belief_maintenance,GraphRAG (v1),1.3161269109733105,1.3954430710542889,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+982,belief_maintenance,No Store (v1),1.6176118820789436,1.8128646664058121,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+983,belief_maintenance,With Store (v16),0.51265451081895741,0.66468914796656975,19,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+984,grounding,GraphRAG (v1),1.3552357450821306,0.94265461043376142,20,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+985,grounding,No Store (v1),2.1499703829074699,0.92520475114554013,20,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+986,grounding,With Store (v16),2.754744504545779,1.7691717725301905,20,Scenario,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+987,all,GraphRAG (v1),1.7129784017516534,1.8828214961542815,76,Overall,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+988,all,No Store (v1),2.4720042325010745,2.0171208683670185,76,Overall,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+989,all,With Store (v16),1.5585667302814703,1.8816446803794731,76,Overall,Summary_Metric_Log_Loss,shared GraphRAG v1 / With Store v16 / No Store v1
+990,"Qwen3:4b, no thinking",GraphRAG (v1),0.29685516213834534,0.23842494713098766,16,Model,Summary_Metric_MacroCE,available per system
+991,"Qwen3:4b, no thinking",No Store (v1),0.4325353057034988,0.16778063084009295,16,Model,Summary_Metric_MacroCE,available per system
+992,"Qwen3:4b, no thinking",No Store (v2),0.49092691089588708,0.032015736437615613,16,Model,Summary_Metric_MacroCE,available per system
+993,"Qwen3:4b, no thinking",With Store (v15),0.2768223115097031,0.25243536634614883,16,Model,Summary_Metric_MacroCE,available per system
+994,"Qwen3:4b, no thinking",With Store (v16),0.31110903979323967,0.24870630517302575,16,Model,Summary_Metric_MacroCE,available per system
+995,gemma3:1b,GraphRAG (v1),0.43951534692040284,0.11621734287650179,16,Model,Summary_Metric_MacroCE,available per system
+996,gemma3:1b,No Store (v1),0.4908507850673145,0.02397387233092391,16,Model,Summary_Metric_MacroCE,available per system
+997,gemma3:1b,No Store (v2),0.48069477929507504,0.040561969263637129,16,Model,Summary_Metric_MacroCE,available per system
+998,gemma3:1b,With Store (v15),0.40436073126174782,0.18653891807496942,16,Model,Summary_Metric_MacroCE,available per system
+999,gemma3:1b,With Store (v16),0.49897789408397386,0.11041629562122431,16,Model,Summary_Metric_MacroCE,available per system
+1000,gemma4:e2b,GraphRAG (v1),0.4660480286678535,0.12066411583888884,16,Model,Summary_Metric_MacroCE,available per system
+1001,gemma4:e2b,No Store (v1),0.42953429027270357,0.1629960979714741,16,Model,Summary_Metric_MacroCE,available per system
+1002,gemma4:e2b,No Store (v2),0.45316833610777407,0.13441023757382109,16,Model,Summary_Metric_MacroCE,available per system
+1003,gemma4:e2b,With Store (v15),0.33957825317393864,0.2363061824778088,16,Model,Summary_Metric_MacroCE,available per system
+1004,gemma4:e2b,With Store (v16),0.24495029446987887,0.25265401130102294,16,Model,Summary_Metric_MacroCE,available per system
+1005,llama3.2:1b,GraphRAG (v1),0.49123323573852684,0.084517249475128745,16,Model,Summary_Metric_MacroCE,available per system
+1006,llama3.2:1b,No Store (v1),0.53806963826501264,0.17452074388611533,12,Model,Summary_Metric_MacroCE,available per system
+1007,llama3.2:1b,No Store (v2),0.51997498692321564,0.13004861249616373,16,Model,Summary_Metric_MacroCE,available per system
+1008,llama3.2:1b,With Store (v15),0.45921789024704557,0.15783237513823001,16,Model,Summary_Metric_MacroCE,available per system
+1009,llama3.2:1b,With Store (v16),0.42626784817857027,0.14710657064523514,16,Model,Summary_Metric_MacroCE,available per system
+1010,ministral-3:3b,GraphRAG (v1),0.53434500585689371,0.10829149979196448,16,Model,Summary_Metric_MacroCE,available per system
+1011,ministral-3:3b,No Store (v1),0.45793390086142827,0.12234347293244591,16,Model,Summary_Metric_MacroCE,available per system
+1012,ministral-3:3b,No Store (v2),0.44023070425090138,0.043310957676057422,16,Model,Summary_Metric_MacroCE,available per system
+1013,ministral-3:3b,With Store (v15),0.33901406020894526,0.21908196068123462,16,Model,Summary_Metric_MacroCE,available per system
+1014,ministral-3:3b,With Store (v16),0.28897606001029102,0.19503953254704215,16,Model,Summary_Metric_MacroCE,available per system
+1015,absurd,GraphRAG (v1),0.43724034715310733,0.19265736628578986,20,Scenario,Summary_Metric_MacroCE,available per system
+1016,absurd,No Store (v1),0.47405975358015656,0.12004584270667772,19,Scenario,Summary_Metric_MacroCE,available per system
+1017,absurd,No Store (v2),0.47286504556744891,0.1265115334876164,20,Scenario,Summary_Metric_MacroCE,available per system
+1018,absurd,With Store (v15),0.23781403648528238,0.24360404145645267,20,Scenario,Summary_Metric_MacroCE,available per system
+1019,absurd,With Store (v16),0.28907223338906474,0.21597976466104696,20,Scenario,Summary_Metric_MacroCE,available per system
+1020,absurd_temporal,GraphRAG (v1),0.42751857163612994,0.15361644741935351,20,Scenario,Summary_Metric_MacroCE,available per system
+1021,absurd_temporal,No Store (v1),0.50721990930119354,0.072105468910254683,18,Scenario,Summary_Metric_MacroCE,available per system
+1022,absurd_temporal,No Store (v2),0.48286216295623186,0.087988091352491499,20,Scenario,Summary_Metric_MacroCE,available per system
+1023,absurd_temporal,With Store (v15),0.42126315216526822,0.19756677408979947,20,Scenario,Summary_Metric_MacroCE,available per system
+1024,absurd_temporal,With Store (v16),0.39272535267423681,0.19192706590213315,20,Scenario,Summary_Metric_MacroCE,available per system
+1025,belief_maintenance,GraphRAG (v1),0.44705064529426758,0.16933786390009511,20,Scenario,Summary_Metric_MacroCE,available per system
+1026,belief_maintenance,No Store (v1),0.37874813804691193,0.21067706515895421,19,Scenario,Summary_Metric_MacroCE,available per system
+1027,belief_maintenance,No Store (v2),0.47051590223809658,0.068193182154629245,20,Scenario,Summary_Metric_MacroCE,available per system
+1028,belief_maintenance,With Store (v15),0.29306886567202872,0.22124456604024217,20,Scenario,Summary_Metric_MacroCE,available per system
+1029,belief_maintenance,With Store (v16),0.22598959764806231,0.21412596496184969,20,Scenario,Summary_Metric_MacroCE,available per system
+1030,grounding,GraphRAG (v1),0.47058785937411296,0.13735786197355582,20,Scenario,Summary_Metric_MacroCE,available per system
+1031,grounding,No Store (v1),0.50485979306617446,0.08826170966710109,20,Scenario,Summary_Metric_MacroCE,available per system
+1032,grounding,No Store (v2),0.48175346321650531,0.077660199319151663,20,Scenario,Summary_Metric_MacroCE,available per system
+1033,grounding,With Store (v15),0.50304854279852496,0.05169170760039965,20,Scenario,Summary_Metric_MacroCE,available per system
+1034,grounding,With Store (v16),0.50843772551739908,0.12444500837146126,20,Scenario,Summary_Metric_MacroCE,available per system
+1035,all,GraphRAG (v1),0.44559935586440441,0.16215933641494681,80,Overall,Summary_Metric_MacroCE,available per system
+1036,all,No Store (v1),0.46619084433762198,0.14148664156568205,76,Overall,Summary_Metric_MacroCE,available per system
+1037,all,No Store (v2),0.47699914349457062,0.091157349375207627,80,Overall,Summary_Metric_MacroCE,available per system
+1038,all,With Store (v15),0.36379864928027611,0.21703668200048332,80,Overall,Summary_Metric_MacroCE,available per system
+1039,all,With Store (v16),0.35405622730719072,0.2155544445747542,80,Overall,Summary_Metric_MacroCE,available per system
+1040,"Qwen3:4b, no thinking",GraphRAG (v1),0.29685516213834534,0.23842494713098769,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1041,"Qwen3:4b, no thinking",No Store (v1),0.4325353057034988,0.16778063084009295,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1042,"Qwen3:4b, no thinking",With Store (v16),0.31110903979323967,0.24870630517302575,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1043,gemma3:1b,GraphRAG (v1),0.43951534692040284,0.11621734287650178,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1044,gemma3:1b,No Store (v1),0.4908507850673145,0.023973872330923917,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1045,gemma3:1b,With Store (v16),0.49897789408397386,0.11041629562122431,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1046,gemma4:e2b,GraphRAG (v1),0.4660480286678535,0.12066411583888884,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1047,gemma4:e2b,No Store (v1),0.42953429027270357,0.16299609797147407,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1048,gemma4:e2b,With Store (v16),0.24495029446987887,0.25265401130102294,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1049,llama3.2:1b,GraphRAG (v1),0.52083462775109257,0.073211375030542022,12,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1050,llama3.2:1b,No Store (v1),0.53806963826501264,0.17452074388611538,12,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1051,llama3.2:1b,With Store (v16),0.42872992633818457,0.15961672239546196,12,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1052,ministral-3:3b,GraphRAG (v1),0.53434500585689371,0.10829149979196445,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1053,ministral-3:3b,No Store (v1),0.45793390086142827,0.12234347293244589,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1054,ministral-3:3b,With Store (v16),0.28897606001029102,0.19503953254704215,16,Model,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1055,absurd,GraphRAG (v1),0.43577399595656763,0.19782192950610872,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1056,absurd,No Store (v1),0.47405975358015656,0.12004584270667772,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1057,absurd,With Store (v16),0.28216091074407679,0.21961414286710987,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1058,absurd_temporal,GraphRAG (v1),0.43278049498460575,0.16133595934146988,18,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1059,absurd_temporal,No Store (v1),0.50721990930119354,0.072105468910254655,18,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1060,absurd_temporal,With Store (v16),0.38198515761750135,0.19782854861578969,18,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1061,belief_maintenance,GraphRAG (v1),0.45035369526153102,0.17331491536793889,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1062,belief_maintenance,No Store (v1),0.37874813804691193,0.21067706515895418,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1063,belief_maintenance,With Store (v16),0.2233382672724149,0.21965597071796242,19,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1064,grounding,GraphRAG (v1),0.47058785937411296,0.13735786197355582,20,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1065,grounding,No Store (v1),0.50485979306617446,0.08826170966710109,20,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1066,grounding,With Store (v16),0.50843772551739908,0.12444500837146129,20,Scenario,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1067,all,GraphRAG (v1),0.4478714767151189,0.16586663090802969,76,Overall,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1068,all,No Store (v1),0.46619084433762198,0.14148664156568203,76,Overall,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1069,all,With Store (v16),0.35064436486547829,0.21935900689787896,76,Overall,Summary_Metric_MacroCE,shared GraphRAG v1 / With Store v16 / No Store v1
+1070,"Qwen3:4b, no thinking",GraphRAG (v1),300.1213790761376,48.365127940111464,16,Model,TPCA_Words_Correct,available per system
+1071,"Qwen3:4b, no thinking",No Store (v1),47.756250000000001,10.949457749130778,16,Model,TPCA_Words_Correct,available per system
+1072,"Qwen3:4b, no thinking",No Store (v2),13.4125,11.770917551321139,16,Model,TPCA_Words_Correct,available per system
+1073,"Qwen3:4b, no thinking",With Store (v15),39.899999999999999,14.430061214931371,16,Model,TPCA_Words_Correct,available per system
+1074,"Qwen3:4b, no thinking",With Store (v16),9.0625,4.9007312379548704,16,Model,TPCA_Words_Correct,available per system
+1075,gemma3:1b,GraphRAG (v1),42.291963369711979,16.362539299027613,16,Model,TPCA_Words_Correct,available per system
+1076,gemma3:1b,No Store (v1),61.581249999999997,18.997340822687089,16,Model,TPCA_Words_Correct,available per system
+1077,gemma3:1b,No Store (v2),12.50625,4.7674547716784899,16,Model,TPCA_Words_Correct,available per system
+1078,gemma3:1b,With Store (v15),38.918750000000003,10.831449195129277,16,Model,TPCA_Words_Correct,available per system
+1079,gemma3:1b,With Store (v16),5.4666666666666668,3.5221070533472001,15,Model,TPCA_Words_Correct,available per system
+1080,gemma4:e2b,GraphRAG (v1),73.114122881745743,26.150333194254564,16,Model,TPCA_Words_Correct,available per system
+1081,gemma4:e2b,No Store (v1),80.75,29.595540204564607,16,Model,TPCA_Words_Correct,available per system
+1082,gemma4:e2b,No Store (v2),49.40625,33.864031434547186,16,Model,TPCA_Words_Correct,available per system
+1083,gemma4:e2b,With Store (v15),44.881250000000001,11.150259712969321,16,Model,TPCA_Words_Correct,available per system
+1084,gemma4:e2b,With Store (v16),10.15,3.8215180229851065,16,Model,TPCA_Words_Correct,available per system
+1085,llama3.2:1b,GraphRAG (v1),59.061294884399253,24.401908235208897,15,Model,TPCA_Words_Correct,available per system
+1086,llama3.2:1b,No Store (v1),124.28888888888888,24.734108253808365,9,Model,TPCA_Words_Correct,available per system
+1087,llama3.2:1b,No Store (v2),13.821428571428571,10.024829065984008,14,Model,TPCA_Words_Correct,available per system
+1088,llama3.2:1b,With Store (v15),52.712499999999999,46.618749804486747,16,Model,TPCA_Words_Correct,available per system
+1089,llama3.2:1b,With Store (v16),5.2230769230769232,4.8865723921364088,13,Model,TPCA_Words_Correct,available per system
+1090,ministral-3:3b,GraphRAG (v1),50.99436405282141,10.770828794359838,16,Model,TPCA_Words_Correct,available per system
+1091,ministral-3:3b,No Store (v1),71.193750000000009,32.855389588315646,16,Model,TPCA_Words_Correct,available per system
+1092,ministral-3:3b,No Store (v2),11.331250000000001,4.9316283652900417,16,Model,TPCA_Words_Correct,available per system
+1093,ministral-3:3b,With Store (v15),58.606250000000003,14.485186398524529,16,Model,TPCA_Words_Correct,available per system
+1094,ministral-3:3b,With Store (v16),8.5124999999999993,4.3601032097875843,16,Model,TPCA_Words_Correct,available per system
+1095,absurd,GraphRAG (v1),107.23633900017894,108.66888365161229,20,Scenario,TPCA_Words_Correct,available per system
+1096,absurd,No Store (v1),82.027777777777771,34.46300327555975,18,Scenario,TPCA_Words_Correct,available per system
+1097,absurd,No Store (v2),18.494999999999997,22.635056067036693,20,Scenario,TPCA_Words_Correct,available per system
+1098,absurd,With Store (v15),46.605000000000004,13.469750710778811,20,Scenario,TPCA_Words_Correct,available per system
+1099,absurd,With Store (v16),6.6500000000000004,3.3756870645684471,20,Scenario,TPCA_Words_Correct,available per system
+1100,absurd_temporal,GraphRAG (v1),110.31066516138826,98.557857825343504,20,Scenario,TPCA_Words_Correct,available per system
+1101,absurd_temporal,No Store (v1),69.723529411764702,34.407839394020449,17,Scenario,TPCA_Words_Correct,available per system
+1102,absurd_temporal,No Store (v2),15.080000000000002,15.708649980521121,20,Scenario,TPCA_Words_Correct,available per system
+1103,absurd_temporal,With Store (v15),36.734999999999999,10.75219806169393,20,Scenario,TPCA_Words_Correct,available per system
+1104,absurd_temporal,With Store (v16),5.6450000000000005,2.1077488615007947,20,Scenario,TPCA_Words_Correct,available per system
+1105,belief_maintenance,GraphRAG (v1),84.550976354970274,87.753029757051692,20,Scenario,TPCA_Words_Correct,available per system
+1106,belief_maintenance,No Store (v1),57.073684210526324,27.648987164597372,19,Scenario,TPCA_Words_Correct,available per system
+1107,belief_maintenance,No Store (v2),16.094999999999999,25.046682204908581,20,Scenario,TPCA_Words_Correct,available per system
+1108,belief_maintenance,With Store (v15),35.559999999999995,8.2181698564506238,20,Scenario,TPCA_Words_Correct,available per system
+1109,belief_maintenance,With Store (v16),5.5250000000000004,2.0209104253698187,20,Scenario,TPCA_Words_Correct,available per system
+1110,grounding,GraphRAG (v1),121.48995173799511,119.41216786621811,19,Scenario,TPCA_Words_Correct,available per system
+1111,grounding,No Store (v1),81.731578947368419,31.265796942978003,19,Scenario,TPCA_Words_Correct,available per system
+1112,grounding,No Store (v2),32.588888888888889,22.26563928591446,18,Scenario,TPCA_Words_Correct,available per system
+1113,grounding,With Store (v15),69.114999999999995,36.748953082116209,20,Scenario,TPCA_Words_Correct,available per system
+1114,grounding,With Store (v16),14.81875,3.8738815590223372,16,Scenario,TPCA_Words_Correct,available per system
+1115,all,GraphRAG (v1),105.69960371332476,102.91035272475058,79,Overall,TPCA_Words_Correct,available per system
+1116,all,No Store (v1),72.590410958904116,32.997201751661876,73,Overall,TPCA_Words_Correct,available per system
+1117,all,No Store (v2),20.256410256410255,22.346809468912863,78,Overall,TPCA_Words_Correct,available per system
+1118,all,With Store (v15),47.003750000000004,24.41615694446423,80,Overall,TPCA_Words_Correct,available per system
+1119,all,With Store (v16),7.8092105263157894,4.6399188967503573,76,Overall,TPCA_Words_Correct,available per system
+1120,"Qwen3:4b, no thinking",GraphRAG (v1),300.1213790761376,48.365127940111471,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1121,"Qwen3:4b, no thinking",No Store (v1),47.756250000000001,10.949457749130776,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1122,"Qwen3:4b, no thinking",With Store (v16),9.0625,4.9007312379548695,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1123,gemma3:1b,GraphRAG (v1),40.821231515928069,15.80428933663948,15,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1124,gemma3:1b,No Store (v1),60.18666666666666,18.797259172042939,15,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1125,gemma3:1b,With Store (v16),5.4666666666666668,3.5221070533472001,15,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1126,gemma4:e2b,GraphRAG (v1),73.114122881745743,26.150333194254561,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1127,gemma4:e2b,No Store (v1),80.75,29.59554020456461,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1128,gemma4:e2b,With Store (v16),10.15,3.8215180229851069,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1129,llama3.2:1b,GraphRAG (v1),43.218650237093428,8.9611528831084719,7,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1130,llama3.2:1b,No Store (v1),118.8,25.562602893028451,7,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1131,llama3.2:1b,With Store (v16),6,6.1381321806121658,7,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1132,ministral-3:3b,GraphRAG (v1),50.99436405282141,10.770828794359836,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1133,ministral-3:3b,No Store (v1),71.193749999999994,32.855389588315646,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1134,ministral-3:3b,With Store (v16),8.5124999999999993,4.3601032097875843,16,Model,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1135,absurd,GraphRAG (v1),112.65647353296237,113.48879617532621,18,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1136,absurd,No Store (v1),82.027777777777771,34.46300327555975,18,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1137,absurd,With Store (v16),7,3.3427709534245427,18,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1138,absurd_temporal,GraphRAG (v1),115.69045959009922,106.12547458645541,17,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1139,absurd_temporal,No Store (v1),69.723529411764702,34.407839394020456,17,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1140,absurd_temporal,With Store (v16),5.6823529411764699,1.6853172157333045,17,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1141,belief_maintenance,GraphRAG (v1),86.516652742073973,89.70414786921242,19,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1142,belief_maintenance,No Store (v1),57.073684210526324,27.648987164597372,19,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1143,belief_maintenance,With Store (v16),5.6789473684210527,1.952086902485082,19,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1144,grounding,GraphRAG (v1),129.00975886533979,128.82668381872145,16,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1145,grounding,No Store (v1),73.962500000000006,24.460032025053987,16,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1146,grounding,With Store (v16),14.81875,3.8738815590223368,16,Scenario,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1147,all,GraphRAG (v1),110.03609829385501,108.33936508416569,70,Overall,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1148,all,No Store (v1),70.422857142857154,31.366645126647438,70,Overall,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1149,all,With Store (v16),8.1085714285714285,4.6373950351695639,70,Overall,TPCA_Words_Correct,shared GraphRAG v1 / With Store v16 / No Store v1
+1150,"Qwen3:4b, no thinking",GraphRAG (v1),432.95570000631579,34.409016421313972,16,Model,TPCA_Words_Wrong,available per system
+1151,"Qwen3:4b, no thinking",No Store (v1),56.928571428571431,16.421394514541017,14,Model,TPCA_Words_Wrong,available per system
+1152,"Qwen3:4b, no thinking",No Store (v2),11.34375,4.4899842241742158,16,Model,TPCA_Words_Wrong,available per system
+1153,"Qwen3:4b, no thinking",With Store (v15),53.022222222222219,15.695045219573101,9,Model,TPCA_Words_Wrong,available per system
+1154,"Qwen3:4b, no thinking",With Store (v16),10.359999999999999,4.333384615081175,10,Model,TPCA_Words_Wrong,available per system
+1155,gemma3:1b,GraphRAG (v1),40.292801302369298,13.627232471972754,16,Model,TPCA_Words_Wrong,available per system
+1156,gemma3:1b,No Store (v1),71.856250000000003,19.020899689552014,16,Model,TPCA_Words_Wrong,available per system
+1157,gemma3:1b,No Store (v2),12.612500000000001,3.8612390066747575,16,Model,TPCA_Words_Wrong,available per system
+1158,gemma3:1b,With Store (v15),53.350000000000001,38.408567754123254,14,Model,TPCA_Words_Wrong,available per system
+1159,gemma3:1b,With Store (v16),5.15625,3.0598406821270943,16,Model,TPCA_Words_Wrong,available per system
+1160,gemma4:e2b,GraphRAG (v1),101.60962371273295,27.000248576516075,15,Model,TPCA_Words_Wrong,available per system
+1161,gemma4:e2b,No Store (v1),99.766666666666666,30.552686734011896,15,Model,TPCA_Words_Wrong,available per system
+1162,gemma4:e2b,No Store (v2),82.079999999999998,19.459489055104051,15,Model,TPCA_Words_Wrong,available per system
+1163,gemma4:e2b,With Store (v15),71.475000000000009,60.280678722727799,12,Model,TPCA_Words_Wrong,available per system
+1164,gemma4:e2b,With Store (v16),8.8125,2.2962313845578741,8,Model,TPCA_Words_Wrong,available per system
+1165,llama3.2:1b,GraphRAG (v1),75.859830204373338,27.651989510908844,16,Model,TPCA_Words_Wrong,available per system
+1166,llama3.2:1b,No Store (v1),152.05000000000001,9.0480200412392389,16,Model,TPCA_Words_Wrong,available per system
+1167,llama3.2:1b,No Store (v2),14.38125,7.8745343777690557,16,Model,TPCA_Words_Wrong,available per system
+1168,llama3.2:1b,With Store (v15),45.487499999999997,21.583323037320586,16,Model,TPCA_Words_Wrong,available per system
+1169,llama3.2:1b,With Store (v16),10.85,5.5473717500572581,16,Model,TPCA_Words_Wrong,available per system
+1170,ministral-3:3b,GraphRAG (v1),69.836366138702743,23.506880417368158,15,Model,TPCA_Words_Wrong,available per system
+1171,ministral-3:3b,No Store (v1),110.7,50.671392323479729,15,Model,TPCA_Words_Wrong,available per system
+1172,ministral-3:3b,No Store (v2),11.5375,3.6340748478808189,16,Model,TPCA_Words_Wrong,available per system
+1173,ministral-3:3b,With Store (v15),74.100000000000009,30.436129845957744,11,Model,TPCA_Words_Wrong,available per system
+1174,ministral-3:3b,With Store (v16),8.7599999999999998,2.6382654234258625,10,Model,TPCA_Words_Wrong,available per system
+1175,absurd,GraphRAG (v1),146.78236799300421,143.6725763339206,20,Scenario,TPCA_Words_Wrong,available per system
+1176,absurd,No Store (v1),106.90000000000001,45.905601080111296,20,Scenario,TPCA_Words_Wrong,available per system
+1177,absurd,No Store (v2),29.121052631578944,33.823949091786176,19,Scenario,TPCA_Words_Wrong,available per system
+1178,absurd,With Store (v15),78.899999999999991,62.070546374852597,12,Scenario,TPCA_Words_Wrong,available per system
+1179,absurd,With Store (v16),9.4692307692307693,4.9872144221306245,13,Scenario,TPCA_Words_Wrong,available per system
+1180,absurd_temporal,GraphRAG (v1),142.91835625957,131.69052081779961,20,Scenario,TPCA_Words_Wrong,available per system
+1181,absurd_temporal,No Store (v1),94.219999999999999,39.837242559404665,20,Scenario,TPCA_Words_Wrong,available per system
+1182,absurd_temporal,No Store (v2),23.594999999999999,27.212312905819132,20,Scenario,TPCA_Words_Wrong,available per system
+1183,absurd_temporal,With Store (v15),50.018749999999997,41.05000558262244,16,Scenario,TPCA_Words_Wrong,available per system
+1184,absurd_temporal,With Store (v16),5.6312499999999996,2.6502122556504792,16,Scenario,TPCA_Words_Wrong,available per system
+1185,belief_maintenance,GraphRAG (v1),146.40166469216027,172.47828448286043,18,Scenario,TPCA_Words_Wrong,available per system
+1186,belief_maintenance,No Store (v1),94.081249999999997,51.290560778763179,16,Scenario,TPCA_Words_Wrong,available per system
+1187,belief_maintenance,No Store (v2),22.115000000000002,29.261493918045083,20,Scenario,TPCA_Words_Wrong,available per system
+1188,belief_maintenance,With Store (v15),44.850000000000001,20.673124507995325,14,Scenario,TPCA_Words_Wrong,available per system
+1189,belief_maintenance,With Store (v16),6.4363636363636365,4.0593774713058464,11,Scenario,TPCA_Words_Wrong,available per system
+1190,grounding,GraphRAG (v1),146.40893512350502,164.45868167029806,20,Scenario,TPCA_Words_Wrong,available per system
+1191,grounding,No Store (v1),100.44,40.424125157346836,20,Scenario,TPCA_Words_Wrong,available per system
+1192,grounding,No Store (v2),28.085000000000001,27.453698341600148,20,Scenario,TPCA_Words_Wrong,available per system
+1193,grounding,With Store (v15),62.484999999999999,12.845448712737866,20,Scenario,TPCA_Words_Wrong,available per system
+1194,grounding,With Store (v16),11.690000000000001,3.332756090369462,20,Scenario,TPCA_Words_Wrong,available per system
+1195,all,GraphRAG (v1),145.60798912795477,150.38961001156954,78,Overall,TPCA_Words_Wrong,available per system
+1196,all,No Store (v1),99.16447368421052,43.639870772639,76,Overall,TPCA_Words_Wrong,available per system
+1197,all,No Store (v2),25.68607594936709,29.074046643881001,79,Overall,TPCA_Words_Wrong,available per system
+1198,all,With Store (v15),58.46290322580645,37.420671213328802,62,Overall,TPCA_Words_Wrong,available per system
+1199,all,With Store (v16),8.629999999999999,4.4586347382145535,60,Overall,TPCA_Words_Wrong,available per system
+1200,"Qwen3:4b, no thinking",GraphRAG (v1),432.04156864996116,35.519023547491621,9,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1201,"Qwen3:4b, no thinking",No Store (v1),53.299999999999997,11.347246362003423,9,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1202,"Qwen3:4b, no thinking",With Store (v16),10.555555555555555,4.5492062799765165,9,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1203,gemma3:1b,GraphRAG (v1),40.292801302369298,13.627232471972754,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1204,gemma3:1b,No Store (v1),71.856250000000003,19.020899689552014,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1205,gemma3:1b,With Store (v16),5.15625,3.0598406821270938,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1206,gemma4:e2b,GraphRAG (v1),96.686512104841938,29.351459774550516,8,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1207,gemma4:e2b,No Store (v1),99.75,23.763537495198694,8,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1208,gemma4:e2b,With Store (v16),8.8125,2.2962313845578737,8,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1209,llama3.2:1b,GraphRAG (v1),75.859830204373338,27.651989510908841,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1210,llama3.2:1b,No Store (v1),152.05000000000001,9.0480200412392211,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1211,llama3.2:1b,With Store (v16),10.85,5.5473717500572581,16,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1212,ministral-3:3b,GraphRAG (v1),72.100129363193091,19.704943489446809,10,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1213,ministral-3:3b,No Store (v1),108.66,45.887403258168547,10,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1214,ministral-3:3b,With Store (v16),8.7599999999999998,2.6382654234258625,10,Model,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1215,absurd,GraphRAG (v1),146.44056540078739,158.4543730494984,13,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1216,absurd,No Store (v1),105.14615384615385,48.824201911630794,13,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1217,absurd,With Store (v16),9.4692307692307693,4.9872144221306245,13,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1218,absurd_temporal,GraphRAG (v1),118.56877884332893,109.99287753741531,16,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1219,absurd_temporal,No Store (v1),96.59375,43.411403551755072,16,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1220,absurd_temporal,With Store (v16),5.6312499999999996,2.6502122556504792,16,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1221,belief_maintenance,GraphRAG (v1),51.23030982545994,19.15169080681811,10,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1222,belief_maintenance,No Store (v1),102.55999999999999,45.297000145950314,10,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1223,belief_maintenance,With Store (v16),6.2200000000000006,4.2115713615387458,10,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1224,grounding,GraphRAG (v1),146.40893512350502,164.45868167029803,20,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1225,grounding,No Store (v1),100.44,40.424125157346843,20,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1226,grounding,With Store (v16),11.690000000000001,3.3327560903694611,20,Scenario,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1227,all,GraphRAG (v1),122.73406122759658,135.81674855999646,59,Overall,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1228,all,No Store (v1),100.79322033898305,42.941527462701224,59,Overall,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1229,all,With Store (v16),8.6305084745762706,4.4969052284374014,59,Overall,TPCA_Words_Wrong,shared GraphRAG v1 / With Store v16 / No Store v1
+1230,"Qwen3:4b, no thinking",GraphRAG (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1231,"Qwen3:4b, no thinking",No Store (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1232,"Qwen3:4b, no thinking",No Store (v2),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1233,"Qwen3:4b, no thinking",With Store (v15),13.960481250000001,3.1107181780030047,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1234,"Qwen3:4b, no thinking",With Store (v16),14.00064375,9.0230576883130365,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1235,gemma3:1b,GraphRAG (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1236,gemma3:1b,No Store (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1237,gemma3:1b,No Store (v2),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1238,gemma3:1b,With Store (v15),10.4205375,1.4291078960316466,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1239,gemma3:1b,With Store (v16),13.019837500000001,5.2262438233559934,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1240,gemma4:e2b,GraphRAG (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1241,gemma4:e2b,No Store (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1242,gemma4:e2b,No Store (v2),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1243,gemma4:e2b,With Store (v15),33.135887500000003,11.096329430574478,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1244,gemma4:e2b,With Store (v16),19.175631249999999,6.5074421107650542,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1245,llama3.2:1b,GraphRAG (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1246,llama3.2:1b,No Store (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1247,llama3.2:1b,No Store (v2),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1248,llama3.2:1b,With Store (v15),5.8563499999999999,1.8931737314185757,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1249,llama3.2:1b,With Store (v16),21.768075,5.9184708566205408,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1250,ministral-3:3b,GraphRAG (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1251,ministral-3:3b,No Store (v1),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1252,ministral-3:3b,No Store (v2),,,0,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1253,ministral-3:3b,With Store (v15),16.518406249999998,2.9705099843783844,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1254,ministral-3:3b,With Store (v16),17.887493750000001,8.8636441929542542,16,Model,WCT_WallClock_PerTurn_Seconds,available per system
+1255,absurd,GraphRAG (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1256,absurd,No Store (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1257,absurd,No Store (v2),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1258,absurd,With Store (v15),18.345179999999999,13.312483884946015,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1259,absurd,With Store (v16),20.742474999999999,9.8242994762918556,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1260,absurd_temporal,GraphRAG (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1261,absurd_temporal,No Store (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1262,absurd_temporal,No Store (v2),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1263,absurd_temporal,With Store (v15),14.067689999999999,7.1271358310776973,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1264,absurd_temporal,With Store (v16),18.430585000000001,8.1527306956029353,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1265,belief_maintenance,GraphRAG (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1266,belief_maintenance,No Store (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1267,belief_maintenance,No Store (v2),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1268,belief_maintenance,With Store (v15),14.947309999999998,12.340050390961688,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1269,belief_maintenance,With Store (v16),13.569470000000001,5.9939651186224934,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1270,grounding,GraphRAG (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1271,grounding,No Store (v1),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1272,grounding,No Store (v2),,,0,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1273,grounding,With Store (v15),16.553149999999999,9.4136662145772796,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1274,grounding,With Store (v16),15.938815,4.9271331139309336,20,Scenario,WCT_WallClock_PerTurn_Seconds,available per system
+1275,all,GraphRAG (v1),,,0,Overall,WCT_WallClock_PerTurn_Seconds,available per system
+1276,all,No Store (v1),,,0,Overall,WCT_WallClock_PerTurn_Seconds,available per system
+1277,all,No Store (v2),,,0,Overall,WCT_WallClock_PerTurn_Seconds,available per system
+1278,all,With Store (v15),15.978332499999999,10.745768429653626,80,Overall,WCT_WallClock_PerTurn_Seconds,available per system
+1279,all,With Store (v16),17.170336249999998,7.8087911223970039,80,Overall,WCT_WallClock_PerTurn_Seconds,available per system

@@ -1,0 +1,11 @@
+,Timestamp,Domain,Model,Reasoner_Model,Matcher_Model,Temp,Runs,Condition,Metric_Family,Summary_Metric,Value,Class_Label,Pair,System,cell_accuracy
+524,2026-05-20 15:29:12,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,gemma3:1b | ministral-3:3b,Dual-Agent,1
+902,2026-05-20 18:20:48,alien_clinic_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,ministral-3:3b | gemma3:1b,Dual-Agent,1
+929,2026-05-20 18:29:04,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,ministral-3:3b | gemma3:1b,Dual-Agent,1
+1307,2026-05-20 22:39:50,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,1
+1361,2026-05-20 23:17:23,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,1
+2225,2026-06-05 00:44:00,crime_scene_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,gemma3:1b | ministral-3:3b,Dual-Agent,1
+2252,2026-06-05 00:50:29,thorncrester_absurd,gemma3:1b,gemma3:1b,ministral-3:3b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,gemma3:1b | ministral-3:3b,Dual-Agent,1
+2657,2026-06-05 03:07:49,crime_scene_absurd,gemma3:1b,ministral-3:3b,gemma3:1b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,ministral-3:3b | gemma3:1b,Dual-Agent,1
+3035,2026-06-05 05:32:59,loan_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,1
+3089,2026-06-05 05:53:18,crime_scene_absurd,gemma3:1b,ministral-3:3b,hoangquan456/qwen3-nothink:4b,0,5,Dual_Agent_Store,Efficiency,TPCA_Words_Wrong,0,,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,1

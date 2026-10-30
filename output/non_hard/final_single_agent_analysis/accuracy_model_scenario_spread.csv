@@ -1,0 +1,41 @@
+Model,Scenario,System,mean,sd,n
+"Qwen3:4b, no thinking",absurd,No Store (mean v1/v2),0.44124999999999998,0.059634302209382817,4
+"Qwen3:4b, no thinking",absurd,With Store (mean v15/v16),0.98249999999999993,0.013228756555322966,4
+"Qwen3:4b, no thinking",absurd_temporal,No Store (mean v1/v2),0.45624999999999993,0.14946432127211268,4
+"Qwen3:4b, no thinking",absurd_temporal,With Store (mean v15/v16),0.87124999999999997,0.18611712262264685,4
+"Qwen3:4b, no thinking",belief_maintenance,No Store (mean v1/v2),0.88125000000000009,0.087595186321319476,4
+"Qwen3:4b, no thinking",belief_maintenance,With Store (mean v15/v16),0.97875000000000001,0.032755406678389207,4
+"Qwen3:4b, no thinking",grounding,No Store (mean v1/v2),0.71624999999999994,0.10451275839181874,4
+"Qwen3:4b, no thinking",grounding,With Store (mean v15/v16),0.755,0.068190908484929258,4
+gemma3:1b,absurd,No Store (mean v1/v2),0.44624999999999998,0.19232676187502695,4
+gemma3:1b,absurd,With Store (mean v15/v16),0.72999999999999998,0.11554220008291345,4
+gemma3:1b,absurd_temporal,No Store (mean v1/v2),0.38374999999999992,0.072844011421667285,4
+gemma3:1b,absurd_temporal,With Store (mean v15/v16),0.64624999999999999,0.11592921690985988,4
+gemma3:1b,belief_maintenance,No Store (mean v1/v2),0.37874999999999998,0.094989034454860455,4
+gemma3:1b,belief_maintenance,With Store (mean v15/v16),0.74874999999999992,0.0815858443604036,4
+gemma3:1b,grounding,No Store (mean v1/v2),0.27000000000000002,0.076267074590983641,4
+gemma3:1b,grounding,With Store (mean v15/v16),0.11999999999999995,0.086698712024266322,4
+gemma4:e2b,absurd,No Store (mean v1/v2),0.64874999999999994,0.2389691402671065,4
+gemma4:e2b,absurd,With Store (mean v15/v16),0.88374999999999992,0.21261761451018121,4
+gemma4:e2b,absurd_temporal,No Store (mean v1/v2),0.50499999999999989,0.20603397778036511,4
+gemma4:e2b,absurd_temporal,With Store (mean v15/v16),0.85624999999999996,0.17603858478564682,4
+gemma4:e2b,belief_maintenance,No Store (mean v1/v2),0.64999999999999991,0.1507204918604855,4
+gemma4:e2b,belief_maintenance,With Store (mean v15/v16),0.98999999999999999,0.016832508230603494,4
+gemma4:e2b,grounding,No Store (mean v1/v2),0.40749999999999992,0.036855573979159971,4
+gemma4:e2b,grounding,With Store (mean v15/v16),0.62874999999999992,0.086059572390292424,4
+llama3.2:1b,absurd,No Store (mean v1/v2),0.17000000000000001,0.09899494936611665,4
+llama3.2:1b,absurd,With Store (mean v15/v16),0.48999999999999999,0.059721576223896372,4
+llama3.2:1b,absurd_temporal,No Store (mean v1/v2),0.14499999999999996,0.12261049438499685,4
+llama3.2:1b,absurd_temporal,With Store (mean v15/v16),0.4375,0.13580009818356786,4
+llama3.2:1b,belief_maintenance,No Store (mean v1/v2),0.35249999999999998,0.086071675557835778,4
+llama3.2:1b,belief_maintenance,With Store (mean v15/v16),0.5675,0.096133587609464888,4
+llama3.2:1b,grounding,No Store (mean v1/v2),0.031249999999999976,0.023228933107943925,4
+llama3.2:1b,grounding,With Store (mean v15/v16),0.058749999999999976,0.07553972464869059,4
+ministral-3:3b,absurd,No Store (mean v1/v2),0.54249999999999998,0.16834983417475247,4
+ministral-3:3b,absurd,With Store (mean v15/v16),0.96750000000000003,0.044814432199162493,4
+ministral-3:3b,absurd_temporal,No Store (mean v1/v2),0.49374999999999991,0.15892215075312813,4
+ministral-3:3b,absurd_temporal,With Store (mean v15/v16),0.85375000000000001,0.17480346106413347,4
+ministral-3:3b,belief_maintenance,No Store (mean v1/v2),0.77500000000000002,0.18520259177452134,4
+ministral-3:3b,belief_maintenance,With Store (mean v15/v16),0.99124999999999996,0.014361406616345091,4
+ministral-3:3b,grounding,No Store (mean v1/v2),0.59624999999999995,0.15309991291092667,4
+ministral-3:3b,grounding,With Store (mean v15/v16),0.72750000000000004,0.058665719689326781,4

@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "command": "python3 -m tests.test_non_hard_reporting",
+  "compile_check": "passed",
+  "notebooks_executed": 5,
+  "chart_count": 79,
+  "source_csvs_unchanged": true,
+  "original_notebook_backups_unchanged": true,
+  "new_evaluations": 0
+}

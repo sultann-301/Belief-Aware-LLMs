@@ -1,0 +1,17 @@
+Domain,Dual-Agent
+alien_clinic_absurd,0.75749999999999995
+alien_clinic_absurd_temporal,0.57000000000000006
+alien_clinic_belief_maintenance,0.87749999999999995
+alien_clinic_grounding,0.47749999999999998
+crime_scene_absurd,0.88500000000000001
+crime_scene_absurd_temporal,0.89500000000000002
+crime_scene_belief_maintenance,0.80000000000000004
+crime_scene_grounding,0.22249999999999998
+loan_absurd,0.8175
+loan_absurd_temporal,0.97249999999999992
+loan_belief_maintenance,0.76249999999999996
+loan_grounding,0.32500000000000007
+thorncrester_absurd,0.85499999999999998
+thorncrester_absurd_temporal,0.87749999999999995
+thorncrester_belief_maintenance,0.78000000000000003
+thorncrester_grounding,0.41500000000000004

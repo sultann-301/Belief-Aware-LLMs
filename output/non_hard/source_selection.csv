@@ -1,0 +1,4 @@
+,file,source_rows,retained_rows,hard_rows_excluded,other_out_of_scope_rows,source_combinations,retained_combinations
+0,eval_results_graphrag.csv,8000,8000,0,0,16,16
+1,eval_results_normalized.csv,6602,5738,864,0,20,16
+2,eval_results_with_store.csv,2464,1760,264,440,24,16

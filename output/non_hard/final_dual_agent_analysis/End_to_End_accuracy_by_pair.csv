@@ -1,0 +1,5 @@
+Pair,Dual-Agent
+gemma3:1b | gemma3:1b,0.57437499999999997
+gemma3:1b | ministral-3:3b,0.70874999999999999
+"ministral-3:3b | Qwen3:4b, no thinking",0.87
+ministral-3:3b | gemma3:1b,0.86562499999999998

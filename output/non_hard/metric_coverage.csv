@@ -1,0 +1,551 @@
+,Model,Metric,System,available,expected,missing
+0,"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,GraphRAG (v1),16,16,0
+1,"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,No Store (v1),16,16,0
+2,"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,No Store (v2),16,16,0
+3,"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,With Store (v15),16,16,0
+4,"Qwen3:4b, no thinking",AFR_Answer_Flip_Rate,With Store (v16),16,16,0
+5,"Qwen3:4b, no thinking",Average_Accuracy,GraphRAG (v1),16,16,0
+6,"Qwen3:4b, no thinking",Average_Accuracy,No Store (v1),16,16,0
+7,"Qwen3:4b, no thinking",Average_Accuracy,No Store (v2),16,16,0
+8,"Qwen3:4b, no thinking",Average_Accuracy,With Store (v15),16,16,0
+9,"Qwen3:4b, no thinking",Average_Accuracy,With Store (v16),16,16,0
+10,"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,GraphRAG (v1),0,16,16
+11,"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,No Store (v1),0,16,16
+12,"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,No Store (v2),0,16,16
+13,"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,With Store (v15),16,16,0
+14,"Qwen3:4b, no thinking",Average_BCR_BeliefCoverage,With Store (v16),16,16,0
+15,"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,GraphRAG (v1),0,16,16
+16,"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,No Store (v1),0,16,16
+17,"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,No Store (v2),0,16,16
+18,"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,With Store (v15),16,16,0
+19,"Qwen3:4b, no thinking",Average_Evidence_Canonical_Keys,With Store (v16),16,16,0
+20,"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,GraphRAG (v1),0,16,16
+21,"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,No Store (v1),0,16,16
+22,"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,No Store (v2),0,16,16
+23,"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,With Store (v15),16,16,0
+24,"Qwen3:4b, no thinking",Average_Evidence_Cited_Keys,With Store (v16),16,16,0
+25,"Qwen3:4b, no thinking",Average_Evidence_F1,GraphRAG (v1),0,16,16
+26,"Qwen3:4b, no thinking",Average_Evidence_F1,No Store (v1),0,16,16
+27,"Qwen3:4b, no thinking",Average_Evidence_F1,No Store (v2),0,16,16
+28,"Qwen3:4b, no thinking",Average_Evidence_F1,With Store (v15),16,16,0
+29,"Qwen3:4b, no thinking",Average_Evidence_F1,With Store (v16),16,16,0
+30,"Qwen3:4b, no thinking",Average_Evidence_Precision,GraphRAG (v1),0,16,16
+31,"Qwen3:4b, no thinking",Average_Evidence_Precision,No Store (v1),0,16,16
+32,"Qwen3:4b, no thinking",Average_Evidence_Precision,No Store (v2),0,16,16
+33,"Qwen3:4b, no thinking",Average_Evidence_Precision,With Store (v15),16,16,0
+34,"Qwen3:4b, no thinking",Average_Evidence_Precision,With Store (v16),16,16,0
+35,"Qwen3:4b, no thinking",Average_Evidence_Recall,GraphRAG (v1),0,16,16
+36,"Qwen3:4b, no thinking",Average_Evidence_Recall,No Store (v1),0,16,16
+37,"Qwen3:4b, no thinking",Average_Evidence_Recall,No Store (v2),0,16,16
+38,"Qwen3:4b, no thinking",Average_Evidence_Recall,With Store (v15),16,16,0
+39,"Qwen3:4b, no thinking",Average_Evidence_Recall,With Store (v16),16,16,0
+40,"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,GraphRAG (v1),0,16,16
+41,"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,No Store (v1),0,16,16
+42,"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,No Store (v2),0,16,16
+43,"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,With Store (v15),16,16,0
+44,"Qwen3:4b, no thinking",Average_SBIR_SpuriousInjection,With Store (v16),16,16,0
+45,"Qwen3:4b, no thinking",DS_Determinism_Score,GraphRAG (v1),16,16,0
+46,"Qwen3:4b, no thinking",DS_Determinism_Score,No Store (v1),16,16,0
+47,"Qwen3:4b, no thinking",DS_Determinism_Score,No Store (v2),16,16,0
+48,"Qwen3:4b, no thinking",DS_Determinism_Score,With Store (v15),16,16,0
+49,"Qwen3:4b, no thinking",DS_Determinism_Score,With Store (v16),16,16,0
+50,"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,GraphRAG (v1),16,16,0
+51,"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,No Store (v1),16,16,0
+52,"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,No Store (v2),16,16,0
+53,"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,With Store (v15),16,16,0
+54,"Qwen3:4b, no thinking",EFR_Extraction_Failure_Rate,With Store (v16),16,16,0
+55,"Qwen3:4b, no thinking",EMD_bracketed_exact,GraphRAG (v1),16,16,0
+56,"Qwen3:4b, no thinking",EMD_bracketed_exact,No Store (v1),16,16,0
+57,"Qwen3:4b, no thinking",EMD_bracketed_exact,No Store (v2),16,16,0
+58,"Qwen3:4b, no thinking",EMD_bracketed_exact,With Store (v15),16,16,0
+59,"Qwen3:4b, no thinking",EMD_bracketed_exact,With Store (v16),16,16,0
+60,"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,GraphRAG (v1),16,16,0
+61,"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,No Store (v1),16,16,0
+62,"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,No Store (v2),16,16,0
+63,"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,With Store (v15),16,16,0
+64,"Qwen3:4b, no thinking",PTC_Variance_PerTurn_Consistency,With Store (v16),16,16,0
+65,"Qwen3:4b, no thinking",StdDev_Raw_Score,GraphRAG (v1),16,16,0
+66,"Qwen3:4b, no thinking",StdDev_Raw_Score,No Store (v1),16,16,0
+67,"Qwen3:4b, no thinking",StdDev_Raw_Score,No Store (v2),16,16,0
+68,"Qwen3:4b, no thinking",StdDev_Raw_Score,With Store (v15),16,16,0
+69,"Qwen3:4b, no thinking",StdDev_Raw_Score,With Store (v16),16,16,0
+70,"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,GraphRAG (v1),16,16,0
+71,"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,No Store (v1),16,16,0
+72,"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,No Store (v2),16,16,0
+73,"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,With Store (v15),16,16,0
+74,"Qwen3:4b, no thinking",Summary_Metric_Brier_Score,With Store (v16),16,16,0
+75,"Qwen3:4b, no thinking",Summary_Metric_ECE,GraphRAG (v1),16,16,0
+76,"Qwen3:4b, no thinking",Summary_Metric_ECE,No Store (v1),16,16,0
+77,"Qwen3:4b, no thinking",Summary_Metric_ECE,No Store (v2),16,16,0
+78,"Qwen3:4b, no thinking",Summary_Metric_ECE,With Store (v15),16,16,0
+79,"Qwen3:4b, no thinking",Summary_Metric_ECE,With Store (v16),16,16,0
+80,"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,GraphRAG (v1),16,16,0
+81,"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,No Store (v1),16,16,0
+82,"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,No Store (v2),16,16,0
+83,"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,With Store (v15),16,16,0
+84,"Qwen3:4b, no thinking",Summary_Metric_Log_Loss,With Store (v16),16,16,0
+85,"Qwen3:4b, no thinking",Summary_Metric_MacroCE,GraphRAG (v1),16,16,0
+86,"Qwen3:4b, no thinking",Summary_Metric_MacroCE,No Store (v1),16,16,0
+87,"Qwen3:4b, no thinking",Summary_Metric_MacroCE,No Store (v2),16,16,0
+88,"Qwen3:4b, no thinking",Summary_Metric_MacroCE,With Store (v15),16,16,0
+89,"Qwen3:4b, no thinking",Summary_Metric_MacroCE,With Store (v16),16,16,0
+90,"Qwen3:4b, no thinking",TPCA_Words_Correct,GraphRAG (v1),16,16,0
+91,"Qwen3:4b, no thinking",TPCA_Words_Correct,No Store (v1),16,16,0
+92,"Qwen3:4b, no thinking",TPCA_Words_Correct,No Store (v2),16,16,0
+93,"Qwen3:4b, no thinking",TPCA_Words_Correct,With Store (v15),16,16,0
+94,"Qwen3:4b, no thinking",TPCA_Words_Correct,With Store (v16),16,16,0
+95,"Qwen3:4b, no thinking",TPCA_Words_Wrong,GraphRAG (v1),16,16,0
+96,"Qwen3:4b, no thinking",TPCA_Words_Wrong,No Store (v1),14,16,2
+97,"Qwen3:4b, no thinking",TPCA_Words_Wrong,No Store (v2),16,16,0
+98,"Qwen3:4b, no thinking",TPCA_Words_Wrong,With Store (v15),9,16,7
+99,"Qwen3:4b, no thinking",TPCA_Words_Wrong,With Store (v16),10,16,6
+100,"Qwen3:4b, no thinking",Variance_Raw_Score,GraphRAG (v1),16,16,0
+101,"Qwen3:4b, no thinking",Variance_Raw_Score,No Store (v1),16,16,0
+102,"Qwen3:4b, no thinking",Variance_Raw_Score,No Store (v2),16,16,0
+103,"Qwen3:4b, no thinking",Variance_Raw_Score,With Store (v15),16,16,0
+104,"Qwen3:4b, no thinking",Variance_Raw_Score,With Store (v16),16,16,0
+105,"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,GraphRAG (v1),0,16,16
+106,"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,No Store (v1),0,16,16
+107,"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,No Store (v2),0,16,16
+108,"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,With Store (v15),16,16,0
+109,"Qwen3:4b, no thinking",WCT_WallClock_PerTurn_Seconds,With Store (v16),16,16,0
+110,gemma3:1b,AFR_Answer_Flip_Rate,GraphRAG (v1),16,16,0
+111,gemma3:1b,AFR_Answer_Flip_Rate,No Store (v1),16,16,0
+112,gemma3:1b,AFR_Answer_Flip_Rate,No Store (v2),16,16,0
+113,gemma3:1b,AFR_Answer_Flip_Rate,With Store (v15),16,16,0
+114,gemma3:1b,AFR_Answer_Flip_Rate,With Store (v16),16,16,0
+115,gemma3:1b,Average_Accuracy,GraphRAG (v1),16,16,0
+116,gemma3:1b,Average_Accuracy,No Store (v1),16,16,0
+117,gemma3:1b,Average_Accuracy,No Store (v2),16,16,0
+118,gemma3:1b,Average_Accuracy,With Store (v15),16,16,0
+119,gemma3:1b,Average_Accuracy,With Store (v16),16,16,0
+120,gemma3:1b,Average_BCR_BeliefCoverage,GraphRAG (v1),0,16,16
+121,gemma3:1b,Average_BCR_BeliefCoverage,No Store (v1),0,16,16
+122,gemma3:1b,Average_BCR_BeliefCoverage,No Store (v2),0,16,16
+123,gemma3:1b,Average_BCR_BeliefCoverage,With Store (v15),16,16,0
+124,gemma3:1b,Average_BCR_BeliefCoverage,With Store (v16),16,16,0
+125,gemma3:1b,Average_Evidence_Canonical_Keys,GraphRAG (v1),0,16,16
+126,gemma3:1b,Average_Evidence_Canonical_Keys,No Store (v1),0,16,16
+127,gemma3:1b,Average_Evidence_Canonical_Keys,No Store (v2),0,16,16
+128,gemma3:1b,Average_Evidence_Canonical_Keys,With Store (v15),16,16,0
+129,gemma3:1b,Average_Evidence_Canonical_Keys,With Store (v16),16,16,0
+130,gemma3:1b,Average_Evidence_Cited_Keys,GraphRAG (v1),0,16,16
+131,gemma3:1b,Average_Evidence_Cited_Keys,No Store (v1),0,16,16
+132,gemma3:1b,Average_Evidence_Cited_Keys,No Store (v2),0,16,16
+133,gemma3:1b,Average_Evidence_Cited_Keys,With Store (v15),16,16,0
+134,gemma3:1b,Average_Evidence_Cited_Keys,With Store (v16),16,16,0
+135,gemma3:1b,Average_Evidence_F1,GraphRAG (v1),0,16,16
+136,gemma3:1b,Average_Evidence_F1,No Store (v1),0,16,16
+137,gemma3:1b,Average_Evidence_F1,No Store (v2),0,16,16
+138,gemma3:1b,Average_Evidence_F1,With Store (v15),16,16,0
+139,gemma3:1b,Average_Evidence_F1,With Store (v16),16,16,0
+140,gemma3:1b,Average_Evidence_Precision,GraphRAG (v1),0,16,16
+141,gemma3:1b,Average_Evidence_Precision,No Store (v1),0,16,16
+142,gemma3:1b,Average_Evidence_Precision,No Store (v2),0,16,16
+143,gemma3:1b,Average_Evidence_Precision,With Store (v15),16,16,0
+144,gemma3:1b,Average_Evidence_Precision,With Store (v16),16,16,0
+145,gemma3:1b,Average_Evidence_Recall,GraphRAG (v1),0,16,16
+146,gemma3:1b,Average_Evidence_Recall,No Store (v1),0,16,16
+147,gemma3:1b,Average_Evidence_Recall,No Store (v2),0,16,16
+148,gemma3:1b,Average_Evidence_Recall,With Store (v15),16,16,0
+149,gemma3:1b,Average_Evidence_Recall,With Store (v16),16,16,0
+150,gemma3:1b,Average_SBIR_SpuriousInjection,GraphRAG (v1),0,16,16
+151,gemma3:1b,Average_SBIR_SpuriousInjection,No Store (v1),0,16,16
+152,gemma3:1b,Average_SBIR_SpuriousInjection,No Store (v2),0,16,16
+153,gemma3:1b,Average_SBIR_SpuriousInjection,With Store (v15),16,16,0
+154,gemma3:1b,Average_SBIR_SpuriousInjection,With Store (v16),16,16,0
+155,gemma3:1b,DS_Determinism_Score,GraphRAG (v1),16,16,0
+156,gemma3:1b,DS_Determinism_Score,No Store (v1),16,16,0
+157,gemma3:1b,DS_Determinism_Score,No Store (v2),16,16,0
+158,gemma3:1b,DS_Determinism_Score,With Store (v15),16,16,0
+159,gemma3:1b,DS_Determinism_Score,With Store (v16),16,16,0
+160,gemma3:1b,EFR_Extraction_Failure_Rate,GraphRAG (v1),16,16,0
+161,gemma3:1b,EFR_Extraction_Failure_Rate,No Store (v1),16,16,0
+162,gemma3:1b,EFR_Extraction_Failure_Rate,No Store (v2),16,16,0
+163,gemma3:1b,EFR_Extraction_Failure_Rate,With Store (v15),16,16,0
+164,gemma3:1b,EFR_Extraction_Failure_Rate,With Store (v16),16,16,0
+165,gemma3:1b,EMD_bracketed_exact,GraphRAG (v1),16,16,0
+166,gemma3:1b,EMD_bracketed_exact,No Store (v1),16,16,0
+167,gemma3:1b,EMD_bracketed_exact,No Store (v2),16,16,0
+168,gemma3:1b,EMD_bracketed_exact,With Store (v15),16,16,0
+169,gemma3:1b,EMD_bracketed_exact,With Store (v16),16,16,0
+170,gemma3:1b,PTC_Variance_PerTurn_Consistency,GraphRAG (v1),16,16,0
+171,gemma3:1b,PTC_Variance_PerTurn_Consistency,No Store (v1),16,16,0
+172,gemma3:1b,PTC_Variance_PerTurn_Consistency,No Store (v2),16,16,0
+173,gemma3:1b,PTC_Variance_PerTurn_Consistency,With Store (v15),16,16,0
+174,gemma3:1b,PTC_Variance_PerTurn_Consistency,With Store (v16),16,16,0
+175,gemma3:1b,StdDev_Raw_Score,GraphRAG (v1),16,16,0
+176,gemma3:1b,StdDev_Raw_Score,No Store (v1),16,16,0
+177,gemma3:1b,StdDev_Raw_Score,No Store (v2),16,16,0
+178,gemma3:1b,StdDev_Raw_Score,With Store (v15),16,16,0
+179,gemma3:1b,StdDev_Raw_Score,With Store (v16),16,16,0
+180,gemma3:1b,Summary_Metric_Brier_Score,GraphRAG (v1),16,16,0
+181,gemma3:1b,Summary_Metric_Brier_Score,No Store (v1),16,16,0
+182,gemma3:1b,Summary_Metric_Brier_Score,No Store (v2),16,16,0
+183,gemma3:1b,Summary_Metric_Brier_Score,With Store (v15),16,16,0
+184,gemma3:1b,Summary_Metric_Brier_Score,With Store (v16),16,16,0
+185,gemma3:1b,Summary_Metric_ECE,GraphRAG (v1),16,16,0
+186,gemma3:1b,Summary_Metric_ECE,No Store (v1),16,16,0
+187,gemma3:1b,Summary_Metric_ECE,No Store (v2),16,16,0
+188,gemma3:1b,Summary_Metric_ECE,With Store (v15),16,16,0
+189,gemma3:1b,Summary_Metric_ECE,With Store (v16),16,16,0
+190,gemma3:1b,Summary_Metric_Log_Loss,GraphRAG (v1),16,16,0
+191,gemma3:1b,Summary_Metric_Log_Loss,No Store (v1),16,16,0
+192,gemma3:1b,Summary_Metric_Log_Loss,No Store (v2),16,16,0
+193,gemma3:1b,Summary_Metric_Log_Loss,With Store (v15),16,16,0
+194,gemma3:1b,Summary_Metric_Log_Loss,With Store (v16),16,16,0
+195,gemma3:1b,Summary_Metric_MacroCE,GraphRAG (v1),16,16,0
+196,gemma3:1b,Summary_Metric_MacroCE,No Store (v1),16,16,0
+197,gemma3:1b,Summary_Metric_MacroCE,No Store (v2),16,16,0
+198,gemma3:1b,Summary_Metric_MacroCE,With Store (v15),16,16,0
+199,gemma3:1b,Summary_Metric_MacroCE,With Store (v16),16,16,0
+200,gemma3:1b,TPCA_Words_Correct,GraphRAG (v1),16,16,0
+201,gemma3:1b,TPCA_Words_Correct,No Store (v1),16,16,0
+202,gemma3:1b,TPCA_Words_Correct,No Store (v2),16,16,0
+203,gemma3:1b,TPCA_Words_Correct,With Store (v15),16,16,0
+204,gemma3:1b,TPCA_Words_Correct,With Store (v16),15,16,1
+205,gemma3:1b,TPCA_Words_Wrong,GraphRAG (v1),16,16,0
+206,gemma3:1b,TPCA_Words_Wrong,No Store (v1),16,16,0
+207,gemma3:1b,TPCA_Words_Wrong,No Store (v2),16,16,0
+208,gemma3:1b,TPCA_Words_Wrong,With Store (v15),14,16,2
+209,gemma3:1b,TPCA_Words_Wrong,With Store (v16),16,16,0
+210,gemma3:1b,Variance_Raw_Score,GraphRAG (v1),16,16,0
+211,gemma3:1b,Variance_Raw_Score,No Store (v1),16,16,0
+212,gemma3:1b,Variance_Raw_Score,No Store (v2),16,16,0
+213,gemma3:1b,Variance_Raw_Score,With Store (v15),16,16,0
+214,gemma3:1b,Variance_Raw_Score,With Store (v16),16,16,0
+215,gemma3:1b,WCT_WallClock_PerTurn_Seconds,GraphRAG (v1),0,16,16
+216,gemma3:1b,WCT_WallClock_PerTurn_Seconds,No Store (v1),0,16,16
+217,gemma3:1b,WCT_WallClock_PerTurn_Seconds,No Store (v2),0,16,16
+218,gemma3:1b,WCT_WallClock_PerTurn_Seconds,With Store (v15),16,16,0
+219,gemma3:1b,WCT_WallClock_PerTurn_Seconds,With Store (v16),16,16,0
+220,gemma4:e2b,AFR_Answer_Flip_Rate,GraphRAG (v1),16,16,0
+221,gemma4:e2b,AFR_Answer_Flip_Rate,No Store (v1),16,16,0
+222,gemma4:e2b,AFR_Answer_Flip_Rate,No Store (v2),16,16,0
+223,gemma4:e2b,AFR_Answer_Flip_Rate,With Store (v15),16,16,0
+224,gemma4:e2b,AFR_Answer_Flip_Rate,With Store (v16),16,16,0
+225,gemma4:e2b,Average_Accuracy,GraphRAG (v1),16,16,0
+226,gemma4:e2b,Average_Accuracy,No Store (v1),16,16,0
+227,gemma4:e2b,Average_Accuracy,No Store (v2),16,16,0
+228,gemma4:e2b,Average_Accuracy,With Store (v15),16,16,0
+229,gemma4:e2b,Average_Accuracy,With Store (v16),16,16,0
+230,gemma4:e2b,Average_BCR_BeliefCoverage,GraphRAG (v1),0,16,16
+231,gemma4:e2b,Average_BCR_BeliefCoverage,No Store (v1),0,16,16
+232,gemma4:e2b,Average_BCR_BeliefCoverage,No Store (v2),0,16,16
+233,gemma4:e2b,Average_BCR_BeliefCoverage,With Store (v15),16,16,0
+234,gemma4:e2b,Average_BCR_BeliefCoverage,With Store (v16),16,16,0
+235,gemma4:e2b,Average_Evidence_Canonical_Keys,GraphRAG (v1),0,16,16
+236,gemma4:e2b,Average_Evidence_Canonical_Keys,No Store (v1),0,16,16
+237,gemma4:e2b,Average_Evidence_Canonical_Keys,No Store (v2),0,16,16
+238,gemma4:e2b,Average_Evidence_Canonical_Keys,With Store (v15),16,16,0
+239,gemma4:e2b,Average_Evidence_Canonical_Keys,With Store (v16),16,16,0
+240,gemma4:e2b,Average_Evidence_Cited_Keys,GraphRAG (v1),0,16,16
+241,gemma4:e2b,Average_Evidence_Cited_Keys,No Store (v1),0,16,16
+242,gemma4:e2b,Average_Evidence_Cited_Keys,No Store (v2),0,16,16
+243,gemma4:e2b,Average_Evidence_Cited_Keys,With Store (v15),16,16,0
+244,gemma4:e2b,Average_Evidence_Cited_Keys,With Store (v16),16,16,0
+245,gemma4:e2b,Average_Evidence_F1,GraphRAG (v1),0,16,16
+246,gemma4:e2b,Average_Evidence_F1,No Store (v1),0,16,16
+247,gemma4:e2b,Average_Evidence_F1,No Store (v2),0,16,16
+248,gemma4:e2b,Average_Evidence_F1,With Store (v15),16,16,0
+249,gemma4:e2b,Average_Evidence_F1,With Store (v16),16,16,0
+250,gemma4:e2b,Average_Evidence_Precision,GraphRAG (v1),0,16,16
+251,gemma4:e2b,Average_Evidence_Precision,No Store (v1),0,16,16
+252,gemma4:e2b,Average_Evidence_Precision,No Store (v2),0,16,16
+253,gemma4:e2b,Average_Evidence_Precision,With Store (v15),16,16,0
+254,gemma4:e2b,Average_Evidence_Precision,With Store (v16),16,16,0
+255,gemma4:e2b,Average_Evidence_Recall,GraphRAG (v1),0,16,16
+256,gemma4:e2b,Average_Evidence_Recall,No Store (v1),0,16,16
+257,gemma4:e2b,Average_Evidence_Recall,No Store (v2),0,16,16
+258,gemma4:e2b,Average_Evidence_Recall,With Store (v15),16,16,0
+259,gemma4:e2b,Average_Evidence_Recall,With Store (v16),16,16,0
+260,gemma4:e2b,Average_SBIR_SpuriousInjection,GraphRAG (v1),0,16,16
+261,gemma4:e2b,Average_SBIR_SpuriousInjection,No Store (v1),0,16,16
+262,gemma4:e2b,Average_SBIR_SpuriousInjection,No Store (v2),0,16,16
+263,gemma4:e2b,Average_SBIR_SpuriousInjection,With Store (v15),16,16,0
+264,gemma4:e2b,Average_SBIR_SpuriousInjection,With Store (v16),16,16,0
+265,gemma4:e2b,DS_Determinism_Score,GraphRAG (v1),16,16,0
+266,gemma4:e2b,DS_Determinism_Score,No Store (v1),16,16,0
+267,gemma4:e2b,DS_Determinism_Score,No Store (v2),16,16,0
+268,gemma4:e2b,DS_Determinism_Score,With Store (v15),16,16,0
+269,gemma4:e2b,DS_Determinism_Score,With Store (v16),16,16,0
+270,gemma4:e2b,EFR_Extraction_Failure_Rate,GraphRAG (v1),16,16,0
+271,gemma4:e2b,EFR_Extraction_Failure_Rate,No Store (v1),16,16,0
+272,gemma4:e2b,EFR_Extraction_Failure_Rate,No Store (v2),16,16,0
+273,gemma4:e2b,EFR_Extraction_Failure_Rate,With Store (v15),16,16,0
+274,gemma4:e2b,EFR_Extraction_Failure_Rate,With Store (v16),16,16,0
+275,gemma4:e2b,EMD_bracketed_exact,GraphRAG (v1),16,16,0
+276,gemma4:e2b,EMD_bracketed_exact,No Store (v1),16,16,0
+277,gemma4:e2b,EMD_bracketed_exact,No Store (v2),16,16,0
+278,gemma4:e2b,EMD_bracketed_exact,With Store (v15),16,16,0
+279,gemma4:e2b,EMD_bracketed_exact,With Store (v16),16,16,0
+280,gemma4:e2b,PTC_Variance_PerTurn_Consistency,GraphRAG (v1),16,16,0
+281,gemma4:e2b,PTC_Variance_PerTurn_Consistency,No Store (v1),16,16,0
+282,gemma4:e2b,PTC_Variance_PerTurn_Consistency,No Store (v2),16,16,0
+283,gemma4:e2b,PTC_Variance_PerTurn_Consistency,With Store (v15),16,16,0
+284,gemma4:e2b,PTC_Variance_PerTurn_Consistency,With Store (v16),16,16,0
+285,gemma4:e2b,StdDev_Raw_Score,GraphRAG (v1),16,16,0
+286,gemma4:e2b,StdDev_Raw_Score,No Store (v1),16,16,0
+287,gemma4:e2b,StdDev_Raw_Score,No Store (v2),16,16,0
+288,gemma4:e2b,StdDev_Raw_Score,With Store (v15),16,16,0
+289,gemma4:e2b,StdDev_Raw_Score,With Store (v16),16,16,0
+290,gemma4:e2b,Summary_Metric_Brier_Score,GraphRAG (v1),16,16,0
+291,gemma4:e2b,Summary_Metric_Brier_Score,No Store (v1),16,16,0
+292,gemma4:e2b,Summary_Metric_Brier_Score,No Store (v2),16,16,0
+293,gemma4:e2b,Summary_Metric_Brier_Score,With Store (v15),16,16,0
+294,gemma4:e2b,Summary_Metric_Brier_Score,With Store (v16),16,16,0
+295,gemma4:e2b,Summary_Metric_ECE,GraphRAG (v1),16,16,0
+296,gemma4:e2b,Summary_Metric_ECE,No Store (v1),16,16,0
+297,gemma4:e2b,Summary_Metric_ECE,No Store (v2),16,16,0
+298,gemma4:e2b,Summary_Metric_ECE,With Store (v15),16,16,0
+299,gemma4:e2b,Summary_Metric_ECE,With Store (v16),16,16,0
+300,gemma4:e2b,Summary_Metric_Log_Loss,GraphRAG (v1),16,16,0
+301,gemma4:e2b,Summary_Metric_Log_Loss,No Store (v1),16,16,0
+302,gemma4:e2b,Summary_Metric_Log_Loss,No Store (v2),16,16,0
+303,gemma4:e2b,Summary_Metric_Log_Loss,With Store (v15),16,16,0
+304,gemma4:e2b,Summary_Metric_Log_Loss,With Store (v16),16,16,0
+305,gemma4:e2b,Summary_Metric_MacroCE,GraphRAG (v1),16,16,0
+306,gemma4:e2b,Summary_Metric_MacroCE,No Store (v1),16,16,0
+307,gemma4:e2b,Summary_Metric_MacroCE,No Store (v2),16,16,0
+308,gemma4:e2b,Summary_Metric_MacroCE,With Store (v15),16,16,0
+309,gemma4:e2b,Summary_Metric_MacroCE,With Store (v16),16,16,0
+310,gemma4:e2b,TPCA_Words_Correct,GraphRAG (v1),16,16,0
+311,gemma4:e2b,TPCA_Words_Correct,No Store (v1),16,16,0
+312,gemma4:e2b,TPCA_Words_Correct,No Store (v2),16,16,0
+313,gemma4:e2b,TPCA_Words_Correct,With Store (v15),16,16,0
+314,gemma4:e2b,TPCA_Words_Correct,With Store (v16),16,16,0
+315,gemma4:e2b,TPCA_Words_Wrong,GraphRAG (v1),15,16,1
+316,gemma4:e2b,TPCA_Words_Wrong,No Store (v1),15,16,1
+317,gemma4:e2b,TPCA_Words_Wrong,No Store (v2),15,16,1
+318,gemma4:e2b,TPCA_Words_Wrong,With Store (v15),12,16,4
+319,gemma4:e2b,TPCA_Words_Wrong,With Store (v16),8,16,8
+320,gemma4:e2b,Variance_Raw_Score,GraphRAG (v1),16,16,0
+321,gemma4:e2b,Variance_Raw_Score,No Store (v1),16,16,0
+322,gemma4:e2b,Variance_Raw_Score,No Store (v2),16,16,0
+323,gemma4:e2b,Variance_Raw_Score,With Store (v15),16,16,0
+324,gemma4:e2b,Variance_Raw_Score,With Store (v16),16,16,0
+325,gemma4:e2b,WCT_WallClock_PerTurn_Seconds,GraphRAG (v1),0,16,16
+326,gemma4:e2b,WCT_WallClock_PerTurn_Seconds,No Store (v1),0,16,16
+327,gemma4:e2b,WCT_WallClock_PerTurn_Seconds,No Store (v2),0,16,16
+328,gemma4:e2b,WCT_WallClock_PerTurn_Seconds,With Store (v15),16,16,0
+329,gemma4:e2b,WCT_WallClock_PerTurn_Seconds,With Store (v16),16,16,0
+330,llama3.2:1b,AFR_Answer_Flip_Rate,GraphRAG (v1),16,16,0
+331,llama3.2:1b,AFR_Answer_Flip_Rate,No Store (v1),10,16,6
+332,llama3.2:1b,AFR_Answer_Flip_Rate,No Store (v2),16,16,0
+333,llama3.2:1b,AFR_Answer_Flip_Rate,With Store (v15),16,16,0
+334,llama3.2:1b,AFR_Answer_Flip_Rate,With Store (v16),16,16,0
+335,llama3.2:1b,Average_Accuracy,GraphRAG (v1),16,16,0
+336,llama3.2:1b,Average_Accuracy,No Store (v1),16,16,0
+337,llama3.2:1b,Average_Accuracy,No Store (v2),16,16,0
+338,llama3.2:1b,Average_Accuracy,With Store (v15),16,16,0
+339,llama3.2:1b,Average_Accuracy,With Store (v16),16,16,0
+340,llama3.2:1b,Average_BCR_BeliefCoverage,GraphRAG (v1),0,16,16
+341,llama3.2:1b,Average_BCR_BeliefCoverage,No Store (v1),0,16,16
+342,llama3.2:1b,Average_BCR_BeliefCoverage,No Store (v2),0,16,16
+343,llama3.2:1b,Average_BCR_BeliefCoverage,With Store (v15),16,16,0
+344,llama3.2:1b,Average_BCR_BeliefCoverage,With Store (v16),16,16,0
+345,llama3.2:1b,Average_Evidence_Canonical_Keys,GraphRAG (v1),0,16,16
+346,llama3.2:1b,Average_Evidence_Canonical_Keys,No Store (v1),0,16,16
+347,llama3.2:1b,Average_Evidence_Canonical_Keys,No Store (v2),0,16,16
+348,llama3.2:1b,Average_Evidence_Canonical_Keys,With Store (v15),16,16,0
+349,llama3.2:1b,Average_Evidence_Canonical_Keys,With Store (v16),16,16,0
+350,llama3.2:1b,Average_Evidence_Cited_Keys,GraphRAG (v1),0,16,16
+351,llama3.2:1b,Average_Evidence_Cited_Keys,No Store (v1),0,16,16
+352,llama3.2:1b,Average_Evidence_Cited_Keys,No Store (v2),0,16,16
+353,llama3.2:1b,Average_Evidence_Cited_Keys,With Store (v15),16,16,0
+354,llama3.2:1b,Average_Evidence_Cited_Keys,With Store (v16),16,16,0
+355,llama3.2:1b,Average_Evidence_F1,GraphRAG (v1),0,16,16
+356,llama3.2:1b,Average_Evidence_F1,No Store (v1),0,16,16
+357,llama3.2:1b,Average_Evidence_F1,No Store (v2),0,16,16
+358,llama3.2:1b,Average_Evidence_F1,With Store (v15),16,16,0
+359,llama3.2:1b,Average_Evidence_F1,With Store (v16),16,16,0
+360,llama3.2:1b,Average_Evidence_Precision,GraphRAG (v1),0,16,16
+361,llama3.2:1b,Average_Evidence_Precision,No Store (v1),0,16,16
+362,llama3.2:1b,Average_Evidence_Precision,No Store (v2),0,16,16
+363,llama3.2:1b,Average_Evidence_Precision,With Store (v15),16,16,0
+364,llama3.2:1b,Average_Evidence_Precision,With Store (v16),16,16,0
+365,llama3.2:1b,Average_Evidence_Recall,GraphRAG (v1),0,16,16
+366,llama3.2:1b,Average_Evidence_Recall,No Store (v1),0,16,16
+367,llama3.2:1b,Average_Evidence_Recall,No Store (v2),0,16,16
+368,llama3.2:1b,Average_Evidence_Recall,With Store (v15),16,16,0
+369,llama3.2:1b,Average_Evidence_Recall,With Store (v16),16,16,0
+370,llama3.2:1b,Average_SBIR_SpuriousInjection,GraphRAG (v1),0,16,16
+371,llama3.2:1b,Average_SBIR_SpuriousInjection,No Store (v1),0,16,16
+372,llama3.2:1b,Average_SBIR_SpuriousInjection,No Store (v2),0,16,16
+373,llama3.2:1b,Average_SBIR_SpuriousInjection,With Store (v15),16,16,0
+374,llama3.2:1b,Average_SBIR_SpuriousInjection,With Store (v16),16,16,0
+375,llama3.2:1b,DS_Determinism_Score,GraphRAG (v1),16,16,0
+376,llama3.2:1b,DS_Determinism_Score,No Store (v1),16,16,0
+377,llama3.2:1b,DS_Determinism_Score,No Store (v2),16,16,0
+378,llama3.2:1b,DS_Determinism_Score,With Store (v15),16,16,0
+379,llama3.2:1b,DS_Determinism_Score,With Store (v16),16,16,0
+380,llama3.2:1b,EFR_Extraction_Failure_Rate,GraphRAG (v1),16,16,0
+381,llama3.2:1b,EFR_Extraction_Failure_Rate,No Store (v1),16,16,0
+382,llama3.2:1b,EFR_Extraction_Failure_Rate,No Store (v2),16,16,0
+383,llama3.2:1b,EFR_Extraction_Failure_Rate,With Store (v15),16,16,0
+384,llama3.2:1b,EFR_Extraction_Failure_Rate,With Store (v16),16,16,0
+385,llama3.2:1b,EMD_bracketed_exact,GraphRAG (v1),16,16,0
+386,llama3.2:1b,EMD_bracketed_exact,No Store (v1),16,16,0
+387,llama3.2:1b,EMD_bracketed_exact,No Store (v2),16,16,0
+388,llama3.2:1b,EMD_bracketed_exact,With Store (v15),16,16,0
+389,llama3.2:1b,EMD_bracketed_exact,With Store (v16),10,16,6
+390,llama3.2:1b,PTC_Variance_PerTurn_Consistency,GraphRAG (v1),16,16,0
+391,llama3.2:1b,PTC_Variance_PerTurn_Consistency,No Store (v1),16,16,0
+392,llama3.2:1b,PTC_Variance_PerTurn_Consistency,No Store (v2),16,16,0
+393,llama3.2:1b,PTC_Variance_PerTurn_Consistency,With Store (v15),16,16,0
+394,llama3.2:1b,PTC_Variance_PerTurn_Consistency,With Store (v16),16,16,0
+395,llama3.2:1b,StdDev_Raw_Score,GraphRAG (v1),16,16,0
+396,llama3.2:1b,StdDev_Raw_Score,No Store (v1),16,16,0
+397,llama3.2:1b,StdDev_Raw_Score,No Store (v2),16,16,0
+398,llama3.2:1b,StdDev_Raw_Score,With Store (v15),16,16,0
+399,llama3.2:1b,StdDev_Raw_Score,With Store (v16),16,16,0
+400,llama3.2:1b,Summary_Metric_Brier_Score,GraphRAG (v1),16,16,0
+401,llama3.2:1b,Summary_Metric_Brier_Score,No Store (v1),12,16,4
+402,llama3.2:1b,Summary_Metric_Brier_Score,No Store (v2),16,16,0
+403,llama3.2:1b,Summary_Metric_Brier_Score,With Store (v15),16,16,0
+404,llama3.2:1b,Summary_Metric_Brier_Score,With Store (v16),16,16,0
+405,llama3.2:1b,Summary_Metric_ECE,GraphRAG (v1),16,16,0
+406,llama3.2:1b,Summary_Metric_ECE,No Store (v1),12,16,4
+407,llama3.2:1b,Summary_Metric_ECE,No Store (v2),16,16,0
+408,llama3.2:1b,Summary_Metric_ECE,With Store (v15),16,16,0
+409,llama3.2:1b,Summary_Metric_ECE,With Store (v16),16,16,0
+410,llama3.2:1b,Summary_Metric_Log_Loss,GraphRAG (v1),16,16,0
+411,llama3.2:1b,Summary_Metric_Log_Loss,No Store (v1),12,16,4
+412,llama3.2:1b,Summary_Metric_Log_Loss,No Store (v2),16,16,0
+413,llama3.2:1b,Summary_Metric_Log_Loss,With Store (v15),16,16,0
+414,llama3.2:1b,Summary_Metric_Log_Loss,With Store (v16),16,16,0
+415,llama3.2:1b,Summary_Metric_MacroCE,GraphRAG (v1),16,16,0
+416,llama3.2:1b,Summary_Metric_MacroCE,No Store (v1),12,16,4
+417,llama3.2:1b,Summary_Metric_MacroCE,No Store (v2),16,16,0
+418,llama3.2:1b,Summary_Metric_MacroCE,With Store (v15),16,16,0
+419,llama3.2:1b,Summary_Metric_MacroCE,With Store (v16),16,16,0
+420,llama3.2:1b,TPCA_Words_Correct,GraphRAG (v1),15,16,1
+421,llama3.2:1b,TPCA_Words_Correct,No Store (v1),9,16,7
+422,llama3.2:1b,TPCA_Words_Correct,No Store (v2),14,16,2
+423,llama3.2:1b,TPCA_Words_Correct,With Store (v15),16,16,0
+424,llama3.2:1b,TPCA_Words_Correct,With Store (v16),13,16,3
+425,llama3.2:1b,TPCA_Words_Wrong,GraphRAG (v1),16,16,0
+426,llama3.2:1b,TPCA_Words_Wrong,No Store (v1),16,16,0
+427,llama3.2:1b,TPCA_Words_Wrong,No Store (v2),16,16,0
+428,llama3.2:1b,TPCA_Words_Wrong,With Store (v15),16,16,0
+429,llama3.2:1b,TPCA_Words_Wrong,With Store (v16),16,16,0
+430,llama3.2:1b,Variance_Raw_Score,GraphRAG (v1),16,16,0
+431,llama3.2:1b,Variance_Raw_Score,No Store (v1),16,16,0
+432,llama3.2:1b,Variance_Raw_Score,No Store (v2),16,16,0
+433,llama3.2:1b,Variance_Raw_Score,With Store (v15),16,16,0
+434,llama3.2:1b,Variance_Raw_Score,With Store (v16),16,16,0
+435,llama3.2:1b,WCT_WallClock_PerTurn_Seconds,GraphRAG (v1),0,16,16
+436,llama3.2:1b,WCT_WallClock_PerTurn_Seconds,No Store (v1),0,16,16
+437,llama3.2:1b,WCT_WallClock_PerTurn_Seconds,No Store (v2),0,16,16
+438,llama3.2:1b,WCT_WallClock_PerTurn_Seconds,With Store (v15),16,16,0
+439,llama3.2:1b,WCT_WallClock_PerTurn_Seconds,With Store (v16),16,16,0
+440,ministral-3:3b,AFR_Answer_Flip_Rate,GraphRAG (v1),16,16,0
+441,ministral-3:3b,AFR_Answer_Flip_Rate,No Store (v1),16,16,0
+442,ministral-3:3b,AFR_Answer_Flip_Rate,No Store (v2),16,16,0
+443,ministral-3:3b,AFR_Answer_Flip_Rate,With Store (v15),16,16,0
+444,ministral-3:3b,AFR_Answer_Flip_Rate,With Store (v16),16,16,0
+445,ministral-3:3b,Average_Accuracy,GraphRAG (v1),16,16,0
+446,ministral-3:3b,Average_Accuracy,No Store (v1),16,16,0
+447,ministral-3:3b,Average_Accuracy,No Store (v2),16,16,0
+448,ministral-3:3b,Average_Accuracy,With Store (v15),16,16,0
+449,ministral-3:3b,Average_Accuracy,With Store (v16),16,16,0
+450,ministral-3:3b,Average_BCR_BeliefCoverage,GraphRAG (v1),0,16,16
+451,ministral-3:3b,Average_BCR_BeliefCoverage,No Store (v1),0,16,16
+452,ministral-3:3b,Average_BCR_BeliefCoverage,No Store (v2),0,16,16
+453,ministral-3:3b,Average_BCR_BeliefCoverage,With Store (v15),16,16,0
+454,ministral-3:3b,Average_BCR_BeliefCoverage,With Store (v16),16,16,0
+455,ministral-3:3b,Average_Evidence_Canonical_Keys,GraphRAG (v1),0,16,16
+456,ministral-3:3b,Average_Evidence_Canonical_Keys,No Store (v1),0,16,16
+457,ministral-3:3b,Average_Evidence_Canonical_Keys,No Store (v2),0,16,16
+458,ministral-3:3b,Average_Evidence_Canonical_Keys,With Store (v15),16,16,0
+459,ministral-3:3b,Average_Evidence_Canonical_Keys,With Store (v16),16,16,0
+460,ministral-3:3b,Average_Evidence_Cited_Keys,GraphRAG (v1),0,16,16
+461,ministral-3:3b,Average_Evidence_Cited_Keys,No Store (v1),0,16,16
+462,ministral-3:3b,Average_Evidence_Cited_Keys,No Store (v2),0,16,16
+463,ministral-3:3b,Average_Evidence_Cited_Keys,With Store (v15),16,16,0
+464,ministral-3:3b,Average_Evidence_Cited_Keys,With Store (v16),16,16,0
+465,ministral-3:3b,Average_Evidence_F1,GraphRAG (v1),0,16,16
+466,ministral-3:3b,Average_Evidence_F1,No Store (v1),0,16,16
+467,ministral-3:3b,Average_Evidence_F1,No Store (v2),0,16,16
+468,ministral-3:3b,Average_Evidence_F1,With Store (v15),16,16,0
+469,ministral-3:3b,Average_Evidence_F1,With Store (v16),16,16,0
+470,ministral-3:3b,Average_Evidence_Precision,GraphRAG (v1),0,16,16
+471,ministral-3:3b,Average_Evidence_Precision,No Store (v1),0,16,16
+472,ministral-3:3b,Average_Evidence_Precision,No Store (v2),0,16,16
+473,ministral-3:3b,Average_Evidence_Precision,With Store (v15),16,16,0
+474,ministral-3:3b,Average_Evidence_Precision,With Store (v16),16,16,0
+475,ministral-3:3b,Average_Evidence_Recall,GraphRAG (v1),0,16,16
+476,ministral-3:3b,Average_Evidence_Recall,No Store (v1),0,16,16
+477,ministral-3:3b,Average_Evidence_Recall,No Store (v2),0,16,16
+478,ministral-3:3b,Average_Evidence_Recall,With Store (v15),16,16,0
+479,ministral-3:3b,Average_Evidence_Recall,With Store (v16),16,16,0
+480,ministral-3:3b,Average_SBIR_SpuriousInjection,GraphRAG (v1),0,16,16
+481,ministral-3:3b,Average_SBIR_SpuriousInjection,No Store (v1),0,16,16
+482,ministral-3:3b,Average_SBIR_SpuriousInjection,No Store (v2),0,16,16
+483,ministral-3:3b,Average_SBIR_SpuriousInjection,With Store (v15),16,16,0
+484,ministral-3:3b,Average_SBIR_SpuriousInjection,With Store (v16),16,16,0
+485,ministral-3:3b,DS_Determinism_Score,GraphRAG (v1),16,16,0
+486,ministral-3:3b,DS_Determinism_Score,No Store (v1),16,16,0
+487,ministral-3:3b,DS_Determinism_Score,No Store (v2),16,16,0
+488,ministral-3:3b,DS_Determinism_Score,With Store (v15),16,16,0
+489,ministral-3:3b,DS_Determinism_Score,With Store (v16),16,16,0
+490,ministral-3:3b,EFR_Extraction_Failure_Rate,GraphRAG (v1),16,16,0
+491,ministral-3:3b,EFR_Extraction_Failure_Rate,No Store (v1),16,16,0
+492,ministral-3:3b,EFR_Extraction_Failure_Rate,No Store (v2),16,16,0
+493,ministral-3:3b,EFR_Extraction_Failure_Rate,With Store (v15),16,16,0
+494,ministral-3:3b,EFR_Extraction_Failure_Rate,With Store (v16),16,16,0
+495,ministral-3:3b,EMD_bracketed_exact,GraphRAG (v1),16,16,0
+496,ministral-3:3b,EMD_bracketed_exact,No Store (v1),16,16,0
+497,ministral-3:3b,EMD_bracketed_exact,No Store (v2),16,16,0
+498,ministral-3:3b,EMD_bracketed_exact,With Store (v15),16,16,0
+499,ministral-3:3b,EMD_bracketed_exact,With Store (v16),16,16,0
+500,ministral-3:3b,PTC_Variance_PerTurn_Consistency,GraphRAG (v1),16,16,0
+501,ministral-3:3b,PTC_Variance_PerTurn_Consistency,No Store (v1),16,16,0
+502,ministral-3:3b,PTC_Variance_PerTurn_Consistency,No Store (v2),16,16,0
+503,ministral-3:3b,PTC_Variance_PerTurn_Consistency,With Store (v15),16,16,0
+504,ministral-3:3b,PTC_Variance_PerTurn_Consistency,With Store (v16),16,16,0
+505,ministral-3:3b,StdDev_Raw_Score,GraphRAG (v1),16,16,0
+506,ministral-3:3b,StdDev_Raw_Score,No Store (v1),16,16,0
+507,ministral-3:3b,StdDev_Raw_Score,No Store (v2),16,16,0
+508,ministral-3:3b,StdDev_Raw_Score,With Store (v15),16,16,0
+509,ministral-3:3b,StdDev_Raw_Score,With Store (v16),16,16,0
+510,ministral-3:3b,Summary_Metric_Brier_Score,GraphRAG (v1),16,16,0
+511,ministral-3:3b,Summary_Metric_Brier_Score,No Store (v1),16,16,0
+512,ministral-3:3b,Summary_Metric_Brier_Score,No Store (v2),16,16,0
+513,ministral-3:3b,Summary_Metric_Brier_Score,With Store (v15),16,16,0
+514,ministral-3:3b,Summary_Metric_Brier_Score,With Store (v16),16,16,0
+515,ministral-3:3b,Summary_Metric_ECE,GraphRAG (v1),16,16,0
+516,ministral-3:3b,Summary_Metric_ECE,No Store (v1),16,16,0
+517,ministral-3:3b,Summary_Metric_ECE,No Store (v2),16,16,0
+518,ministral-3:3b,Summary_Metric_ECE,With Store (v15),16,16,0
+519,ministral-3:3b,Summary_Metric_ECE,With Store (v16),16,16,0
+520,ministral-3:3b,Summary_Metric_Log_Loss,GraphRAG (v1),16,16,0
+521,ministral-3:3b,Summary_Metric_Log_Loss,No Store (v1),16,16,0
+522,ministral-3:3b,Summary_Metric_Log_Loss,No Store (v2),16,16,0
+523,ministral-3:3b,Summary_Metric_Log_Loss,With Store (v15),16,16,0
+524,ministral-3:3b,Summary_Metric_Log_Loss,With Store (v16),16,16,0
+525,ministral-3:3b,Summary_Metric_MacroCE,GraphRAG (v1),16,16,0
+526,ministral-3:3b,Summary_Metric_MacroCE,No Store (v1),16,16,0
+527,ministral-3:3b,Summary_Metric_MacroCE,No Store (v2),16,16,0
+528,ministral-3:3b,Summary_Metric_MacroCE,With Store (v15),16,16,0
+529,ministral-3:3b,Summary_Metric_MacroCE,With Store (v16),16,16,0
+530,ministral-3:3b,TPCA_Words_Correct,GraphRAG (v1),16,16,0
+531,ministral-3:3b,TPCA_Words_Correct,No Store (v1),16,16,0
+532,ministral-3:3b,TPCA_Words_Correct,No Store (v2),16,16,0
+533,ministral-3:3b,TPCA_Words_Correct,With Store (v15),16,16,0
+534,ministral-3:3b,TPCA_Words_Correct,With Store (v16),16,16,0
+535,ministral-3:3b,TPCA_Words_Wrong,GraphRAG (v1),15,16,1
+536,ministral-3:3b,TPCA_Words_Wrong,No Store (v1),15,16,1
+537,ministral-3:3b,TPCA_Words_Wrong,No Store (v2),16,16,0
+538,ministral-3:3b,TPCA_Words_Wrong,With Store (v15),11,16,5
+539,ministral-3:3b,TPCA_Words_Wrong,With Store (v16),10,16,6
+540,ministral-3:3b,Variance_Raw_Score,GraphRAG (v1),16,16,0
+541,ministral-3:3b,Variance_Raw_Score,No Store (v1),16,16,0
+542,ministral-3:3b,Variance_Raw_Score,No Store (v2),16,16,0
+543,ministral-3:3b,Variance_Raw_Score,With Store (v15),16,16,0
+544,ministral-3:3b,Variance_Raw_Score,With Store (v16),16,16,0
+545,ministral-3:3b,WCT_WallClock_PerTurn_Seconds,GraphRAG (v1),0,16,16
+546,ministral-3:3b,WCT_WallClock_PerTurn_Seconds,No Store (v1),0,16,16
+547,ministral-3:3b,WCT_WallClock_PerTurn_Seconds,No Store (v2),0,16,16
+548,ministral-3:3b,WCT_WallClock_PerTurn_Seconds,With Store (v15),16,16,0
+549,ministral-3:3b,WCT_WallClock_PerTurn_Seconds,With Store (v16),16,16,0

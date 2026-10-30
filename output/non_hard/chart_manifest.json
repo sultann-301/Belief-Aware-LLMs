@@ -1,0 +1,1791 @@
+[
+  {
+    "chart": "charts/accuracy_across_separate_prompt_cohorts.png",
+    "files": [
+      {
+        "path": "charts/accuracy_across_separate_prompt_cohorts.png",
+        "sha256": "ad21dbc6a1707e0d6bf50831b95eac4234febad10ba95587f28bd20a909224c2"
+      },
+      {
+        "path": "charts/accuracy_across_separate_prompt_cohorts.svg",
+        "sha256": "636b00e4a9b45903b1001286b3e862ead26283b36019387cdf9f35edb472fc58"
+      },
+      {
+        "path": "charts/accuracy_across_separate_prompt_cohorts.csv",
+        "sha256": "9fd6f49c53e463e052b5109e27b9e87d13ff5708fe8a07ad40284e3a9d5bdec8"
+      }
+    ]
+  },
+  {
+    "chart": "charts/accuracy_delta_heatmaps.png",
+    "files": [
+      {
+        "path": "charts/accuracy_delta_heatmaps.png",
+        "sha256": "aee1621856796f8042809d2ab16ff86de0f75acacf7c84b1a3fe96608db2e253"
+      },
+      {
+        "path": "charts/accuracy_delta_heatmaps.svg",
+        "sha256": "dbae59730dc386ab09dfdcc1c5b53af49c358d2271c4a67122e7b0d45219a650"
+      },
+      {
+        "path": "charts/accuracy_delta_with_store.csv",
+        "sha256": "cf8cfce562f6ee140c38b5bc9e9f30116c32995bc189851e81759555bf8fbf07"
+      },
+      {
+        "path": "charts/accuracy_delta_no_store.csv",
+        "sha256": "52c6e087c6a5c66b705b8616a7c35137b2fac93efbeddc259eb0007945f8358b"
+      }
+    ]
+  },
+  {
+    "chart": "charts/aggregated_accuracy_across_prompt_variants.png",
+    "files": [
+      {
+        "path": "charts/aggregated_accuracy_across_prompt_variants.png",
+        "sha256": "295e58d1df09cb8f5091ba9930c0f64c3dbaa51c69fd3b586b40f08985146601"
+      },
+      {
+        "path": "charts/aggregated_accuracy_across_prompt_variants.svg",
+        "sha256": "347b5e3087ce5ffa409e040b3ca30d51adf0a89d277d02c58c7241b390022cba"
+      },
+      {
+        "path": "charts/aggregated_accuracy_across_prompt_variants.csv",
+        "sha256": "1e956f41552f1fccee802b2e2f21118d5098205e6dc1c370ebd1c1664500f0f4"
+      }
+    ]
+  },
+  {
+    "chart": "charts/aggregated_accuracy_by_family_matched_cells.png",
+    "files": [
+      {
+        "path": "charts/aggregated_accuracy_by_family_matched_cells.png",
+        "sha256": "8e5c5ecf12f884cd556d0fff6dde5de6d535d6caa625de4da4b7af3349cc5104"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_family_matched_cells.svg",
+        "sha256": "0f1ec8a20e17d6943e2e13e0d5ce9ed198dc2771b61db75dc0b5c8cd93fda3b4"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_family_matched_cells.csv",
+        "sha256": "bba766207c955c73e8f5534921fc76094a05db97bd8cb8753d97c77bb061c82a"
+      }
+    ]
+  },
+  {
+    "chart": "charts/aggregated_accuracy_by_model.png",
+    "files": [
+      {
+        "path": "charts/aggregated_accuracy_by_model.png",
+        "sha256": "563572a909bc25f4ba215ca19e6030e8237556e290647d335a9fbf179d7898d5"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_model.svg",
+        "sha256": "c49ef3bb0ded8984c2cb3569d54dc353c569fb0e1cc799649a16006e7c4fb6fd"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_model.csv",
+        "sha256": "d903701cf42ae46c991f74a53a1a1d03f7eb62e26479b08455fab0e805c94007"
+      }
+    ]
+  },
+  {
+    "chart": "charts/aggregated_accuracy_by_scenario_matched_cells.png",
+    "files": [
+      {
+        "path": "charts/aggregated_accuracy_by_scenario_matched_cells.png",
+        "sha256": "6681c443661dc40e532c0ffa5245d3526c2466b351f900238eb2b4141d947030"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_scenario_matched_cells.svg",
+        "sha256": "304bd231a4ca21c1c6b365a872959919d5c126cdbfd85c54a11fee925818270c"
+      },
+      {
+        "path": "charts/aggregated_accuracy_by_scenario_matched_cells.csv",
+        "sha256": "b6677eaaf83fb661b9ec9784957380b214c9bb1eedd4e45f7c44835994faa7d3"
+      }
+    ]
+  },
+  {
+    "chart": "charts/answer_flip_rate.png",
+    "files": [
+      {
+        "path": "charts/answer_flip_rate.png",
+        "sha256": "47e6ab4f92a024481fb7f72ad2e6883864a6b1a878df1be5878e96e9e2773633"
+      },
+      {
+        "path": "charts/answer_flip_rate.svg",
+        "sha256": "421d6f9ca1cc81bab5ec114f8de39b150f198861961d6a1635e3ecfa632dd77b"
+      },
+      {
+        "path": "charts/answer_flip_rate.csv",
+        "sha256": "a4664b4147ac4343ec325cb56ce74a42368def8f31c420dd3bd9b7d1870b6087"
+      }
+    ]
+  },
+  {
+    "chart": "charts/brier_by_model_n_76_cells.png",
+    "files": [
+      {
+        "path": "charts/brier_by_model_n_76_cells.png",
+        "sha256": "6c60c341226df0d908460a9f12d4331d85d645123d55f3f431cf1f67862bb3d7"
+      },
+      {
+        "path": "charts/brier_by_model_n_76_cells.svg",
+        "sha256": "acb7e37c4f401a76f245bd0acf0d99780c6ec2e6071cd6a4fc4364c56dbf2ecf"
+      },
+      {
+        "path": "charts/brier_by_model_n_76_cells.csv",
+        "sha256": "eb668b161cd9660f2036619a5513c7b56f6e63fd1ea4b1f73ce802001d07d2c5"
+      }
+    ]
+  },
+  {
+    "chart": "charts/determinism.png",
+    "files": [
+      {
+        "path": "charts/determinism.png",
+        "sha256": "42f901de729b5f65bb7729f3dd1bc7fe2a2c269e331d989aba76d70d560d6380"
+      },
+      {
+        "path": "charts/determinism.svg",
+        "sha256": "292fd4747486f7236dde739392bc941d13cea853c05e98411bbda4ff8efaf07e"
+      },
+      {
+        "path": "charts/determinism.csv",
+        "sha256": "f7caa94ae9a49a5e2b713a60688a2bafcb3dd6416cd825b1854e57e2c30eb8c2"
+      }
+    ]
+  },
+  {
+    "chart": "charts/ece_by_model_n_76_cells.png",
+    "files": [
+      {
+        "path": "charts/ece_by_model_n_76_cells.png",
+        "sha256": "8f99850b99568b35949fa6b9d7b7a143a3d2938f1bfdc92fcf09d5beae5f2945"
+      },
+      {
+        "path": "charts/ece_by_model_n_76_cells.svg",
+        "sha256": "3bc05edc5716c88099ffc75f4f37546216c9e0a33e95095310d56ab2fedd42cc"
+      },
+      {
+        "path": "charts/ece_by_model_n_76_cells.csv",
+        "sha256": "1854706ca26942c8fc7a31080beaa02c414d7f337f1b3b9a93ddce043c909fd3"
+      }
+    ]
+  },
+  {
+    "chart": "charts/extraction_failure.png",
+    "files": [
+      {
+        "path": "charts/extraction_failure.png",
+        "sha256": "c23b4355bfbe3f6b173e5d68a50452f9a3b5cecbf723c8c611eecbb1e96701b7"
+      },
+      {
+        "path": "charts/extraction_failure.svg",
+        "sha256": "9c69d899ef0570fa9301f309e4872ae380b3d14ec121e537fc9dbb45030dd889"
+      },
+      {
+        "path": "charts/extraction_failure.csv",
+        "sha256": "6b9133ab569570efbe7c93a8b64bb66c83bb05cec8a61379d3f04e170972ecc7"
+      }
+    ]
+  },
+  {
+    "chart": "charts/graphrag_accuracy_by_turn.png",
+    "files": [
+      {
+        "path": "charts/graphrag_accuracy_by_turn.png",
+        "sha256": "3da74553d5b7b34bfca122d48a341dbd0fdee06136c22868471db28324fc5255"
+      },
+      {
+        "path": "charts/graphrag_accuracy_by_turn.svg",
+        "sha256": "566a3d161c318667c263c9b5d550335cafc4ed385f4c041151daf873a12a7134"
+      },
+      {
+        "path": "charts/graphrag_accuracy_by_turn.csv",
+        "sha256": "d6a40a14c796e5841a21354618a29288d2b0b4f68a796dcbcf26aea996b64d7f"
+      }
+    ]
+  },
+  {
+    "chart": "charts/graphrag_reliability.png",
+    "files": [
+      {
+        "path": "charts/graphrag_reliability.png",
+        "sha256": "4b0b78862368eef47eebdf70a02d1a0d07d0134d8050ad895e1661d3d8063065"
+      },
+      {
+        "path": "charts/graphrag_reliability.svg",
+        "sha256": "5ec73e80609caa041ad0d6f26b42dee1cfbe3ca5c4eca1184c9b32a6c0142d94"
+      },
+      {
+        "path": "charts/reliability_bins.csv",
+        "sha256": "dd34ffce90822fb0b9905f50e1fb396d12a5daa379f5dc0858a5acba2f47c19c"
+      }
+    ]
+  },
+  {
+    "chart": "charts/log_loss_by_model_n_76_cells.png",
+    "files": [
+      {
+        "path": "charts/log_loss_by_model_n_76_cells.png",
+        "sha256": "7dc366d65461876f17c10d6bc9e87e80645726e7a7d55e5c15b4de63529e5a33"
+      },
+      {
+        "path": "charts/log_loss_by_model_n_76_cells.svg",
+        "sha256": "f6f103d2b770ba60484d082cc13d639d4851a7132f6523c6e9b19d90adeba5a7"
+      },
+      {
+        "path": "charts/log_loss_by_model_n_76_cells.csv",
+        "sha256": "be9397344c9df8798b714ca92826123ad0fe1bf8f1f492467faadf35a68ce3b0"
+      }
+    ]
+  },
+  {
+    "chart": "charts/macroce_by_model_n_76_cells.png",
+    "files": [
+      {
+        "path": "charts/macroce_by_model_n_76_cells.png",
+        "sha256": "7dfbba0375ae391877444ad8a9a5147618085187073acae0c0c298144bcc2057"
+      },
+      {
+        "path": "charts/macroce_by_model_n_76_cells.svg",
+        "sha256": "930c8fb24e91ce83b54560455de0da7205f421f58a72b5724efb24d31e7ac0f9"
+      },
+      {
+        "path": "charts/macroce_by_model_n_76_cells.csv",
+        "sha256": "6a31d7a15ae7064a48dc98b92d42be94b09c637302f6ebb4cfd3d9d184dd517c"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/answer_flip_rate_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/answer_flip_rate_by_pair_available_support.png",
+        "sha256": "3604512d11c6e1305ac5faf3540821c6ae895688ff7bf453b1196ec90c068216"
+      },
+      {
+        "path": "dual_agent_analysis/answer_flip_rate_by_pair_available_support.svg",
+        "sha256": "5635780409dff3c16729b72b79c0e49aefd2815d4b083350dc1714a9250cab60"
+      },
+      {
+        "path": "dual_agent_analysis/answer_flip_rate_by_pair_available_support.csv",
+        "sha256": "ee88ef7634d3c25f88987eb5bd16cc6c5834786f3c42c876cdbefc8e92b51535"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/binding_accuracy_by_domain.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_domain.png",
+        "sha256": "53fd57e61fa3fd3676966645e43985fee5c4770875242d0d0fb3a281f60c5884"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_domain.svg",
+        "sha256": "5341cc3b9b24c44c97aac2241588d528c938e5d452856d9234bda8b4c2e23399"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_domain.csv",
+        "sha256": "db6137403435f00779f5833358162cfd8e984d06a9bc8b0fe48982b5d3217ad7"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/binding_accuracy_by_pair.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_pair.png",
+        "sha256": "ab5f23353c4b0fc638829e3cb5744938b99c2490089212696d823e4b74ceb765"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_pair.svg",
+        "sha256": "bcccdbb83ecc1380a1be07ddde28513ba04450c5daa7b61588929f1acf064d14"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_pair.csv",
+        "sha256": "c18a67de2d11b8d9beff471f1236e96a70619eb132437deb817f789ce450cd3b"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/binding_accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_scenario.png",
+        "sha256": "faa6b2e20431bb217c2daaa7383bedb181e578ceced4d6b1a639dccbfd855bb0"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_scenario.svg",
+        "sha256": "78bd4a558fc8da7fc10d5ce6e99c311a88b5f8588faebccca539bed47d421080"
+      },
+      {
+        "path": "dual_agent_analysis/binding_accuracy_by_scenario.csv",
+        "sha256": "e42fd1343c67c961e42332541a693400c0c0d94ce6a7aa1b6dc9be9b5b97d940"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/brier_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/brier_by_pair_available_support.png",
+        "sha256": "496a39d30dc2a391dcfe17102f36f3127c086f7a7bf9a84066e7e1d016128904"
+      },
+      {
+        "path": "dual_agent_analysis/brier_by_pair_available_support.svg",
+        "sha256": "b16aad958980abe8c01cc074bbe78f08dfd031c4030c3f444ad0a03ec43e7775"
+      },
+      {
+        "path": "dual_agent_analysis/brier_by_pair_available_support.csv",
+        "sha256": "462db68c1eed9a32554aea16dd8e428e262e315c9debac0c7bd0befde6ef3bdc"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/calibration_single_vs_dual.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual.png",
+        "sha256": "8216e850ed5301578eb7b23f61749b0e91a147040ab441d9b7359b554e485beb"
+      },
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual.svg",
+        "sha256": "eca64fc24ad137f324c4d926215b86dc31e15579c6bd4c0844325e801958b620"
+      },
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual.csv",
+        "sha256": "3edc35f122787203ed7484dd1265d6b5ee0e9dfd2d8213036a14733fa4022909"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/calibration_single_vs_dual_hard_excluded.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual_hard_excluded.png",
+        "sha256": "2776fc8229566826ff2de5dd09096c80cefcc87b48fc3a51b52d157b057f8405"
+      },
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual_hard_excluded.svg",
+        "sha256": "e22f0153d1a5b5dc6115ab2bf82f8c3eddcb603bb82d41df23f0f567da46e6fc"
+      },
+      {
+        "path": "dual_agent_analysis/calibration_single_vs_dual_hard_excluded.csv",
+        "sha256": "87a771b4f16a49590bded24a2a07726084d4f33d1e7208db5dc0b6e5294052ff"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/ece_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/ece_by_pair_available_support.png",
+        "sha256": "510086564f43bb0c99ce9e181ade7db93393ece28d05d876fb676dc7fe4868f2"
+      },
+      {
+        "path": "dual_agent_analysis/ece_by_pair_available_support.svg",
+        "sha256": "ce193f57a0a78736194b9ae194e49a15a706ebe78c54f6d99aaa03235d006b02"
+      },
+      {
+        "path": "dual_agent_analysis/ece_by_pair_available_support.csv",
+        "sha256": "0a24bc294e4a1bc6623cc175ed4f610f5ab43f1232a5b9b94ef6e3cc0b112dff"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/end_to_end_accuracy_by_domain.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_domain.png",
+        "sha256": "6d96ee93a19cc6f1406e0b85ecfc61720ff66cb2c93c0b85cc47c815f906d799"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_domain.svg",
+        "sha256": "c2e17b3381e4355fc98d3f022a20e854d384ec8e0bceb8d04c8d9372b7916762"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_domain.csv",
+        "sha256": "7ec428c589e2ee497e57135e20afcf6d0a8e622ffa8b6bcc17045ac4083de605"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/end_to_end_accuracy_by_pair.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_pair.png",
+        "sha256": "789abe4ba7a89d7686e0b6f240736320852fff936b34bca55174661638b00de9"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_pair.svg",
+        "sha256": "095fd369440dbd8758a98b58849b31be957999a0271002bd2cbab7e272af3b03"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_pair.csv",
+        "sha256": "30c15dfc07586f2c153c67dee13d7f7fbed637551ea0af003c52ad18872434f0"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/end_to_end_accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_scenario.png",
+        "sha256": "71779744abbeb45f551f503452af8e4371f789465efd8f769a2723170a5c23e1"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_scenario.svg",
+        "sha256": "fed756521a828b15bf0d53c1bfb5762984c2455bbbd9e3b61ab2122a2e1a9031"
+      },
+      {
+        "path": "dual_agent_analysis/end_to_end_accuracy_by_scenario.csv",
+        "sha256": "43f89cee3d8c58b52c9a340fe3123d34910bfaaee054128c3fc9bc0e8a2198db"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/evidence_f1_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/evidence_f1_by_pair_available_support.png",
+        "sha256": "3d71e9861989debab34779141da3263d806bfef02a7d69e8441f591beeca4c89"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_by_pair_available_support.svg",
+        "sha256": "f29ea4243d6f556a45f9ce6bbec54669e204caed2e9b4b6ef0e0f6e84c30727a"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_by_pair_available_support.csv",
+        "sha256": "b37a88c99281e579e1bc2253256aa8f1478097bf64d21c10f7edce2b5d0ccb6a"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/evidence_f1_single_vs_dual.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual.png",
+        "sha256": "f1e85546e683e284bea37b91471fa23bcb9bd4a2a389107c4048613c1a87a3a6"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual.svg",
+        "sha256": "8f9cd6feb0cec9e4b1f94c2bc2fb0c516ea8bee75a05b570af035ed1afa3a073"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual.csv",
+        "sha256": "1ae329063b7d12dcb6fa9b1a5e224c6eb9d661e6880a5794ab6430c1eb8b3a7d"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.png",
+        "sha256": "2163eb804feb07b6f8511cfdfc44facd70c8dc178a003ed06222b6140608fe7f"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.svg",
+        "sha256": "92046fb91091d14f6bcbfa773d29716fa980bb1210e9004111254d42a5a590b2"
+      },
+      {
+        "path": "dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.csv",
+        "sha256": "691aa723b820f6af035565d083699034d7617bd236e2678c7a92527f297fbb50"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/extraction_failure_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/extraction_failure_by_pair_available_support.png",
+        "sha256": "d0528b84a8bfd3c60b6fdbd899f639665d7179d3d60354ece843f96312a0b5b0"
+      },
+      {
+        "path": "dual_agent_analysis/extraction_failure_by_pair_available_support.svg",
+        "sha256": "3e2d82659c48aedca83e23f490a77c64966fb48b683850caa6a543a15930cd37"
+      },
+      {
+        "path": "dual_agent_analysis/extraction_failure_by_pair_available_support.csv",
+        "sha256": "dc565fdc68fab5e49f69560a6693eceff24e163d7260f1368d1044f44d5a492a"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/historical_single_vs_dual_accuracy.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/historical_single_vs_dual_accuracy.png",
+        "sha256": "a93498bb735fb8238290fafddeba6dc73321916003b3070a9d449f069d72dd52"
+      },
+      {
+        "path": "dual_agent_analysis/historical_single_vs_dual_accuracy.svg",
+        "sha256": "58d8c770218c163d00fca897cb97b1514fbdbe1bde6ea01493d340d1250d5939"
+      },
+      {
+        "path": "dual_agent_analysis/historical_single_vs_dual_accuracy.csv",
+        "sha256": "1fbfdf28a6b769b92204624184674cf0f609d2fd1f04e7304040e0212e915520"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/macroce_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/macroce_by_pair_available_support.png",
+        "sha256": "dba89bd6d7367eb589fad13fe76d111ef8592f089e55555ba489a37eedd81f9a"
+      },
+      {
+        "path": "dual_agent_analysis/macroce_by_pair_available_support.svg",
+        "sha256": "f8d96ba3eeac7c348f6e36d82ecbe91417ca37ed178be1d2e1e2e9f17a783430"
+      },
+      {
+        "path": "dual_agent_analysis/macroce_by_pair_available_support.csv",
+        "sha256": "ec33c0049802e14228b3fbf6eb24bd9222b91806867952b9e06efb8ca8b0fd5e"
+      }
+    ]
+  },
+  {
+    "chart": "dual_agent_analysis/non_hard_single_vs_dual_accuracy.png",
+    "files": [
+      {
+        "path": "dual_agent_analysis/non_hard_single_vs_dual_accuracy.png",
+        "sha256": "fbaf612ffbb5f71c176eb1e060d6822ff908ad28a0d6047f55d9341f905b5dca"
+      },
+      {
+        "path": "dual_agent_analysis/non_hard_single_vs_dual_accuracy.svg",
+        "sha256": "72397d76cd92e527bf42ac13cce1f5f82946808c5897683d1f577065931a38f9"
+      },
+      {
+        "path": "dual_agent_analysis/non_hard_single_vs_dual_accuracy.csv",
+        "sha256": "904f7b002d9228239551869d6553e1a107eaff94377406d85ec4401999d3baa5"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/accuracy_by_explicit_prompt_version.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/accuracy_by_explicit_prompt_version.png",
+        "sha256": "f06088cad9182e4ab00cf95d40042a1bb3ca63b1535d60afbdaae5b9f32bbd7d"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_explicit_prompt_version.svg",
+        "sha256": "01a45de020882b36254bb13bc8604891ef70fb2c5ddc30734a430ed1d4bd2124"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_explicit_prompt_version.csv",
+        "sha256": "a6a4e8ab4122b420f36aab73d78e9ccfe19ae0b12059167fe18b06a2aaed0205"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/accuracy_by_family.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/accuracy_by_family.png",
+        "sha256": "51bbf32c6fb2631e41a2d257c85cff0daecc57ca0baec1275fe339af4fc7b86d"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_family.svg",
+        "sha256": "8eca5587647117e8e23502ef32cad621b4ab468715642e4dc3a72e70c0bdad15"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_family.csv",
+        "sha256": "81a99ae881302d7efb2ec75f98aac4c383fae931bd882510329bb6432dc0b820"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/accuracy_by_model.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/accuracy_by_model.png",
+        "sha256": "9c393db050e0ab85d1075d57075a326593bea80a318fa1eaeee2346de9d5feb1"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_model.svg",
+        "sha256": "f3640704251cdb8acbf62b888d96fa8bdb218f50821ebecd6d8a5c19f9180733"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_model.csv",
+        "sha256": "fd5882892d4e3b523705f6d3ef30e342d657cef2024327ad2f5ef7e731b73847"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/accuracy_by_scenario.png",
+        "sha256": "35f734ede808d934e3263cd38e8a777465cef6872fd6ea3a1cab005d487dc19a"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_scenario.svg",
+        "sha256": "ebf67b2cb6fa85be524f3ecc557b14784f209d4e8267b27b95aa28547a0072bb"
+      },
+      {
+        "path": "eval_results_analysis/accuracy_by_scenario.csv",
+        "sha256": "74faedf9e95a9491177933b1d8b73c7a9074fc8bdaa248a2ea624c9fa1b949e2"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/answer_flip_rate_74_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/answer_flip_rate_74_80_shared_cells.png",
+        "sha256": "d4f800356f39e1ebd116b94e573959172a9f82d9f12de62ff00b8347b7de6986"
+      },
+      {
+        "path": "eval_results_analysis/answer_flip_rate_74_80_shared_cells.svg",
+        "sha256": "9f682205afe1dc057b1e00ccbdd41c6bcfa7dfaa36ddd44494824076b5a6e1e1"
+      },
+      {
+        "path": "eval_results_analysis/answer_flip_rate_74_80_shared_cells.csv",
+        "sha256": "0f7e2f3771b06301c7d487d6c8025fcd7e3ba76f5bbd3bc1f2ac46d281dfc06d"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/answer_flip_rate_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/answer_flip_rate_both_versions_pooled_available_summaries.png",
+        "sha256": "518d2f699d2feb55b77c7cf965eaab2c7921245d59f7e338e9dd1de25fa211ea"
+      },
+      {
+        "path": "eval_results_analysis/answer_flip_rate_both_versions_pooled_available_summaries.svg",
+        "sha256": "0019179f5c928617b0cee47922914a2f0d4c9b3c8e1573a94a408d25cfef18a5"
+      },
+      {
+        "path": "eval_results_analysis/answer_flip_rate_both_versions_pooled_available_summaries.csv",
+        "sha256": "ae013123605d5e223b88a2e94a4a964fa76c0eb6fe23ac066ab0bb8e6c225d0f"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/average_bcr_beliefcoverage_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/average_bcr_beliefcoverage_available_cells_see_counts.png",
+        "sha256": "380a3fd08e9df8f5ea66f3eac0e7e3d5bf60b91929d6db97df7bf5ad53b46d12"
+      },
+      {
+        "path": "eval_results_analysis/average_bcr_beliefcoverage_available_cells_see_counts.svg",
+        "sha256": "6e1767a5ae5d3d6989620eb2434334d4a1efb5c7d25609f5183e05d6f45c14f5"
+      },
+      {
+        "path": "eval_results_analysis/average_bcr_beliefcoverage_available_cells_see_counts.csv",
+        "sha256": "8912995b5eabfef426a6417f6fb59632e0696974010db7718f93573e3f00bcd6"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/average_evidence_f1_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/average_evidence_f1_available_cells_see_counts.png",
+        "sha256": "d7586f9ae7ee162d3babc01bbee728274bb88e457767164db0e7494404836f98"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_f1_available_cells_see_counts.svg",
+        "sha256": "f06645e18ec9d41a051ad06a6affcace881c1d9c08209f349ab2bef27701424a"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_f1_available_cells_see_counts.csv",
+        "sha256": "b356852267bcd4d1b7887ee7be3388ee21500dcc124bb129dc649483cd3d7e34"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/average_evidence_precision_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/average_evidence_precision_available_cells_see_counts.png",
+        "sha256": "95c08b160053de3aff50de049365a5d68d8a6d89e0a717062bf1996272a99d19"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_precision_available_cells_see_counts.svg",
+        "sha256": "fb89d75bdc8683da98d38c9a7f069546009001ef7fc918d8f2e79ec790b7a1df"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_precision_available_cells_see_counts.csv",
+        "sha256": "42d7699f21f5427027930ed7dbfb11c766a682f9ac8f82b8f7247c211e89256a"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/average_evidence_recall_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/average_evidence_recall_available_cells_see_counts.png",
+        "sha256": "cc81f48abca4ab44652756511acdfe9678e4f2fb0f62dfcbda1de07e378ef1a0"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_recall_available_cells_see_counts.svg",
+        "sha256": "8794a74a22369ac2272eea4fb8b3ea8e84c802170f3de9eaf2e62af3ae917750"
+      },
+      {
+        "path": "eval_results_analysis/average_evidence_recall_available_cells_see_counts.csv",
+        "sha256": "d7648c2df3bcc078b22e2a17ab2853cb7b1bac4fd8bd17a5ee0a452197d6899b"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/average_sbir_spuriousinjection_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/average_sbir_spuriousinjection_available_cells_see_counts.png",
+        "sha256": "17f6d2e96abfabf3e3983a53de102e7323a8b3810e239a94132d21e81392d665"
+      },
+      {
+        "path": "eval_results_analysis/average_sbir_spuriousinjection_available_cells_see_counts.svg",
+        "sha256": "2dbd6c72384b26f276fa0721de9ff3535fc710ed8c046694e7b4a65d4e1ce899"
+      },
+      {
+        "path": "eval_results_analysis/average_sbir_spuriousinjection_available_cells_see_counts.csv",
+        "sha256": "29c3d02447a6961f24cd378b14f2a348d4772f62bdce9700e5b0e1d0241641ab"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/brier_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/brier_76_80_shared_cells.png",
+        "sha256": "4cb72942b5dafa0ffbec04734976bbb6fbebf1a3896e2eaa40b0e5fe55b84930"
+      },
+      {
+        "path": "eval_results_analysis/brier_76_80_shared_cells.svg",
+        "sha256": "8f8287095fca224278555363ac6cd2cfd06d015833aff2634729f358f5c0da60"
+      },
+      {
+        "path": "eval_results_analysis/brier_76_80_shared_cells.csv",
+        "sha256": "8049a2d7cae7f82bcd4091675e2263a1b9a6de893406ec20c61edd22dc57053d"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/brier_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/brier_both_versions_pooled_available_summaries.png",
+        "sha256": "cd1173ff126481125c1b248f898dd3ec0022e9ab992af6e101d6c84bf90626c7"
+      },
+      {
+        "path": "eval_results_analysis/brier_both_versions_pooled_available_summaries.svg",
+        "sha256": "840cf7dc47821a9d4a1821bde537b884deaa908f0d010f560479cbbc27b4f97b"
+      },
+      {
+        "path": "eval_results_analysis/brier_both_versions_pooled_available_summaries.csv",
+        "sha256": "e89493a233e0ef2f914dad6d719d1090ae2dd5f36c4b1f50bec1391aad1ac40b"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/determinism_80_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/determinism_80_80_shared_cells.png",
+        "sha256": "fb94f6904901abe9fa92cf554a729640ccd53605a23d1c4d20b40625c56acf4a"
+      },
+      {
+        "path": "eval_results_analysis/determinism_80_80_shared_cells.svg",
+        "sha256": "9c68d3bb5c2c586a78b35985b5295e4a4dcd9cf873511d6532724c86343aa3f7"
+      },
+      {
+        "path": "eval_results_analysis/determinism_80_80_shared_cells.csv",
+        "sha256": "fc8a19764766d2e571011ddeb940d72daa8eafe71d5cac1ab04f39cafeeaca17"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/determinism_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/determinism_both_versions_pooled_available_summaries.png",
+        "sha256": "826ec34b843fd6edd0ba51c7f7aaac5716e632d4693bc224d2c95f07516e8fb9"
+      },
+      {
+        "path": "eval_results_analysis/determinism_both_versions_pooled_available_summaries.svg",
+        "sha256": "7a93b90e4de4f02d368c83b799caa7eeedb089762cf118f4d65e8cc14f082a0f"
+      },
+      {
+        "path": "eval_results_analysis/determinism_both_versions_pooled_available_summaries.csv",
+        "sha256": "f575619bc2af2bd2c8fb157007d5bdd6561ae97670a98deef8f4886a7a6be6fa"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/ece_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/ece_76_80_shared_cells.png",
+        "sha256": "cd6422365c7064c6be33f659cd6edf002a47b4f68a1462e883a0aecd3c7e8051"
+      },
+      {
+        "path": "eval_results_analysis/ece_76_80_shared_cells.svg",
+        "sha256": "34bada2aa65d8504a553090343a1f60d1fafdf5001d737935ce1a5d2ca6e35e1"
+      },
+      {
+        "path": "eval_results_analysis/ece_76_80_shared_cells.csv",
+        "sha256": "51f2a94de121f4412bc072b8cda0b9637c9e118cc34b3dd357f4ecd9af526f5b"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/ece_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/ece_both_versions_pooled_available_summaries.png",
+        "sha256": "09e7725cba68c2fa4f9330402a545de811dc678248db5a0461d55741c5dc1508"
+      },
+      {
+        "path": "eval_results_analysis/ece_both_versions_pooled_available_summaries.svg",
+        "sha256": "cd0c670dbb13d2ca5324eef3799069e0f4bc20930b8aef2e0a22e24a664f0ed3"
+      },
+      {
+        "path": "eval_results_analysis/ece_both_versions_pooled_available_summaries.csv",
+        "sha256": "2921f6cda43a94de76328c49232caa63f724fc8fbd32f90b7c7e6e78e3830c95"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/extraction_failure_80_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/extraction_failure_80_80_shared_cells.png",
+        "sha256": "8b09e9862cd2a38115ad192e00b1b4e499e44f2abcb4538b9eb0af3ce1b0502f"
+      },
+      {
+        "path": "eval_results_analysis/extraction_failure_80_80_shared_cells.svg",
+        "sha256": "76b0c05fcea10a5a1c78c9856a5d4e9707b64c3255d3ae9aaf98c572e23053b3"
+      },
+      {
+        "path": "eval_results_analysis/extraction_failure_80_80_shared_cells.csv",
+        "sha256": "d64b84259579c03f1a339a9207ad943da050d88ce3e0359c6bfea9e14ff4e1cf"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/extraction_failure_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/extraction_failure_both_versions_pooled_available_summaries.png",
+        "sha256": "2801c47f2c25630d15ae897fe68d26f94811424d7fb5a9d65f26934cfd295f7e"
+      },
+      {
+        "path": "eval_results_analysis/extraction_failure_both_versions_pooled_available_summaries.svg",
+        "sha256": "212022f0b53ec3e14095b1f3bc5905b328d314289dd30a4daede62b1a64d3d60"
+      },
+      {
+        "path": "eval_results_analysis/extraction_failure_both_versions_pooled_available_summaries.csv",
+        "sha256": "6bf8dc04c308c4a3140910083495bb05a9dc5684e6fe04f3160a8640b2ccf942"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/log_loss_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/log_loss_76_80_shared_cells.png",
+        "sha256": "c1349a5f60185c3a01db97d4b1ed30961c9f9bb1679a1db34aaae47f7322b3d6"
+      },
+      {
+        "path": "eval_results_analysis/log_loss_76_80_shared_cells.svg",
+        "sha256": "0544bbde08f85786c94b4cb4ef39bb0b7ad1a8f5fedc404cb4fec01253cdc6a6"
+      },
+      {
+        "path": "eval_results_analysis/log_loss_76_80_shared_cells.csv",
+        "sha256": "4f8890c15bc10ea9f60bc7effc54293b7b738ddba916b7be36863d2e123cbc5a"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/log_loss_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/log_loss_both_versions_pooled_available_summaries.png",
+        "sha256": "84670a10fa46e69505d2d2c7b76073855120a5c459ca32a7d1466f25772a2fd1"
+      },
+      {
+        "path": "eval_results_analysis/log_loss_both_versions_pooled_available_summaries.svg",
+        "sha256": "153445b849ad0391b1d2c4f586d1df204b4bdc51b66607295233ba079d367999"
+      },
+      {
+        "path": "eval_results_analysis/log_loss_both_versions_pooled_available_summaries.csv",
+        "sha256": "bcc8d841549ab011b771d9165442ba3acfca4b05c3eac4e74e4565943295e9e0"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/macroce_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/macroce_76_80_shared_cells.png",
+        "sha256": "09c67b2cda94b8f865b86a521da9d5a5aa0a30b5a6900db10101fa123c58b9a4"
+      },
+      {
+        "path": "eval_results_analysis/macroce_76_80_shared_cells.svg",
+        "sha256": "230a26af581723260f7d16bcaf2343ad215636008b1e9af6cdc14171dc65295e"
+      },
+      {
+        "path": "eval_results_analysis/macroce_76_80_shared_cells.csv",
+        "sha256": "d934fb50a150246f7a7c39371e9680b9ef42e2844d9bb42a35f8b5afa3dbbede"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/macroce_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/macroce_both_versions_pooled_available_summaries.png",
+        "sha256": "813e9a82e88af4f81d92b06ffa5ec960aef5bf5f338ca64c91713a1837cb9f76"
+      },
+      {
+        "path": "eval_results_analysis/macroce_both_versions_pooled_available_summaries.svg",
+        "sha256": "f027a2c1e3a1a89d39790a0956f7a0256ff7e165e5d577d313db02f7056b3970"
+      },
+      {
+        "path": "eval_results_analysis/macroce_both_versions_pooled_available_summaries.csv",
+        "sha256": "e019d981a095861cd2c4aeac89c805935cc1c4d2394cf1a1707f247954c7a33e"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/overall_accuracy.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/overall_accuracy.png",
+        "sha256": "dda872a14a209e1a93ba41114f7e9bc6d6f35bb7d04ec1a73a022d37e3d6a02a"
+      },
+      {
+        "path": "eval_results_analysis/overall_accuracy.svg",
+        "sha256": "7cdfef5d31a1f550786cd7778c757a89d6b20db9a2bf5d1f9d04f9d0b90f19a0"
+      },
+      {
+        "path": "eval_results_analysis/overall_accuracy.csv",
+        "sha256": "fb896d2d65f6d09d63e258c295a7048d1a1dd2647d42902d1c17765a2c98b1fb"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/tpca_words_correct_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/tpca_words_correct_descriptive_available_cells_see_counts.png",
+        "sha256": "84bb7407c9c0194ff487dab46e547972cc2a389df128ddf8eaa741aed0afcde5"
+      },
+      {
+        "path": "eval_results_analysis/tpca_words_correct_descriptive_available_cells_see_counts.svg",
+        "sha256": "49f75f0e06d116ce90bfa17aca55cc31fe94642ad2678f9eef6d0bfdd8340211"
+      },
+      {
+        "path": "eval_results_analysis/tpca_words_correct_descriptive_available_cells_see_counts.csv",
+        "sha256": "26ab7041c55a1470b46971eeef3f172348203c58313473303db6b34e1aa46376"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.png",
+        "sha256": "77815c761cb4bb4ddbfab5e950d832ab44f876722613b8db2a1122092baaa932"
+      },
+      {
+        "path": "eval_results_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.svg",
+        "sha256": "2ab2e7bc961ceac98a7a130fa7b00ee2c4bfcfefe2b56e7ebd2af50f861d0ddc"
+      },
+      {
+        "path": "eval_results_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.csv",
+        "sha256": "53cd4a86cfd00a09ee11ad48032c6b65bf21f889cd8358913f7bce0fe5fe2ad2"
+      }
+    ]
+  },
+  {
+    "chart": "eval_results_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "eval_results_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.png",
+        "sha256": "aee1a304cafe577e7b80525ef6b2cd359fdde664e3142408d85fa2c400992a2c"
+      },
+      {
+        "path": "eval_results_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.svg",
+        "sha256": "1e50d238e5e8a17765f6771c75277ce94b06363f5aecbb0a572372f403ede62b"
+      },
+      {
+        "path": "eval_results_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.csv",
+        "sha256": "9b8a6267e10884066d371dd413a1bbc9c68390dfa3b83ca5fad6b533bea01692"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/answer_flip_rate_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/answer_flip_rate_by_pair_available_support.png",
+        "sha256": "c0d8525c37fd1a2ee47939104133a0ccf7a64753efac4d5ea20a27c3b40dd957"
+      },
+      {
+        "path": "final_dual_agent_analysis/answer_flip_rate_by_pair_available_support.svg",
+        "sha256": "ce7142eb0e9b590f283548781990406ab1e5ff973fbd7a099834167a80dbdba8"
+      },
+      {
+        "path": "final_dual_agent_analysis/answer_flip_rate_by_pair_available_support.csv",
+        "sha256": "ee88ef7634d3c25f88987eb5bd16cc6c5834786f3c42c876cdbefc8e92b51535"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/binding_accuracy_by_domain.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_domain.png",
+        "sha256": "7386259d9a6de50543f3e5ccc49701c1f0ab6b70a6672b7a4d9dfa8caf919900"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_domain.svg",
+        "sha256": "08e630ceb2f73d0a1b03a70d23a0c51992bbf73161b15155cf22126fe5021862"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_domain.csv",
+        "sha256": "db6137403435f00779f5833358162cfd8e984d06a9bc8b0fe48982b5d3217ad7"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/binding_accuracy_by_pair.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_pair.png",
+        "sha256": "0002e1343b512cc247b23b6247a84c527b4ef1c5ebb2890f259aa709d6cf277c"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_pair.svg",
+        "sha256": "46eac3fd6de6fe34192f542d346e189fcc85192682ccec450b2b05ef17073dd7"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_pair.csv",
+        "sha256": "c18a67de2d11b8d9beff471f1236e96a70619eb132437deb817f789ce450cd3b"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/binding_accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_scenario.png",
+        "sha256": "ccdba6ae1b9268600e74155189aa4ef0419302cb0b2ad11e3407d792673a9c4c"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_scenario.svg",
+        "sha256": "a380e517f19ad7c39b0bb1f205df635b4f32d100dbc98e6fd93dc7720fd8de34"
+      },
+      {
+        "path": "final_dual_agent_analysis/binding_accuracy_by_scenario.csv",
+        "sha256": "e42fd1343c67c961e42332541a693400c0c0d94ce6a7aa1b6dc9be9b5b97d940"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/brier_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/brier_by_pair_available_support.png",
+        "sha256": "ffcc44a0a42fc8c12315d988a286127a74283ed2795c84ba9db7d7f3104b3006"
+      },
+      {
+        "path": "final_dual_agent_analysis/brier_by_pair_available_support.svg",
+        "sha256": "1f833fef37f4af886d997a703da994f9c62cc3a4be91d19be83d7108d7715d26"
+      },
+      {
+        "path": "final_dual_agent_analysis/brier_by_pair_available_support.csv",
+        "sha256": "462db68c1eed9a32554aea16dd8e428e262e315c9debac0c7bd0befde6ef3bdc"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/calibration_single_vs_dual.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual.png",
+        "sha256": "3f2fed1821c402f73fef70baf3a0093436d801530bfec58ff63aeefff1073ce9"
+      },
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual.svg",
+        "sha256": "bc929d8e6617154988d3eb443ba3c0cb2bdd81942cae28b2e4e9b1000e2a051b"
+      },
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual.csv",
+        "sha256": "3edc35f122787203ed7484dd1265d6b5ee0e9dfd2d8213036a14733fa4022909"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/calibration_single_vs_dual_hard_excluded.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual_hard_excluded.png",
+        "sha256": "da81a16bce4466a2b73671cce9e6cce991f98beb282b75c2b6d86c1e757e6613"
+      },
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual_hard_excluded.svg",
+        "sha256": "66246e02a74e0701421c6d411986444936a0ebde0f210602ede0142552c51e46"
+      },
+      {
+        "path": "final_dual_agent_analysis/calibration_single_vs_dual_hard_excluded.csv",
+        "sha256": "87a771b4f16a49590bded24a2a07726084d4f33d1e7208db5dc0b6e5294052ff"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/ece_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/ece_by_pair_available_support.png",
+        "sha256": "f5c2264ad0b669a52b25b8fc440bd6b5cc0ee3c131686670303b249e938ccf1f"
+      },
+      {
+        "path": "final_dual_agent_analysis/ece_by_pair_available_support.svg",
+        "sha256": "d7fffe90fb7ad78b8c891acc7921c22d672c6e9354358cddad01814f8881df32"
+      },
+      {
+        "path": "final_dual_agent_analysis/ece_by_pair_available_support.csv",
+        "sha256": "0a24bc294e4a1bc6623cc175ed4f610f5ab43f1232a5b9b94ef6e3cc0b112dff"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/end_to_end_accuracy_by_domain.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_domain.png",
+        "sha256": "092fe52fcfc0abf827bb08d58da5e91bda3852c0bd9424bda3c4f9fbe01ebc3c"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_domain.svg",
+        "sha256": "baea53f70152bd0d982ef0caf941ca66b43ae24638f2dda0017e0e8a6782dfaa"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_domain.csv",
+        "sha256": "7ec428c589e2ee497e57135e20afcf6d0a8e622ffa8b6bcc17045ac4083de605"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/end_to_end_accuracy_by_pair.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_pair.png",
+        "sha256": "28a1da0bd7b2f5884b9f6a2a221373239f46a85819d2edd747779f3d4e80f245"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_pair.svg",
+        "sha256": "67a0aa8db51abbc7e4bec3401fec95ea9a2bc9f6e2cf449cdfbde143b65cf4e6"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_pair.csv",
+        "sha256": "30c15dfc07586f2c153c67dee13d7f7fbed637551ea0af003c52ad18872434f0"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/end_to_end_accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_scenario.png",
+        "sha256": "069e55ad5ec3b34160b4d3fd4c6619f1ddadfe27b34e74099d230306631b596b"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_scenario.svg",
+        "sha256": "ae0f49c4c5e4c3b705d5122cf661f34976b90be5f0321fcef5b9abe9515b25e3"
+      },
+      {
+        "path": "final_dual_agent_analysis/end_to_end_accuracy_by_scenario.csv",
+        "sha256": "43f89cee3d8c58b52c9a340fe3123d34910bfaaee054128c3fc9bc0e8a2198db"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/evidence_f1_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_by_pair_available_support.png",
+        "sha256": "125678510bac67cc250a405a1ce2985b848fb954437ebef6e56c9c53ae60ba7a"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_by_pair_available_support.svg",
+        "sha256": "defb566bf2c487c962b7f66647da7dd90042b86e7d613e63bd1ff7d65155bf53"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_by_pair_available_support.csv",
+        "sha256": "b37a88c99281e579e1bc2253256aa8f1478097bf64d21c10f7edce2b5d0ccb6a"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/evidence_f1_single_vs_dual.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual.png",
+        "sha256": "ece3bf714ca6660c87ff770060fb3f5a643024597a1790a22a9880a16cf8fd06"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual.svg",
+        "sha256": "ccc347f2320aed2d3656f80f95a4410f37105ea3b234ba06e99721688a83e8e1"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual.csv",
+        "sha256": "1ae329063b7d12dcb6fa9b1a5e224c6eb9d661e6880a5794ab6430c1eb8b3a7d"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.png",
+        "sha256": "a84bb38fa8281b2bbdb86dcf181a65fc3322b9de05458ef526ababdd37ae53d1"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.svg",
+        "sha256": "65aa5500a6623cae7e44762aae3c73824acd3206c7724af855769691b92da8d6"
+      },
+      {
+        "path": "final_dual_agent_analysis/evidence_f1_single_vs_dual_hard_excluded.csv",
+        "sha256": "691aa723b820f6af035565d083699034d7617bd236e2678c7a92527f297fbb50"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/extraction_failure_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/extraction_failure_by_pair_available_support.png",
+        "sha256": "2f096d7ba24604c564b718134e441993bf4c64b72597bb13afacb7db6e26e087"
+      },
+      {
+        "path": "final_dual_agent_analysis/extraction_failure_by_pair_available_support.svg",
+        "sha256": "a5ccbc2199da9c33538e8c00414cedbf7c95affcce564707d2bcf483f0606b60"
+      },
+      {
+        "path": "final_dual_agent_analysis/extraction_failure_by_pair_available_support.csv",
+        "sha256": "dc565fdc68fab5e49f69560a6693eceff24e163d7260f1368d1044f44d5a492a"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/historical_single_vs_dual_accuracy.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/historical_single_vs_dual_accuracy.png",
+        "sha256": "3264f81490539346157b0f27c12e5c8564474ebf7542df52ed44bfd69ad6ef68"
+      },
+      {
+        "path": "final_dual_agent_analysis/historical_single_vs_dual_accuracy.svg",
+        "sha256": "8abe6b298cf061322098a593420037d4863a5a521b197b04fd9b64aaa356e7cd"
+      },
+      {
+        "path": "final_dual_agent_analysis/historical_single_vs_dual_accuracy.csv",
+        "sha256": "1fbfdf28a6b769b92204624184674cf0f609d2fd1f04e7304040e0212e915520"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/macroce_by_pair_available_support.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/macroce_by_pair_available_support.png",
+        "sha256": "9d4e8498fd09c79f0dc3a1b625c4654d0d0cbff7ae4e79b25b5aada726075c98"
+      },
+      {
+        "path": "final_dual_agent_analysis/macroce_by_pair_available_support.svg",
+        "sha256": "86bc807c085a36cf0d308e452c217fca10ad656b859d4dff850f32e0a64f66a7"
+      },
+      {
+        "path": "final_dual_agent_analysis/macroce_by_pair_available_support.csv",
+        "sha256": "ec33c0049802e14228b3fbf6eb24bd9222b91806867952b9e06efb8ca8b0fd5e"
+      }
+    ]
+  },
+  {
+    "chart": "final_dual_agent_analysis/non_hard_single_vs_dual_accuracy.png",
+    "files": [
+      {
+        "path": "final_dual_agent_analysis/non_hard_single_vs_dual_accuracy.png",
+        "sha256": "9daaa773badfcf16d51cc399241f549f9308c68670f0c6aaeabeb4300a203c8c"
+      },
+      {
+        "path": "final_dual_agent_analysis/non_hard_single_vs_dual_accuracy.svg",
+        "sha256": "f0a75298a6fff97e8f46968c1fc8f1f63caa3452d1f356f81f63d6b0a9b8c993"
+      },
+      {
+        "path": "final_dual_agent_analysis/non_hard_single_vs_dual_accuracy.csv",
+        "sha256": "904f7b002d9228239551869d6553e1a107eaff94377406d85ec4401999d3baa5"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/accuracy_by_explicit_prompt_version.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/accuracy_by_explicit_prompt_version.png",
+        "sha256": "f06088cad9182e4ab00cf95d40042a1bb3ca63b1535d60afbdaae5b9f32bbd7d"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_explicit_prompt_version.svg",
+        "sha256": "000d8f0801282d672c2baa7cf27dbdb162dcc813bf62eecb7cdb362f9675e643"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_explicit_prompt_version.csv",
+        "sha256": "a6a4e8ab4122b420f36aab73d78e9ccfe19ae0b12059167fe18b06a2aaed0205"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/accuracy_by_family.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/accuracy_by_family.png",
+        "sha256": "51bbf32c6fb2631e41a2d257c85cff0daecc57ca0baec1275fe339af4fc7b86d"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_family.svg",
+        "sha256": "60c363eb68fca1a2a6f64e2474e2f6dccbe24fe82f66b32adbdf0ac5f0f9c177"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_family.csv",
+        "sha256": "81a99ae881302d7efb2ec75f98aac4c383fae931bd882510329bb6432dc0b820"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/accuracy_by_model.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/accuracy_by_model.png",
+        "sha256": "9c393db050e0ab85d1075d57075a326593bea80a318fa1eaeee2346de9d5feb1"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_model.svg",
+        "sha256": "b42852d3e57e4e645bc37d8a5d2a8c735bf6e4b3005a9344d3a0ee89ca9778a4"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_model.csv",
+        "sha256": "fd5882892d4e3b523705f6d3ef30e342d657cef2024327ad2f5ef7e731b73847"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/accuracy_by_scenario.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/accuracy_by_scenario.png",
+        "sha256": "35f734ede808d934e3263cd38e8a777465cef6872fd6ea3a1cab005d487dc19a"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_scenario.svg",
+        "sha256": "ba9c268d83c2fac5033b43772aae8dfcca1d9f5bb261ec01a5fda13ac740d6f3"
+      },
+      {
+        "path": "final_single_agent_analysis/accuracy_by_scenario.csv",
+        "sha256": "74faedf9e95a9491177933b1d8b73c7a9074fc8bdaa248a2ea624c9fa1b949e2"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/answer_flip_rate_74_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_74_80_shared_cells.png",
+        "sha256": "d4f800356f39e1ebd116b94e573959172a9f82d9f12de62ff00b8347b7de6986"
+      },
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_74_80_shared_cells.svg",
+        "sha256": "c16bc288e558a98f7516b129fa7f57afce496e3500198b43d6731e88533df301"
+      },
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_74_80_shared_cells.csv",
+        "sha256": "0f7e2f3771b06301c7d487d6c8025fcd7e3ba76f5bbd3bc1f2ac46d281dfc06d"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/answer_flip_rate_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_both_versions_pooled_available_summaries.png",
+        "sha256": "518d2f699d2feb55b77c7cf965eaab2c7921245d59f7e338e9dd1de25fa211ea"
+      },
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_both_versions_pooled_available_summaries.svg",
+        "sha256": "c50a0c1c1e8a1578f90787c2d6fd3fe8324996fbe5fcf842472c784d44f1b15e"
+      },
+      {
+        "path": "final_single_agent_analysis/answer_flip_rate_both_versions_pooled_available_summaries.csv",
+        "sha256": "ae013123605d5e223b88a2e94a4a964fa76c0eb6fe23ac066ab0bb8e6c225d0f"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/average_bcr_beliefcoverage_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/average_bcr_beliefcoverage_available_cells_see_counts.png",
+        "sha256": "380a3fd08e9df8f5ea66f3eac0e7e3d5bf60b91929d6db97df7bf5ad53b46d12"
+      },
+      {
+        "path": "final_single_agent_analysis/average_bcr_beliefcoverage_available_cells_see_counts.svg",
+        "sha256": "896d8de900505aa0e718e74ad8dd7aa8e6350ca962ca8e791d340e3b43eb815e"
+      },
+      {
+        "path": "final_single_agent_analysis/average_bcr_beliefcoverage_available_cells_see_counts.csv",
+        "sha256": "8912995b5eabfef426a6417f6fb59632e0696974010db7718f93573e3f00bcd6"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/average_evidence_f1_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/average_evidence_f1_available_cells_see_counts.png",
+        "sha256": "d7586f9ae7ee162d3babc01bbee728274bb88e457767164db0e7494404836f98"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_f1_available_cells_see_counts.svg",
+        "sha256": "1358ee71031279b15fb23700dd62ccd9431efbfbe2a4faef82aa558426e612a0"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_f1_available_cells_see_counts.csv",
+        "sha256": "b356852267bcd4d1b7887ee7be3388ee21500dcc124bb129dc649483cd3d7e34"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/average_evidence_precision_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/average_evidence_precision_available_cells_see_counts.png",
+        "sha256": "95c08b160053de3aff50de049365a5d68d8a6d89e0a717062bf1996272a99d19"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_precision_available_cells_see_counts.svg",
+        "sha256": "2053200405b2e03311e76e293f17b48d696f06fdcc4b05eeddd746a8081e6942"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_precision_available_cells_see_counts.csv",
+        "sha256": "42d7699f21f5427027930ed7dbfb11c766a682f9ac8f82b8f7247c211e89256a"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/average_evidence_recall_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/average_evidence_recall_available_cells_see_counts.png",
+        "sha256": "cc81f48abca4ab44652756511acdfe9678e4f2fb0f62dfcbda1de07e378ef1a0"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_recall_available_cells_see_counts.svg",
+        "sha256": "4578cf89dec172f0f6150db0fc085e22f25ccf141d74876cc516ab3aef04cde7"
+      },
+      {
+        "path": "final_single_agent_analysis/average_evidence_recall_available_cells_see_counts.csv",
+        "sha256": "d7648c2df3bcc078b22e2a17ab2853cb7b1bac4fd8bd17a5ee0a452197d6899b"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/average_sbir_spuriousinjection_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/average_sbir_spuriousinjection_available_cells_see_counts.png",
+        "sha256": "17f6d2e96abfabf3e3983a53de102e7323a8b3810e239a94132d21e81392d665"
+      },
+      {
+        "path": "final_single_agent_analysis/average_sbir_spuriousinjection_available_cells_see_counts.svg",
+        "sha256": "fc2c4a64d3fbfdfebf37ce8326b7afe5ae8edd44ce1f268dfbd9d7b515704762"
+      },
+      {
+        "path": "final_single_agent_analysis/average_sbir_spuriousinjection_available_cells_see_counts.csv",
+        "sha256": "29c3d02447a6961f24cd378b14f2a348d4772f62bdce9700e5b0e1d0241641ab"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/brier_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/brier_76_80_shared_cells.png",
+        "sha256": "4cb72942b5dafa0ffbec04734976bbb6fbebf1a3896e2eaa40b0e5fe55b84930"
+      },
+      {
+        "path": "final_single_agent_analysis/brier_76_80_shared_cells.svg",
+        "sha256": "03b1f7898c78c65829b8f00cf99068d6cdefdadc10cba86369240deb4e9b6524"
+      },
+      {
+        "path": "final_single_agent_analysis/brier_76_80_shared_cells.csv",
+        "sha256": "8049a2d7cae7f82bcd4091675e2263a1b9a6de893406ec20c61edd22dc57053d"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/brier_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/brier_both_versions_pooled_available_summaries.png",
+        "sha256": "cd1173ff126481125c1b248f898dd3ec0022e9ab992af6e101d6c84bf90626c7"
+      },
+      {
+        "path": "final_single_agent_analysis/brier_both_versions_pooled_available_summaries.svg",
+        "sha256": "f669c71af1ec7ea2a53d1a803b9f507a2f5af800e0f29c0df8170d84cca77a6f"
+      },
+      {
+        "path": "final_single_agent_analysis/brier_both_versions_pooled_available_summaries.csv",
+        "sha256": "e89493a233e0ef2f914dad6d719d1090ae2dd5f36c4b1f50bec1391aad1ac40b"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/determinism_80_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/determinism_80_80_shared_cells.png",
+        "sha256": "fb94f6904901abe9fa92cf554a729640ccd53605a23d1c4d20b40625c56acf4a"
+      },
+      {
+        "path": "final_single_agent_analysis/determinism_80_80_shared_cells.svg",
+        "sha256": "03e761efbbd198e2db21f499c2303140fecb639923924bca63070438bd45fd50"
+      },
+      {
+        "path": "final_single_agent_analysis/determinism_80_80_shared_cells.csv",
+        "sha256": "fc8a19764766d2e571011ddeb940d72daa8eafe71d5cac1ab04f39cafeeaca17"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/determinism_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/determinism_both_versions_pooled_available_summaries.png",
+        "sha256": "826ec34b843fd6edd0ba51c7f7aaac5716e632d4693bc224d2c95f07516e8fb9"
+      },
+      {
+        "path": "final_single_agent_analysis/determinism_both_versions_pooled_available_summaries.svg",
+        "sha256": "d91a26247613f931a4750aef90b30fc1eb607e4678ffa3be3cc33be07a718d22"
+      },
+      {
+        "path": "final_single_agent_analysis/determinism_both_versions_pooled_available_summaries.csv",
+        "sha256": "f575619bc2af2bd2c8fb157007d5bdd6561ae97670a98deef8f4886a7a6be6fa"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/ece_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/ece_76_80_shared_cells.png",
+        "sha256": "cd6422365c7064c6be33f659cd6edf002a47b4f68a1462e883a0aecd3c7e8051"
+      },
+      {
+        "path": "final_single_agent_analysis/ece_76_80_shared_cells.svg",
+        "sha256": "1a7c1140371bfb683f9ee74e348a4870f16a71fccc4c482c1c7878d64d16563c"
+      },
+      {
+        "path": "final_single_agent_analysis/ece_76_80_shared_cells.csv",
+        "sha256": "51f2a94de121f4412bc072b8cda0b9637c9e118cc34b3dd357f4ecd9af526f5b"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/ece_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/ece_both_versions_pooled_available_summaries.png",
+        "sha256": "09e7725cba68c2fa4f9330402a545de811dc678248db5a0461d55741c5dc1508"
+      },
+      {
+        "path": "final_single_agent_analysis/ece_both_versions_pooled_available_summaries.svg",
+        "sha256": "9be9bfac0d0c0730133bb29b0d3c2961bd28df41e2568aeafe549705ea291567"
+      },
+      {
+        "path": "final_single_agent_analysis/ece_both_versions_pooled_available_summaries.csv",
+        "sha256": "2921f6cda43a94de76328c49232caa63f724fc8fbd32f90b7c7e6e78e3830c95"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/extraction_failure_80_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/extraction_failure_80_80_shared_cells.png",
+        "sha256": "8b09e9862cd2a38115ad192e00b1b4e499e44f2abcb4538b9eb0af3ce1b0502f"
+      },
+      {
+        "path": "final_single_agent_analysis/extraction_failure_80_80_shared_cells.svg",
+        "sha256": "93f24be550f0233f4c832b5688b9614e03c8d3a888115044db77a1da5af6bd85"
+      },
+      {
+        "path": "final_single_agent_analysis/extraction_failure_80_80_shared_cells.csv",
+        "sha256": "d64b84259579c03f1a339a9207ad943da050d88ce3e0359c6bfea9e14ff4e1cf"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/extraction_failure_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/extraction_failure_both_versions_pooled_available_summaries.png",
+        "sha256": "2801c47f2c25630d15ae897fe68d26f94811424d7fb5a9d65f26934cfd295f7e"
+      },
+      {
+        "path": "final_single_agent_analysis/extraction_failure_both_versions_pooled_available_summaries.svg",
+        "sha256": "4584c736afcd6eafd5ef3420863fe8e8a3a6bd9497d95fd9d5277463ce54e515"
+      },
+      {
+        "path": "final_single_agent_analysis/extraction_failure_both_versions_pooled_available_summaries.csv",
+        "sha256": "6bf8dc04c308c4a3140910083495bb05a9dc5684e6fe04f3160a8640b2ccf942"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/log_loss_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/log_loss_76_80_shared_cells.png",
+        "sha256": "c1349a5f60185c3a01db97d4b1ed30961c9f9bb1679a1db34aaae47f7322b3d6"
+      },
+      {
+        "path": "final_single_agent_analysis/log_loss_76_80_shared_cells.svg",
+        "sha256": "bee4fcff3f03d646801f44789138a6966b65eae68fac81ed6e823c80d2d51892"
+      },
+      {
+        "path": "final_single_agent_analysis/log_loss_76_80_shared_cells.csv",
+        "sha256": "4f8890c15bc10ea9f60bc7effc54293b7b738ddba916b7be36863d2e123cbc5a"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/log_loss_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/log_loss_both_versions_pooled_available_summaries.png",
+        "sha256": "84670a10fa46e69505d2d2c7b76073855120a5c459ca32a7d1466f25772a2fd1"
+      },
+      {
+        "path": "final_single_agent_analysis/log_loss_both_versions_pooled_available_summaries.svg",
+        "sha256": "370e5a0a29d8d4e5bdf3e177127cb2e7e119ffdd6ae938ccb4c15bbc77920c68"
+      },
+      {
+        "path": "final_single_agent_analysis/log_loss_both_versions_pooled_available_summaries.csv",
+        "sha256": "bcc8d841549ab011b771d9165442ba3acfca4b05c3eac4e74e4565943295e9e0"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/macroce_76_80_shared_cells.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/macroce_76_80_shared_cells.png",
+        "sha256": "09c67b2cda94b8f865b86a521da9d5a5aa0a30b5a6900db10101fa123c58b9a4"
+      },
+      {
+        "path": "final_single_agent_analysis/macroce_76_80_shared_cells.svg",
+        "sha256": "849fe251564f308dcb57150877f5110b388bd7140eebfdbd32f4b70bd4cec00e"
+      },
+      {
+        "path": "final_single_agent_analysis/macroce_76_80_shared_cells.csv",
+        "sha256": "d934fb50a150246f7a7c39371e9680b9ef42e2844d9bb42a35f8b5afa3dbbede"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/macroce_both_versions_pooled_available_summaries.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/macroce_both_versions_pooled_available_summaries.png",
+        "sha256": "813e9a82e88af4f81d92b06ffa5ec960aef5bf5f338ca64c91713a1837cb9f76"
+      },
+      {
+        "path": "final_single_agent_analysis/macroce_both_versions_pooled_available_summaries.svg",
+        "sha256": "2e0b46a895401558aef5193bd52be81894d8a034f19415a70981fb496bb6bf87"
+      },
+      {
+        "path": "final_single_agent_analysis/macroce_both_versions_pooled_available_summaries.csv",
+        "sha256": "e019d981a095861cd2c4aeac89c805935cc1c4d2394cf1a1707f247954c7a33e"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/overall_accuracy.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/overall_accuracy.png",
+        "sha256": "dda872a14a209e1a93ba41114f7e9bc6d6f35bb7d04ec1a73a022d37e3d6a02a"
+      },
+      {
+        "path": "final_single_agent_analysis/overall_accuracy.svg",
+        "sha256": "b173d45c65a5a76478933cb7c5ffad995ec8e1c3a2980c5650a2d9e5ef14b01b"
+      },
+      {
+        "path": "final_single_agent_analysis/overall_accuracy.csv",
+        "sha256": "fb896d2d65f6d09d63e258c295a7048d1a1dd2647d42902d1c17765a2c98b1fb"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/tpca_words_correct_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/tpca_words_correct_descriptive_available_cells_see_counts.png",
+        "sha256": "84bb7407c9c0194ff487dab46e547972cc2a389df128ddf8eaa741aed0afcde5"
+      },
+      {
+        "path": "final_single_agent_analysis/tpca_words_correct_descriptive_available_cells_see_counts.svg",
+        "sha256": "eabd1305fc870ee0c6ac677aa2c6cef2e4eef81000aa3073953cdfb186b64c5c"
+      },
+      {
+        "path": "final_single_agent_analysis/tpca_words_correct_descriptive_available_cells_see_counts.csv",
+        "sha256": "26ab7041c55a1470b46971eeef3f172348203c58313473303db6b34e1aa46376"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.png",
+        "sha256": "77815c761cb4bb4ddbfab5e950d832ab44f876722613b8db2a1122092baaa932"
+      },
+      {
+        "path": "final_single_agent_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.svg",
+        "sha256": "28178e78a1bfcd39ba656989a5e987d98329caec54d0671b4650b83d33a2e814"
+      },
+      {
+        "path": "final_single_agent_analysis/tpca_words_wrong_descriptive_available_cells_see_counts.csv",
+        "sha256": "53cd4a86cfd00a09ee11ad48032c6b65bf21f889cd8358913f7bce0fe5fe2ad2"
+      }
+    ]
+  },
+  {
+    "chart": "final_single_agent_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.png",
+    "files": [
+      {
+        "path": "final_single_agent_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.png",
+        "sha256": "aee1a304cafe577e7b80525ef6b2cd359fdde664e3142408d85fa2c400992a2c"
+      },
+      {
+        "path": "final_single_agent_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.svg",
+        "sha256": "de90d3a7b2e493be2219efb130fed8fbcd70b388e17cdb81df86589765ba96f0"
+      },
+      {
+        "path": "final_single_agent_analysis/wct_wallclock_perturn_seconds_descriptive_available_cells_see_counts.csv",
+        "sha256": "9b8a6267e10884066d371dd413a1bbc9c68390dfa3b83ca5fad6b533bea01692"
+      }
+    ]
+  }
+]

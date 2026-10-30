@@ -1,0 +1,49 @@
+Domain,System,mean,sd,n
+alien_clinic_absurd,GraphRAG (v1),0.36399999999999999,0.17169740825067797,5
+alien_clinic_absurd,No Store (mean v1/v2),0.41699999999999998,0.14202112518917739,5
+alien_clinic_absurd,With Store (mean v15/v16),0.81099999999999994,0.24432048624706035,5
+alien_clinic_absurd_temporal,GraphRAG (v1),0.19800000000000001,0.08167006795638164,5
+alien_clinic_absurd_temporal,No Store (mean v1/v2),0.29900000000000004,0.11288268246281177,5
+alien_clinic_absurd_temporal,With Store (mean v15/v16),0.50600000000000001,0.15224979474534603,5
+alien_clinic_belief_maintenance,GraphRAG (v1),0.54399999999999993,0.15372052563011876,5
+alien_clinic_belief_maintenance,No Store (mean v1/v2),0.47800000000000004,0.19813505494990027,5
+alien_clinic_belief_maintenance,With Store (mean v15/v16),0.87200000000000011,0.1631946690305783,5
+alien_clinic_grounding,GraphRAG (v1),0.38,0.23302360395462085,5
+alien_clinic_grounding,No Store (mean v1/v2),0.38200000000000001,0.28505701184149113,5
+alien_clinic_grounding,With Store (mean v15/v16),0.49700000000000005,0.27211210924911078,5
+crime_scene_absurd,GraphRAG (v1),0.55600000000000005,0.34961407294329555,5
+crime_scene_absurd,No Store (mean v1/v2),0.41200000000000003,0.19495512304117582,5
+crime_scene_absurd,With Store (mean v15/v16),0.85199999999999998,0.21167782122839415,5
+crime_scene_absurd_temporal,GraphRAG (v1),0.43200000000000005,0.18753666308218242,5
+crime_scene_absurd_temporal,No Store (mean v1/v2),0.38899999999999996,0.19759175083995786,5
+crime_scene_absurd_temporal,With Store (mean v15/v16),0.82000000000000006,0.18227726133558181,5
+crime_scene_belief_maintenance,GraphRAG (v1),0.622,0.38719504129056204,5
+crime_scene_belief_maintenance,No Store (mean v1/v2),0.64100000000000001,0.27428087793355183,5
+crime_scene_belief_maintenance,With Store (mean v15/v16),0.79900000000000004,0.24267776989250583,5
+crime_scene_grounding,GraphRAG (v1),0.39200000000000002,0.29029295547773803,5
+crime_scene_grounding,No Store (mean v1/v2),0.44600000000000001,0.28516223452624295,5
+crime_scene_grounding,With Store (mean v15/v16),0.44000000000000006,0.38075582726991847,5
+loan_absurd,GraphRAG (v1),0.34600000000000003,0.32936302160382253,5
+loan_absurd,No Store (mean v1/v2),0.39500000000000002,0.34159552104792007,5
+loan_absurd,With Store (mean v15/v16),0.70700000000000007,0.24172815309764806,5
+loan_absurd_temporal,GraphRAG (v1),0.35199999999999998,0.33424541881677305,5
+loan_absurd_temporal,No Store (mean v1/v2),0.36299999999999999,0.21689859381747961,5
+loan_absurd_temporal,With Store (mean v15/v16),0.82799999999999996,0.25687058998647549,5
+loan_belief_maintenance,GraphRAG (v1),0.63400000000000001,0.27373344698812385,5
+loan_belief_maintenance,No Store (mean v1/v2),0.59099999999999997,0.28247566266848545,5
+loan_belief_maintenance,With Store (mean v15/v16),0.89300000000000002,0.16056929968085429,5
+loan_grounding,GraphRAG (v1),0.42400000000000004,0.27880100430235183,5
+loan_grounding,No Store (mean v1/v2),0.36799999999999999,0.23212604334714362,5
+loan_grounding,With Store (mean v15/v16),0.40000000000000002,0.31962869082734113,5
+thorncrester_absurd,GraphRAG (v1),0.52200000000000002,0.31570555902612796,5
+thorncrester_absurd,No Store (mean v1/v2),0.57499999999999996,0.16446884203398524,5
+thorncrester_absurd,With Store (mean v15/v16),0.873,0.18349386910739007,5
+thorncrester_absurd_temporal,GraphRAG (v1),0.65600000000000003,0.19138965489283905,5
+thorncrester_absurd_temporal,No Store (mean v1/v2),0.53599999999999992,0.18572156579137492,5
+thorncrester_absurd_temporal,With Store (mean v15/v16),0.77800000000000002,0.17235863772958987,5
+thorncrester_belief_maintenance,GraphRAG (v1),0.76200000000000001,0.24252834885843755,5
+thorncrester_belief_maintenance,No Store (mean v1/v2),0.71999999999999997,0.22402566817219849,5
+thorncrester_belief_maintenance,With Store (mean v15/v16),0.85699999999999998,0.2043159318310738,5
+thorncrester_grounding,GraphRAG (v1),0.41799999999999998,0.37844418346699427,5
+thorncrester_grounding,No Store (mean v1/v2),0.42099999999999999,0.31887301547794855,5
+thorncrester_grounding,With Store (mean v15/v16),0.495,0.39468341743731772,5

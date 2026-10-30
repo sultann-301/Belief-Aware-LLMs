@@ -1,0 +1,17 @@
+Pair,Scenario,System,mean,sd,n
+gemma3:1b | gemma3:1b,absurd,Dual-Agent,0.81499999999999995,0.15438048235879218,4
+gemma3:1b | gemma3:1b,absurd_temporal,Dual-Agent,0.81499999999999995,0.19553345834749955,4
+gemma3:1b | gemma3:1b,belief_maintenance,Dual-Agent,0.77500000000000002,0.098826447202490661,4
+gemma3:1b | gemma3:1b,grounding,Dual-Agent,0.070000000000000007,0.029439202887759489,4
+gemma3:1b | ministral-3:3b,absurd,Dual-Agent,0.82250000000000001,0.14885675440951054,4
+gemma3:1b | ministral-3:3b,absurd_temporal,Dual-Agent,0.82250000000000001,0.19397164741270825,4
+gemma3:1b | ministral-3:3b,belief_maintenance,Dual-Agent,0.77750000000000008,0.10340051579497404,4
+gemma3:1b | ministral-3:3b,grounding,Dual-Agent,0.082500000000000004,0.033040379335998356,4
+"ministral-3:3b | Qwen3:4b, no thinking",absurd,Dual-Agent,0.83750000000000002,0.080983537421708982,4
+"ministral-3:3b | Qwen3:4b, no thinking",absurd_temporal,Dual-Agent,0.83999999999999997,0.16248076809271922,4
+"ministral-3:3b | Qwen3:4b, no thinking",belief_maintenance,Dual-Agent,0.82750000000000001,0.060759087111860594,4
+"ministral-3:3b | Qwen3:4b, no thinking",grounding,Dual-Agent,0.64500000000000002,0.20728402414722333,4
+ministral-3:3b | gemma3:1b,absurd,Dual-Agent,0.83999999999999997,0.095219045713904729,4
+ministral-3:3b | gemma3:1b,absurd_temporal,Dual-Agent,0.83750000000000002,0.16007810593582122,4
+ministral-3:3b | gemma3:1b,belief_maintenance,Dual-Agent,0.84000000000000008,0.048989794855663543,4
+ministral-3:3b | gemma3:1b,grounding,Dual-Agent,0.64250000000000007,0.216390850083824,4

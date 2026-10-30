@@ -1,0 +1,241 @@
+,Model,Domain,Temp,Runs,System,Accuracy,Scenario,Family
+0,gemma3:1b,loan_belief_maintenance,0,10,GraphRAG (v1),0.28999999999999998,belief_maintenance,loan
+1,gemma3:1b,loan_absurd,0,10,GraphRAG (v1),0.20000000000000001,absurd,loan
+2,gemma3:1b,loan_absurd_temporal,0,10,GraphRAG (v1),0.19,absurd_temporal,loan
+3,gemma3:1b,loan_grounding,0,10,GraphRAG (v1),0.35999999999999999,grounding,loan
+4,gemma3:1b,alien_clinic_belief_maintenance,0,10,GraphRAG (v1),0.40000000000000002,belief_maintenance,alien_clinic
+5,gemma3:1b,alien_clinic_absurd,0,10,GraphRAG (v1),0.25,absurd,alien_clinic
+6,gemma3:1b,alien_clinic_absurd_temporal,0,10,GraphRAG (v1),0.22999999999999998,absurd_temporal,alien_clinic
+7,gemma3:1b,alien_clinic_grounding,0,10,GraphRAG (v1),0.25,grounding,alien_clinic
+8,gemma3:1b,crime_scene_belief_maintenance,0,10,GraphRAG (v1),0.20000000000000001,belief_maintenance,crime_scene
+9,gemma3:1b,crime_scene_absurd,0,10,GraphRAG (v1),0.12000000000000002,absurd,crime_scene
+10,gemma3:1b,crime_scene_absurd_temporal,0,10,GraphRAG (v1),0.23000000000000004,absurd_temporal,crime_scene
+11,gemma3:1b,crime_scene_grounding,0,10,GraphRAG (v1),0.17000000000000001,grounding,crime_scene
+12,gemma3:1b,thorncrester_belief_maintenance,0,10,GraphRAG (v1),0.55999999999999994,belief_maintenance,thorncrester
+13,gemma3:1b,thorncrester_absurd,0,10,GraphRAG (v1),0.34000000000000002,absurd,thorncrester
+14,gemma3:1b,thorncrester_absurd_temporal,0,10,GraphRAG (v1),0.41000000000000003,absurd_temporal,thorncrester
+15,gemma3:1b,thorncrester_grounding,0,10,GraphRAG (v1),0.13,grounding,thorncrester
+16,gemma4:e2b,loan_belief_maintenance,0,10,GraphRAG (v1),0.98999999999999999,belief_maintenance,loan
+17,gemma4:e2b,loan_absurd,0,10,GraphRAG (v1),0.88000000000000012,absurd,loan
+18,gemma4:e2b,loan_absurd_temporal,0,10,GraphRAG (v1),0.87000000000000011,absurd_temporal,loan
+19,gemma4:e2b,loan_grounding,0,10,GraphRAG (v1),0.51000000000000001,grounding,loan
+20,gemma4:e2b,alien_clinic_belief_maintenance,0,10,GraphRAG (v1),0.64999999999999991,belief_maintenance,alien_clinic
+21,gemma4:e2b,alien_clinic_absurd,0,10,GraphRAG (v1),0.60999999999999988,absurd,alien_clinic
+22,gemma4:e2b,alien_clinic_absurd_temporal,0,10,GraphRAG (v1),0.31999999999999995,absurd_temporal,alien_clinic
+23,gemma4:e2b,alien_clinic_grounding,0,10,GraphRAG (v1),0.64999999999999991,grounding,alien_clinic
+24,gemma4:e2b,crime_scene_belief_maintenance,0,10,GraphRAG (v1),0.98000000000000009,belief_maintenance,crime_scene
+25,gemma4:e2b,crime_scene_absurd,0,10,GraphRAG (v1),0.91000000000000014,absurd,crime_scene
+26,gemma4:e2b,crime_scene_absurd_temporal,0,10,GraphRAG (v1),0.69000000000000006,absurd_temporal,crime_scene
+27,gemma4:e2b,crime_scene_grounding,0,10,GraphRAG (v1),0.57999999999999985,grounding,crime_scene
+28,gemma4:e2b,thorncrester_belief_maintenance,0,10,GraphRAG (v1),1,belief_maintenance,thorncrester
+29,gemma4:e2b,thorncrester_absurd,0,10,GraphRAG (v1),0.86999999999999988,absurd,thorncrester
+30,gemma4:e2b,thorncrester_absurd_temporal,0,10,GraphRAG (v1),0.8600000000000001,absurd_temporal,thorncrester
+31,gemma4:e2b,thorncrester_grounding,0,10,GraphRAG (v1),0.69999999999999996,grounding,thorncrester
+32,llama3.2:1b,loan_belief_maintenance,0,10,GraphRAG (v1),0.64000000000000001,belief_maintenance,loan
+33,llama3.2:1b,loan_absurd,0,10,GraphRAG (v1),0.14000000000000004,absurd,loan
+34,llama3.2:1b,loan_absurd_temporal,0,10,GraphRAG (v1),0.18000000000000002,absurd_temporal,loan
+35,llama3.2:1b,loan_grounding,0,10,GraphRAG (v1),0.01,grounding,loan
+36,llama3.2:1b,alien_clinic_belief_maintenance,0,10,GraphRAG (v1),0.45999999999999996,belief_maintenance,alien_clinic
+37,llama3.2:1b,alien_clinic_absurd,0,10,GraphRAG (v1),0.22999999999999998,absurd,alien_clinic
+38,llama3.2:1b,alien_clinic_absurd_temporal,0,10,GraphRAG (v1),0.12000000000000002,absurd_temporal,alien_clinic
+39,llama3.2:1b,alien_clinic_grounding,0,10,GraphRAG (v1),0.050000000000000003,grounding,alien_clinic
+40,llama3.2:1b,crime_scene_belief_maintenance,0,10,GraphRAG (v1),0.23999999999999999,belief_maintenance,crime_scene
+41,llama3.2:1b,crime_scene_absurd,0,10,GraphRAG (v1),0.39000000000000001,absurd,crime_scene
+42,llama3.2:1b,crime_scene_absurd_temporal,0,10,GraphRAG (v1),0.33999999999999997,absurd_temporal,crime_scene
+43,llama3.2:1b,crime_scene_grounding,0,10,GraphRAG (v1),0.050000000000000003,grounding,crime_scene
+44,llama3.2:1b,thorncrester_belief_maintenance,0,10,GraphRAG (v1),0.46000000000000008,belief_maintenance,thorncrester
+45,llama3.2:1b,thorncrester_absurd,0,10,GraphRAG (v1),0.31,absurd,thorncrester
+46,llama3.2:1b,thorncrester_absurd_temporal,0,10,GraphRAG (v1),0.59999999999999998,absurd_temporal,thorncrester
+47,llama3.2:1b,thorncrester_grounding,0,10,GraphRAG (v1),0,grounding,thorncrester
+48,ministral-3:3b,loan_belief_maintenance,0,10,GraphRAG (v1),0.79000000000000004,belief_maintenance,loan
+49,ministral-3:3b,loan_absurd,0,10,GraphRAG (v1),0.44000000000000006,absurd,loan
+50,ministral-3:3b,loan_absurd_temporal,0,10,GraphRAG (v1),0.48999999999999994,absurd_temporal,loan
+51,ministral-3:3b,loan_grounding,0,10,GraphRAG (v1),0.78000000000000003,grounding,loan
+52,ministral-3:3b,alien_clinic_belief_maintenance,0,10,GraphRAG (v1),0.76000000000000001,belief_maintenance,alien_clinic
+53,ministral-3:3b,alien_clinic_absurd,0,10,GraphRAG (v1),0.47999999999999998,absurd,alien_clinic
+54,ministral-3:3b,alien_clinic_absurd_temporal,0,10,GraphRAG (v1),0.19,absurd_temporal,alien_clinic
+55,ministral-3:3b,alien_clinic_grounding,0,10,GraphRAG (v1),0.49000000000000005,grounding,alien_clinic
+56,ministral-3:3b,crime_scene_belief_maintenance,0,10,GraphRAG (v1),1,belief_maintenance,crime_scene
+57,ministral-3:3b,crime_scene_absurd,0,10,GraphRAG (v1),0.91999999999999993,absurd,crime_scene
+58,ministral-3:3b,crime_scene_absurd_temporal,0,10,GraphRAG (v1),0.55999999999999994,absurd_temporal,crime_scene
+59,ministral-3:3b,crime_scene_grounding,0,10,GraphRAG (v1),0.76000000000000001,grounding,crime_scene
+60,ministral-3:3b,thorncrester_belief_maintenance,0,10,GraphRAG (v1),0.96999999999999997,belief_maintenance,thorncrester
+61,ministral-3:3b,thorncrester_absurd,0,10,GraphRAG (v1),0.85999999999999999,absurd,thorncrester
+62,ministral-3:3b,thorncrester_absurd_temporal,0,10,GraphRAG (v1),0.84000000000000008,absurd_temporal,thorncrester
+63,ministral-3:3b,thorncrester_grounding,0,10,GraphRAG (v1),0.90000000000000002,grounding,thorncrester
+64,"Qwen3:4b, no thinking",loan_belief_maintenance,0,10,GraphRAG (v1),0.46000000000000008,belief_maintenance,loan
+65,"Qwen3:4b, no thinking",loan_absurd,0,10,GraphRAG (v1),0.069999999999999993,absurd,loan
+66,"Qwen3:4b, no thinking",loan_absurd_temporal,0,10,GraphRAG (v1),0.030000000000000006,absurd_temporal,loan
+67,"Qwen3:4b, no thinking",loan_grounding,0,10,GraphRAG (v1),0.45999999999999996,grounding,loan
+68,"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,0,10,GraphRAG (v1),0.45000000000000001,belief_maintenance,alien_clinic
+69,"Qwen3:4b, no thinking",alien_clinic_absurd,0,10,GraphRAG (v1),0.25,absurd,alien_clinic
+70,"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,0,10,GraphRAG (v1),0.13000000000000003,absurd_temporal,alien_clinic
+71,"Qwen3:4b, no thinking",alien_clinic_grounding,0,10,GraphRAG (v1),0.45999999999999996,grounding,alien_clinic
+72,"Qwen3:4b, no thinking",crime_scene_belief_maintenance,0,10,GraphRAG (v1),0.68999999999999984,belief_maintenance,crime_scene
+73,"Qwen3:4b, no thinking",crime_scene_absurd,0,10,GraphRAG (v1),0.44000000000000006,absurd,crime_scene
+74,"Qwen3:4b, no thinking",crime_scene_absurd_temporal,0,10,GraphRAG (v1),0.33999999999999997,absurd_temporal,crime_scene
+75,"Qwen3:4b, no thinking",crime_scene_grounding,0,10,GraphRAG (v1),0.40000000000000002,grounding,crime_scene
+76,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,GraphRAG (v1),0.81999999999999995,belief_maintenance,thorncrester
+77,"Qwen3:4b, no thinking",thorncrester_absurd,0,10,GraphRAG (v1),0.23000000000000004,absurd,thorncrester
+78,"Qwen3:4b, no thinking",thorncrester_absurd_temporal,0,10,GraphRAG (v1),0.57000000000000006,absurd_temporal,thorncrester
+79,"Qwen3:4b, no thinking",thorncrester_grounding,0,10,GraphRAG (v1),0.35999999999999999,grounding,thorncrester
+80,gemma3:1b,loan_belief_maintenance,0,10,With Store (mean v15/v16),0.85999999999999999,belief_maintenance,loan
+81,gemma3:1b,loan_absurd,0,10,With Store (mean v15/v16),0.64999999999999991,absurd,loan
+82,gemma3:1b,loan_absurd_temporal,0,10,With Store (mean v15/v16),0.71499999999999997,absurd_temporal,loan
+83,gemma3:1b,loan_grounding,0,10,With Store (mean v15/v16),0.115,grounding,loan
+84,gemma3:1b,alien_clinic_belief_maintenance,0,10,With Store (mean v15/v16),0.745,belief_maintenance,alien_clinic
+85,gemma3:1b,alien_clinic_absurd,0,10,With Store (mean v15/v16),0.625,absurd,alien_clinic
+86,gemma3:1b,alien_clinic_absurd_temporal,0,10,With Store (mean v15/v16),0.47999999999999998,absurd_temporal,alien_clinic
+87,gemma3:1b,alien_clinic_grounding,0,10,With Store (mean v15/v16),0.23999999999999999,grounding,alien_clinic
+88,gemma3:1b,crime_scene_belief_maintenance,0,10,With Store (mean v15/v16),0.66500000000000004,belief_maintenance,crime_scene
+89,gemma3:1b,crime_scene_absurd,0,10,With Store (mean v15/v16),0.77000000000000002,absurd,crime_scene
+90,gemma3:1b,crime_scene_absurd_temporal,0,10,With Store (mean v15/v16),0.7350000000000001,absurd_temporal,crime_scene
+91,gemma3:1b,crime_scene_grounding,0,10,With Store (mean v15/v16),0.035000000000000003,grounding,crime_scene
+92,gemma3:1b,thorncrester_belief_maintenance,0,10,With Store (mean v15/v16),0.72499999999999998,belief_maintenance,thorncrester
+93,gemma3:1b,thorncrester_absurd,0,10,With Store (mean v15/v16),0.875,absurd,thorncrester
+94,gemma3:1b,thorncrester_absurd_temporal,0,10,With Store (mean v15/v16),0.65500000000000003,absurd_temporal,thorncrester
+95,gemma3:1b,thorncrester_grounding,0,10,With Store (mean v15/v16),0.089999999999999997,grounding,thorncrester
+96,gemma4:e2b,loan_belief_maintenance,0,10,With Store (mean v15/v16),0.995,belief_maintenance,loan
+97,gemma4:e2b,loan_absurd,0,10,With Store (mean v15/v16),0.56499999999999995,absurd,loan
+98,gemma4:e2b,loan_absurd_temporal,0,10,With Store (mean v15/v16),1,absurd_temporal,loan
+99,gemma4:e2b,loan_grounding,0,10,With Store (mean v15/v16),0.52000000000000002,grounding,loan
+100,gemma4:e2b,alien_clinic_belief_maintenance,0,10,With Store (mean v15/v16),1,belief_maintenance,alien_clinic
+101,gemma4:e2b,alien_clinic_absurd,0,10,With Store (mean v15/v16),0.98499999999999999,absurd,alien_clinic
+102,gemma4:e2b,alien_clinic_absurd_temporal,0,10,With Store (mean v15/v16),0.59999999999999998,absurd_temporal,alien_clinic
+103,gemma4:e2b,alien_clinic_grounding,0,10,With Store (mean v15/v16),0.64000000000000001,grounding,alien_clinic
+104,gemma4:e2b,crime_scene_belief_maintenance,0,10,With Store (mean v15/v16),0.96499999999999997,belief_maintenance,crime_scene
+105,gemma4:e2b,crime_scene_absurd,0,10,With Store (mean v15/v16),1,absurd,crime_scene
+106,gemma4:e2b,crime_scene_absurd_temporal,0,10,With Store (mean v15/v16),0.92500000000000004,absurd_temporal,crime_scene
+107,gemma4:e2b,crime_scene_grounding,0,10,With Store (mean v15/v16),0.625,grounding,crime_scene
+108,gemma4:e2b,thorncrester_belief_maintenance,0,10,With Store (mean v15/v16),1,belief_maintenance,thorncrester
+109,gemma4:e2b,thorncrester_absurd,0,10,With Store (mean v15/v16),0.98499999999999999,absurd,thorncrester
+110,gemma4:e2b,thorncrester_absurd_temporal,0,10,With Store (mean v15/v16),0.90000000000000002,absurd_temporal,thorncrester
+111,gemma4:e2b,thorncrester_grounding,0,10,With Store (mean v15/v16),0.72999999999999998,grounding,thorncrester
+112,llama3.2:1b,loan_belief_maintenance,0,10,With Store (mean v15/v16),0.625,belief_maintenance,loan
+113,llama3.2:1b,loan_absurd,0,10,With Store (mean v15/v16),0.41500000000000004,absurd,loan
+114,llama3.2:1b,loan_absurd_temporal,0,10,With Store (mean v15/v16),0.42500000000000004,absurd_temporal,loan
+115,llama3.2:1b,loan_grounding,0,10,With Store (mean v15/v16),0.0050000000000000001,grounding,loan
+116,llama3.2:1b,alien_clinic_belief_maintenance,0,10,With Store (mean v15/v16),0.65000000000000002,belief_maintenance,alien_clinic
+117,llama3.2:1b,alien_clinic_absurd,0,10,With Store (mean v15/v16),0.47499999999999998,absurd,alien_clinic
+118,llama3.2:1b,alien_clinic_absurd_temporal,0,10,With Store (mean v15/v16),0.25,absurd_temporal,alien_clinic
+119,llama3.2:1b,alien_clinic_grounding,0,10,With Store (mean v15/v16),0.16999999999999998,grounding,alien_clinic
+120,llama3.2:1b,crime_scene_belief_maintenance,0,10,With Store (mean v15/v16),0.435,belief_maintenance,crime_scene
+121,llama3.2:1b,crime_scene_absurd,0,10,With Store (mean v15/v16),0.51500000000000001,absurd,crime_scene
+122,llama3.2:1b,crime_scene_absurd_temporal,0,10,With Store (mean v15/v16),0.54000000000000004,absurd_temporal,crime_scene
+123,llama3.2:1b,crime_scene_grounding,0,10,With Store (mean v15/v16),0.02,grounding,crime_scene
+124,llama3.2:1b,thorncrester_belief_maintenance,0,10,With Store (mean v15/v16),0.56000000000000005,belief_maintenance,thorncrester
+125,llama3.2:1b,thorncrester_absurd,0,10,With Store (mean v15/v16),0.55499999999999994,absurd,thorncrester
+126,llama3.2:1b,thorncrester_absurd_temporal,0,10,With Store (mean v15/v16),0.53500000000000003,absurd_temporal,thorncrester
+127,llama3.2:1b,thorncrester_grounding,0,10,With Store (mean v15/v16),0.040000000000000001,grounding,thorncrester
+128,ministral-3:3b,loan_belief_maintenance,0,10,With Store (mean v15/v16),0.995,belief_maintenance,loan
+129,ministral-3:3b,loan_absurd,0,10,With Store (mean v15/v16),0.90500000000000003,absurd,loan
+130,ministral-3:3b,loan_absurd_temporal,0,10,With Store (mean v15/v16),1,absurd_temporal,loan
+131,ministral-3:3b,loan_grounding,0,10,With Store (mean v15/v16),0.68999999999999995,grounding,loan
+132,ministral-3:3b,alien_clinic_belief_maintenance,0,10,With Store (mean v15/v16),0.96999999999999997,belief_maintenance,alien_clinic
+133,ministral-3:3b,alien_clinic_absurd,0,10,With Store (mean v15/v16),1,absurd,alien_clinic
+134,ministral-3:3b,alien_clinic_absurd_temporal,0,10,With Store (mean v15/v16),0.59999999999999998,absurd_temporal,alien_clinic
+135,ministral-3:3b,alien_clinic_grounding,0,10,With Store (mean v15/v16),0.66500000000000004,grounding,alien_clinic
+136,ministral-3:3b,crime_scene_belief_maintenance,0,10,With Store (mean v15/v16),1,belief_maintenance,crime_scene
+137,ministral-3:3b,crime_scene_absurd,0,10,With Store (mean v15/v16),1,absurd,crime_scene
+138,ministral-3:3b,crime_scene_absurd_temporal,0,10,With Store (mean v15/v16),0.91500000000000004,absurd_temporal,crime_scene
+139,ministral-3:3b,crime_scene_grounding,0,10,With Store (mean v15/v16),0.77499999999999991,grounding,crime_scene
+140,ministral-3:3b,thorncrester_belief_maintenance,0,10,With Store (mean v15/v16),1,belief_maintenance,thorncrester
+141,ministral-3:3b,thorncrester_absurd,0,10,With Store (mean v15/v16),0.96499999999999997,absurd,thorncrester
+142,ministral-3:3b,thorncrester_absurd_temporal,0,10,With Store (mean v15/v16),0.90000000000000002,absurd_temporal,thorncrester
+143,ministral-3:3b,thorncrester_grounding,0,10,With Store (mean v15/v16),0.78000000000000003,grounding,thorncrester
+144,"Qwen3:4b, no thinking",loan_belief_maintenance,0,10,With Store (mean v15/v16),0.98999999999999999,belief_maintenance,loan
+145,"Qwen3:4b, no thinking",loan_absurd,0,10,With Store (mean v15/v16),1,absurd,loan
+146,"Qwen3:4b, no thinking",loan_absurd_temporal,0,10,With Store (mean v15/v16),1,absurd_temporal,loan
+147,"Qwen3:4b, no thinking",loan_grounding,0,10,With Store (mean v15/v16),0.67000000000000004,grounding,loan
+148,"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,0,10,With Store (mean v15/v16),0.995,belief_maintenance,alien_clinic
+149,"Qwen3:4b, no thinking",alien_clinic_absurd,0,10,With Store (mean v15/v16),0.96999999999999997,absurd,alien_clinic
+150,"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,0,10,With Store (mean v15/v16),0.59999999999999998,absurd_temporal,alien_clinic
+151,"Qwen3:4b, no thinking",alien_clinic_grounding,0,10,With Store (mean v15/v16),0.77000000000000002,grounding,alien_clinic
+152,"Qwen3:4b, no thinking",crime_scene_belief_maintenance,0,10,With Store (mean v15/v16),0.92999999999999994,belief_maintenance,crime_scene
+153,"Qwen3:4b, no thinking",crime_scene_absurd,0,10,With Store (mean v15/v16),0.97499999999999998,absurd,crime_scene
+154,"Qwen3:4b, no thinking",crime_scene_absurd_temporal,0,10,With Store (mean v15/v16),0.98499999999999999,absurd_temporal,crime_scene
+155,"Qwen3:4b, no thinking",crime_scene_grounding,0,10,With Store (mean v15/v16),0.745,grounding,crime_scene
+156,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,With Store (mean v15/v16),1,belief_maintenance,thorncrester
+157,"Qwen3:4b, no thinking",thorncrester_absurd,0,10,With Store (mean v15/v16),0.98499999999999999,absurd,thorncrester
+158,"Qwen3:4b, no thinking",thorncrester_absurd_temporal,0,10,With Store (mean v15/v16),0.90000000000000002,absurd_temporal,thorncrester
+159,"Qwen3:4b, no thinking",thorncrester_grounding,0,10,With Store (mean v15/v16),0.83499999999999996,grounding,thorncrester
+160,gemma3:1b,loan_belief_maintenance,0,10,No Store (mean v1/v2),0.35999999999999999,belief_maintenance,loan
+161,gemma3:1b,loan_absurd,0,10,No Store (mean v1/v2),0.20000000000000001,absurd,loan
+162,gemma3:1b,loan_absurd_temporal,0,10,No Store (mean v1/v2),0.29500000000000004,absurd_temporal,loan
+163,gemma3:1b,loan_grounding,0,10,No Store (mean v1/v2),0.31,grounding,loan
+164,gemma3:1b,alien_clinic_belief_maintenance,0,10,No Store (mean v1/v2),0.26500000000000001,belief_maintenance,alien_clinic
+165,gemma3:1b,alien_clinic_absurd,0,10,No Store (mean v1/v2),0.45999999999999996,absurd,alien_clinic
+166,gemma3:1b,alien_clinic_absurd_temporal,0,10,No Store (mean v1/v2),0.45499999999999996,absurd_temporal,alien_clinic
+167,gemma3:1b,alien_clinic_grounding,0,10,No Store (mean v1/v2),0.255,grounding,alien_clinic
+168,gemma3:1b,crime_scene_belief_maintenance,0,10,No Store (mean v1/v2),0.39500000000000002,belief_maintenance,crime_scene
+169,gemma3:1b,crime_scene_absurd,0,10,No Store (mean v1/v2),0.45500000000000002,absurd,crime_scene
+170,gemma3:1b,crime_scene_absurd_temporal,0,10,No Store (mean v1/v2),0.42999999999999999,absurd_temporal,crime_scene
+171,gemma3:1b,crime_scene_grounding,0,10,No Store (mean v1/v2),0.34500000000000003,grounding,crime_scene
+172,gemma3:1b,thorncrester_belief_maintenance,0,10,No Store (mean v1/v2),0.495,belief_maintenance,thorncrester
+173,gemma3:1b,thorncrester_absurd,0,10,No Store (mean v1/v2),0.66999999999999993,absurd,thorncrester
+174,gemma3:1b,thorncrester_absurd_temporal,0,10,No Store (mean v1/v2),0.35499999999999998,absurd_temporal,thorncrester
+175,gemma3:1b,thorncrester_grounding,0,10,No Store (mean v1/v2),0.17000000000000001,grounding,thorncrester
+176,gemma4:e2b,loan_belief_maintenance,0,10,No Store (mean v1/v2),0.59499999999999997,belief_maintenance,loan
+177,gemma4:e2b,loan_absurd,0,10,No Store (mean v1/v2),0.97499999999999998,absurd,loan
+178,gemma4:e2b,loan_absurd_temporal,0,10,No Store (mean v1/v2),0.66000000000000003,absurd_temporal,loan
+179,gemma4:e2b,loan_grounding,0,10,No Store (mean v1/v2),0.40999999999999998,grounding,loan
+180,gemma4:e2b,alien_clinic_belief_maintenance,0,10,No Store (mean v1/v2),0.56000000000000005,belief_maintenance,alien_clinic
+181,gemma4:e2b,alien_clinic_absurd,0,10,No Store (mean v1/v2),0.52000000000000002,absurd,alien_clinic
+182,gemma4:e2b,alien_clinic_absurd_temporal,0,10,No Store (mean v1/v2),0.28500000000000003,absurd_temporal,alien_clinic
+183,gemma4:e2b,alien_clinic_grounding,0,10,No Store (mean v1/v2),0.35999999999999999,grounding,alien_clinic
+184,gemma4:e2b,crime_scene_belief_maintenance,0,10,No Store (mean v1/v2),0.57000000000000006,belief_maintenance,crime_scene
+185,gemma4:e2b,crime_scene_absurd,0,10,No Store (mean v1/v2),0.43000000000000005,absurd,crime_scene
+186,gemma4:e2b,crime_scene_absurd_temporal,0,10,No Store (mean v1/v2),0.375,absurd_temporal,crime_scene
+187,gemma4:e2b,crime_scene_grounding,0,10,No Store (mean v1/v2),0.40999999999999998,grounding,crime_scene
+188,gemma4:e2b,thorncrester_belief_maintenance,0,10,No Store (mean v1/v2),0.875,belief_maintenance,thorncrester
+189,gemma4:e2b,thorncrester_absurd,0,10,No Store (mean v1/v2),0.66999999999999993,absurd,thorncrester
+190,gemma4:e2b,thorncrester_absurd_temporal,0,10,No Store (mean v1/v2),0.69999999999999996,absurd_temporal,thorncrester
+191,gemma4:e2b,thorncrester_grounding,0,10,No Store (mean v1/v2),0.44999999999999996,grounding,thorncrester
+192,llama3.2:1b,loan_belief_maintenance,0,10,No Store (mean v1/v2),0.26500000000000001,belief_maintenance,loan
+193,llama3.2:1b,loan_absurd,0,10,No Store (mean v1/v2),0.10000000000000001,absurd,loan
+194,llama3.2:1b,loan_absurd_temporal,0,10,No Store (mean v1/v2),0.059999999999999998,absurd_temporal,loan
+195,llama3.2:1b,loan_grounding,0,10,No Store (mean v1/v2),0,grounding,loan
+196,llama3.2:1b,alien_clinic_belief_maintenance,0,10,No Store (mean v1/v2),0.30499999999999999,belief_maintenance,alien_clinic
+197,llama3.2:1b,alien_clinic_absurd,0,10,No Store (mean v1/v2),0.17000000000000001,absurd,alien_clinic
+198,llama3.2:1b,alien_clinic_absurd_temporal,0,10,No Store (mean v1/v2),0.14000000000000001,absurd_temporal,alien_clinic
+199,llama3.2:1b,alien_clinic_grounding,0,10,No Store (mean v1/v2),0.055000000000000007,grounding,alien_clinic
+200,llama3.2:1b,crime_scene_belief_maintenance,0,10,No Store (mean v1/v2),0.38,belief_maintenance,crime_scene
+201,llama3.2:1b,crime_scene_absurd,0,10,No Store (mean v1/v2),0.10000000000000001,absurd,crime_scene
+202,llama3.2:1b,crime_scene_absurd_temporal,0,10,No Store (mean v1/v2),0.059999999999999998,absurd_temporal,crime_scene
+203,llama3.2:1b,crime_scene_grounding,0,10,No Store (mean v1/v2),0.040000000000000001,grounding,crime_scene
+204,llama3.2:1b,thorncrester_belief_maintenance,0,10,No Store (mean v1/v2),0.46000000000000002,belief_maintenance,thorncrester
+205,llama3.2:1b,thorncrester_absurd,0,10,No Store (mean v1/v2),0.31,absurd,thorncrester
+206,llama3.2:1b,thorncrester_absurd_temporal,0,10,No Store (mean v1/v2),0.32000000000000001,absurd_temporal,thorncrester
+207,llama3.2:1b,thorncrester_grounding,0,10,No Store (mean v1/v2),0.029999999999999999,grounding,thorncrester
+208,ministral-3:3b,loan_belief_maintenance,0,10,No Store (mean v1/v2),0.81000000000000005,belief_maintenance,loan
+209,ministral-3:3b,loan_absurd,0,10,No Store (mean v1/v2),0.32500000000000001,absurd,loan
+210,ministral-3:3b,loan_absurd_temporal,0,10,No Store (mean v1/v2),0.41999999999999998,absurd_temporal,loan
+211,ministral-3:3b,loan_grounding,0,10,No Store (mean v1/v2),0.53500000000000003,grounding,loan
+212,ministral-3:3b,alien_clinic_belief_maintenance,0,10,No Store (mean v1/v2),0.51000000000000001,belief_maintenance,alien_clinic
+213,ministral-3:3b,alien_clinic_absurd,0,10,No Store (mean v1/v2),0.5,absurd,alien_clinic
+214,ministral-3:3b,alien_clinic_absurd_temporal,0,10,No Store (mean v1/v2),0.33000000000000002,absurd_temporal,alien_clinic
+215,ministral-3:3b,alien_clinic_grounding,0,10,No Store (mean v1/v2),0.41000000000000003,grounding,alien_clinic
+216,ministral-3:3b,crime_scene_belief_maintenance,0,10,No Store (mean v1/v2),0.93999999999999995,belief_maintenance,crime_scene
+217,ministral-3:3b,crime_scene_absurd,0,10,No Store (mean v1/v2),0.64000000000000001,absurd,crime_scene
+218,ministral-3:3b,crime_scene_absurd_temporal,0,10,No Store (mean v1/v2),0.52500000000000002,absurd_temporal,crime_scene
+219,ministral-3:3b,crime_scene_grounding,0,10,No Store (mean v1/v2),0.745,grounding,crime_scene
+220,ministral-3:3b,thorncrester_belief_maintenance,0,10,No Store (mean v1/v2),0.84000000000000008,belief_maintenance,thorncrester
+221,ministral-3:3b,thorncrester_absurd,0,10,No Store (mean v1/v2),0.70499999999999996,absurd,thorncrester
+222,ministral-3:3b,thorncrester_absurd_temporal,0,10,No Store (mean v1/v2),0.69999999999999996,absurd_temporal,thorncrester
+223,ministral-3:3b,thorncrester_grounding,0,10,No Store (mean v1/v2),0.69500000000000006,grounding,thorncrester
+224,"Qwen3:4b, no thinking",loan_belief_maintenance,0,10,No Store (mean v1/v2),0.92500000000000004,belief_maintenance,loan
+225,"Qwen3:4b, no thinking",loan_absurd,0,10,No Store (mean v1/v2),0.375,absurd,loan
+226,"Qwen3:4b, no thinking",loan_absurd_temporal,0,10,No Store (mean v1/v2),0.38,absurd_temporal,loan
+227,"Qwen3:4b, no thinking",loan_grounding,0,10,No Store (mean v1/v2),0.58499999999999996,grounding,loan
+228,"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,0,10,No Store (mean v1/v2),0.75,belief_maintenance,alien_clinic
+229,"Qwen3:4b, no thinking",alien_clinic_absurd,0,10,No Store (mean v1/v2),0.435,absurd,alien_clinic
+230,"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,0,10,No Store (mean v1/v2),0.28500000000000003,absurd_temporal,alien_clinic
+231,"Qwen3:4b, no thinking",alien_clinic_grounding,0,10,No Store (mean v1/v2),0.83000000000000007,grounding,alien_clinic
+232,"Qwen3:4b, no thinking",crime_scene_belief_maintenance,0,10,No Store (mean v1/v2),0.91999999999999993,belief_maintenance,crime_scene
+233,"Qwen3:4b, no thinking",crime_scene_absurd,0,10,No Store (mean v1/v2),0.43499999999999994,absurd,crime_scene
+234,"Qwen3:4b, no thinking",crime_scene_absurd_temporal,0,10,No Store (mean v1/v2),0.55499999999999994,absurd_temporal,crime_scene
+235,"Qwen3:4b, no thinking",crime_scene_grounding,0,10,No Store (mean v1/v2),0.68999999999999995,grounding,crime_scene
+236,"Qwen3:4b, no thinking",thorncrester_belief_maintenance,0,10,No Store (mean v1/v2),0.92999999999999994,belief_maintenance,thorncrester
+237,"Qwen3:4b, no thinking",thorncrester_absurd,0,10,No Store (mean v1/v2),0.52000000000000002,absurd,thorncrester
+238,"Qwen3:4b, no thinking",thorncrester_absurd_temporal,0,10,No Store (mean v1/v2),0.60499999999999998,absurd_temporal,thorncrester
+239,"Qwen3:4b, no thinking",thorncrester_grounding,0,10,No Store (mean v1/v2),0.76000000000000001,grounding,thorncrester

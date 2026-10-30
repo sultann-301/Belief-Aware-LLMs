@@ -1,0 +1,5 @@
+,Pair,System,Domain,Metric_Family,Summary_Metric,Value,experiment_count,Scenario
+728,gemma3:1b | ministral-3:3b,Dual-Agent,thorncrester_absurd,Efficiency,TPCA_Words_Wrong,,0,absurd
+828,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,loan_absurd,Efficiency,TPCA_Words_Wrong,,0,absurd
+1028,"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,crime_scene_absurd,Efficiency,TPCA_Words_Wrong,,0,absurd
+1428,ministral-3:3b | gemma3:1b,Dual-Agent,crime_scene_absurd,Efficiency,TPCA_Words_Wrong,,0,absurd

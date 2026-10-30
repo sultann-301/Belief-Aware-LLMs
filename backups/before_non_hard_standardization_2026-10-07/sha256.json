@@ -1,0 +1,14 @@
+{
+  "graphrag_single_agent_comparison.ipynb": "95795ff8f0d3f0110314d95572c0cd7b4c4c164113546d35760e4e8017f74069",
+  "eval_results_analysis.ipynb": "638c7982adfc569aab58319d8e15b55fcf75f3a2254fdd21d09ebcb0233377b6",
+  "final_dual_agent_analysis.ipynb": "6b408f6cd197bf8007b4ceb360e48e52d0736d35c8a68f60ef67bca98abc77f7",
+  "dual_agent_analysis.ipynb": "f120cbf8e599a34382c0180f658bb58e1a29a014dd9cfa3e3415605c732fa113",
+  "final_single_agent_analysis.ipynb": "9cc2949fd8cdd8f073727239207243a29edae94bb2551a6134d9689d439f5568",
+  "eval_results_dual_agent_normalized.csv": "5e52e938ace65f4e5f16303ce963b2de41b5728a21670cc821600903bab9caf6",
+  "eval_results_normalized.csv": "502e396420948ea7b3273f7c9d8f6a4f08527bc26b673f4259e59446e872a476",
+  "eval_results.csv": "831bfae982e451810dcef39fc782f44e9f5006338ebb9d47e4eb15a8c25d13f5",
+  "eval_results_dual_agent.csv": "ae857e3e694e896a0e17d4d6f44251805775cd6225258a17cc55aeac483153d3",
+  "eval_results_dual_agent.legacy.csv": "968044c6e277bde9c02455cdbcf8981d10f5b1689c72402227ba69439d9c8e57",
+  "eval_results_graphrag.csv": "2938095d97ae14d8a15db27897c90c63033de78b92aeeaed83eee589e8d29868",
+  "eval_results_with_store.csv": "d59a70f88104a84731e550fd927e4586726ec12385c521888efbbbbc618e514a"
+}

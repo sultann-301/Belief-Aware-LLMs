@@ -1,0 +1,61 @@
+Model,Scenario,System,mean,sd,n
+"Qwen3:4b, no thinking",absurd,GraphRAG (v1),0.24750000000000003,0.15152007567755946,4
+"Qwen3:4b, no thinking",absurd,No Store (mean v1/v2),0.44124999999999998,0.059634302209382824,4
+"Qwen3:4b, no thinking",absurd,With Store (mean v15/v16),0.98249999999999993,0.013228756555322966,4
+"Qwen3:4b, no thinking",absurd_temporal,GraphRAG (v1),0.26750000000000002,0.23949599857478482,4
+"Qwen3:4b, no thinking",absurd_temporal,No Store (mean v1/v2),0.45624999999999999,0.1494643212721127,4
+"Qwen3:4b, no thinking",absurd_temporal,With Store (mean v15/v16),0.87124999999999997,0.18611712262264679,4
+"Qwen3:4b, no thinking",belief_maintenance,GraphRAG (v1),0.60499999999999998,0.18119970566569171,4
+"Qwen3:4b, no thinking",belief_maintenance,No Store (mean v1/v2),0.88124999999999998,0.087595186321319421,4
+"Qwen3:4b, no thinking",belief_maintenance,With Store (mean v15/v16),0.97875000000000001,0.032755406678389255,4
+"Qwen3:4b, no thinking",grounding,GraphRAG (v1),0.41999999999999998,0.04898979485566355,4
+"Qwen3:4b, no thinking",grounding,No Store (mean v1/v2),0.71625000000000005,0.10451275839181873,4
+"Qwen3:4b, no thinking",grounding,With Store (mean v15/v16),0.755,0.068190908484929313,4
+gemma3:1b,absurd,GraphRAG (v1),0.22750000000000001,0.092150239645193907,4
+gemma3:1b,absurd,No Store (mean v1/v2),0.44624999999999998,0.19232676187502695,4
+gemma3:1b,absurd,With Store (mean v15/v16),0.72999999999999998,0.11554220008291345,4
+gemma3:1b,absurd_temporal,GraphRAG (v1),0.26500000000000001,0.098488578017961056,4
+gemma3:1b,absurd_temporal,No Store (mean v1/v2),0.38374999999999998,0.072844011421667298,4
+gemma3:1b,absurd_temporal,With Store (mean v15/v16),0.64624999999999999,0.11592921690985987,4
+gemma3:1b,belief_maintenance,GraphRAG (v1),0.36249999999999999,0.155,4
+gemma3:1b,belief_maintenance,No Store (mean v1/v2),0.37875000000000003,0.094989034454860441,4
+gemma3:1b,belief_maintenance,With Store (mean v15/v16),0.74875000000000003,0.0815858443604036,4
+gemma3:1b,grounding,GraphRAG (v1),0.22750000000000001,0.101447851956888,4
+gemma3:1b,grounding,No Store (mean v1/v2),0.27000000000000002,0.076267074590983669,4
+gemma3:1b,grounding,With Store (mean v15/v16),0.12,0.08669871202426635,4
+gemma4:e2b,absurd,GraphRAG (v1),0.8175,0.13937359864766363,4
+gemma4:e2b,absurd,No Store (mean v1/v2),0.64874999999999994,0.23896914026710647,4
+gemma4:e2b,absurd,With Store (mean v15/v16),0.88374999999999992,0.21261761451018121,4
+gemma4:e2b,absurd_temporal,GraphRAG (v1),0.68500000000000005,0.2569695182961072,4
+gemma4:e2b,absurd_temporal,No Store (mean v1/v2),0.505,0.20603397778036511,4
+gemma4:e2b,absurd_temporal,With Store (mean v15/v16),0.85624999999999996,0.17603858478564677,4
+gemma4:e2b,belief_maintenance,GraphRAG (v1),0.90500000000000003,0.17019596548292998,4
+gemma4:e2b,belief_maintenance,No Store (mean v1/v2),0.65000000000000002,0.15072049186048544,4
+gemma4:e2b,belief_maintenance,With Store (mean v15/v16),0.98999999999999999,0.016832508230603494,4
+gemma4:e2b,grounding,GraphRAG (v1),0.60999999999999988,0.08286535263104032,4
+gemma4:e2b,grounding,No Store (mean v1/v2),0.40749999999999997,0.036855573979159957,4
+gemma4:e2b,grounding,With Store (mean v15/v16),0.62875000000000003,0.086059572390292466,4
+llama3.2:1b,absurd,GraphRAG (v1),0.26750000000000002,0.10719919153924,4
+llama3.2:1b,absurd,No Store (mean v1/v2),0.17000000000000001,0.09899494936611665,4
+llama3.2:1b,absurd,With Store (mean v15/v16),0.48999999999999999,0.059721576223896365,4
+llama3.2:1b,absurd_temporal,GraphRAG (v1),0.31,0.21447610589527213,4
+llama3.2:1b,absurd_temporal,No Store (mean v1/v2),0.14500000000000002,0.12261049438499681,4
+llama3.2:1b,absurd_temporal,With Store (mean v15/v16),0.4375,0.13580009818356786,4
+llama3.2:1b,belief_maintenance,GraphRAG (v1),0.45000000000000001,0.16370705543744904,4
+llama3.2:1b,belief_maintenance,No Store (mean v1/v2),0.35250000000000004,0.086071675557835681,4
+llama3.2:1b,belief_maintenance,With Store (mean v15/v16),0.5675,0.096133587609464888,4
+llama3.2:1b,grounding,GraphRAG (v1),0.027500000000000004,0.026299556396765837,4
+llama3.2:1b,grounding,No Store (mean v1/v2),0.03125,0.023228933107943925,4
+llama3.2:1b,grounding,With Store (mean v15/v16),0.058749999999999997,0.075539724648690632,4
+ministral-3:3b,absurd,GraphRAG (v1),0.67500000000000004,0.24999999999999997,4
+ministral-3:3b,absurd,No Store (mean v1/v2),0.54249999999999998,0.16834983417475252,4
+ministral-3:3b,absurd,With Store (mean v15/v16),0.96750000000000003,0.044814432199162493,4
+ministral-3:3b,absurd_temporal,GraphRAG (v1),0.52000000000000002,0.26695817400234573,4
+ministral-3:3b,absurd_temporal,No Store (mean v1/v2),0.49375000000000002,0.15892215075312818,4
+ministral-3:3b,absurd_temporal,With Store (mean v15/v16),0.85375000000000001,0.17480346106413341,4
+ministral-3:3b,belief_maintenance,GraphRAG (v1),0.88,0.1224744871391589,4
+ministral-3:3b,belief_maintenance,No Store (mean v1/v2),0.77500000000000002,0.18520259177452136,4
+ministral-3:3b,belief_maintenance,With Store (mean v15/v16),0.99124999999999996,0.014361406616345091,4
+ministral-3:3b,grounding,GraphRAG (v1),0.73250000000000004,0.17308475765743597,4
+ministral-3:3b,grounding,No Store (mean v1/v2),0.59625000000000006,0.15309991291092667,4
+ministral-3:3b,grounding,With Store (mean v15/v16),0.72750000000000004,0.058665719689326781,4

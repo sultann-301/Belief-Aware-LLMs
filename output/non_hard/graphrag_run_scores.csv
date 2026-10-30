@@ -1,0 +1,801 @@
+model,domain,run,correct,accuracy,turns
+"Qwen3:4b, no thinking",alien_clinic_absurd,1,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,2,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,3,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,4,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,5,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,6,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,7,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,8,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,9,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd,10,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,1,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,2,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,3,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,4,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,5,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,6,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,7,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,8,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,9,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_absurd_temporal,10,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,1,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,2,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,3,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,5,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,6,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,7,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,8,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,9,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_belief_maintenance,10,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,1,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,2,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,3,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,5,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,6,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,8,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,9,5,0.5,10
+"Qwen3:4b, no thinking",alien_clinic_grounding,10,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_absurd,1,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd,2,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_absurd,3,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd,4,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",crime_scene_absurd,5,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_absurd,6,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_absurd,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd,8,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd,9,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_absurd,10,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,1,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,2,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,3,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,4,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,5,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,6,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,7,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,8,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,9,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_absurd_temporal,10,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,1,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,2,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,3,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,4,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,5,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,6,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,7,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,8,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,9,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",crime_scene_belief_maintenance,10,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",crime_scene_grounding,1,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_grounding,2,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_grounding,3,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",crime_scene_grounding,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_grounding,5,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",crime_scene_grounding,6,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_grounding,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",crime_scene_grounding,8,5,0.5,10
+"Qwen3:4b, no thinking",crime_scene_grounding,9,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",crime_scene_grounding,10,5,0.5,10
+"Qwen3:4b, no thinking",loan_absurd,1,0,0,10
+"Qwen3:4b, no thinking",loan_absurd,2,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,3,0,0,10
+"Qwen3:4b, no thinking",loan_absurd,4,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,5,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,6,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,7,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,8,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd,9,0,0,10
+"Qwen3:4b, no thinking",loan_absurd,10,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,1,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,2,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,3,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,4,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,5,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,6,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,7,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,8,0,0,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,9,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",loan_absurd_temporal,10,0,0,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,1,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,2,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,3,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,5,5,0.5,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,6,5,0.5,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,8,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,9,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",loan_belief_maintenance,10,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_grounding,1,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_grounding,2,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",loan_grounding,3,5,0.5,10
+"Qwen3:4b, no thinking",loan_grounding,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_grounding,5,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_grounding,6,5,0.5,10
+"Qwen3:4b, no thinking",loan_grounding,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",loan_grounding,8,5,0.5,10
+"Qwen3:4b, no thinking",loan_grounding,9,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",loan_grounding,10,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd,1,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd,2,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd,3,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_absurd,4,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd,5,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd,6,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_absurd,7,2,0.20000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd,8,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_absurd,9,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_absurd,10,1,0.10000000000000001,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,1,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,2,5,0.5,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,3,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,4,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,5,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,6,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,7,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,8,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,9,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_absurd_temporal,10,7,0.69999999999999996,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,1,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,2,9,0.90000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,3,10,1,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,4,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,5,6,0.59999999999999998,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,6,9,0.90000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,7,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,8,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,9,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_belief_maintenance,10,8,0.80000000000000004,10
+"Qwen3:4b, no thinking",thorncrester_grounding,1,5,0.5,10
+"Qwen3:4b, no thinking",thorncrester_grounding,2,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,3,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,4,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_grounding,5,4,0.40000000000000002,10
+"Qwen3:4b, no thinking",thorncrester_grounding,6,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,7,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,8,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,9,3,0.29999999999999999,10
+"Qwen3:4b, no thinking",thorncrester_grounding,10,5,0.5,10
+gemma3:1b,alien_clinic_absurd,1,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd,2,1,0.10000000000000001,10
+gemma3:1b,alien_clinic_absurd,3,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd,4,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd,5,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd,6,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd,7,1,0.10000000000000001,10
+gemma3:1b,alien_clinic_absurd,8,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd,9,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_absurd,10,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd_temporal,1,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,2,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,3,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,4,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd_temporal,5,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,6,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,7,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_absurd_temporal,8,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,9,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_absurd_temporal,10,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_belief_maintenance,1,5,0.5,10
+gemma3:1b,alien_clinic_belief_maintenance,2,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_belief_maintenance,3,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_belief_maintenance,4,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_belief_maintenance,5,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_belief_maintenance,6,5,0.5,10
+gemma3:1b,alien_clinic_belief_maintenance,7,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_belief_maintenance,8,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_belief_maintenance,9,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_belief_maintenance,10,4,0.40000000000000002,10
+gemma3:1b,alien_clinic_grounding,1,1,0.10000000000000001,10
+gemma3:1b,alien_clinic_grounding,2,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_grounding,3,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_grounding,4,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_grounding,5,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_grounding,6,2,0.20000000000000001,10
+gemma3:1b,alien_clinic_grounding,7,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_grounding,8,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_grounding,9,3,0.29999999999999999,10
+gemma3:1b,alien_clinic_grounding,10,3,0.29999999999999999,10
+gemma3:1b,crime_scene_absurd,1,2,0.20000000000000001,10
+gemma3:1b,crime_scene_absurd,2,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd,3,2,0.20000000000000001,10
+gemma3:1b,crime_scene_absurd,4,0,0,10
+gemma3:1b,crime_scene_absurd,5,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd,6,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd,7,3,0.29999999999999999,10
+gemma3:1b,crime_scene_absurd,8,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd,9,0,0,10
+gemma3:1b,crime_scene_absurd,10,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,1,4,0.40000000000000002,10
+gemma3:1b,crime_scene_absurd_temporal,2,3,0.29999999999999999,10
+gemma3:1b,crime_scene_absurd_temporal,3,2,0.20000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,4,3,0.29999999999999999,10
+gemma3:1b,crime_scene_absurd_temporal,5,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,6,2,0.20000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,7,4,0.40000000000000002,10
+gemma3:1b,crime_scene_absurd_temporal,8,1,0.10000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,9,2,0.20000000000000001,10
+gemma3:1b,crime_scene_absurd_temporal,10,1,0.10000000000000001,10
+gemma3:1b,crime_scene_belief_maintenance,1,3,0.29999999999999999,10
+gemma3:1b,crime_scene_belief_maintenance,2,1,0.10000000000000001,10
+gemma3:1b,crime_scene_belief_maintenance,3,3,0.29999999999999999,10
+gemma3:1b,crime_scene_belief_maintenance,4,0,0,10
+gemma3:1b,crime_scene_belief_maintenance,5,2,0.20000000000000001,10
+gemma3:1b,crime_scene_belief_maintenance,6,2,0.20000000000000001,10
+gemma3:1b,crime_scene_belief_maintenance,7,3,0.29999999999999999,10
+gemma3:1b,crime_scene_belief_maintenance,8,1,0.10000000000000001,10
+gemma3:1b,crime_scene_belief_maintenance,9,3,0.29999999999999999,10
+gemma3:1b,crime_scene_belief_maintenance,10,2,0.20000000000000001,10
+gemma3:1b,crime_scene_grounding,1,2,0.20000000000000001,10
+gemma3:1b,crime_scene_grounding,2,2,0.20000000000000001,10
+gemma3:1b,crime_scene_grounding,3,1,0.10000000000000001,10
+gemma3:1b,crime_scene_grounding,4,1,0.10000000000000001,10
+gemma3:1b,crime_scene_grounding,5,0,0,10
+gemma3:1b,crime_scene_grounding,6,3,0.29999999999999999,10
+gemma3:1b,crime_scene_grounding,7,1,0.10000000000000001,10
+gemma3:1b,crime_scene_grounding,8,3,0.29999999999999999,10
+gemma3:1b,crime_scene_grounding,9,1,0.10000000000000001,10
+gemma3:1b,crime_scene_grounding,10,3,0.29999999999999999,10
+gemma3:1b,loan_absurd,1,2,0.20000000000000001,10
+gemma3:1b,loan_absurd,2,2,0.20000000000000001,10
+gemma3:1b,loan_absurd,3,1,0.10000000000000001,10
+gemma3:1b,loan_absurd,4,4,0.40000000000000002,10
+gemma3:1b,loan_absurd,5,1,0.10000000000000001,10
+gemma3:1b,loan_absurd,6,3,0.29999999999999999,10
+gemma3:1b,loan_absurd,7,1,0.10000000000000001,10
+gemma3:1b,loan_absurd,8,2,0.20000000000000001,10
+gemma3:1b,loan_absurd,9,2,0.20000000000000001,10
+gemma3:1b,loan_absurd,10,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,1,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,2,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,3,4,0.40000000000000002,10
+gemma3:1b,loan_absurd_temporal,4,1,0.10000000000000001,10
+gemma3:1b,loan_absurd_temporal,5,1,0.10000000000000001,10
+gemma3:1b,loan_absurd_temporal,6,1,0.10000000000000001,10
+gemma3:1b,loan_absurd_temporal,7,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,8,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,9,2,0.20000000000000001,10
+gemma3:1b,loan_absurd_temporal,10,2,0.20000000000000001,10
+gemma3:1b,loan_belief_maintenance,1,4,0.40000000000000002,10
+gemma3:1b,loan_belief_maintenance,2,4,0.40000000000000002,10
+gemma3:1b,loan_belief_maintenance,3,3,0.29999999999999999,10
+gemma3:1b,loan_belief_maintenance,4,3,0.29999999999999999,10
+gemma3:1b,loan_belief_maintenance,5,3,0.29999999999999999,10
+gemma3:1b,loan_belief_maintenance,6,2,0.20000000000000001,10
+gemma3:1b,loan_belief_maintenance,7,2,0.20000000000000001,10
+gemma3:1b,loan_belief_maintenance,8,2,0.20000000000000001,10
+gemma3:1b,loan_belief_maintenance,9,4,0.40000000000000002,10
+gemma3:1b,loan_belief_maintenance,10,2,0.20000000000000001,10
+gemma3:1b,loan_grounding,1,3,0.29999999999999999,10
+gemma3:1b,loan_grounding,2,4,0.40000000000000002,10
+gemma3:1b,loan_grounding,3,5,0.5,10
+gemma3:1b,loan_grounding,4,5,0.5,10
+gemma3:1b,loan_grounding,5,3,0.29999999999999999,10
+gemma3:1b,loan_grounding,6,2,0.20000000000000001,10
+gemma3:1b,loan_grounding,7,4,0.40000000000000002,10
+gemma3:1b,loan_grounding,8,4,0.40000000000000002,10
+gemma3:1b,loan_grounding,9,3,0.29999999999999999,10
+gemma3:1b,loan_grounding,10,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd,1,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd,2,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd,3,2,0.20000000000000001,10
+gemma3:1b,thorncrester_absurd,4,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd,5,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd,6,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd,7,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd,8,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd,9,2,0.20000000000000001,10
+gemma3:1b,thorncrester_absurd,10,5,0.5,10
+gemma3:1b,thorncrester_absurd_temporal,1,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd_temporal,2,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd_temporal,3,5,0.5,10
+gemma3:1b,thorncrester_absurd_temporal,4,5,0.5,10
+gemma3:1b,thorncrester_absurd_temporal,5,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd_temporal,6,4,0.40000000000000002,10
+gemma3:1b,thorncrester_absurd_temporal,7,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd_temporal,8,5,0.5,10
+gemma3:1b,thorncrester_absurd_temporal,9,3,0.29999999999999999,10
+gemma3:1b,thorncrester_absurd_temporal,10,4,0.40000000000000002,10
+gemma3:1b,thorncrester_belief_maintenance,1,5,0.5,10
+gemma3:1b,thorncrester_belief_maintenance,2,5,0.5,10
+gemma3:1b,thorncrester_belief_maintenance,3,6,0.59999999999999998,10
+gemma3:1b,thorncrester_belief_maintenance,4,6,0.59999999999999998,10
+gemma3:1b,thorncrester_belief_maintenance,5,5,0.5,10
+gemma3:1b,thorncrester_belief_maintenance,6,7,0.69999999999999996,10
+gemma3:1b,thorncrester_belief_maintenance,7,6,0.59999999999999998,10
+gemma3:1b,thorncrester_belief_maintenance,8,6,0.59999999999999998,10
+gemma3:1b,thorncrester_belief_maintenance,9,4,0.40000000000000002,10
+gemma3:1b,thorncrester_belief_maintenance,10,6,0.59999999999999998,10
+gemma3:1b,thorncrester_grounding,1,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,2,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,3,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,4,2,0.20000000000000001,10
+gemma3:1b,thorncrester_grounding,5,2,0.20000000000000001,10
+gemma3:1b,thorncrester_grounding,6,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,7,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,8,1,0.10000000000000001,10
+gemma3:1b,thorncrester_grounding,9,2,0.20000000000000001,10
+gemma3:1b,thorncrester_grounding,10,1,0.10000000000000001,10
+gemma4:e2b,alien_clinic_absurd,1,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_absurd,2,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_absurd,3,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_absurd,4,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_absurd,5,5,0.5,10
+gemma4:e2b,alien_clinic_absurd,6,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_absurd,7,5,0.5,10
+gemma4:e2b,alien_clinic_absurd,8,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_absurd,9,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_absurd,10,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_absurd_temporal,1,4,0.40000000000000002,10
+gemma4:e2b,alien_clinic_absurd_temporal,2,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,3,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,4,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,5,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,6,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,7,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,8,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_absurd_temporal,9,4,0.40000000000000002,10
+gemma4:e2b,alien_clinic_absurd_temporal,10,3,0.29999999999999999,10
+gemma4:e2b,alien_clinic_belief_maintenance,1,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_belief_maintenance,2,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_belief_maintenance,3,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_belief_maintenance,4,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_belief_maintenance,5,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_belief_maintenance,6,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_belief_maintenance,7,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_belief_maintenance,8,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_belief_maintenance,9,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_belief_maintenance,10,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,1,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_grounding,2,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,3,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,4,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,5,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,6,5,0.5,10
+gemma4:e2b,alien_clinic_grounding,7,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_grounding,8,7,0.69999999999999996,10
+gemma4:e2b,alien_clinic_grounding,9,6,0.59999999999999998,10
+gemma4:e2b,alien_clinic_grounding,10,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd,1,10,1,10
+gemma4:e2b,crime_scene_absurd,2,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,3,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,4,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,5,8,0.80000000000000004,10
+gemma4:e2b,crime_scene_absurd,6,10,1,10
+gemma4:e2b,crime_scene_absurd,7,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,8,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,9,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd,10,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_absurd_temporal,1,8,0.80000000000000004,10
+gemma4:e2b,crime_scene_absurd_temporal,2,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,3,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,4,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,5,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,6,6,0.59999999999999998,10
+gemma4:e2b,crime_scene_absurd_temporal,7,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,8,6,0.59999999999999998,10
+gemma4:e2b,crime_scene_absurd_temporal,9,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_absurd_temporal,10,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_belief_maintenance,1,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,2,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_belief_maintenance,3,9,0.90000000000000002,10
+gemma4:e2b,crime_scene_belief_maintenance,4,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,5,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,6,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,7,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,8,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,9,10,1,10
+gemma4:e2b,crime_scene_belief_maintenance,10,10,1,10
+gemma4:e2b,crime_scene_grounding,1,6,0.59999999999999998,10
+gemma4:e2b,crime_scene_grounding,2,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_grounding,3,7,0.69999999999999996,10
+gemma4:e2b,crime_scene_grounding,4,5,0.5,10
+gemma4:e2b,crime_scene_grounding,5,5,0.5,10
+gemma4:e2b,crime_scene_grounding,6,5,0.5,10
+gemma4:e2b,crime_scene_grounding,7,6,0.59999999999999998,10
+gemma4:e2b,crime_scene_grounding,8,5,0.5,10
+gemma4:e2b,crime_scene_grounding,9,6,0.59999999999999998,10
+gemma4:e2b,crime_scene_grounding,10,6,0.59999999999999998,10
+gemma4:e2b,loan_absurd,1,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd,2,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd,3,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd,4,10,1,10
+gemma4:e2b,loan_absurd,5,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd,6,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd,7,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd,8,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd,9,10,1,10
+gemma4:e2b,loan_absurd,10,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd_temporal,1,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd_temporal,2,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd_temporal,3,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd_temporal,4,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd_temporal,5,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd_temporal,6,10,1,10
+gemma4:e2b,loan_absurd_temporal,7,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd_temporal,8,8,0.80000000000000004,10
+gemma4:e2b,loan_absurd_temporal,9,9,0.90000000000000002,10
+gemma4:e2b,loan_absurd_temporal,10,9,0.90000000000000002,10
+gemma4:e2b,loan_belief_maintenance,1,10,1,10
+gemma4:e2b,loan_belief_maintenance,2,10,1,10
+gemma4:e2b,loan_belief_maintenance,3,10,1,10
+gemma4:e2b,loan_belief_maintenance,4,10,1,10
+gemma4:e2b,loan_belief_maintenance,5,10,1,10
+gemma4:e2b,loan_belief_maintenance,6,10,1,10
+gemma4:e2b,loan_belief_maintenance,7,10,1,10
+gemma4:e2b,loan_belief_maintenance,8,10,1,10
+gemma4:e2b,loan_belief_maintenance,9,9,0.90000000000000002,10
+gemma4:e2b,loan_belief_maintenance,10,10,1,10
+gemma4:e2b,loan_grounding,1,5,0.5,10
+gemma4:e2b,loan_grounding,2,6,0.59999999999999998,10
+gemma4:e2b,loan_grounding,3,4,0.40000000000000002,10
+gemma4:e2b,loan_grounding,4,4,0.40000000000000002,10
+gemma4:e2b,loan_grounding,5,6,0.59999999999999998,10
+gemma4:e2b,loan_grounding,6,6,0.59999999999999998,10
+gemma4:e2b,loan_grounding,7,4,0.40000000000000002,10
+gemma4:e2b,loan_grounding,8,4,0.40000000000000002,10
+gemma4:e2b,loan_grounding,9,6,0.59999999999999998,10
+gemma4:e2b,loan_grounding,10,6,0.59999999999999998,10
+gemma4:e2b,thorncrester_absurd,1,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,2,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,3,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd,4,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,5,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd,6,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,7,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,8,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd,9,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd,10,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,1,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd_temporal,2,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,3,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,4,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,5,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd_temporal,6,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,7,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_absurd_temporal,8,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,9,9,0.90000000000000002,10
+gemma4:e2b,thorncrester_absurd_temporal,10,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_belief_maintenance,1,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,2,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,3,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,4,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,5,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,6,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,7,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,8,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,9,10,1,10
+gemma4:e2b,thorncrester_belief_maintenance,10,10,1,10
+gemma4:e2b,thorncrester_grounding,1,6,0.59999999999999998,10
+gemma4:e2b,thorncrester_grounding,2,7,0.69999999999999996,10
+gemma4:e2b,thorncrester_grounding,3,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_grounding,4,7,0.69999999999999996,10
+gemma4:e2b,thorncrester_grounding,5,6,0.59999999999999998,10
+gemma4:e2b,thorncrester_grounding,6,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_grounding,7,7,0.69999999999999996,10
+gemma4:e2b,thorncrester_grounding,8,8,0.80000000000000004,10
+gemma4:e2b,thorncrester_grounding,9,7,0.69999999999999996,10
+gemma4:e2b,thorncrester_grounding,10,6,0.59999999999999998,10
+llama3.2:1b,alien_clinic_absurd,1,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd,2,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd,3,3,0.29999999999999999,10
+llama3.2:1b,alien_clinic_absurd,4,3,0.29999999999999999,10
+llama3.2:1b,alien_clinic_absurd,5,4,0.40000000000000002,10
+llama3.2:1b,alien_clinic_absurd,6,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd,7,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd,8,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd,9,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd,10,3,0.29999999999999999,10
+llama3.2:1b,alien_clinic_absurd_temporal,1,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,2,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,3,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,4,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,5,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,6,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,7,0,0,10
+llama3.2:1b,alien_clinic_absurd_temporal,8,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,9,2,0.20000000000000001,10
+llama3.2:1b,alien_clinic_absurd_temporal,10,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_belief_maintenance,1,5,0.5,10
+llama3.2:1b,alien_clinic_belief_maintenance,2,5,0.5,10
+llama3.2:1b,alien_clinic_belief_maintenance,3,3,0.29999999999999999,10
+llama3.2:1b,alien_clinic_belief_maintenance,4,4,0.40000000000000002,10
+llama3.2:1b,alien_clinic_belief_maintenance,5,6,0.59999999999999998,10
+llama3.2:1b,alien_clinic_belief_maintenance,6,3,0.29999999999999999,10
+llama3.2:1b,alien_clinic_belief_maintenance,7,5,0.5,10
+llama3.2:1b,alien_clinic_belief_maintenance,8,5,0.5,10
+llama3.2:1b,alien_clinic_belief_maintenance,9,5,0.5,10
+llama3.2:1b,alien_clinic_belief_maintenance,10,5,0.5,10
+llama3.2:1b,alien_clinic_grounding,1,0,0,10
+llama3.2:1b,alien_clinic_grounding,2,0,0,10
+llama3.2:1b,alien_clinic_grounding,3,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_grounding,4,0,0,10
+llama3.2:1b,alien_clinic_grounding,5,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_grounding,6,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_grounding,7,0,0,10
+llama3.2:1b,alien_clinic_grounding,8,1,0.10000000000000001,10
+llama3.2:1b,alien_clinic_grounding,9,0,0,10
+llama3.2:1b,alien_clinic_grounding,10,1,0.10000000000000001,10
+llama3.2:1b,crime_scene_absurd,1,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd,2,5,0.5,10
+llama3.2:1b,crime_scene_absurd,3,1,0.10000000000000001,10
+llama3.2:1b,crime_scene_absurd,4,6,0.59999999999999998,10
+llama3.2:1b,crime_scene_absurd,5,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd,6,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd,7,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd,8,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd,9,6,0.59999999999999998,10
+llama3.2:1b,crime_scene_absurd,10,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd_temporal,1,5,0.5,10
+llama3.2:1b,crime_scene_absurd_temporal,2,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd_temporal,3,1,0.10000000000000001,10
+llama3.2:1b,crime_scene_absurd_temporal,4,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd_temporal,5,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd_temporal,6,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd_temporal,7,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd_temporal,8,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_absurd_temporal,9,4,0.40000000000000002,10
+llama3.2:1b,crime_scene_absurd_temporal,10,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_belief_maintenance,1,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_belief_maintenance,2,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,3,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_belief_maintenance,4,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,5,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,6,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,7,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_belief_maintenance,8,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,9,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_belief_maintenance,10,3,0.29999999999999999,10
+llama3.2:1b,crime_scene_grounding,1,1,0.10000000000000001,10
+llama3.2:1b,crime_scene_grounding,2,0,0,10
+llama3.2:1b,crime_scene_grounding,3,0,0,10
+llama3.2:1b,crime_scene_grounding,4,0,0,10
+llama3.2:1b,crime_scene_grounding,5,0,0,10
+llama3.2:1b,crime_scene_grounding,6,2,0.20000000000000001,10
+llama3.2:1b,crime_scene_grounding,7,0,0,10
+llama3.2:1b,crime_scene_grounding,8,1,0.10000000000000001,10
+llama3.2:1b,crime_scene_grounding,9,0,0,10
+llama3.2:1b,crime_scene_grounding,10,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,1,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,2,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd,3,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd,4,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd,5,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,6,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,7,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,8,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd,9,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd,10,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd_temporal,1,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,2,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd_temporal,3,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,4,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,5,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,6,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,7,2,0.20000000000000001,10
+llama3.2:1b,loan_absurd_temporal,8,1,0.10000000000000001,10
+llama3.2:1b,loan_absurd_temporal,9,3,0.29999999999999999,10
+llama3.2:1b,loan_absurd_temporal,10,1,0.10000000000000001,10
+llama3.2:1b,loan_belief_maintenance,1,7,0.69999999999999996,10
+llama3.2:1b,loan_belief_maintenance,2,6,0.59999999999999998,10
+llama3.2:1b,loan_belief_maintenance,3,6,0.59999999999999998,10
+llama3.2:1b,loan_belief_maintenance,4,6,0.59999999999999998,10
+llama3.2:1b,loan_belief_maintenance,5,6,0.59999999999999998,10
+llama3.2:1b,loan_belief_maintenance,6,8,0.80000000000000004,10
+llama3.2:1b,loan_belief_maintenance,7,6,0.59999999999999998,10
+llama3.2:1b,loan_belief_maintenance,8,5,0.5,10
+llama3.2:1b,loan_belief_maintenance,9,7,0.69999999999999996,10
+llama3.2:1b,loan_belief_maintenance,10,7,0.69999999999999996,10
+llama3.2:1b,loan_grounding,1,0,0,10
+llama3.2:1b,loan_grounding,2,0,0,10
+llama3.2:1b,loan_grounding,3,0,0,10
+llama3.2:1b,loan_grounding,4,0,0,10
+llama3.2:1b,loan_grounding,5,0,0,10
+llama3.2:1b,loan_grounding,6,0,0,10
+llama3.2:1b,loan_grounding,7,0,0,10
+llama3.2:1b,loan_grounding,8,0,0,10
+llama3.2:1b,loan_grounding,9,0,0,10
+llama3.2:1b,loan_grounding,10,1,0.10000000000000001,10
+llama3.2:1b,thorncrester_absurd,1,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_absurd,2,2,0.20000000000000001,10
+llama3.2:1b,thorncrester_absurd,3,4,0.40000000000000002,10
+llama3.2:1b,thorncrester_absurd,4,2,0.20000000000000001,10
+llama3.2:1b,thorncrester_absurd,5,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_absurd,6,4,0.40000000000000002,10
+llama3.2:1b,thorncrester_absurd,7,2,0.20000000000000001,10
+llama3.2:1b,thorncrester_absurd,8,4,0.40000000000000002,10
+llama3.2:1b,thorncrester_absurd,9,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_absurd,10,4,0.40000000000000002,10
+llama3.2:1b,thorncrester_absurd_temporal,1,8,0.80000000000000004,10
+llama3.2:1b,thorncrester_absurd_temporal,2,5,0.5,10
+llama3.2:1b,thorncrester_absurd_temporal,3,5,0.5,10
+llama3.2:1b,thorncrester_absurd_temporal,4,7,0.69999999999999996,10
+llama3.2:1b,thorncrester_absurd_temporal,5,5,0.5,10
+llama3.2:1b,thorncrester_absurd_temporal,6,7,0.69999999999999996,10
+llama3.2:1b,thorncrester_absurd_temporal,7,7,0.69999999999999996,10
+llama3.2:1b,thorncrester_absurd_temporal,8,5,0.5,10
+llama3.2:1b,thorncrester_absurd_temporal,9,5,0.5,10
+llama3.2:1b,thorncrester_absurd_temporal,10,6,0.59999999999999998,10
+llama3.2:1b,thorncrester_belief_maintenance,1,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_belief_maintenance,2,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_belief_maintenance,3,5,0.5,10
+llama3.2:1b,thorncrester_belief_maintenance,4,6,0.59999999999999998,10
+llama3.2:1b,thorncrester_belief_maintenance,5,3,0.29999999999999999,10
+llama3.2:1b,thorncrester_belief_maintenance,6,5,0.5,10
+llama3.2:1b,thorncrester_belief_maintenance,7,7,0.69999999999999996,10
+llama3.2:1b,thorncrester_belief_maintenance,8,4,0.40000000000000002,10
+llama3.2:1b,thorncrester_belief_maintenance,9,5,0.5,10
+llama3.2:1b,thorncrester_belief_maintenance,10,5,0.5,10
+llama3.2:1b,thorncrester_grounding,1,0,0,10
+llama3.2:1b,thorncrester_grounding,2,0,0,10
+llama3.2:1b,thorncrester_grounding,3,0,0,10
+llama3.2:1b,thorncrester_grounding,4,0,0,10
+llama3.2:1b,thorncrester_grounding,5,0,0,10
+llama3.2:1b,thorncrester_grounding,6,0,0,10
+llama3.2:1b,thorncrester_grounding,7,0,0,10
+llama3.2:1b,thorncrester_grounding,8,0,0,10
+llama3.2:1b,thorncrester_grounding,9,0,0,10
+llama3.2:1b,thorncrester_grounding,10,0,0,10
+ministral-3:3b,alien_clinic_absurd,1,6,0.59999999999999998,10
+ministral-3:3b,alien_clinic_absurd,2,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_absurd,3,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_absurd,4,5,0.5,10
+ministral-3:3b,alien_clinic_absurd,5,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_absurd,6,5,0.5,10
+ministral-3:3b,alien_clinic_absurd,7,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_absurd,8,6,0.59999999999999998,10
+ministral-3:3b,alien_clinic_absurd,9,5,0.5,10
+ministral-3:3b,alien_clinic_absurd,10,5,0.5,10
+ministral-3:3b,alien_clinic_absurd_temporal,1,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,2,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,3,1,0.10000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,4,3,0.29999999999999999,10
+ministral-3:3b,alien_clinic_absurd_temporal,5,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,6,3,0.29999999999999999,10
+ministral-3:3b,alien_clinic_absurd_temporal,7,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,8,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,9,2,0.20000000000000001,10
+ministral-3:3b,alien_clinic_absurd_temporal,10,0,0,10
+ministral-3:3b,alien_clinic_belief_maintenance,1,7,0.69999999999999996,10
+ministral-3:3b,alien_clinic_belief_maintenance,2,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,3,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,4,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,5,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,6,7,0.69999999999999996,10
+ministral-3:3b,alien_clinic_belief_maintenance,7,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,8,7,0.69999999999999996,10
+ministral-3:3b,alien_clinic_belief_maintenance,9,8,0.80000000000000004,10
+ministral-3:3b,alien_clinic_belief_maintenance,10,7,0.69999999999999996,10
+ministral-3:3b,alien_clinic_grounding,1,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_grounding,2,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,3,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,4,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,5,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,6,6,0.59999999999999998,10
+ministral-3:3b,alien_clinic_grounding,7,4,0.40000000000000002,10
+ministral-3:3b,alien_clinic_grounding,8,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,9,5,0.5,10
+ministral-3:3b,alien_clinic_grounding,10,5,0.5,10
+ministral-3:3b,crime_scene_absurd,1,9,0.90000000000000002,10
+ministral-3:3b,crime_scene_absurd,2,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_absurd,3,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_absurd,4,10,1,10
+ministral-3:3b,crime_scene_absurd,5,9,0.90000000000000002,10
+ministral-3:3b,crime_scene_absurd,6,10,1,10
+ministral-3:3b,crime_scene_absurd,7,9,0.90000000000000002,10
+ministral-3:3b,crime_scene_absurd,8,9,0.90000000000000002,10
+ministral-3:3b,crime_scene_absurd,9,10,1,10
+ministral-3:3b,crime_scene_absurd,10,10,1,10
+ministral-3:3b,crime_scene_absurd_temporal,1,6,0.59999999999999998,10
+ministral-3:3b,crime_scene_absurd_temporal,2,6,0.59999999999999998,10
+ministral-3:3b,crime_scene_absurd_temporal,3,7,0.69999999999999996,10
+ministral-3:3b,crime_scene_absurd_temporal,4,6,0.59999999999999998,10
+ministral-3:3b,crime_scene_absurd_temporal,5,5,0.5,10
+ministral-3:3b,crime_scene_absurd_temporal,6,5,0.5,10
+ministral-3:3b,crime_scene_absurd_temporal,7,5,0.5,10
+ministral-3:3b,crime_scene_absurd_temporal,8,6,0.59999999999999998,10
+ministral-3:3b,crime_scene_absurd_temporal,9,4,0.40000000000000002,10
+ministral-3:3b,crime_scene_absurd_temporal,10,6,0.59999999999999998,10
+ministral-3:3b,crime_scene_belief_maintenance,1,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,2,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,3,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,4,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,5,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,6,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,7,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,8,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,9,10,1,10
+ministral-3:3b,crime_scene_belief_maintenance,10,10,1,10
+ministral-3:3b,crime_scene_grounding,1,7,0.69999999999999996,10
+ministral-3:3b,crime_scene_grounding,2,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_grounding,3,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_grounding,4,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_grounding,5,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_grounding,6,7,0.69999999999999996,10
+ministral-3:3b,crime_scene_grounding,7,7,0.69999999999999996,10
+ministral-3:3b,crime_scene_grounding,8,8,0.80000000000000004,10
+ministral-3:3b,crime_scene_grounding,9,7,0.69999999999999996,10
+ministral-3:3b,crime_scene_grounding,10,8,0.80000000000000004,10
+ministral-3:3b,loan_absurd,1,5,0.5,10
+ministral-3:3b,loan_absurd,2,3,0.29999999999999999,10
+ministral-3:3b,loan_absurd,3,4,0.40000000000000002,10
+ministral-3:3b,loan_absurd,4,4,0.40000000000000002,10
+ministral-3:3b,loan_absurd,5,3,0.29999999999999999,10
+ministral-3:3b,loan_absurd,6,5,0.5,10
+ministral-3:3b,loan_absurd,7,4,0.40000000000000002,10
+ministral-3:3b,loan_absurd,8,5,0.5,10
+ministral-3:3b,loan_absurd,9,5,0.5,10
+ministral-3:3b,loan_absurd,10,6,0.59999999999999998,10
+ministral-3:3b,loan_absurd_temporal,1,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,2,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,3,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,4,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,5,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,6,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,7,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,8,5,0.5,10
+ministral-3:3b,loan_absurd_temporal,9,3,0.29999999999999999,10
+ministral-3:3b,loan_absurd_temporal,10,6,0.59999999999999998,10
+ministral-3:3b,loan_belief_maintenance,1,9,0.90000000000000002,10
+ministral-3:3b,loan_belief_maintenance,2,7,0.69999999999999996,10
+ministral-3:3b,loan_belief_maintenance,3,10,1,10
+ministral-3:3b,loan_belief_maintenance,4,9,0.90000000000000002,10
+ministral-3:3b,loan_belief_maintenance,5,5,0.5,10
+ministral-3:3b,loan_belief_maintenance,6,7,0.69999999999999996,10
+ministral-3:3b,loan_belief_maintenance,7,8,0.80000000000000004,10
+ministral-3:3b,loan_belief_maintenance,8,8,0.80000000000000004,10
+ministral-3:3b,loan_belief_maintenance,9,7,0.69999999999999996,10
+ministral-3:3b,loan_belief_maintenance,10,9,0.90000000000000002,10
+ministral-3:3b,loan_grounding,1,7,0.69999999999999996,10
+ministral-3:3b,loan_grounding,2,9,0.90000000000000002,10
+ministral-3:3b,loan_grounding,3,7,0.69999999999999996,10
+ministral-3:3b,loan_grounding,4,7,0.69999999999999996,10
+ministral-3:3b,loan_grounding,5,7,0.69999999999999996,10
+ministral-3:3b,loan_grounding,6,9,0.90000000000000002,10
+ministral-3:3b,loan_grounding,7,7,0.69999999999999996,10
+ministral-3:3b,loan_grounding,8,8,0.80000000000000004,10
+ministral-3:3b,loan_grounding,9,8,0.80000000000000004,10
+ministral-3:3b,loan_grounding,10,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,1,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,2,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,3,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,4,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,5,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd,6,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd,7,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd,8,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd,9,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd,10,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd_temporal,1,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd_temporal,2,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd_temporal,3,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd_temporal,4,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd_temporal,5,7,0.69999999999999996,10
+ministral-3:3b,thorncrester_absurd_temporal,6,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd_temporal,7,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd_temporal,8,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_absurd_temporal,9,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_absurd_temporal,10,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_belief_maintenance,1,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,2,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,3,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,4,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,5,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,6,10,1,10
+ministral-3:3b,thorncrester_belief_maintenance,7,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_belief_maintenance,8,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_belief_maintenance,9,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_belief_maintenance,10,10,1,10
+ministral-3:3b,thorncrester_grounding,1,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_grounding,2,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_grounding,3,10,1,10
+ministral-3:3b,thorncrester_grounding,4,7,0.69999999999999996,10
+ministral-3:3b,thorncrester_grounding,5,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_grounding,6,10,1,10
+ministral-3:3b,thorncrester_grounding,7,9,0.90000000000000002,10
+ministral-3:3b,thorncrester_grounding,8,10,1,10
+ministral-3:3b,thorncrester_grounding,9,8,0.80000000000000004,10
+ministral-3:3b,thorncrester_grounding,10,9,0.90000000000000002,10

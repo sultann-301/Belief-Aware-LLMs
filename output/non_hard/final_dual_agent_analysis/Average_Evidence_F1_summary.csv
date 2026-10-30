@@ -1,0 +1,5 @@
+Pair,System,mean,sd,n
+gemma3:1b | gemma3:1b,Dual-Agent,0.44520625000000003,0.16829621987733415,16
+gemma3:1b | ministral-3:3b,Dual-Agent,0.45207187500000001,0.16913327286368973,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,0.31648124999999999,0.1796294230492321,16
+ministral-3:3b | gemma3:1b,Dual-Agent,0.31611875,0.1827811787128715,16

@@ -1,0 +1,171 @@
+{
+  "benchmark": "Hard scenarios excluded from every reported benchmark metric and chart",
+  "domains": [
+    "loan",
+    "alien_clinic",
+    "crime_scene",
+    "thorncrester"
+  ],
+  "scenario_types": [
+    "belief_maintenance",
+    "absurd",
+    "absurd_temporal",
+    "grounding"
+  ],
+  "combinations": [
+    "loan_belief_maintenance",
+    "loan_absurd",
+    "loan_absurd_temporal",
+    "loan_grounding",
+    "alien_clinic_belief_maintenance",
+    "alien_clinic_absurd",
+    "alien_clinic_absurd_temporal",
+    "alien_clinic_grounding",
+    "crime_scene_belief_maintenance",
+    "crime_scene_absurd",
+    "crime_scene_absurd_temporal",
+    "crime_scene_grounding",
+    "thorncrester_belief_maintenance",
+    "thorncrester_absurd",
+    "thorncrester_absurd_temporal",
+    "thorncrester_grounding"
+  ],
+  "paper_excluded_metrics": [
+    "AFR_Answer_Flip_Rate",
+    "TPCA_Words_Wrong"
+  ],
+  "qwen_reporting_label": "Qwen3:4b, no thinking; source identifiers retained in provenance",
+  "models": [
+    "gemma3:1b",
+    "gemma4:e2b",
+    "llama3.2:1b",
+    "ministral-3:3b",
+    "Qwen3:4b, no thinking"
+  ],
+  "combinations_per_model": 16,
+  "accuracy_matched_cells": 80,
+  "sources": [
+    {
+      "file": "eval_results.csv",
+      "sha256": "831bfae982e451810dcef39fc782f44e9f5006338ebb9d47e4eb15a8c25d13f5"
+    },
+    {
+      "file": "eval_results_dual_agent.csv",
+      "sha256": "ae857e3e694e896a0e17d4d6f44251805775cd6225258a17cc55aeac483153d3"
+    },
+    {
+      "file": "eval_results_dual_agent.legacy.csv",
+      "sha256": "968044c6e277bde9c02455cdbcf8981d10f5b1689c72402227ba69439d9c8e57"
+    },
+    {
+      "file": "eval_results_dual_agent_normalized.csv",
+      "sha256": "5e52e938ace65f4e5f16303ce963b2de41b5728a21670cc821600903bab9caf6"
+    },
+    {
+      "file": "eval_results_graphrag.csv",
+      "sha256": "2938095d97ae14d8a15db27897c90c63033de78b92aeeaed83eee589e8d29868"
+    },
+    {
+      "file": "eval_results_normalized.csv",
+      "sha256": "502e396420948ea7b3273f7c9d8f6a4f08527bc26b673f4259e59446e872a476"
+    },
+    {
+      "file": "eval_results_with_store.csv",
+      "sha256": "d59a70f88104a84731e550fd927e4586726ec12385c521888efbbbbc618e514a"
+    },
+    {
+      "file": "evaluation/eval_results_with_store.csv",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "eval_results_graphrag.manifest.json",
+      "sha256": "7ee80cc7461988920befe3f2826f73033c08056e80c0f1b40ade46803538ddab"
+    },
+    {
+      "file": "scripts/normalize_eval_csvs.py",
+      "sha256": "060c207ca5c68e41807b78748d6f6f8ec7b5299e4e0ff54747926ce1e306ef58"
+    },
+    {
+      "file": "evaluation/eval_metrics.py",
+      "sha256": "4718a21d1a8fdd6eac698cda360bd559571d655d1147781e50df16c2256c4346"
+    },
+    {
+      "file": "evaluation/eval_orchestrator.py",
+      "sha256": "d976e94461197ada988cc6539abd4e747613a5b2f331d2b4086f7c646c71ee31"
+    }
+  ],
+  "source_selection": [
+    {
+      "file": "eval_results_graphrag.csv",
+      "source_rows": 8000,
+      "retained_rows": 8000,
+      "hard_rows_excluded": 0,
+      "other_out_of_scope_rows": 0,
+      "source_combinations": 16,
+      "retained_combinations": 16
+    },
+    {
+      "file": "eval_results_normalized.csv",
+      "source_rows": 6602,
+      "retained_rows": 5738,
+      "hard_rows_excluded": 864,
+      "other_out_of_scope_rows": 0,
+      "source_combinations": 20,
+      "retained_combinations": 16
+    },
+    {
+      "file": "eval_results_with_store.csv",
+      "source_rows": 2464,
+      "retained_rows": 1760,
+      "hard_rows_excluded": 264,
+      "other_out_of_scope_rows": 440,
+      "source_combinations": 24,
+      "retained_combinations": 16
+    }
+  ],
+  "prompt_mapping": {
+    "v15": "v2",
+    "v16": "v1"
+  },
+  "accuracy": "Within each model/combination, With Store=(v15+v16)/2 and No Store=(v1+v2)/2; then equal mean over 16 combinations. GraphRAG=v1 only. Both variants required. Failed extractions count as incorrect.",
+  "accuracy_sd": "Sample SD (ddof=1) of prompt-averaged combination accuracies, NOT SD of prompt rows, run SD, SE or confidence interval. Overall SD across 80 model/combination observations; model SD across 16; scenario SD across 20.",
+  "other_metrics": "Primary shared complete-case support: GraphRAG v1, With Store v16, No Store v1. Separate per-system and prompt coverage in metric_coverage.csv and metric_summaries.csv. No imputation; absent and undefined cells listed explicitly.",
+  "metric_sd": "Sample SD (ddof=1) across retained per-combination metric values, recomputed from those values. Not a pooled turn metric or run uncertainty.",
+  "raw_score_sd": "Raw-score variance and SD kept per combination/prompt; never averaged into benchmark SD. Historical per-combination raw-score SDs are available. Pooled historical run-accuracy SD is not reconstructed here; reconstruction from summary moments would require verified historical turns per run. GraphRAG run SD recomputed from per-run observations; pooled scenario/run spread includes task heterogeneity.",
+  "calibration": "GraphRAG: correctness versus decision_prob, missing-only mean_answer_prob fallback. Pool valid-confidence turns within each combination then macro-average combination metrics. ECE uses 3 bins. Historical confidence denominators unavailable.",
+  "metric_definitions": {
+    "Average_Accuracy": "Accuracy ↑",
+    "Summary_Metric_Brier_Score": "Brier ↓",
+    "Summary_Metric_Log_Loss": "Log loss ↓",
+    "Summary_Metric_ECE": "ECE ↓",
+    "Summary_Metric_MacroCE": "MacroCE ↓",
+    "EFR_Extraction_Failure_Rate": "Extraction failure ↓",
+    "AFR_Answer_Flip_Rate": "Answer flip rate ↓",
+    "DS_Determinism_Score": "Determinism ↑",
+    "Variance_Raw_Score": "Raw-score variance",
+    "StdDev_Raw_Score": "Raw-score SD",
+    "PTC_Variance_PerTurn_Consistency": "Per-turn accuracy variance",
+    "TPCA_Words_Correct": "Words / correct response",
+    "TPCA_Words_Wrong": "Words / incorrect response",
+    "EMD_bracketed_exact": "Bracketed exact / recorded methods"
+  },
+  "undefined_afr": "Historical AFR zero placeholders where EFR=1 are marked undefined: no extracted answers. Audit in undefined_afr_audit.csv; primary AFR shared support 74/80 cells.",
+  "undefined_word_means": "Historical TPCA zero placeholders are converted to missing for accuracy=0 correct-response groups or accuracy=1 incorrect-response groups. Original values in undefined_word_means_audit.csv. Per-system/shared supports consequently differ; never interpret an empty group as a zero-word response.",
+  "experimental_differences": [
+    "Qwen GraphRAG=qwen3:4b with think=False; historical=hoangquan456/qwen3-nothink:4b. Shared display label does not establish checkpoint equivalence.",
+    "GraphRAG uses supplied targets, snapshot history, sampled paraphrases, scenario_seed=0, domain-dependency-v2 retriever, response_cache=False, temperature=0, 10 runs and 10 turns/run/combination.",
+    "Historical single-agent summaries have temperature=0 and 10 runs, but no per-turn records, run lengths, seeds or verified matching questions/history/settings; historical baseline prompt versions are inferred by normalizer.",
+    "GraphRAG num_predict=768, num_ctx=8162, keep_alive=10m. Historical matching settings cannot be verified from summaries.",
+    "Supplemental v16_one_shot remains a separate experiment. Hard and temporal-noise experiments outside the 16-combination benchmark are excluded.",
+    "Evidence/fidelity labels unavailable for GraphRAG; no GraphRAG elapsed time. Historical timing is parallel-batch time, not isolated latency. Auxiliary/EMD conditions repaired in memory from evaluator semantics.",
+    "Separate experiments permit descriptive comparisons, not causal or paired significance claims."
+  ],
+  "missingness": {
+    "accuracy_missing_combinations": 0,
+    "metric_missing_values_file": "missing_metric_values.csv",
+    "metric_coverage_file": "metric_coverage.csv",
+    "confidence_coverage_file": "confidence_coverage.csv",
+    "supplemental_missing_values_file": "supplemental_missing_metric_values.csv"
+  },
+  "execution": "Existing CSVs only; no evaluations or model calls. Run notebooks from repository root."
+}

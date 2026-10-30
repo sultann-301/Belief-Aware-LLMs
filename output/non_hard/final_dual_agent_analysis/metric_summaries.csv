@@ -1,0 +1,101 @@
+Pair,System,Metric_Family,Summary_Metric,mean,sd,n
+gemma3:1b | gemma3:1b,Dual-Agent,Binding,Average_Accuracy,0.61875000000000002,0.34912987077399532,16
+gemma3:1b | gemma3:1b,Dual-Agent,Binding,Standard_Deviation_Accuracy,0.029065906249999999,0.02566659123596194,16
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Correct,60.721874999999997,11.307460203334788,16
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Wrong,61.606250000000003,7.3906895257930207,16
+gemma3:1b | gemma3:1b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,12.162428125,4.4833074451781219,16
+gemma3:1b | gemma3:1b,Dual-Agent,End_to_End,Average_Accuracy,0.57437499999999997,0.26371623006557632,16
+gemma3:1b | gemma3:1b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,0.039382187499999999,0.030474905573206187,16
+gemma3:1b | gemma3:1b,Dual-Agent,Extraction,EMD_bracketed_exact,1,0,16
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,Brier_Score,0.42659999999999998,0.26323686608578717,16
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,ECE,0.42795,0.26236941894969384,16
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,Log_Loss,5.9352843750000002,3.8558515078478992,16
+gemma3:1b | gemma3:1b,Dual-Agent,Matcher,MacroCE,0.50367499999999998,0.0084664435666144035,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Binding_Accuracy,0.61875000000000002,0.34912987077399532,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Correct_Count,30.9375,17.456493538699764,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoner,Scored_Count,50,0,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,5.8312499999999998,3.3129480829013906,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,2.1187499999999999,0.47243870854676312,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_F1,0.44520625000000003,0.16829621987733415,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Precision,0.64940624999999996,0.1074900350032504,16
+gemma3:1b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Recall,0.383121875,0.18368293240323122,16
+gemma3:1b | gemma3:1b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,1,0,16
+gemma3:1b | gemma3:1b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,0.23754375,0.07673866447235056,16
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,0.045624999999999999,0.040491768710854477,16
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,DS_Determinism_Score,0.85624999999999996,0.12093386622447823,16
+gemma3:1b | gemma3:1b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,0,0,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Binding,Average_Accuracy,0.62624999999999997,0.34611895835584233,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Binding,Standard_Deviation_Accuracy,0.030911062499999999,0.022660745039145704,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,TPCA_Words_Correct,58.453125,13.046205945919043,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,TPCA_Words_Wrong,59.483333333333334,9.4302262256356642,15
+gemma3:1b | ministral-3:3b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,10.670193749999999,6.9586271314312906,16
+gemma3:1b | ministral-3:3b,Dual-Agent,End_to_End,Average_Accuracy,0.70874999999999999,0.25197552791226902,16
+gemma3:1b | ministral-3:3b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,0.043554875,0.034641375150004268,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Extraction,EMD_bracketed_exact,1,0,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,Brier_Score,0.24937500000000001,0.20196297928085732,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,ECE,0.24709999999999999,0.21935542847169295,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,Log_Loss,1.158015625,1.0143269572675191,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Matcher,MacroCE,0.44758750000000003,0.12758875668856301,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Binding_Accuracy,0.62624999999999997,0.34611895835584233,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Correct_Count,31.3125,17.305947917792118,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoner,Scored_Count,50,0,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,5.8312499999999998,3.3129480829013906,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,2.1593749999999998,0.50372570247440573,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_F1,0.45207187500000001,0.16913327286368973,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Precision,0.65448125000000001,0.10900206095146397,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Reasoning,Average_Evidence_Recall,0.39003437499999999,0.18472526602024425,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,1,0,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,0.23754375,0.07673866447235056,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,0.048125000000000001,0.052181574014844231,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,DS_Determinism_Score,0.85624999999999996,0.14818344486930154,16
+gemma3:1b | ministral-3:3b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,0,0,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Binding,Average_Accuracy,0.78749999999999998,0.15220600075774499,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Binding,Standard_Deviation_Accuracy,0.034647093749999996,0.031231539806323327,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,TPCA_Words_Correct,77.806250000000006,18.346406323855359,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,TPCA_Words_Wrong,105.73928571428571,26.280119559582182,14
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,17.139771875000001,2.1160542995528853,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,End_to_End,Average_Accuracy,0.87,0.11758684733704983,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,End_to_End,Standard_Deviation_Accuracy,0.033303437499999998,0.031612460386096178,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Extraction,EMD_bracketed_exact,1,0,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,Brier_Score,0.12623437500000001,0.11832791966783099,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,ECE,0.12608125000000001,0.1168192119972852,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,Log_Loss,2.6402281250000001,2.3772177267391634,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Matcher,MacroCE,0.40497499999999997,0.20117160999173483,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Binding_Accuracy,0.78749999999999998,0.15220600075774499,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Correct_Count,39.375,7.6103000378872485,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoner,Scored_Count,50,0,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,5.8312499999999998,3.3129480829013906,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,1.5543750000000001,0.657358032835481,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_F1,0.31648124999999999,0.1796294230492321,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Precision,0.43981562499999999,0.17674964565617474,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Reasoning,Average_Evidence_Recall,0.28773749999999998,0.18805637496949329,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,1,0,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,0.23754375,0.07673866447235056,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,AFR_Answer_Flip_Rate,0.025625000000000002,0.026825050481468504,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,DS_Determinism_Score,0.91874999999999996,0.085391256382996647,16
+"ministral-3:3b | Qwen3:4b, no thinking",Dual-Agent,Stability,EFR_Extraction_Failure_Rate,0.0025000000000000001,0.01,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Binding,Average_Accuracy,0.79000000000000004,0.15658863304850709,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Binding,Standard_Deviation_Accuracy,0.033026781249999998,0.031624438802909348,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Correct,79.921875,16.349117904339668,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,TPCA_Words_Wrong,96.786666666666662,26.757058258834554,15
+ministral-3:3b | gemma3:1b,Dual-Agent,Efficiency,WCT_WallClock_PerTurn_Seconds,15.6958375,7.9249380936488505,16
+ministral-3:3b | gemma3:1b,Dual-Agent,End_to_End,Average_Accuracy,0.86562499999999998,0.10708057713703263,16
+ministral-3:3b | gemma3:1b,Dual-Agent,End_to_End,Standard_Deviation_Accuracy,0.028963625,0.032731157203038208,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Extraction,EMD_bracketed_exact,1,0,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,Brier_Score,0.13486875000000001,0.10730017221949521,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,ECE,0.136553125,0.10958287650411749,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,Log_Loss,1.9887874999999999,1.8423831407084321,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Matcher,MacroCE,0.45438125000000001,0.13657420800307307,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Binding_Accuracy,0.79000000000000004,0.15658863304850709,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Correct_Count,39.5,7.8294316524253533,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoner,Scored_Count,50,0,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Canonical_Keys,5.8312499999999998,3.3129480829013906,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Cited_Keys,1.5262500000000001,0.63940467102871046,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_F1,0.31611875,0.1827811787128715,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Precision,0.440240625,0.18093881490598787,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Reasoning,Average_Evidence_Recall,0.28690312500000004,0.1904877043002601,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Retrieval,Average_BCR_BeliefCoverage,1,0,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Retrieval,Average_SBIR_SpuriousInjection,0.23754375,0.07673866447235056,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,AFR_Answer_Flip_Rate,0.029999999999999999,0.032249030993194198,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,DS_Determinism_Score,0.90625,0.092870878105033527,16
+ministral-3:3b | gemma3:1b,Dual-Agent,Stability,EFR_Extraction_Failure_Rate,0,0,16
