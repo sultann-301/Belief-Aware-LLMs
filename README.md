@@ -2,6 +2,31 @@
 
 An LLM-based system that utilizes belief revision and a deterministic belief graph to improve reasoning. By grounding standard Large Language Models with a strictly evaluated, dependency-driven belief store, the system successfully bridges LLM reasoning gaps handling tasks like complex multi-hop rule traces, counterfactual branching, and negated phrasing.
 
+## View results
+
+Open the notebooks on GitHub to inspect their saved plots and tables. Viewing these results requires no installation, Ollama, or model calls.
+
+| Results | Start here |
+| --- | --- |
+| With Store vs No Store vs GraphRAG | [Main comparison notebook](graphrag_single_agent_comparison.ipynb) |
+| Detailed single-agent results | [Single-agent analysis](final_single_agent_analysis.ipynb) |
+| Dual-agent results | [Dual-agent analysis](final_dual_agent_analysis.ipynb) |
+| Exported numerical summaries | [Accuracy by model](output/non_hard/accuracy_by_model.csv), [accuracy by scenario](output/non_hard/accuracy_by_scenario.csv), [single-agent and GraphRAG metrics](output/non_hard/metric_summaries.csv), [dual-agent metrics](output/non_hard/final_dual_agent_analysis/metric_summaries.csv) |
+
+The main comparison covers four domains × four scenario types (16 combinations), excluding Hard, noise, and bare-domain experiments. The dual-agent notebook also contains a separately labeled historical comparison across all available scenarios.
+
+The root `eval_results*.csv` files are saved experiment data and analysis inputs. The notebooks process those inputs and export derived tables, charts, source hashes, and validation records to [output/non_hard/](output/non_hard/). Its analysis subfolders follow the notebook names. Figure files are generated locally and ignored by Git; saved plots remain embedded in the notebooks.
+
+### Regenerate tables and figures
+
+From the repository root, with the notebook dependencies installed:
+
+```bash
+python3 scripts/execute_analysis_notebooks.py
+```
+
+This executes the notebooks in dependency order using the included CSVs and writes exports to `output/non_hard/`. It makes no model calls. Commands below under “Running Automated Evaluations” run new experiments.
+
 ## 🌟 Core Features
 
 - **Deterministic Belief Store**: A reactive topological graph that manages factual state, derivation rules, and automatic cascading variable updates with rigid determinism.
