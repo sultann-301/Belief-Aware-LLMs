@@ -184,13 +184,13 @@ EFR = count(answer == None) / total_turns
 The code tries multiple strategies to extract an answer (`bracketed_exact` → `bracketed_normalized`
 → `unbracketed_substring`). If all fail, the result is `None`.
 
-**What it tells you:** This is a **validity threat** for all other metrics. If EFR = 20%, your
-accuracy metric is computed over only the 80% of responses where extraction succeeded — and those
-responses may not be a random sample (the model might fail extraction more often when it's
-confused, biasing accuracy upward).
+**What it tells you:** EFR measures how often the evaluator cannot extract an answer. Extraction
+failures count as incorrect in accuracy, whose denominator includes all evaluated turns. If
+EFR = 20%, those failures contribute zero correct answers and accuracy can be at most 80%.
+EFR helps distinguish extraction failures from successfully extracted but incorrect answers.
 
-Currently, failures are logged to `failed_extractions.log` but never surfaced as a metric.
-That needs to change.
+EFR is printed in evaluation summaries and exported as `EFR_Extraction_Failure_Rate` in CSV
+results. Individual failures are logged to `failed_extractions.log` when debug logging is enabled.
 
 **Good score:** Near 0. Above 5% is a serious problem. Above 10% means prompt format is broken.
 

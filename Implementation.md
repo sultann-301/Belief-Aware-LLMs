@@ -4,13 +4,13 @@
 
 ## System Architecture
 
-A fixed LLM (never retrained) augmented with an external, persistent belief store. All inputs and outputs are structured. No natural language anywhere in the pipeline.
+A fixed LLM, used without retraining, is augmented with a belief store that maintains state across turns. Belief updates use structured keys and values, and Python rules compute derived facts. Questions, instructions, and model responses use natural language. The LLM receives the resolved beliefs and generates answers and explanations; it does not write to the store.
 
 ```mermaid
 graph LR
     subgraph "External"
         USER["Structured Input"]
-        QUERY["Structured Query"]
+        QUERY["Natural-language Query"]
     end
 
     subgraph "Belief Store"
@@ -21,7 +21,7 @@ graph LR
         LOG["revision_log"]
     end
 
-    subgraph "Explanation Layer"
+    subgraph "Answer and Explanation Layer"
         LLM["LLM<br/>(reasons + explains)"]
     end
 
@@ -31,7 +31,7 @@ graph LR
     QUERY -->|"3. resolve_all_dirty"| RULES
     RULES -->|"update derived beliefs"| BELIEFS
     BELIEFS -->|"4. to_prompt (clean)"| LLM
-    LLM -->|"5. explanation only"| USER
+    LLM -->|"5. answer and explanation"| USER
 
     style BELIEFS fill:#4a9eff,color:#fff
     style DEPS fill:#4a9eff,color:#fff
@@ -41,7 +41,7 @@ graph LR
     style LLM fill:#6c5ce7,color:#fff
 ```
 
-The LLM **never writes to the store**. The store is only updated from structured input + `derive_fn` rules. The LLM is the explanation layer.
+The LLM **never writes to the store**. The store is only updated from structured input + `derive_fn` rules. The LLM generates answers and explanations from the resolved state.
 
 ---
 

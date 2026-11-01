@@ -522,7 +522,7 @@ Examples:
         default=None,
         help=(
             "Base belief-store prompt profile for WITH STORE evals "
-            "(e.g., v5, v12). Defaults to EVAL_BASE_PROMPT_VERSION or v5."
+            "(e.g., v15, v16). Defaults to EVAL_BASE_PROMPT_VERSION or v15."
         ),
     )
     parser.add_argument(

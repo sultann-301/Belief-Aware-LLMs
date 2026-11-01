@@ -28,7 +28,7 @@ The simplest way to understand the system is to run the visual dashboard, where 
 python3 web/app.py
 ```
 
-Open your browser and navigate to `http://localhost:5000` to select a domain context and begin a conversation.
+Open your browser and navigate to `http://localhost:5001` to select a domain context and begin a conversation.
 
 ### 2. Running Automated Evaluations
 
@@ -171,9 +171,9 @@ pytest -q
 ## 📁 Project Structure
 
 For detailed information on domain logic, see [domains.md](domains.md). For evaluation metrics, see [METRICS.md](METRICS.md).
-To view the results, download the CSVs on this [drive link](https://drive.google.com/drive/folders/1hgE6zobA_hbXER7DpbgmWObnkERz4B4K?usp=drive_link) and add them to the project root. **Hard scenarios are excluded from the reported benchmark.** Reporting uses the 16 combinations of loan, alien_clinic, crime_scene and thorncrester with belief_maintenance, absurd, absurd_temporal and grounding. The evaluation harness still supports other scenarios; raw CSVs are preserved.
+The CSV inputs used by the reporting notebooks are included in the repository: `eval_results.csv`, `eval_results_normalized.csv`, `eval_results_with_store.csv`, `eval_results_dual_agent.csv`, and `eval_results_graphrag.csv` at the project root. The provenance checks also reference `eval_results_dual_agent.legacy.csv`, `eval_results_dual_agent_normalized.csv`, and the empty `evaluation/eval_results_with_store.csv`; these are included unchanged. **Hard scenarios are excluded from the reported benchmark.** Reporting uses the 16 combinations of loan, alien_clinic, crime_scene and thorncrester with belief_maintenance, absurd, absurd_temporal and grounding. The evaluation harness still supports other scenarios; raw CSVs are preserved.
 
-Run `python3 scripts/execute_analysis_notebooks.py`, then `python3 -m tests.test_non_hard_reporting`. The runner executes `graphrag_single_agent_comparison.ipynb` first, followed by the four historical analysis views, without model calls. Corrected CSV tables, PNG/SVG charts, metric coverage, definitions and source hashes are in [output/non_hard](output/non_hard/). See the [reporting report](output/non_hard/REPORT.md) for before/after values and limitations. Original notebooks and the retired Hard-only chart are preserved in [backups/before_non_hard_standardization_2026-10-07](backups/before_non_hard_standardization_2026-10-07/).
+Run `python3 scripts/execute_analysis_notebooks.py`, then `python3 -m tests.test_non_hard_reporting`. The runner executes `graphrag_single_agent_comparison.ipynb` first, followed by the four historical analysis views, without model calls. CSV tables, metric coverage, definitions and source hashes are in [output/non_hard](output/non_hard/). PNG/SVG charts are generated there locally and ignored by Git. See the [reporting report](output/non_hard/REPORT.md) for before/after values and limitations. Original notebooks are preserved in [backups/before_non_hard_standardization_2026-10-07](backups/before_non_hard_standardization_2026-10-07/).
 
 Accuracy averages With Store v15/v16 and No Store v1/v2 equally within each combination, then averages the 16 combinations equally. Other metrics name their prompt versions and support counts. Historical Qwen is `hoangquan456/qwen3-nothink:4b`; GraphRAG uses `qwen3:4b` with thinking disabled. Matching scenario coverage does not make the experiments identical.
 
@@ -229,7 +229,7 @@ Belief-Aware-LLMs/
 │   └── test_dual_agent.py           # Dual-agent reasoner/matcher tests
 │
 ├── web/                             # Interactive visualization web app
-│   ├── app.py                       # Flask server (port 5000)
+│   ├── app.py                       # Flask server (port 5001)
 │   └── static/
 │       ├── index.html               # Main UI page
 │       ├── style.css                # Styling

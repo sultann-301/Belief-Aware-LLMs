@@ -37,3 +37,21 @@ evaluation/failed_extractions.log
 
 # Evaluation Results
 eval_results*.csv
+
+# Published inputs used by the reporting notebooks and provenance checks
+!/eval_results.csv
+!/eval_results_normalized.csv
+!/eval_results_with_store.csv
+!/eval_results_dual_agent.csv
+!/eval_results_dual_agent.legacy.csv
+!/eval_results_dual_agent_normalized.csv
+!/eval_results_graphrag.csv
+!/evaluation/eval_results_with_store.csv
+
+# Generated figure exports (keep local; regenerate with the notebooks)
+/output/**/*.png
+/output/**/*.svg
+/output/**/*.pdf
+/backups/**/*.png
+/backups/**/*.svg
+/backups/**/*.pdf
