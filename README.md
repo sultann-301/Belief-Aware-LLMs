@@ -125,6 +125,12 @@ rules and current input facts using the benchmark's supplied target attributes,
 then lets the LLM calculate the answer. It uses no assistant chat history.
 This is custom dependency-graph RAG, not Microsoft's GraphRAG implementation.
 
+Sequential scenarios accumulate asserted updates. Independent scenarios start
+from their initial facts each turn. If a scenario explicitly asserts a value
+for a normally derived attribute, retrieval uses that value and stops at that
+attribute. Any remaining rules are supplied as text for the LLM to apply. The
+answer key is used only to grade the generated answer.
+
 ```bash
 # Validate the full paper batch without calling models
 python3 -m evaluation.graphrag.run_batch --dry-run
@@ -178,8 +184,7 @@ wait for active workers; wait for the terminal prompt before restarting.
 
 For a temporary terminal suspension use Ctrl+Z, then `fg` in that same terminal
 to continue. This only suspends Python, not Ollama requests already in progress,
-and does not survive a terminal closure or reboot. See
-[the baseline plan](GRAPHRAG_BASELINE_PLAN.md) for the protocol.
+and does not survive a terminal closure or reboot.
 
 ### 3. Running Unit Tests
 
